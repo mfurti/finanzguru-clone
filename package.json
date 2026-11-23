@@ -14,7 +14,9 @@
     "typecheck": "pnpm --filter @finance/shared build && pnpm -r typecheck",
     "format:check": "prettier --check .",
     "test": "pnpm --filter @finance/shared build && pnpm -r test",
-    "test:e2e": "playwright test -c e2e/playwright.config.ts"
+    "test:e2e": "playwright test -c e2e/playwright.config.ts",
+    "docker:local": "docker compose -f compose.local.yaml up -d --build",
+    "docker:local:down": "docker compose -f compose.local.yaml down"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^1.17.0",
