@@ -52,3 +52,54 @@ export const assetClassDto = z.object({
   count: z.number().int(),
 })
 export type AssetClassDto = z.infer<typeof assetClassDto>
+
+/** Columns of the positions table / CSV export (US4). */
+export const POSITION_COLUMNS = [
+  'name',
+  'assetClass',
+  'wkn',
+  'isin',
+  'price',
+  'dayChange',
+  'quantity',
+  'value',
+  'entryValue',
+  'avgPrice',
+  'gain',
+  'gainPct',
+  'allocation',
+  'dividends',
+] as const
+export type PositionColumn = (typeof POSITION_COLUMNS)[number]
+
+export const positionsCsvQuery = positionsQuery.extend({
+  columns: z
+    .string()
+    .optional()
+    .transform((value) =>
+      value
+        ? value
+            .split(',')
+            .filter((column): column is PositionColumn =>
+              (POSITION_COLUMNS as readonly string[]).includes(column),
+            )
+        : [...POSITION_COLUMNS],
+    ),
+})
+
+export const instrumentDetailQuery = z.object({
+  accounts: accountsParam,
+  period: period.default('1Y'),
+})
+
+export const investmentTransactionsQuery = z.object({
+  accounts: accountsParam,
+  type: z
+    .enum(['buy', 'sell', 'dividend', 'interest', 'tax', 'fee', 'split', 'deposit', 'withdrawal'])
+    .optional(),
+  instrumentId: z.string().optional(),
+  from: isoDate.optional(),
+  to: isoDate.optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(200).default(50),
+})

@@ -71,3 +71,67 @@ describe('investments API', () => {
     expect(body.series.every((point) => point.investedCents > 0)).toBe(true)
   })
 })
+
+describe('investments export, detail and transactions', () => {
+  let app: NestFastifyApplication
+  let cookie: string
+
+  beforeAll(async () => {
+    ;({ app, cookie } = await createDemoApp())
+  })
+
+  afterAll(async () => {
+    await app?.close()
+  })
+
+  it('exports the requested columns as de-DE CSV with BOM', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/investments/positions.csv?columns=name,isin,value',
+      headers: { cookie },
+    })
+    expect(res.statusCode).toBe(200)
+    expect(res.headers['content-type']).toContain('text/csv')
+    expect(res.body.charCodeAt(0)).toBe(0xfeff)
+    const lines = res.body.slice(1).trim().split('\r\n')
+    expect(lines[0]).toBe('Name;ISIN;Aktueller Wert')
+    expect(lines).toHaveLength(5)
+    expect(lines[1]).toMatch(/^[^;]+;[A-Z]{2}[A-Z0-9]{10};\d+,\d{2}$/)
+  })
+
+  it('returns instrument detail with price series and transactions', async () => {
+    const positions = (
+      await app.inject({ method: 'GET', url: '/api/investments/positions', headers: { cookie } })
+    ).json() as PositionDto[]
+    const id = positions[0]!.instrumentId
+    const res = await app.inject({
+      method: 'GET',
+      url: `/api/investments/instruments/${id}?period=1M`,
+      headers: { cookie },
+    })
+    const body = res.json()
+    expect(body.instrument.id).toBe(id)
+    expect(body.position.instrumentId).toBe(id)
+    expect(body.series.length).toBeGreaterThan(10)
+    expect(body.transactions.length).toBeGreaterThan(0)
+    const missing = await app.inject({
+      method: 'GET',
+      url: '/api/investments/instruments/nope',
+      headers: { cookie },
+    })
+    expect(missing.statusCode).toBe(404)
+  })
+
+  it('pages investment transactions and filters by type', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/investments/transactions?type=dividend&pageSize=5',
+      headers: { cookie },
+    })
+    const body = res.json() as { items: { type: string; instrumentName: string }[]; total: number }
+    expect(body.items.length).toBeLessThanOrEqual(5)
+    expect(body.total).toBeGreaterThan(0)
+    expect(body.items.every((item) => item.type === 'dividend')).toBe(true)
+    expect(body.items[0]?.instrumentName).toContain('Vanguard')
+  })
+})
