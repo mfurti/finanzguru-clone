@@ -3,12 +3,14 @@ import type { NestFastifyApplication } from '@nestjs/platform-fastify'
 import { createZodDto } from 'nestjs-zod'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { z } from 'zod'
+import { Public } from '../../src/common/decorators/public.decorator'
 import { createTestApp } from '../helpers/test-app'
 
 class EchoDto extends createZodDto(
   z.object({ name: z.string().min(2), amountCents: z.number().int() }),
 ) {}
 
+@Public()
 @Controller('test-only')
 class TestOnlyController {
   @Post('echo')

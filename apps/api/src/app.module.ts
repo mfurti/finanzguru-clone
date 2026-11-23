@@ -4,6 +4,7 @@ import { LoggerModule } from 'nestjs-pino'
 import { CommonModule } from './common/common.module'
 import { validateEnv } from './config/env.schema'
 import { DrizzleModule } from './database/drizzle.module'
+import { AuthModule } from './modules/auth/auth.module'
 import { HealthModule } from './modules/health/health.module'
 
 @Module({
@@ -42,6 +43,7 @@ import { HealthModule } from './modules/health/health.module'
     CommonModule,
     DrizzleModule,
     HealthModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
