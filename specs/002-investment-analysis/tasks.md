@@ -61,19 +61,19 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 
 ### Tests for User Story 1
 
-- [ ] T013 [P] [US1] Unit tests for weighted breakdown (weights, remainder as "Nicht zugeordnet", cash bucket, Σ = total) in `apps/api/test/unit/breakdown.spec.ts`
-- [ ] T014 [P] [US1] Unit tests for volatility (σ × √252 on daily log returns, < 60 points → not computable, class thresholds 10 % / 20 %) in `apps/api/test/unit/volatility.spec.ts`
-- [ ] T015 [P] [US1] Unit tests for monthly/yearly TWROR and yearly XIRR against `apps/api/test/fixtures/returns-reference.json` in `apps/api/test/unit/period-returns.spec.ts`
-- [ ] T016 [P] [US1] E2E tests for `/api/analysis/breakdown` (all dimensions), `/api/analysis/returns`, `/api/analysis/compare`, classification PUT (400 when a dimension sums > 1, message names the sum), groupings CRUD and members, inflation settings in `apps/api/test/e2e/analysis.e2e-spec.ts`
+- [X] T013 [P] [US1] Unit tests for weighted breakdown (weights, remainder as "Nicht zugeordnet", cash bucket, Σ = total) in `apps/api/test/unit/breakdown.spec.ts`
+- [X] T014 [P] [US1] Unit tests for volatility (σ × √252 on daily log returns, < 60 points → not computable, class thresholds 10 % / 20 %) in `apps/api/test/unit/volatility.spec.ts`
+- [X] T015 [P] [US1] Unit tests for monthly/yearly TWROR and yearly XIRR against `apps/api/test/fixtures/returns-reference.json` in `apps/api/test/unit/period-returns.spec.ts`
+- [X] T016 [P] [US1] E2E tests for `/api/analysis/breakdown` (all dimensions), `/api/analysis/returns`, `/api/analysis/compare`, classification PUT (400 when a dimension sums > 1, message names the sum), groupings CRUD and members, inflation settings in `apps/api/test/e2e/analysis.e2e-spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T017 [P] [US1] Implement `apps/api/src/domain/breakdown.ts` (positions × weights, custom group membership weight 1, cash bucket, largest-remainder rounding from T006)
-- [ ] T018 [P] [US1] Implement `apps/api/src/domain/volatility.ts` (annualized σ of daily log returns over the last 365 days, ≥ 60 price points, classes niedrig < 10 %, mittel 10–20 %, hoch > 20 %)
-- [ ] T019 [P] [US1] Implement `apps/api/src/domain/period-returns.ts` (monthly TWROR chain-linked from the daily series with `r = V_t/(V_{t-1}+F_t) − 1`, yearly product, yearly XIRR via `xirr(periodCashFlows(...))`, current year flagged `ytd`, real return via `realReturn()`)
-- [ ] T020 [US1] Implement classification endpoints `GET/PUT /api/instruments/:id/classification` (weights per dimension, `fundType`, `isBenchmark`; reject Σ weight > 1 per dimension) in `apps/api/src/modules/instruments/classification.service.ts` and the instruments controller
-- [ ] T021 [US1] Create `apps/api/src/modules/analysis/` with `AnalysisService` (breakdown by `assetClass|region|sector|currency|volatility|return|grouping`, return classes < −10 %, −10–0 %, 0–10 %, 10–25 %, > 25 %), returns (series, months, years with inflation from `inflation_rate` falling back to `owner.inflation_rate`) and compare (per-depot TWROR rebased to 0 % on the first common day); controller routes per contract; register module
-- [ ] T022 [US1] Implement groupings (`GET/POST /api/groupings`, `PATCH/DELETE /api/groupings/:id`, `PUT /api/groupings/:id/members` with one group per grouping and instrument) and inflation settings (`GET/PUT /api/settings/inflation`) in `apps/api/src/modules/analysis/groupings.service.ts` and `inflation.service.ts`
+- [X] T017 [P] [US1] Implement `apps/api/src/domain/breakdown.ts` (positions × weights, custom group membership weight 1, cash bucket, largest-remainder rounding from T006)
+- [X] T018 [P] [US1] Implement `apps/api/src/domain/volatility.ts` (annualized σ of daily log returns over the last 365 days, ≥ 60 price points, classes niedrig < 10 %, mittel 10–20 %, hoch > 20 %)
+- [X] T019 [P] [US1] Implement `apps/api/src/domain/period-returns.ts` (monthly TWROR chain-linked from the daily series with `r = V_t/(V_{t-1}+F_t) − 1`, yearly product, yearly XIRR via `xirr(periodCashFlows(...))`, current year flagged `ytd`, real return via `realReturn()`)
+- [X] T020 [US1] Implement classification endpoints `GET/PUT /api/instruments/:id/classification` (weights per dimension, `fundType`, `isBenchmark`; reject Σ weight > 1 per dimension) in `apps/api/src/modules/instruments/classification.service.ts` and the instruments controller
+- [X] T021 [US1] Create `apps/api/src/modules/analysis/` with `AnalysisService` (breakdown by `assetClass|region|sector|currency|volatility|return|grouping`, return classes < −10 %, −10–0 %, 0–10 %, 10–25 %, > 25 %), returns (series, months, years with inflation from `inflation_rate` falling back to `owner.inflation_rate`) and compare (per-depot TWROR rebased to 0 % on the first common day); controller routes per contract; register module
+- [X] T022 [US1] Implement groupings (`GET/POST /api/groupings`, `PATCH/DELETE /api/groupings/:id`, `PUT /api/groupings/:id/members` with one group per grouping and instrument) and inflation settings (`GET/PUT /api/settings/inflation`) in `apps/api/src/modules/analysis/groupings.service.ts` and `inflation.service.ts`
 - [ ] T023 [P] [US1] Build `apps/web/app/components/analysis/BreakdownCard.vue` (dimension tabs Assetklassen, Regionen, Branchen, Währungen, Volatilität, Rendite, Eigene Aufteilung; donut with `.chart-hover` + list with value, share and count; €/% toggle)
 - [ ] T024 [P] [US1] Build `apps/web/app/components/analysis/ReturnViews.vue` (Linie/Heatmap/Balken switch with PeriodTabs), `ReturnHeatmap.vue` (CSS grid months × years, diverging color scale, values as text) and `YearlyTable.vue` (Jahr, IZF, Inflation, Realrendite; current year marked YTD)
 - [ ] T025 [P] [US1] Build `apps/web/app/components/analysis/CompareChart.vue` (depot multi-select, one line per depot, legend, tooltip)

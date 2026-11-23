@@ -91,9 +91,7 @@
       "indexes": {
         "account_iban_unique": {
           "name": "account_iban_unique",
-          "columns": [
-            "iban"
-          ],
+          "columns": ["iban"],
           "isUnique": true
         }
       },
@@ -102,12 +100,8 @@
           "name": "account_institution_id_institution_id_fk",
           "tableFrom": "account",
           "tableTo": "institution",
-          "columnsFrom": [
-            "institution_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["institution_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -115,12 +109,8 @@
           "name": "account_parent_account_id_account_id_fk",
           "tableFrom": "account",
           "tableTo": "account",
-          "columnsFrom": [
-            "parent_account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_account_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -128,12 +118,8 @@
           "name": "account_source_id_data_source_id_fk",
           "tableFrom": "account",
           "tableTo": "data_source",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -213,10 +199,7 @@
       "indexes": {
         "category_parent_name_unique": {
           "name": "category_parent_name_unique",
-          "columns": [
-            "parent_key",
-            "name"
-          ],
+          "columns": ["parent_key", "name"],
           "isUnique": true
         }
       },
@@ -225,12 +208,8 @@
           "name": "category_parent_id_category_id_fk",
           "tableFrom": "category",
           "tableTo": "category",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -391,9 +370,7 @@
       "indexes": {
         "institution_name_unique": {
           "name": "institution_name_unique",
-          "columns": [
-            "name"
-          ],
+          "columns": ["name"],
           "isUnique": true
         }
       },
@@ -457,9 +434,7 @@
       "indexes": {
         "instrument_isin_unique": {
           "name": "instrument_isin_unique",
-          "columns": [
-            "isin"
-          ],
+          "columns": ["isin"],
           "isUnique": true
         }
       },
@@ -539,22 +514,15 @@
           "name": "net_worth_snapshot_account_id_account_id_fk",
           "tableFrom": "net_worth_snapshot",
           "tableTo": "account",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["account_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "net_worth_snapshot_account_id_date_pk": {
-          "columns": [
-            "account_id",
-            "date"
-          ],
+          "columns": ["account_id", "date"],
           "name": "net_worth_snapshot_account_id_date_pk"
         }
       },
@@ -679,10 +647,7 @@
       "indexes": {
         "position_lot_account_instrument_idx": {
           "name": "position_lot_account_instrument_idx",
-          "columns": [
-            "account_id",
-            "instrument_id"
-          ],
+          "columns": ["account_id", "instrument_id"],
           "isUnique": false
         }
       },
@@ -691,12 +656,8 @@
           "name": "position_lot_account_id_account_id_fk",
           "tableFrom": "position_lot",
           "tableTo": "account",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["account_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -704,12 +665,8 @@
           "name": "position_lot_instrument_id_instrument_id_fk",
           "tableFrom": "position_lot",
           "tableTo": "instrument",
-          "columnsFrom": [
-            "instrument_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["instrument_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -761,22 +718,15 @@
           "name": "price_instrument_id_instrument_id_fk",
           "tableFrom": "price",
           "tableTo": "instrument",
-          "columnsFrom": [
-            "instrument_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["instrument_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "price_instrument_id_date_pk": {
-          "columns": [
-            "instrument_id",
-            "date"
-          ],
+          "columns": ["instrument_id", "date"],
           "name": "price_instrument_id_date_pk"
         }
       },
@@ -957,32 +907,22 @@
       "indexes": {
         "transactions_fingerprint_unique": {
           "name": "transactions_fingerprint_unique",
-          "columns": [
-            "fingerprint"
-          ],
+          "columns": ["fingerprint"],
           "isUnique": true
         },
         "transactions_account_booking_idx": {
           "name": "transactions_account_booking_idx",
-          "columns": [
-            "account_id",
-            "booking_date"
-          ],
+          "columns": ["account_id", "booking_date"],
           "isUnique": false
         },
         "transactions_category_idx": {
           "name": "transactions_category_idx",
-          "columns": [
-            "category_id"
-          ],
+          "columns": ["category_id"],
           "isUnique": false
         },
         "transactions_source_ref_unique": {
           "name": "transactions_source_ref_unique",
-          "columns": [
-            "source",
-            "source_ref"
-          ],
+          "columns": ["source", "source_ref"],
           "isUnique": true
         }
       },
@@ -991,12 +931,8 @@
           "name": "transactions_account_id_account_id_fk",
           "tableFrom": "transactions",
           "tableTo": "account",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["account_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1004,12 +940,8 @@
           "name": "transactions_instrument_id_instrument_id_fk",
           "tableFrom": "transactions",
           "tableTo": "instrument",
-          "columnsFrom": [
-            "instrument_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["instrument_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1017,12 +949,8 @@
           "name": "transactions_category_id_category_id_fk",
           "tableFrom": "transactions",
           "tableTo": "category",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
