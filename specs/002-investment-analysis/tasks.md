@@ -144,16 +144,16 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 
 ### Tests for User Story 4
 
-- [ ] T048 [P] [US4] Create `apps/api/test/fixtures/vorabpauschale-reference.json` with three hand-calculated cases (full year; purchase in month 5 → 4/12 reduction; gain below Basisertrag → capped) including partial exemption 30 %/15 %/0 %
-- [ ] T049 [P] [US4] Unit tests for `vorabpauschale.ts` against the fixture (to the cent, negative → 0, missing base rate → reason `base_rate_missing`) in `apps/api/test/unit/vorabpauschale.spec.ts`
-- [ ] T050 [P] [US4] Unit tests for taxable income per institution (dividends gross + interest + realized gains − fees) and usage = min(order, max(0, income)) in `apps/api/test/unit/exemption.spec.ts`
-- [ ] T051 [P] [US4] E2E tests for `/api/taxes/:year` (allowance 100000/200000 cents by assessment, `exceedsAllowance`), orders CRUD (409 on duplicate institution/year, `amount_cents ≥ 0`), `PUT /api/taxes/:year` (`base_rate` 0 … 0.2) and `/api/taxes/:year/vorabpauschale` in `apps/api/test/e2e/taxes.e2e-spec.ts`
+- [X] T048 [P] [US4] Create `apps/api/test/fixtures/vorabpauschale-reference.json` with three hand-calculated cases (full year; purchase in month 5 → 4/12 reduction; gain below Basisertrag → capped) including partial exemption 30 %/15 %/0 %
+- [X] T049 [P] [US4] Unit tests for `vorabpauschale.ts` against the fixture (to the cent, negative → 0, missing base rate → reason `base_rate_missing`) in `apps/api/test/unit/vorabpauschale.spec.ts`
+- [X] T050 [P] [US4] Unit tests for taxable income per institution (dividends gross + interest + realized gains − fees) and usage = min(order, max(0, income)) in `apps/api/test/unit/exemption.spec.ts`
+- [X] T051 [P] [US4] E2E tests for `/api/taxes/:year` (allowance 100000/200000 cents by assessment, `exceedsAllowance`), orders CRUD (409 on duplicate institution/year, `amount_cents ≥ 0`), `PUT /api/taxes/:year` (`base_rate` 0 … 0.2) and `/api/taxes/:year/vorabpauschale` in `apps/api/test/e2e/taxes.e2e-spec.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T052 [P] [US4] Implement `apps/api/src/domain/vorabpauschale.ts` per research R9 (start price of last trading day of previous year, base rate × 0,7, 1/12 reduction per full month before purchase, cap at gain + distributions, minus distributions, partial exemption by fund type, `estimate` flag)
-- [ ] T053 [P] [US4] Implement `apps/api/src/domain/exemption.ts` (taxable income per institution and year, usage, remaining, allowance check)
-- [ ] T054 [US4] Create `apps/api/src/modules/taxes/` (service, controller, module) with tax year settings, orders CRUD and Vorabpauschale per contract; register module
+- [X] T052 [P] [US4] Implement `apps/api/src/domain/vorabpauschale.ts` per research R9 (start price of last trading day of previous year, base rate × 0,7, 1/12 reduction per full month before purchase, cap at gain + distributions, minus distributions, partial exemption by fund type, `estimate` flag)
+- [X] T053 [P] [US4] Implement `apps/api/src/domain/exemption.ts` (taxable income per institution and year, usage, remaining, allowance check)
+- [X] T054 [US4] Create `apps/api/src/modules/taxes/` (service, controller, module) with tax year settings, orders CRUD and Vorabpauschale per contract; register module
 - [ ] T055 [P] [US4] Build `apps/web/app/components/taxes/ExemptionOrders.vue` (allowance bar "x / 1.000,00 €", per broker used/remaining, add/edit modal, warning banner when exceeded, assessment switch Einzel/Zusammen)
 - [ ] T056 [P] [US4] Build `apps/web/app/components/taxes/VorabpauschaleTable.vue` (per fund: Basisertrag, Vorabpauschale, steuerpflichtig; total; "Schätzung" label; "Basiszins fehlt" link to the base rate field)
 - [ ] T057 [US4] Create `apps/web/app/pages/investments/taxes.vue` with year switcher, base rate input, ExemptionOrders and VorabpauschaleTable
