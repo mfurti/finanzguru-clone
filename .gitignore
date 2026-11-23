@@ -1,6 +1,35 @@
+# dependencies
 node_modules/
+
+# build output
+dist/
+build/
+.nuxt/
+.output/
+coverage/
+*.tsbuildinfo
+
+# env and secrets
 .env
 .env.*
 !.env.example
+
+# local data
 *.db
+*.db-*
+apps/api/data/
+data-local/
+
+# test artifacts
+playwright-report/
+test-results/
+
+# logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Claude Code local settings
 .claude/settings.local.json

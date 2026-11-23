@@ -1,0 +1,10 @@
+{
+  "name": "finanzguru-clone",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": ">=26 <27"
+  },
+  "scripts": {}
+}
