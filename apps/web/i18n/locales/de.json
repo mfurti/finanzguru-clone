@@ -269,5 +269,56 @@
     "split": "Split",
     "deposit": "Einzahlung",
     "withdrawal": "Auszahlung"
+  },
+  "investments": {
+    "value": "Wert",
+    "invested": "Investiertes Kapital",
+    "gain": "Gewinn",
+    "empty": "Noch keine Wertpapiere",
+    "positions": "Positionen ({n})",
+    "columnsButton": "Spalten",
+    "export": "Export",
+    "all": "Alle",
+    "pieces": "St.",
+    "sold": "Verkaufte Investments ({n})",
+    "realized": "Realisiert",
+    "views": {
+      "positions": "Positionen",
+      "assetClasses": "Assetklassen",
+      "transactions": "Transaktionen"
+    },
+    "columns": {
+      "name": "Name",
+      "price": "Aktueller Kurs",
+      "value": "Aktueller Wert",
+      "entryValue": "Einstiegswert",
+      "gain": "Kursgewinn",
+      "allocation": "Allokation",
+      "dividends": "Dividende"
+    },
+    "detail": {
+      "position": "Deine Position",
+      "transactions": "Transaktionen",
+      "price": "Kursverlauf",
+      "noPosition": "Keine offene Position"
+    },
+    "tx": {
+      "date": "Datum",
+      "type": "Art",
+      "instrument": "Wertpapier",
+      "quantity": "Stück",
+      "amount": "Betrag",
+      "empty": "Keine Transaktionen"
+    }
+  },
+  "assetClasses": {
+    "stock": "Aktien",
+    "etf": "ETF",
+    "fund": "Fonds",
+    "bond": "Anleihen",
+    "crypto": "Krypto",
+    "commodity": "Rohstoffe",
+    "other": "Sonstige",
+    "cash": "Cash"
   }
 }
