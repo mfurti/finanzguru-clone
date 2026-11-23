@@ -1,0 +1,11 @@
+{
+  "demoEnd": "2026-11-20",
+  "note": "Current values (last close carried forward); valid for any today >= demoEnd.",
+  "totalCents": 1263115,
+  "depotValueCents": 1006554,
+  "depotInvestedCents": 968924,
+  "cashCents": 256561,
+  "transactions": 481,
+  "unreviewed": 3,
+  "openPositions": 4
+}
