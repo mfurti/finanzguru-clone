@@ -85,7 +85,7 @@ const rows = computed<Row[]>(() => {
           </dt>
           <dd class="flex flex-wrap items-center justify-end gap-2">
             <UBadge
-              v-if="row.pct"
+              v-if="row.pct && row.cents"
               variant="subtle"
               :color="Number(row.pct) < 0 ? 'error' : 'success'"
             >
