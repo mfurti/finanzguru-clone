@@ -13,10 +13,12 @@
     "format": "prettier --write .",
     "typecheck": "pnpm --filter @finance/shared build && pnpm -r typecheck",
     "format:check": "prettier --check .",
-    "test": "pnpm --filter @finance/shared build && pnpm -r test"
+    "test": "pnpm --filter @finance/shared build && pnpm -r test",
+    "test:e2e": "playwright test -c e2e/playwright.config.ts"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^1.17.0",
+    "@playwright/test": "^1.65.1",
     "@types/node": "^26.6.6",
     "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",
