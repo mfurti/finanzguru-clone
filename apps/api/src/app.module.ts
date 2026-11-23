@@ -4,9 +4,11 @@ import { LoggerModule } from 'nestjs-pino'
 import { CommonModule } from './common/common.module'
 import { validateEnv } from './config/env.schema'
 import { DrizzleModule } from './database/drizzle.module'
+import { AccountsModule } from './modules/accounts/accounts.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { HealthModule } from './modules/health/health.module'
 import { OverviewModule } from './modules/overview/overview.module'
+import { TransactionsModule } from './modules/transactions/transactions.module'
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { OverviewModule } from './modules/overview/overview.module'
     HealthModule,
     AuthModule,
     OverviewModule,
+    AccountsModule,
+    TransactionsModule,
   ],
 })
 export class AppModule {}
