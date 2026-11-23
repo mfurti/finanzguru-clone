@@ -1,6 +1,6 @@
-import { Controller, Get, Inject, Query } from '@nestjs/common'
+import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { accountsParam } from '@finance/shared'
+import { accountsParam, createTransactionInput, type TransactionDto } from '@finance/shared'
 import { and, count, eq, inArray, isNull } from 'drizzle-orm'
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
@@ -8,8 +8,10 @@ import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { transaction } from '../../database/schema'
 import { OverviewService } from '../overview/overview.service'
+import { TransactionsWriteService } from './transactions-write.service'
 
 class AccountsQueryDto extends createZodDto(z.object({ accounts: accountsParam })) {}
+class CreateTransactionDto extends createZodDto(createTransactionInput) {}
 
 @ApiTags('transactions')
 @Controller('transactions')
@@ -17,7 +19,14 @@ export class TransactionsController {
   constructor(
     @Inject(DB) private readonly db: AppDatabase,
     private readonly overview: OverviewService,
+    private readonly writer: TransactionsWriteService,
   ) {}
+
+  /** Manual transaction (FR-056). */
+  @Post()
+  create(@Body() body: CreateTransactionDto): TransactionDto {
+    return this.writer.create(body)
+  }
 
   /** "Ungeprüfte Transaktionen": unreviewed and without category. */
   @Get('unreviewed/count')
