@@ -8,7 +8,6 @@ import {
   formatPct,
   type GroupingDto,
 } from '@finance/shared'
-import { VisDonut, VisSingleContainer } from '@unovis/vue'
 
 /** Portfolio split by asset class, region, sector, … or an own grouping (US1). */
 const { t } = useI18n()
@@ -46,8 +45,16 @@ const buckets = computed(() =>
   skip.value ? [] : (data.value?.buckets ?? []).filter((b) => b.valueCents > 0),
 )
 const colors = computed(() => new Map(buckets.value.map((b, i) => [b.key, paletteColor(i, b.key)])))
-const value = (bucket: BreakdownBucket) => bucket.valueCents
 const color = (bucket: BreakdownBucket) => colors.value.get(bucket.key)!
+const hovered = ref<string | null>(null)
+const donutItems = computed(() =>
+  buckets.value.map((bucket) => ({
+    key: bucket.key,
+    value: bucket.valueCents,
+    color: color(bucket),
+    label: bucket.label,
+  })),
+)
 const display = (bucket: BreakdownBucket) =>
   unit.value === 'eur' ? formatEur(bucket.valueCents) : formatPct(Number(bucket.pct ?? 0))
 
@@ -125,24 +132,25 @@ async function onSaved(id?: string): Promise<void> {
       icon="i-lucide-chart-pie"
     />
     <div v-else class="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-      <div class="chart-hover relative size-44 shrink-0">
-        <ClientOnly>
-          <VisSingleContainer :data="buckets" :height="176">
-            <VisDonut :value="value" :color="color" :arc-width="22" :pad-angle="0.01" />
-          </VisSingleContainer>
-        </ClientOnly>
-        <div
-          class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center"
-        >
-          <span class="font-semibold"><Money :cents="data!.totalCents" animate /></span>
-          <span class="text-xs text-muted">{{ t('analysis.dimensions.' + dimension) }}</span>
-        </div>
-      </div>
+      <DonutChart v-model:hovered="hovered" :items="donutItems">
+        <template #center="{ item }">
+          <span class="font-semibold">
+            <Money v-if="item" :cents="item.value" />
+            <Money v-else :cents="data!.totalCents" animate />
+          </span>
+          <span class="line-clamp-2 text-xs text-muted">
+            {{ item ? item.label : t('analysis.dimensions.' + dimension) }}
+          </span>
+        </template>
+      </DonutChart>
       <ul class="w-full divide-y divide-default text-sm" data-testid="breakdown-list">
         <li
           v-for="bucket in buckets"
           :key="bucket.key"
           class="row-hover flex items-center justify-between gap-3 py-2"
+          :class="{ 'bg-elevated/70': hovered === bucket.key }"
+          @mouseenter="hovered = bucket.key"
+          @mouseleave="hovered = null"
         >
           <span class="flex min-w-0 items-center gap-2">
             <span class="size-3 shrink-0 rounded-sm" :style="{ background: color(bucket) }" />

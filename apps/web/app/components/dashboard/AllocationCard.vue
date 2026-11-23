@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { type AllocationResponse, formatEur, formatPct } from '@finance/shared'
-import { VisDonut, VisSingleContainer } from '@unovis/vue'
 
 /** "Aufteilung": net worth by asset class plus cash, € or %. */
 const { t } = useI18n()
@@ -26,8 +25,16 @@ const COLORS: Record<string, string> = {
 
 type Slice = AllocationResponse['slices'][number]
 const slices = computed(() => (data.value?.slices ?? []).filter((slice) => slice.valueCents > 0))
-const value = (slice: Slice) => slice.valueCents
 const color = (slice: Slice) => COLORS[slice.key] ?? COLORS.other!
+const hovered = ref<string | null>(null)
+const donutItems = computed(() =>
+  slices.value.map((slice) => ({
+    key: slice.key,
+    value: slice.valueCents,
+    color: color(slice),
+    label: slice.label,
+  })),
+)
 const display = (slice: Slice) =>
   unit.value === 'eur' ? formatEur(slice.valueCents) : formatPct(Number(slice.pct ?? 0))
 </script>
@@ -60,24 +67,25 @@ const display = (slice: Slice) =>
       icon="i-lucide-chart-pie"
     />
     <div v-else class="flex flex-col items-center gap-4 sm:flex-row">
-      <div class="chart-hover relative size-44 shrink-0">
-        <ClientOnly>
-          <VisSingleContainer :data="slices" :height="176">
-            <VisDonut :value="value" :color="color" :arc-width="22" :pad-angle="0.01" />
-          </VisSingleContainer>
-        </ClientOnly>
-        <div
-          class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center"
-        >
-          <span class="font-semibold"><Money :cents="data!.totalCents" animate /></span>
-          <span class="text-xs text-muted">{{ t('overview.allocation.center') }}</span>
-        </div>
-      </div>
+      <DonutChart v-model:hovered="hovered" :items="donutItems">
+        <template #center="{ item }">
+          <span class="font-semibold">
+            <Money v-if="item" :cents="item.value" />
+            <Money v-else :cents="data!.totalCents" animate />
+          </span>
+          <span class="line-clamp-2 text-xs text-muted">
+            {{ item ? item.label : t('overview.allocation.center') }}
+          </span>
+        </template>
+      </DonutChart>
       <ul class="w-full divide-y divide-default text-sm">
         <li
           v-for="slice in slices"
           :key="slice.key"
           class="row-hover flex items-center justify-between gap-3 py-2"
+          :class="{ 'bg-elevated/70': hovered === slice.key }"
+          @mouseenter="hovered = slice.key"
+          @mouseleave="hovered = null"
         >
           <span class="flex items-center gap-2">
             <span class="size-3 rounded-sm" :style="{ background: color(slice) }" />

@@ -88,14 +88,13 @@
   }
 
   /*
-   * Charts: hovered donut segment / bar stays, the rest dims. Unovis writes
-   * `opacity` and `transition: fill` inline, so dim with fill-opacity instead.
+   * Bar charts: the hovered bar stays, the rest dims. Unovis writes `opacity`
+   * and `transition: fill` inline, so dim with fill-opacity instead.
+   * (Donuts use DonutChart.vue with its own hover halo.)
    */
-  .chart-hover path[class$='-segment'],
   .chart-hover path[class$='-bar'] {
     transition: fill-opacity 150ms ease !important;
   }
-  .chart-hover:has(path[class$='-segment']:hover) path[class$='-segment']:not(:hover),
   .chart-hover:has(path[class$='-bar']:hover) path[class$='-bar']:not(:hover) {
     fill-opacity: 0.4;
   }

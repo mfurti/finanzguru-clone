@@ -22,11 +22,9 @@ test.describe('002 US7 Budget-Kreisdiagramm', () => {
     expect(Math.abs(shares.reduce((a, b) => a + b, 0) - 100)).toBeLessThanOrEqual(0.1)
 
     // Hovering a slice highlights its list row.
-    // SVG arcs keep animating, so dispatch the event instead of a pointer hover.
-    await list
-      .locator('[data-testid="category-donut"] path[class$="-segment"]')
-      .first()
-      .dispatchEvent('mouseover')
+    // The ring sweeps in on load, so dispatch the event instead of a pointer hover.
+    await list.getByTestId('donut-slice').first().dispatchEvent('mouseenter')
     await expect(list.locator('[data-hovered]')).toHaveCount(1)
+    await expect(list.getByTestId('donut-center-label')).not.toHaveText('Gesamt')
   })
 })
