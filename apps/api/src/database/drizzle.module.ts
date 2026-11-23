@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import type Database from 'better-sqlite3'
 import { drizzle, type BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
 import { DB } from './database.constants'
+import { runMigrations } from './migrate'
 import { openDatabase } from './open-database'
 
 export type AppDatabase = BetterSQLite3Database & { $client: Database.Database }
@@ -15,7 +16,10 @@ export type AppDatabase = BetterSQLite3Database & { $client: Database.Database }
       inject: [ConfigService],
       useFactory: (config: ConfigService): AppDatabase => {
         const sqlite = openDatabase(config.getOrThrow<string>('DATABASE_PATH'))
-        return drizzle({ client: sqlite })
+        const db = drizzle({ client: sqlite })
+        // Containers start with an empty or older file: bring it to the current schema.
+        runMigrations(db)
+        return db
       },
     },
   ],

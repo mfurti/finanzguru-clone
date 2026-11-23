@@ -11,7 +11,9 @@
     "dev": "nest start --watch",
     "start": "node dist/main.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "nest build && node --env-file-if-exists=.env dist/scripts/migrate.js"
   },
   "dependencies": {
     "@finance/shared": "workspace:*",
@@ -23,6 +25,7 @@
     "drizzle-orm": "^0.45.4",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
+    "uuidv7": "^1.2.1",
     "zod": "^4.6.7"
   },
   "devDependencies": {

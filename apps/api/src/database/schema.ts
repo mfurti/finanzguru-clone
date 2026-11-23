@@ -1,0 +1,305 @@
+/**
+ * Drizzle schema for the shared entities (data-model.md).
+ * Conventions: ids are TEXT UUIDv7, money is INTEGER cents (EUR),
+ * decimals (quantity, price, rate) are TEXT parsed with decimal.js,
+ * timestamps are ISO-8601 UTC TEXT, dates are YYYY-MM-DD.
+ * Story-specific tables are added by their stories (dashboard_layout, import_job, …).
+ */
+import { sql } from 'drizzle-orm'
+import {
+  type AnySQLiteColumn,
+  blob,
+  check,
+  index,
+  integer,
+  primaryKey,
+  sqliteTable,
+  text,
+  uniqueIndex,
+} from 'drizzle-orm/sqlite-core'
+import { uuidv7 } from 'uuidv7'
+
+const id = () =>
+  text('id')
+    .primaryKey()
+    .$defaultFn(() => uuidv7())
+
+const nowIso = sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`
+
+/** `column IN ('a', 'b')` for CHECK constraints built from the enum lists below. */
+const inList = (column: string, values: readonly string[]) =>
+  sql.raw(`${column} IN (${values.map((value) => `'${value}'`).join(', ')})`)
+
+export const ACCOUNT_TYPES = [
+  'depot',
+  'checking',
+  'savings',
+  'reference',
+  'credit_card',
+  'cash',
+] as const
+export const ASSET_CLASSES = [
+  'stock',
+  'etf',
+  'fund',
+  'bond',
+  'crypto',
+  'commodity',
+  'other',
+] as const
+export const PRICE_SOURCES = ['scalable', 'csv', 'manual'] as const
+export const TRANSACTION_TYPES = [
+  'income',
+  'expense',
+  'transfer',
+  'buy',
+  'sell',
+  'dividend',
+  'interest',
+  'tax',
+  'fee',
+  'split',
+  'deposit',
+  'withdrawal',
+] as const
+export const CATEGORY_SOURCES = ['manual', 'rule', 'import'] as const
+export const REVIEW_STATUSES = ['unreviewed', 'reviewed'] as const
+export const TRANSACTION_SOURCES = ['csv', 'scalable_mcp', 'manual'] as const
+export const CATEGORY_KINDS = ['income', 'expense', 'savings', 'transfer'] as const
+export const SOURCE_KINDS = ['csv', 'scalable_mcp', 'sparkasse_fints'] as const
+export const SOURCE_STATUSES = ['active', 'needs_reauth', 'error', 'planned', 'disabled'] as const
+
+/** Single owner row (id fixed to 'owner'). */
+export const owner = sqliteTable(
+  'owner',
+  {
+    id: text('id').primaryKey().default('owner'),
+    displayName: text('display_name').notNull(),
+    passwordHash: text('password_hash').notNull(),
+    inflationRate: text('inflation_rate').notNull().default('0.0253'),
+    createdAt: text('created_at').notNull().default(nowIso),
+  },
+  (t) => [
+    check('owner_single_row', sql`${t.id} = 'owner'`),
+    check('owner_display_name_len', sql`length(${t.displayName}) BETWEEN 1 AND 60`),
+    check(
+      'owner_inflation_range',
+      sql`CAST(${t.inflationRate} AS REAL) >= 0 AND CAST(${t.inflationRate} AS REAL) <= 0.5`,
+    ),
+  ],
+)
+
+export const institution = sqliteTable(
+  'institution',
+  {
+    id: id(),
+    name: text('name').notNull().unique(),
+    bic: text('bic'),
+    logoKey: text('logo_key'),
+  },
+  (t) => [check('institution_bic_len', sql`${t.bic} IS NULL OR length(${t.bic}) IN (8, 11)`)],
+)
+
+export const dataSource = sqliteTable(
+  'data_source',
+  {
+    id: id(),
+    kind: text('kind', { enum: SOURCE_KINDS }).notNull(),
+    status: text('status', { enum: SOURCE_STATUSES }).notNull(),
+    displayName: text('display_name').notNull(),
+    /** AES-256-GCM (iv + tag + ciphertext); never returned by the API. */
+    encryptedCredentials: blob('encrypted_credentials', { mode: 'buffer' }),
+    toolManifest: text('tool_manifest', { mode: 'json' }),
+    lastSyncAt: text('last_sync_at'),
+    lastError: text('last_error'),
+  },
+  () => [
+    check('data_source_kind', inList('kind', SOURCE_KINDS)),
+    check('data_source_status', inList('status', SOURCE_STATUSES)),
+  ],
+)
+
+export const account = sqliteTable(
+  'account',
+  {
+    id: id(),
+    institutionId: text('institution_id')
+      .notNull()
+      .references(() => institution.id),
+    name: text('name').notNull(),
+    type: text('type', { enum: ACCOUNT_TYPES }).notNull(),
+    /** Validated IBAN checksum at the API; unique when set. */
+    iban: text('iban').unique(),
+    parentAccountId: text('parent_account_id').references((): AnySQLiteColumn => account.id),
+    sourceId: text('source_id').references(() => dataSource.id),
+    balanceCents: integer('balance_cents').notNull().default(0),
+    isHidden: integer('is_hidden', { mode: 'boolean' }).notNull().default(false),
+    sortOrder: integer('sort_order').notNull().default(0),
+    lastSyncedAt: text('last_synced_at'),
+  },
+  (t) => [
+    check('account_name_len', sql`length(${t.name}) BETWEEN 1 AND 80`),
+    check('account_type', inList('type', ACCOUNT_TYPES)),
+  ],
+)
+
+export const instrument = sqliteTable(
+  'instrument',
+  {
+    id: id(),
+    /** Unique; ISIN checksum validated at the API. */
+    isin: text('isin').notNull().unique(),
+    wkn: text('wkn'),
+    name: text('name').notNull(),
+    assetClass: text('asset_class', { enum: ASSET_CLASSES }).notNull(),
+    currency: text('currency').notNull().default('EUR'),
+  },
+  (t) => [
+    check('instrument_isin_len', sql`length(${t.isin}) = 12`),
+    check('instrument_wkn_len', sql`${t.wkn} IS NULL OR length(${t.wkn}) = 6`),
+    check('instrument_asset_class', inList('asset_class', ASSET_CLASSES)),
+    check('instrument_currency_len', sql`length(${t.currency}) = 3`),
+  ],
+)
+
+export const price = sqliteTable(
+  'price',
+  {
+    instrumentId: text('instrument_id')
+      .notNull()
+      .references(() => instrument.id, { onDelete: 'cascade' }),
+    date: text('date').notNull(),
+    /** Close in EUR, > 0. */
+    close: text('close').notNull(),
+    source: text('source', { enum: PRICE_SOURCES }).notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.instrumentId, t.date] }),
+    check('price_close_positive', sql`CAST(${t.close} AS REAL) > 0`),
+    check('price_source', inList('source', PRICE_SOURCES)),
+  ],
+)
+
+export const category = sqliteTable(
+  'category',
+  {
+    id: id(),
+    /** Max depth 2 (enforced in the categories service). */
+    parentId: text('parent_id').references((): AnySQLiteColumn => category.id),
+    name: text('name').notNull(),
+    kind: text('kind', { enum: CATEGORY_KINDS }).notNull(),
+    color: text('color').notNull().default('neutral'),
+    isDefault: integer('is_default', { mode: 'boolean' }).notNull().default(false),
+    /** Parent id or '' so top-level names are unique too (SQLite treats NULLs as distinct). */
+    parentKey: text('parent_key').generatedAlwaysAs(sql`coalesce(parent_id, '')`, {
+      mode: 'virtual',
+    }),
+  },
+  (t) => [
+    uniqueIndex('category_parent_name_unique').on(t.parentKey, t.name),
+    check('category_kind', inList('kind', CATEGORY_KINDS)),
+  ],
+)
+
+export const transaction = sqliteTable(
+  'transactions',
+  {
+    id: id(),
+    accountId: text('account_id')
+      .notNull()
+      .references(() => account.id, { onDelete: 'cascade' }),
+    bookingDate: text('booking_date').notNull(),
+    valueDate: text('value_date'),
+    /** + inflow / − outflow from the account's view. */
+    amountCents: integer('amount_cents').notNull(),
+    type: text('type', { enum: TRANSACTION_TYPES }).notNull(),
+    counterparty: text('counterparty'),
+    counterpartyIban: text('counterparty_iban'),
+    purpose: text('purpose'),
+    instrumentId: text('instrument_id').references(() => instrument.id),
+    quantity: text('quantity'),
+    unitPrice: text('unit_price'),
+    feeCents: integer('fee_cents').notNull().default(0),
+    taxCents: integer('tax_cents').notNull().default(0),
+    categoryId: text('category_id').references(() => category.id, { onDelete: 'set null' }),
+    categorySource: text('category_source', { enum: CATEGORY_SOURCES }),
+    reviewStatus: text('review_status', { enum: REVIEW_STATUSES }).notNull().default('unreviewed'),
+    source: text('source', { enum: TRANSACTION_SOURCES }).notNull(),
+    sourceRef: text('source_ref'),
+    fingerprint: text('fingerprint').notNull().unique(),
+    /** Set by the import pipeline; the import_job table arrives with US2. */
+    importJobId: text('import_job_id'),
+    createdAt: text('created_at').notNull().default(nowIso),
+  },
+  (t) => [
+    index('transactions_account_booking_idx').on(t.accountId, t.bookingDate),
+    index('transactions_category_idx').on(t.categoryId),
+    uniqueIndex('transactions_source_ref_unique').on(t.source, t.sourceRef),
+    check('transactions_type', inList('type', TRANSACTION_TYPES)),
+    check('transactions_review_status', inList('review_status', REVIEW_STATUSES)),
+    check('transactions_source', inList('source', TRANSACTION_SOURCES)),
+    check(
+      'transactions_category_source',
+      sql`${t.categorySource} IS NULL OR ${inList('category_source', CATEGORY_SOURCES)}`,
+    ),
+    check(
+      'transactions_instrument_required',
+      sql`${t.type} NOT IN ('buy', 'sell', 'dividend', 'split') OR ${t.instrumentId} IS NOT NULL`,
+    ),
+    check(
+      'transactions_quantity_required',
+      sql`${t.type} NOT IN ('buy', 'sell', 'split') OR ${t.quantity} IS NOT NULL`,
+    ),
+  ],
+)
+
+/** Derived, rebuildable daily values per account. */
+export const netWorthSnapshot = sqliteTable(
+  'net_worth_snapshot',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => account.id, { onDelete: 'cascade' }),
+    date: text('date').notNull(),
+    valueCents: integer('value_cents').notNull(),
+    investedCents: integer('invested_cents').notNull(),
+    externalFlowCents: integer('external_flow_cents').notNull().default(0),
+    priceStale: integer('price_stale', { mode: 'boolean' }).notNull().default(false),
+  },
+  (t) => [primaryKey({ columns: [t.accountId, t.date] })],
+)
+
+/** Derived, rebuildable FIFO lots per depot and instrument. */
+export const positionLot = sqliteTable(
+  'position_lot',
+  {
+    id: id(),
+    accountId: text('account_id')
+      .notNull()
+      .references(() => account.id, { onDelete: 'cascade' }),
+    instrumentId: text('instrument_id')
+      .notNull()
+      .references(() => instrument.id),
+    openDate: text('open_date').notNull(),
+    quantityOpen: text('quantity_open').notNull(),
+    costPerUnit: text('cost_per_unit').notNull(),
+    closed: integer('closed', { mode: 'boolean' }).notNull().default(false),
+  },
+  (t) => [
+    index('position_lot_account_instrument_idx').on(t.accountId, t.instrumentId),
+    check('position_lot_quantity_non_negative', sql`CAST(${t.quantityOpen} AS REAL) >= 0`),
+  ],
+)
+
+export const schema = {
+  owner,
+  institution,
+  dataSource,
+  account,
+  instrument,
+  price,
+  category,
+  transaction,
+  netWorthSnapshot,
+  positionLot,
+}
