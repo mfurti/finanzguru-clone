@@ -25,6 +25,22 @@ New migration `0005_investment_analysis` applies on API start. The demo seed add
 | W15 | All | `pnpm test:e2e` incl. `responsive.spec.ts` with the new pages | No overflow at 360 px, no "NaN", dark and light |
 | W16 | Perf | `pnpm --filter api perf` | New endpoints under the SC-005 limit with 5 years / 10k bookings |
 
+## Performance results (T079)
+
+`pnpm --filter api perf` now also seeds region/sector weights, quarterly dividends, tax years and a benchmark, and times the API calls of every new page one after another (SC-005: each page < 2 s). Measured 2026-11-23 on the development machine, two runs:
+
+| Page | API time |
+|---|---|
+| Analyse (6 calls: 3 breakdowns incl. volatility, returns ALL, compare, groupings) | 222 / 271 ms |
+| Dividenden (3 calls) | 16 / 16 ms |
+| Steuern (3 calls incl. Vorabpauschale) | 25 / 32 ms |
+| Transaktionen (3 calls) | 9 / 8 ms |
+| Watchlists (3 calls) | 3 / 4 ms |
+| Übersicht (001, 10 calls) | 153 / 163 ms |
+| CSV import 50,000 rows (001) | 20.2 / 23.0 s (target < 30 s) |
+
+The 001 numbers are about twice the T075 values (86 ms, 11.6 s) while their code paths did not change; both runs had the dev server and browser running, so the difference is attributed to machine load. All targets pass.
+
 ## Feature 001 remains open
 
 Not part of this feature, still tracked in [001 tasks](../001-wealth-tracker-dashboard/tasks.md): US3 Scalable sync (T054–T058, needs the owner's Scalable login) and the deployment (T079–T083, each server step only with the owner's OK).

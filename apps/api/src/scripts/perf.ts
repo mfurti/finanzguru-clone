@@ -27,6 +27,27 @@ const OVERVIEW_CALLS = [
   '/api/budgets',
 ]
 
+/** API calls of each feature-002 page (SC-005: every page < 2 s). */
+const year = new Date().getUTCFullYear()
+const PAGE_CALLS: Record<string, string[]> = {
+  analysis: [
+    '/api/analysis/breakdown?dimension=assetClass',
+    '/api/analysis/breakdown?dimension=region',
+    '/api/analysis/breakdown?dimension=volatility',
+    '/api/analysis/returns?period=ALL',
+    '/api/analysis/compare?period=1Y',
+    '/api/groupings',
+  ],
+  dividends: ['/api/dividends/summary', '/api/dividends/calendar', '/api/instruments'],
+  taxes: [`/api/taxes/${year}`, `/api/taxes/${year - 1}/vorabpauschale`, '/api/accounts'],
+  transactions: [
+    '/api/investments/transactions?pageSize=50',
+    '/api/investments/transactions?type=buy&sort=amount&pageSize=50',
+    '/api/instruments',
+  ],
+  watchlists: ['/api/watchlists', '/api/benchmarks', '/api/settings/charts'],
+}
+
 function sparkasseCsv(rows: number): Buffer {
   const header =
     '"Auftragskonto";"Buchungstag";"Valutadatum";"Buchungstext";"Verwendungszweck";"Beguenstigter/Zahlungspflichtiger";"Kontonummer/IBAN";"Betrag";"Waehrung";"Info"'
@@ -92,6 +113,19 @@ async function main(): Promise<void> {
   for (const [url, ms] of timings) console.log(`  ${String(ms).padStart(5)} ms  ${url}`)
   console.log(`overview API total: ${overviewMs} ms`)
 
+  const pageMs: Record<string, number> = {}
+  for (const [pageName, urls] of Object.entries(PAGE_CALLS)) {
+    const start = performance.now()
+    for (const url of urls) {
+      const res = await app.inject({ method: 'GET', url, headers: { cookie } })
+      if (res.statusCode !== 200) throw new Error(`${url} -> ${res.statusCode}`)
+    }
+    pageMs[pageName] = Math.round(performance.now() - start)
+    console.log(
+      `  ${String(pageMs[pageName]).padStart(5)} ms  page ${pageName} (${urls.length} calls)`,
+    )
+  }
+
   const csv = sparkasseCsv(50_000)
   const form = new FormData()
   form.append('file', new Blob([new Uint8Array(csv)]), 'perf.csv')
@@ -115,7 +149,11 @@ async function main(): Promise<void> {
   console.log(`csv import 50k rows: ${job.status}, ${job.imported} imported in ${importMs} ms`)
 
   await app.close()
-  const ok = overviewMs < 2000 && importMs < 30_000 && job.imported === 50_000
+  const ok =
+    overviewMs < 2000 &&
+    Object.values(pageMs).every((ms) => ms < 2000) &&
+    importMs < 30_000 &&
+    job.imported === 50_000
   console.log(ok ? 'PASS' : 'FAIL')
   process.exitCode = ok ? 0 : 1
 }

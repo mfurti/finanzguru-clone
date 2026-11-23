@@ -1,12 +1,21 @@
 /**
  * Synthetic load dataset for SC-002: 5 years of daily prices for 10 ETFs and
- * about 10,000 cash transactions plus monthly savings-plan buys.
+ * about 10,000 cash transactions plus monthly savings-plan buys. Feature 002 adds
+ * region/sector weights, quarterly dividends, a tax year and a benchmark.
  */
 import { RecomputeService } from '../modules/import/recompute.service'
 import { D, valueCents } from '../domain/money'
 import { addDays, addMonths, eachDay, todayIso } from '../domain/period'
 import type { AppDatabase } from './drizzle.module'
-import { account, institution, instrument, price, transaction } from './schema'
+import {
+  account,
+  institution,
+  instrument,
+  instrumentWeight,
+  price,
+  taxYear,
+  transaction,
+} from './schema'
 import { seedDefaults } from './seed'
 
 /** Valid ISINs (checksum) for the load test instruments. */
@@ -55,7 +64,13 @@ export function seedPerf(
     ISINS.forEach((isin, index) => {
       const id = tx
         .insert(instrument)
-        .values({ isin, name: `Perf ETF ${index + 1}`, assetClass: 'etf' })
+        .values({
+          isin,
+          name: `Perf ETF ${index + 1}`,
+          assetClass: 'etf',
+          fundType: 'equity',
+          isBenchmark: index === 0,
+        })
         .returning()
         .get().id
       ids.push(id)
@@ -94,6 +109,18 @@ export function seedPerf(
     }
     for (let month = 0; month < 60; month++) {
       const first = addDays(addMonths(start, month), 1)
+      // Quarterly distribution of the second ETF.
+      if (month % 3 === 2) {
+        rows.push({
+          accountId: depot,
+          bookingDate: addDays(first, 20),
+          amountCents: 500 + month * 10,
+          type: 'dividend',
+          instrumentId: ids[1]!,
+          source: 'manual',
+          fingerprint: `perf-dividend-${month}`,
+        })
+      }
       ids.forEach((id, index) => {
         let day = first
         while (!closes.get(id)!.has(day) && day <= today) day = addDays(day, 1)
@@ -117,6 +144,25 @@ export function seedPerf(
       tx.insert(transaction)
         .values(rows.slice(i, i + 500))
         .run()
+
+    const regions = ['north_america', 'europe', 'emerging_markets', 'japan']
+    tx.insert(instrumentWeight)
+      .values(
+        ids.flatMap((instrumentId, index) => [
+          { instrumentId, dimension: 'region' as const, key: regions[index % 4]!, weight: '0.6' },
+          { instrumentId, dimension: 'region' as const, key: 'other', weight: '0.4' },
+          {
+            instrumentId,
+            dimension: 'sector' as const,
+            key: 'information_technology',
+            weight: '0.3',
+          },
+        ]),
+      )
+      .run()
+    for (const year of [Number(today.slice(0, 4)) - 1, Number(today.slice(0, 4))]) {
+      tx.insert(taxYear).values({ year, assessment: 'single', baseRate: '0.0253' }).run()
+    }
 
     new RecomputeService().recompute(tx, [depot, giro], undefined, today)
     return { transactions: rows.length, prices: priceRows.length }
