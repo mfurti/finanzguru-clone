@@ -57,7 +57,7 @@ describe('GET /api/overview/net-worth', () => {
 
   it('restricts to selected accounts', async () => {
     const body = await get(`?period=1M&accounts=${demo.checkingId}`)
-    expect(body.totalCents).toBe(237737)
+    expect(body.totalCents).toBe(437737)
     expect(body.series.every((point) => point.investedCents === point.valueCents)).toBe(true)
   })
 

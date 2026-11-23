@@ -154,7 +154,7 @@ export function seedDemo(db: Db, today = todayIso()): DemoResult {
         name: 'Demo Girokonto',
         type: 'checking',
         iban: 'DE89370400440532013000',
-        balanceCents: 237737,
+        balanceCents: 437737,
         sortOrder: 3,
       })
       .returning()
@@ -209,6 +209,8 @@ export function seedDemo(db: Db, today = todayIso()): DemoResult {
       phone: categoryId('Lebenshaltung', 'Handy'),
       invest: categoryId('Sparen und Anlegen', 'Wertpapieranlage'),
       insurance: categoryId('Versicherung', 'Risiko-Lebensversicherung'),
+      shopping: categoryId('Shopping und Unterhaltung', 'Kleidung'),
+      leisure: categoryId('Freizeit, Hobbies und Soziales', 'Freizeitaktivitäten'),
     }
 
     const rows: (typeof transaction.$inferInsert)[] = []
@@ -332,6 +334,30 @@ export function seedDemo(db: Db, today = todayIso()): DemoResult {
         amountCents: -25000,
         counterparty: 'Demo Referenzkonto',
         purpose: 'Sparplan',
+        reviewStatus: 'reviewed',
+      })
+      // Discretionary spending keeps the monthly cash flow close to zero, so the
+      // backwards-derived checking balance stays plausible over three years.
+      push({
+        accountId: checkingId,
+        bookingDate: addDays(first, 9),
+        type: 'expense',
+        amountCents: -eurosToCents(400 + Math.floor(random() * 400)),
+        counterparty: 'Demo Modehaus',
+        purpose: 'Einkauf',
+        categoryId: cat.shopping,
+        categorySource: 'manual',
+        reviewStatus: 'reviewed',
+      })
+      push({
+        accountId: checkingId,
+        bookingDate: addDays(first, 16),
+        type: 'expense',
+        amountCents: -eurosToCents(200 + Math.floor(random() * 160)),
+        counterparty: 'Demo Freizeitpark',
+        purpose: 'Freizeit',
+        categoryId: cat.leisure,
+        categorySource: 'manual',
         reviewStatus: 'reviewed',
       })
       for (let week = 0; week < 4; week++) {

@@ -51,7 +51,7 @@ describe('accounts and unreviewed count', () => {
   it('respects the account filter', async () => {
     const tree = await get<AccountTree>(`/api/accounts/tree?accounts=${demo.checkingId}`)
     expect(tree.groups).toHaveLength(1)
-    expect(tree.groups[0]?.totalCents).toBe(237737)
+    expect(tree.groups[0]?.totalCents).toBe(437737)
   })
 
   it('counts unreviewed transactions without category', async () => {
