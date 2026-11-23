@@ -81,7 +81,7 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 - [X] T027 [P] [US1] Build `apps/web/app/components/analysis/GroupingEditor.vue` (create/rename groupings and groups, assign instruments) opened from BreakdownCard
 - [X] T028 [P] [US1] Add a yearly inflation editor to `apps/web/app/pages/settings/` (new `inflation.vue`, linked from settings navigation)
 - [X] T029 [US1] Create `apps/web/app/pages/investments/analysis.vue` combining BreakdownCard, ReturnViews, YearlyTable and CompareChart with the depot filter
-- [ ] T030 [US1] Extend `apps/api/src/database/demo.ts` with region/sector/currency weights for the demo ETFs, one grouping "Kern/Satellit", and inflation rates for the demo years; regenerate `apps/api/test/fixtures/demo-expected.json` only if 001 totals change (they must not)
+- [X] T030 [US1] Extend `apps/api/src/database/demo.ts` with region/sector/currency weights for the demo ETFs, one grouping "Kern/Satellit", and inflation rates for the demo years; regenerate `apps/api/test/fixtures/demo-expected.json` only if 001 totals change (they must not)
 - [ ] T031 [P] [US1] Component tests for ReturnHeatmap and ClassificationForm (sum validation) in `apps/web/test/components/`
 - [ ] T032 [US1] Playwright journey W1–W5 in `e2e/us7-analysis.spec.ts` (desktop only, with cleanup)
 

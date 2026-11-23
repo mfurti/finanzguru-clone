@@ -350,6 +350,8 @@ export class ImportPipeline {
           name: item.name,
           assetClass: item.assetClass,
           currency: item.currency.length === 3 ? item.currency : 'EUR',
+          // Default partial exemption class for funds (feature 002).
+          fundType: item.assetClass === 'etf' || item.assetClass === 'fund' ? 'equity' : null,
         })
         .returning({ id: instrument.id })
         .get().id

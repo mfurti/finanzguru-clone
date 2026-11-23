@@ -9,7 +9,19 @@ import { RecomputeService } from '../modules/import/recompute.service'
 import { D, eurosToCents, valueCents } from '../domain/money'
 import { addDays, addMonths, eachDay, todayIso } from '../domain/period'
 import type { AppDatabase } from './drizzle.module'
-import { account, category, institution, instrument, price, transaction } from './schema'
+import {
+  account,
+  category,
+  customGroup,
+  customGrouping,
+  customGroupMember,
+  inflationRate,
+  institution,
+  instrument,
+  instrumentWeight,
+  price,
+  transaction,
+} from './schema'
 import { seedDefaults } from './seed'
 
 export const DEMO_END = '2026-11-20'
@@ -167,7 +179,13 @@ export function seedDemo(db: Db, today = todayIso()): DemoResult {
     for (const demo of DEMO_INSTRUMENTS) {
       const id = tx
         .insert(instrument)
-        .values({ isin: demo.isin, wkn: demo.wkn, name: demo.name, assetClass: demo.assetClass })
+        .values({
+          isin: demo.isin,
+          wkn: demo.wkn,
+          name: demo.name,
+          assetClass: demo.assetClass,
+          fundType: demo.assetClass === 'etf' ? 'equity' : null,
+        })
         .returning()
         .get().id
       instrumentIds.set(demo.isin, id)
@@ -400,6 +418,8 @@ export function seedDemo(db: Db, today = todayIso()): DemoResult {
         .values(visible.slice(i, i + 500))
         .run()
 
+    seedDemoAnalysis(tx, instrumentIds)
+
     new RecomputeService().recompute(
       tx,
       [depotId, referenceId, checkingId],
@@ -414,4 +434,121 @@ export function seedDemo(db: Db, today = todayIso()): DemoResult {
       prices: priceRows.length,
     }
   })
+}
+
+/** Region/sector/currency weights, one grouping and inflation per year (feature 002, US1). */
+const DEMO_WEIGHTS: Record<string, Record<'region' | 'sector' | 'currency', [string, string][]>> = {
+  IE00B4L5Y983: {
+    region: [
+      ['north_america', '0.74'],
+      ['europe', '0.16'],
+      ['japan', '0.06'],
+      ['pacific_ex_japan', '0.04'],
+    ],
+    sector: [
+      ['information_technology', '0.26'],
+      ['financials', '0.16'],
+      ['health_care', '0.11'],
+      ['consumer_discretionary', '0.1'],
+      ['industrials', '0.11'],
+    ],
+    currency: [
+      ['USD', '0.74'],
+      ['EUR', '0.1'],
+      ['JPY', '0.06'],
+      ['GBP', '0.04'],
+    ],
+  },
+  IE00BKM4GZ66: {
+    region: [['emerging_markets', '1']],
+    sector: [
+      ['information_technology', '0.23'],
+      ['financials', '0.22'],
+      ['consumer_discretionary', '0.13'],
+    ],
+    currency: [
+      ['CNY', '0.25'],
+      ['INR', '0.2'],
+      ['TWD', '0.19'],
+      ['KRW', '0.11'],
+      ['OTHER', '0.25'],
+    ],
+  },
+  IE00B3RBWM25: {
+    region: [
+      ['north_america', '0.64'],
+      ['europe', '0.15'],
+      ['emerging_markets', '0.1'],
+      ['japan', '0.06'],
+      ['pacific_ex_japan', '0.05'],
+    ],
+    sector: [
+      ['information_technology', '0.25'],
+      ['financials', '0.16'],
+      ['industrials', '0.11'],
+    ],
+    currency: [
+      ['USD', '0.64'],
+      ['EUR', '0.09'],
+      ['JPY', '0.06'],
+      ['OTHER', '0.21'],
+    ],
+  },
+  US0378331005: {
+    region: [['north_america', '1']],
+    sector: [['information_technology', '1']],
+    currency: [['USD', '1']],
+  },
+}
+
+export const DEMO_INFLATION: Record<number, string> = {
+  2023: '0.059',
+  2024: '0.022',
+  2025: '0.022',
+}
+
+function seedDemoAnalysis(tx: Pick<Db, 'insert'>, instrumentIds: Map<string, string>): void {
+  const weights = Object.entries(DEMO_WEIGHTS).flatMap(([isin, dims]) =>
+    (Object.entries(dims) as ['region' | 'sector' | 'currency', [string, string][]][]).flatMap(
+      ([dimension, rows]) =>
+        rows.map(([key, weight]) => ({
+          instrumentId: instrumentIds.get(isin)!,
+          dimension,
+          key,
+          weight,
+        })),
+    ),
+  )
+  tx.insert(instrumentWeight).values(weights).run()
+
+  const grouping = tx.insert(customGrouping).values({ name: 'Kern/Satellit' }).returning().get()
+  const kern = tx
+    .insert(customGroup)
+    .values({ groupingId: grouping.id, name: 'Kern', position: 0 })
+    .returning()
+    .get()
+  const satellit = tx
+    .insert(customGroup)
+    .values({ groupingId: grouping.id, name: 'Satellit', position: 1 })
+    .returning()
+    .get()
+  const members: [string, string][] = [
+    ['IE00B4L5Y983', kern.id],
+    ['IE00B3RBWM25', kern.id],
+    ['IE00BKM4GZ66', satellit.id],
+    ['US0378331005', satellit.id],
+  ]
+  tx.insert(customGroupMember)
+    .values(
+      members.map(([isin, groupId]) => ({
+        groupingId: grouping.id,
+        groupId,
+        instrumentId: instrumentIds.get(isin)!,
+      })),
+    )
+    .run()
+
+  tx.insert(inflationRate)
+    .values(Object.entries(DEMO_INFLATION).map(([year, rate]) => ({ year: Number(year), rate })))
+    .run()
 }

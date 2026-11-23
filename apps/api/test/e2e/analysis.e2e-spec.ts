@@ -129,13 +129,13 @@ describe('Analyse (US1)', () => {
 
   it('manages custom groupings and their members', async () => {
     const created = await send('POST', '/api/groupings', {
-      name: 'Kern/Satellit',
+      name: 'Test-Aufteilung',
       groups: ['Kern', 'Satellit'],
     })
     expect(created.statusCode).toBe(201)
     const grouping = created.json() as GroupingDto
     expect(
-      (await send('POST', '/api/groupings', { name: 'Kern/Satellit', groups: ['A'] })).statusCode,
+      (await send('POST', '/api/groupings', { name: 'Test-Aufteilung', groups: ['A'] })).statusCode,
     ).toBe(409)
 
     const kern = grouping.groups.find((g) => g.name === 'Kern')!.id
