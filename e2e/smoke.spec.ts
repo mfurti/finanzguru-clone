@@ -1,6 +1,9 @@
 import { expect, test } from '@playwright/test'
 import { login } from './helpers'
 
+// This journey tests the login itself, so it starts without the stored session.
+test.use({ storageState: { cookies: [], origins: [] } })
+
 test('redirects to login, rejects a wrong password, then logs in and out', async ({ page }) => {
   await page.goto('/')
   await expect(page).toHaveURL(/\/login\?redirect=/)

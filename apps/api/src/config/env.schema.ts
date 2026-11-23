@@ -15,6 +15,8 @@ export const envSchema = z.object({
   }),
   DATABASE_PATH: z.string().min(1).default('./data/app.db'),
   COOKIE_SECURE: booleanFromString.default(true),
+  /** Login attempts per minute and client IP. */
+  LOGIN_RATE_LIMIT: z.coerce.number().int().min(1).max(1000).default(5),
 })
 
 export type Env = z.infer<typeof envSchema>

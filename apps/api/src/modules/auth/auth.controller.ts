@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler'
+import { ThrottlerGuard } from '@nestjs/throttler'
 import type { FastifyRequest } from 'fastify'
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
@@ -26,7 +26,6 @@ export class AuthController {
 
   @Public()
   @UseGuards(ThrottlerGuard)
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('login')
   @HttpCode(HttpStatus.NO_CONTENT)
   async login(@Body() body: LoginDto, @Req() request: FastifyRequest): Promise<void> {

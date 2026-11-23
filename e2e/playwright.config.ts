@@ -17,6 +17,8 @@ const apiEnv = {
   API_ENCRYPTION_KEY: Buffer.alloc(32, 7).toString('base64'),
   COOKIE_SECURE: 'false',
   OWNER_PASSWORD: E2E_PASSWORD,
+  // Every E2E project logs in; keep the production limit (5/min) out of the way.
+  LOGIN_RATE_LIMIT: '100',
 }
 
 export default defineConfig({
@@ -33,19 +35,31 @@ export default defineConfig({
     timezoneId: 'Europe/Berlin',
   },
   projects: [
+    { name: 'setup', testMatch: /auth\.setup\.ts/ },
     {
       name: 'desktop',
-      use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 } },
+      dependencies: ['setup'],
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 800 },
+        storageState: 'e2e/.auth/owner.json',
+      },
     },
     {
       name: 'mobile',
-      use: { ...devices['Desktop Chrome'], viewport: { width: 360, height: 780 }, hasTouch: true },
+      dependencies: ['setup'],
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 360, height: 780 },
+        hasTouch: true,
+        storageState: 'e2e/.auth/owner.json',
+      },
     },
   ],
   webServer: [
     {
       command:
-        'pnpm --filter @finance/shared build && pnpm --filter api build && node apps/api/dist/scripts/set-password.js --name E2E && node apps/api/dist/main.js',
+        'pnpm --filter @finance/shared build && pnpm --filter api build && node apps/api/dist/scripts/seed.js --demo && node apps/api/dist/scripts/set-password.js --name E2E && node apps/api/dist/main.js',
       cwd: '..',
       env: apiEnv,
       url: `http://localhost:${API_PORT}/api/health`,
