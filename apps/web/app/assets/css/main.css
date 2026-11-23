@@ -9,6 +9,34 @@
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/*
+ * Page and card surfaces: cards stand out from the page by a small color step
+ * instead of borders (dark values measured from the reference: page #1B1D22,
+ * card #24272E).
+ */
+:root {
+  --app-page: var(--ui-color-neutral-100);
+  --app-card: #ffffff;
+  --app-card-hover: var(--ui-color-neutral-50);
+}
+.dark {
+  --app-page: #1b1d22;
+  --app-card: #24272e;
+  --app-card-hover: #2b2f37;
+}
+
+html {
+  /* Reserve the scrollbar width so pages do not shift sideways (short vs. long pages). */
+  scrollbar-gutter: stable;
+  background-color: var(--app-page);
+}
+
+/* Card titles a step larger, like the reference. */
+[data-slot='header'] h2 {
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+}
+
 /* Links in card headers and lists: underline fades in, text takes the accent. */
 @utility link-hover {
   text-decoration-line: underline;
@@ -31,7 +59,7 @@
   border-radius: calc(var(--ui-radius) * 1.5);
   transition: background-color 150ms ease;
   &:hover {
-    background-color: color-mix(in oklab, var(--ui-bg-elevated) 70%, transparent);
+    background-color: var(--app-card-hover);
   }
 }
 

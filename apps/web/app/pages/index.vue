@@ -32,6 +32,18 @@ const visible = computed(() =>
   [...(layout.value ?? [])].sort((a, b) => a.position - b.position).filter((item) => item.visible),
 )
 
+/** Consecutive runs of wide widgets and of column widgets, in layout order. */
+const segments = computed(() => {
+  const result: { key: string; wide: boolean; start: number; items: WidgetLayoutItem[] }[] = []
+  visible.value.forEach((item, index) => {
+    const wide = WIDE.has(item.widgetKey)
+    const last = result.at(-1)
+    if (!wide && last && !last.wide) last.items.push(item)
+    else result.push({ key: item.widgetKey, wide, start: index, items: [item] })
+  })
+  return result
+})
+
 const customizing = ref(false)
 const toast = useToast()
 
@@ -60,15 +72,28 @@ async function saveLayout(next: WidgetLayoutItem[]): Promise<void> {
       />
     </div>
 
-    <div class="grid gap-4 lg:grid-cols-2">
-      <component
-        :is="WIDGETS[item.widgetKey]"
-        v-for="(item, index) in visible"
-        :key="item.widgetKey"
-        class="reveal card-hover"
-        :class="{ 'lg:col-span-2': WIDE.has(item.widgetKey) }"
-        :style="{ '--i': index }"
-      />
+    <!--
+      Like the reference: wide widgets span the page, the others flow into two
+      independent columns (masonry) so short cards do not leave gaps.
+    -->
+    <div class="space-y-3" data-testid="dashboard">
+      <template v-for="segment in segments" :key="segment.key">
+        <component
+          :is="WIDGETS[segment.items[0]!.widgetKey]"
+          v-if="segment.wide"
+          class="reveal card-hover"
+          :style="{ '--i': segment.start }"
+        />
+        <div v-else class="gap-3 md:columns-2">
+          <component
+            :is="WIDGETS[item.widgetKey]"
+            v-for="(item, offset) in segment.items"
+            :key="item.widgetKey"
+            class="reveal card-hover mb-3 break-inside-avoid"
+            :style="{ '--i': segment.start + offset }"
+          />
+        </div>
+      </template>
     </div>
 
     <CustomizeModal v-model:open="customizing" :layout="layout ?? []" @save="saveLayout" />

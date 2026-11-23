@@ -131,35 +131,37 @@ async function onSaved(id?: string): Promise<void> {
       :title="t('analysis.empty')"
       icon="i-lucide-chart-pie"
     />
-    <div v-else class="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-      <DonutChart v-model:hovered="hovered" :items="donutItems">
-        <template #center="{ item }">
-          <span class="font-semibold">
-            <Money v-if="item" :cents="item.value" />
-            <Money v-else :cents="data!.totalCents" animate />
-          </span>
-          <span class="line-clamp-2 text-xs text-muted">
-            {{ item ? item.label : t('analysis.dimensions.' + dimension) }}
-          </span>
-        </template>
-      </DonutChart>
-      <ul class="w-full divide-y divide-default text-sm" data-testid="breakdown-list">
-        <li
-          v-for="bucket in buckets"
-          :key="bucket.key"
-          class="row-hover flex items-center justify-between gap-3 py-2"
-          :class="{ 'bg-elevated/70': hovered === bucket.key }"
-          @mouseenter="hovered = bucket.key"
-          @mouseleave="hovered = null"
-        >
-          <span class="flex min-w-0 items-center gap-2">
-            <span class="size-3 shrink-0 rounded-sm" :style="{ background: color(bucket) }" />
-            <span class="truncate">{{ bucket.label }}</span>
-            <span class="text-muted">({{ bucket.count }})</span>
-          </span>
-          <span class="tabular-nums">{{ display(bucket) }}</span>
-        </li>
-      </ul>
+    <div v-else class="@container">
+      <div class="flex flex-col items-center gap-4 @lg:flex-row @lg:items-start">
+        <DonutChart v-model:hovered="hovered" :items="donutItems">
+          <template #center="{ item }">
+            <span class="font-semibold">
+              <Money v-if="item" :cents="item.value" />
+              <Money v-else :cents="data!.totalCents" animate />
+            </span>
+            <span class="line-clamp-2 text-xs text-muted">
+              {{ item ? item.label : t('analysis.dimensions.' + dimension) }}
+            </span>
+          </template>
+        </DonutChart>
+        <ul class="w-full divide-y divide-default text-sm" data-testid="breakdown-list">
+          <li
+            v-for="bucket in buckets"
+            :key="bucket.key"
+            class="row-hover flex items-center justify-between gap-3 py-2"
+            :class="{ 'bg-elevated/70': hovered === bucket.key }"
+            @mouseenter="hovered = bucket.key"
+            @mouseleave="hovered = null"
+          >
+            <span class="flex min-w-0 items-center gap-2">
+              <span class="size-3 shrink-0 rounded-sm" :style="{ background: color(bucket) }" />
+              <span class="truncate">{{ bucket.label }}</span>
+              <span class="text-muted">({{ bucket.count }})</span>
+            </span>
+            <span class="tabular-nums">{{ display(bucket) }}</span>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <GroupingEditor v-model:open="editorOpen" :groupings="groupings ?? []" @saved="onSaved" />

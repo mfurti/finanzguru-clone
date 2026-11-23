@@ -66,35 +66,37 @@ const display = (slice: Slice) =>
       :title="t('overview.empty.title')"
       icon="i-lucide-chart-pie"
     />
-    <div v-else class="flex flex-col items-center gap-4 sm:flex-row">
-      <DonutChart v-model:hovered="hovered" :items="donutItems">
-        <template #center="{ item }">
-          <span class="font-semibold">
-            <Money v-if="item" :cents="item.value" />
-            <Money v-else :cents="data!.totalCents" animate />
-          </span>
-          <span class="line-clamp-2 text-xs text-muted">
-            {{ item ? item.label : t('overview.allocation.center') }}
-          </span>
-        </template>
-      </DonutChart>
-      <ul class="w-full divide-y divide-default text-sm">
-        <li
-          v-for="slice in slices"
-          :key="slice.key"
-          class="row-hover flex items-center justify-between gap-3 py-2"
-          :class="{ 'bg-elevated/70': hovered === slice.key }"
-          @mouseenter="hovered = slice.key"
-          @mouseleave="hovered = null"
-        >
-          <span class="flex items-center gap-2">
-            <span class="size-3 rounded-sm" :style="{ background: color(slice) }" />
-            {{ slice.label }}
-            <span v-if="slice.key !== 'cash'" class="text-muted">({{ slice.count }})</span>
-          </span>
-          <span class="tabular-nums">{{ display(slice) }}</span>
-        </li>
-      </ul>
+    <div v-else class="@container">
+      <div class="flex flex-col items-center gap-4 @lg:flex-row">
+        <DonutChart v-model:hovered="hovered" :items="donutItems">
+          <template #center="{ item }">
+            <span class="font-semibold">
+              <Money v-if="item" :cents="item.value" />
+              <Money v-else :cents="data!.totalCents" animate />
+            </span>
+            <span class="line-clamp-2 text-xs text-muted">
+              {{ item ? item.label : t('overview.allocation.center') }}
+            </span>
+          </template>
+        </DonutChart>
+        <ul class="w-full divide-y divide-default text-sm">
+          <li
+            v-for="slice in slices"
+            :key="slice.key"
+            class="row-hover flex items-center justify-between gap-3 py-2"
+            :class="{ 'bg-elevated/70': hovered === slice.key }"
+            @mouseenter="hovered = slice.key"
+            @mouseleave="hovered = null"
+          >
+            <span class="flex items-center gap-2">
+              <span class="size-3 rounded-sm" :style="{ background: color(slice) }" />
+              {{ slice.label }}
+              <span v-if="slice.key !== 'cash'" class="text-muted">({{ slice.count }})</span>
+            </span>
+            <span class="tabular-nums">{{ display(slice) }}</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </UCard>
 </template>

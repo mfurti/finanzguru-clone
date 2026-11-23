@@ -46,9 +46,9 @@ const tabs = computed<NavigationMenuItem[]>(() => [
 </script>
 
 <template>
-  <div class="min-h-dvh bg-default">
-    <header class="sticky top-0 z-30 border-b border-default bg-default/90 backdrop-blur">
-      <div class="mx-auto flex h-14 max-w-6xl items-center gap-2 px-4">
+  <div class="min-h-dvh bg-(--app-page)">
+    <header class="sticky top-0 z-30 border-b border-default bg-(--app-page)/90 backdrop-blur">
+      <div class="mx-auto flex h-14 max-w-[1380px] items-center gap-2 px-4 sm:px-6">
         <NuxtLink to="/" class="mr-auto" :aria-label="t('app.name')">
           <BrandLogo />
         </NuxtLink>
@@ -79,20 +79,20 @@ const tabs = computed<NavigationMenuItem[]>(() => [
         />
       </div>
       <nav
-        class="mx-auto max-w-6xl overflow-x-auto px-2 [scrollbar-width:none]"
+        class="mx-auto max-w-[1380px] overflow-x-auto px-2 sm:px-4 [scrollbar-width:none]"
         :aria-label="t('nav.label')"
       >
         <UNavigationMenu :items="tabs" orientation="horizontal" class="min-w-max" />
       </nav>
     </header>
 
-    <main class="mx-auto max-w-6xl px-4 pt-4 pb-24">
+    <main class="mx-auto max-w-[1380px] px-4 pt-4 pb-24 sm:px-6 sm:pt-6">
       <slot />
     </main>
 
     <AccountFilter />
 
-    <footer class="mx-auto max-w-6xl px-4 pb-20 text-center text-xs text-muted">
+    <footer class="mx-auto max-w-[1380px] px-4 pb-20 text-center text-xs text-muted sm:px-6">
       {{ t('app.footer') }}
     </footer>
   </div>
