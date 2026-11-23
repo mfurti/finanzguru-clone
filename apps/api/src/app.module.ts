@@ -14,6 +14,7 @@ import { ImportModule } from './modules/import/import.module'
 import { InsuranceModule } from './modules/insurance/insurance.module'
 import { InstrumentsModule } from './modules/instruments/instruments.module'
 import { AnalysisModule } from './modules/analysis/analysis.module'
+import { DividendsModule } from './modules/dividends/dividends.module'
 import { InvestmentsModule } from './modules/investments/investments.module'
 import { OverviewModule } from './modules/overview/overview.module'
 import { TransactionsModule } from './modules/transactions/transactions.module'
@@ -68,6 +69,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module'
     InsuranceModule,
     InstrumentsModule,
     AnalysisModule,
+    DividendsModule,
   ],
 })
 export class AppModule {}

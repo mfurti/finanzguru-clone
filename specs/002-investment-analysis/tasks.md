@@ -97,13 +97,13 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 
 ### Tests for User Story 2
 
-- [ ] T033 [P] [US2] Unit tests for last-12-months, Ø per month, yield YTD (dividends YTD / average daily depot value YTD), CAGR over full years (< 2 years → null), expected amount from holdings on the pay date and received/expected matching per instrument and month in `apps/api/test/unit/dividends.spec.ts`
-- [ ] T034 [P] [US2] E2E tests for `/api/dividends/summary`, `/api/dividends/calendar` and expected-dividend CRUD (`ex_date ≤ pay_date`, `amount_per_share > 0`, `note ≤ 200`) in `apps/api/test/e2e/dividends.e2e-spec.ts`
+- [X] T033 [P] [US2] Unit tests for last-12-months, Ø per month, yield YTD (dividends YTD / average daily depot value YTD), CAGR over full years (< 2 years → null), expected amount from holdings on the pay date and received/expected matching per instrument and month in `apps/api/test/unit/dividends.spec.ts`
+- [X] T034 [P] [US2] E2E tests for `/api/dividends/summary`, `/api/dividends/calendar` and expected-dividend CRUD (`ex_date ≤ pay_date`, `amount_per_share > 0`, `note ≤ 200`) in `apps/api/test/e2e/dividends.e2e-spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T035 [P] [US2] Implement `apps/api/src/domain/dividends.ts` (summary figures, yearly rows with change to previous year, per-security split, expected amount via FIFO quantity on the pay date)
-- [ ] T036 [US2] Create `apps/api/src/modules/dividends/` (service, controller, module) with summary, calendar and expected CRUD per contract; register module
+- [X] T035 [P] [US2] Implement `apps/api/src/domain/dividends.ts` (summary figures, yearly rows with change to previous year, per-security split, expected amount via FIFO quantity on the pay date)
+- [X] T036 [US2] Create `apps/api/src/modules/dividends/` (service, controller, module) with summary, calendar and expected CRUD per contract; register module
 - [ ] T037 [P] [US2] Build `apps/web/app/components/dividends/DividendSummary.vue` (tiles Letzte 12 Monate, Ø pro Monat, Dividendenrendite YTD, CAGR) and `DividendHistory.vue` (yearly bar chart + table Jahr, Betrag, Zum Vorjahr)
 - [ ] T038 [P] [US2] Build `apps/web/app/components/dividends/DividendCalendar.vue` (month list with expected/received badges) and `ExpectedForm.vue` (modal: Wertpapier, Zahltag, Ex-Tag, Betrag je Anteil, Notiz)
 - [ ] T039 [US2] Create `apps/web/app/pages/investments/dividends.vue` with summary, history, per-security list and calendar
