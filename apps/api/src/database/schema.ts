@@ -18,6 +18,18 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core'
 import { uuidv7 } from 'uuidv7'
+import {
+  ACCOUNT_TYPES,
+  ASSET_CLASSES,
+  CATEGORY_KINDS,
+  CATEGORY_SOURCES,
+  PRICE_SOURCES,
+  REVIEW_STATUSES,
+  SOURCE_KINDS,
+  SOURCE_STATUSES,
+  TRANSACTION_SOURCES,
+  TRANSACTION_TYPES,
+} from '@finance/shared'
 
 const id = () =>
   text('id')
@@ -29,45 +41,6 @@ const nowIso = sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`
 /** `column IN ('a', 'b')` for CHECK constraints built from the enum lists below. */
 const inList = (column: string, values: readonly string[]) =>
   sql.raw(`${column} IN (${values.map((value) => `'${value}'`).join(', ')})`)
-
-export const ACCOUNT_TYPES = [
-  'depot',
-  'checking',
-  'savings',
-  'reference',
-  'credit_card',
-  'cash',
-] as const
-export const ASSET_CLASSES = [
-  'stock',
-  'etf',
-  'fund',
-  'bond',
-  'crypto',
-  'commodity',
-  'other',
-] as const
-export const PRICE_SOURCES = ['scalable', 'csv', 'manual'] as const
-export const TRANSACTION_TYPES = [
-  'income',
-  'expense',
-  'transfer',
-  'buy',
-  'sell',
-  'dividend',
-  'interest',
-  'tax',
-  'fee',
-  'split',
-  'deposit',
-  'withdrawal',
-] as const
-export const CATEGORY_SOURCES = ['manual', 'rule', 'import'] as const
-export const REVIEW_STATUSES = ['unreviewed', 'reviewed'] as const
-export const TRANSACTION_SOURCES = ['csv', 'scalable_mcp', 'manual'] as const
-export const CATEGORY_KINDS = ['income', 'expense', 'savings', 'transfer'] as const
-export const SOURCE_KINDS = ['csv', 'scalable_mcp', 'sparkasse_fints'] as const
-export const SOURCE_STATUSES = ['active', 'needs_reauth', 'error', 'planned', 'disabled'] as const
 
 /** Single owner row (id fixed to 'owner'). */
 export const owner = sqliteTable(
