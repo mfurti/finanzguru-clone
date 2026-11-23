@@ -15,6 +15,7 @@ import {
   customGroup,
   customGrouping,
   customGroupMember,
+  expectedDividend,
   inflationRate,
   institution,
   instrument,
@@ -550,5 +551,16 @@ function seedDemoAnalysis(tx: Pick<Db, 'insert'>, instrumentIds: Map<string, str
 
   tx.insert(inflationRate)
     .values(Object.entries(DEMO_INFLATION).map(([year, rate]) => ({ year: Number(year), rate })))
+    .run()
+
+  // Next quarterly distribution of the demo's distributing ETF (US2).
+  tx.insert(expectedDividend)
+    .values({
+      instrumentId: instrumentIds.get('IE00B3RBWM25')!,
+      payDate: addDays(DEMO_END, 28),
+      exDate: addDays(DEMO_END, 14),
+      amountPerShare: '0.45',
+      note: 'Quartalsausschüttung',
+    })
     .run()
 }
