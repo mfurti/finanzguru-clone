@@ -1,6 +1,30 @@
 # api
 
-NestJS 11 (Fastify) backend of the wealth tracker. See `specs/001-wealth-tracker-dashboard/plan.md`.
+NestJS 11 (Fastify) backend of Vermögenskompass. Design: `specs/001-wealth-tracker-dashboard/plan.md`, endpoints: `contracts/http-api.md` (Swagger at `/api/docs` outside production).
+
+## Layout
+
+| Path                              | What                                                                                                                                    |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/main.ts`, `src/app.setup.ts` | Bootstrap: `/api` prefix, pino logger, helmet, sealed session cookie, multipart (20 MB), zod validation, error filter, Swagger          |
+| `src/config/env.schema.ts`        | Validated environment (see `.env.example`)                                                                                              |
+| `src/common`                      | Session guard, `@Public()`, error filter, AES-256-GCM `CryptoService`                                                                   |
+| `src/domain`                      | Pure logic with unit tests: money (cents, decimal.js), periods, FIFO positions, snapshots, TWROR/XIRR, dedupe, categorization, cashflow |
+| `src/database`                    | Drizzle schema, migrations (applied on startup), default seed, demo and perf datasets                                                   |
+| `src/modules`                     | Feature modules: auth, overview, accounts, transactions, import, investments, cashflow, categories, budgets, insurance, health          |
+| `src/modules/sources`             | Data source adapters: CSV (Sparkasse, Scalable, mapped), Scalable MCP (read-only allowlist, OAuth PKCE), Sparkasse live query (planned) |
+| `src/scripts`                     | `migrate`, `seed` (`--demo`), `set-password`, `perf`                                                                                    |
+
+## Scripts
+
+| Command                                    | What                                                            |
+| ------------------------------------------ | --------------------------------------------------------------- |
+| `pnpm --filter api dev`                    | Watch mode (`dev:local` uses `API_PORT=3101` from `.env`)       |
+| `pnpm --filter api test`                   | Vitest: unit + e2e via Fastify `inject()` on in-memory SQLite   |
+| `pnpm --filter api db:generate`            | New migration from schema changes (drizzle-kit)                 |
+| `pnpm --filter api db:migrate` / `db:seed` | Apply migrations / seed categories (`-- --demo` adds demo data) |
+| `pnpm --filter api owner:set-password`     | Set the owner login (`OWNER_PASSWORD` or prompt, min 12 chars)  |
+| `pnpm --filter api perf`                   | Load test on a temporary DB                                     |
 
 ## Database
 

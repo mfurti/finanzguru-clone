@@ -1,0 +1,79 @@
+# Vermögenskompass
+
+Self-hosted personal wealth tracker: net worth, investments, budget and insurance in one dashboard. Runs on your own machine or home server; your financial data never leaves it.
+
+- **Übersicht**: net worth over time, allocation, KPIs (TWROR, XIRR, gains), top/flop holdings, accounts, cashflow and budgets.
+- **Investments**: performance chart, positions, asset classes, transactions, per-instrument detail with CSV export.
+- **Budget**: monthly/quarterly/yearly cashflow, Sankey diagram, categories, review queue with rules, budgets.
+- **Versicherung**: insurance contracts with yearly cost.
+
+German UI, dark and light mode, usable down to 360 px.
+
+## Architecture
+
+pnpm monorepo, Node 26, TypeScript.
+
+| Path                                 | What                                                                                                                 |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `apps/web`                           | Nuxt 4 + Nuxt UI 4 frontend (SSR). Proxies `/api/**` to the API, so the browser talks to one origin.                 |
+| `apps/api`                           | NestJS 11 on Fastify. SQLite via Drizzle ORM and `better-sqlite3`. All money in integer cents.                       |
+| `packages/shared`                    | Zod schemas, DTO types, enums and formatters used by both apps.                                                      |
+| `e2e`                                | Playwright journeys (desktop and 360 px).                                                                            |
+| `specs/001-wealth-tracker-dashboard` | Spec, plan, data model, API contracts, tasks and the [quickstart](specs/001-wealth-tracker-dashboard/quickstart.md). |
+
+```
+Browser ──> web (Nuxt, :3000) ──/api/**──> api (Nest, :3001) ──> SQLite file
+                                                │
+                                                └──> data sources (CSV, Scalable MCP)
+```
+
+## Data sources
+
+| Source               | Status      | How                                                                                                                                     |
+| -------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| CSV import           | available   | Sparkasse (CSV-CAMT) and Scalable Capital exports are detected automatically; any other CSV via column mapping. Duplicates are skipped. |
+| Scalable Capital MCP | in progress | Official MCP server, OAuth login on Scalable's own page, **read-only**: trading tools are blocked by an allowlist.                      |
+| Sparkasse live query | planned     | Shown as "geplant" under Datenquellen.                                                                                                  |
+
+## Setup
+
+Requires Node.js 26 and pnpm (`corepack enable`).
+
+```powershell
+pnpm install
+Copy-Item apps/api/.env.example apps/api/.env   # fill API_SESSION_SECRET and API_ENCRYPTION_KEY
+Copy-Item apps/web/.env.example apps/web/.env
+pnpm --filter api db:migrate
+pnpm --filter api db:seed                       # default categories; add -- --demo for demo data
+pnpm --filter api owner:set-password
+pnpm dev                                        # http://localhost:3000
+```
+
+`pnpm dev:local` runs the same on ports 3100 (web) and 3101 (API) to avoid clashes with other local projects.
+
+## Scripts
+
+| Command                                        | What                                                                |
+| ---------------------------------------------- | ------------------------------------------------------------------- |
+| `pnpm dev` / `pnpm dev:local`                  | API and web in watch mode                                           |
+| `pnpm build`                                   | Build all workspaces                                                |
+| `pnpm lint` / `pnpm format` / `pnpm typecheck` | Quality gates                                                       |
+| `pnpm test`                                    | Vitest: domain logic, parsers, API e2e (Fastify inject), components |
+| `pnpm test:e2e`                                | Playwright journeys                                                 |
+| `pnpm --filter api perf`                       | Load test: 5 years of history, 10k transactions, 50k-row CSV import |
+| `pnpm docker:local` / `pnpm docker:local:down` | Local container test with `compose.local.yaml`                      |
+
+## Deployment
+
+Images are built by GitHub Actions and published to GHCR (`ghcr.io/mfurti/finanzguru-clone-web` and `-api`). The server only needs a `compose.yaml` and an `.env`; see the quickstart for the rollout steps.
+
+## Privacy and security
+
+- Single owner, password login (scrypt hash), sealed httpOnly session cookie, login rate limit.
+- Everything is stored in one local SQLite file. Nothing is sent to third parties except the data sources you connect.
+- Data source credentials are encrypted with AES-256-GCM (`API_ENCRYPTION_KEY`) and never returned by the API or written to logs.
+- Scalable Capital access is read-only by design; the app cannot place orders or move money.
+- Security headers (helmet on the API, CSP on the web app); CSV uploads limited to 20 MB.
+- Keep `.env` files and the `data` directory out of version control and backups you share.
+
+This is a personal tool, not financial advice.
