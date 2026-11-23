@@ -13,7 +13,7 @@ test('redirects to login, rejects a wrong password, then logs in and out', async
   await expect(page.getByText('Passwort falsch.')).toBeVisible()
 
   await login(page)
-  await expect(page.getByText('Vermögenskompass').first()).toBeVisible()
+  await expect(page.getByTestId('networth-card')).toBeVisible()
 
   await page.getByTestId('logout').click()
   await expect(page).toHaveURL(/\/login/)

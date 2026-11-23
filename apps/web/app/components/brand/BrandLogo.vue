@@ -19,6 +19,6 @@ withDefaults(defineProps<{ showName?: boolean }>(), { showName: true })
       <path d="M16 7.5 19 16h-6z" fill="white" />
       <path d="M16 24.5 13 16h6z" fill="white" fill-opacity=".55" />
     </svg>
-    <span v-if="showName" class="text-base">{{ $t('app.name') }}</span>
+    <span v-if="showName" class="text-base max-sm:hidden">{{ $t('app.name') }}</span>
   </span>
 </template>

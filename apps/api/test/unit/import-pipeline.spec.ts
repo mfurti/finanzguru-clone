@@ -44,7 +44,7 @@ describe('ImportPipeline', () => {
   it('imports a Sparkasse file into a new checking account with snapshots', () => {
     const job = runSparkasse()
     expect(job).toMatchObject({ status: 'succeeded', imported: 8, skipped: 0, failed: 0 })
-    const acc = db.select().from(account).where(eq(account.iban, 'DE89370400440532013000')).get()!
+    const acc = db.select().from(account).where(eq(account.iban, 'DE45120300001234567890')).get()!
     expect(acc.balanceCents).toBe(136777)
     expect(db.select().from(transaction).all()).toHaveLength(8)
     expect(db.select().from(netWorthSnapshot).all().length).toBeGreaterThan(0)

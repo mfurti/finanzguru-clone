@@ -34,10 +34,10 @@ describe('Sparkasse CAMT V8', () => {
     expect(batch.transactions).toHaveLength(8)
     expect(batch.accounts).toEqual([
       {
-        externalRef: 'DE89370400440532013000',
-        name: 'Sparkasse Girokonto …3000',
+        externalRef: 'DE45120300001234567890',
+        name: 'Sparkasse Girokonto …7890',
         type: 'checking',
-        iban: 'DE89370400440532013000',
+        iban: 'DE45120300001234567890',
         institutionName: 'Sparkasse',
       },
     ])
