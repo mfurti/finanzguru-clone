@@ -320,7 +320,17 @@
       "instrument": "Wertpapier",
       "quantity": "Stück",
       "amount": "Betrag",
-      "empty": "Keine Transaktionen"
+      "empty": "Keine Transaktionen",
+      "depot": "Depot",
+      "unitPrice": "Kaufpreis/Stück",
+      "tax": "Steuern",
+      "fee": "Gebühren",
+      "total": "Gesamtbetrag",
+      "sum": "Summe",
+      "from": "Von",
+      "to": "Bis",
+      "allDepots": "Alle Depots",
+      "allSecurities": "Alle Wertpapiere"
     }
   },
   "assetClasses": {

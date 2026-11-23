@@ -1,20 +1,12 @@
 <script setup lang="ts">
-import { formatDate } from '@finance/shared'
+import type { AccountDto, InstrumentDto } from '@finance/shared'
 
+/** Buchungen (US3): filter bar plus the bookings table. */
 const { t } = useI18n()
 useHead({ title: t('investments.views.transactions') })
 const { accountsParam } = useAccountFilter()
 
-interface Row {
-  id: string
-  bookingDate: string
-  type: string
-  amountCents: number
-  quantity: string | null
-  instrumentId: string | null
-  instrumentName: string | null
-}
-
+const ALL = 'all'
 const TYPES = [
   'buy',
   'sell',
@@ -26,70 +18,75 @@ const TYPES = [
   'deposit',
   'withdrawal',
 ] as const
-const type = ref<(typeof TYPES)[number] | 'all'>('all')
-const page = ref(1)
-const pageSize = 25
+const type = ref<string>(ALL)
+const depot = ref<string>(ALL)
+const instrumentId = ref<string>(ALL)
+const from = ref('')
+const to = ref('')
+
+const { data: accounts } = await useApi<AccountDto[]>('/api/accounts', {
+  key: 'accounts',
+  default: () => [],
+})
+const { data: instruments } = await useApi<InstrumentDto[]>('/api/instruments', {
+  key: 'instruments',
+  default: () => [],
+})
+
 const typeItems = computed(() => [
-  { value: 'all', label: t('investments.all') },
+  { value: ALL, label: t('investments.all') },
   ...TYPES.map((value) => ({ value, label: t(`transactionTypes.${value}`) })),
 ])
-watch([type, accountsParam], () => (page.value = 1))
+const depotItems = computed(() => [
+  { value: ALL, label: t('investments.tx.allDepots') },
+  ...(accounts.value ?? [])
+    .filter((a) => a.type === 'depot')
+    .map((a) => ({ value: a.id, label: a.name })),
+])
+const instrumentItems = computed(() => [
+  { value: ALL, label: t('investments.tx.allSecurities') },
+  ...(instruments.value ?? []).map((i) => ({ value: i.id, label: i.name })),
+])
 
-const { data } = await useApi<{ items: Row[]; total: number }>('/api/investments/transactions', {
-  query: computed(() => ({
-    accounts: accountsParam.value,
-    type: type.value === 'all' ? undefined : type.value,
-    page: page.value,
-    pageSize,
-  })),
-  default: () => ({ items: [], total: 0 }),
-})
+const filters = computed(() => ({
+  accounts: depot.value !== ALL ? depot.value : accountsParam.value,
+  type: type.value === ALL ? undefined : type.value,
+  instrumentId: instrumentId.value === ALL ? undefined : instrumentId.value,
+  from: from.value || undefined,
+  to: to.value || undefined,
+}))
 </script>
 
 <template>
   <section class="space-y-4">
     <h1 class="text-xl font-semibold">{{ t('nav.investments') }}</h1>
     <InvestmentsNav />
-    <UCard data-testid="investment-transactions">
-      <template #header>
-        <div class="flex items-center justify-between gap-2">
-          <h2 class="font-semibold">{{ t('investments.views.transactions') }}</h2>
-          <USelect v-model="type" :items="typeItems" size="sm" class="w-40" />
-        </div>
-      </template>
-      <EmptyState
-        v-if="data!.items.length === 0"
-        :title="t('investments.tx.empty')"
-        icon="i-lucide-list"
+    <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5" data-testid="tx-filters">
+      <USelect v-model="type" :items="typeItems" size="sm" data-testid="tx-filter-type" />
+      <USelect v-model="depot" :items="depotItems" size="sm" data-testid="tx-filter-depot" />
+      <USelectMenu
+        v-model="instrumentId"
+        :items="instrumentItems"
+        value-key="value"
+        size="sm"
+        class="col-span-2 sm:col-span-1"
+        data-testid="tx-filter-security"
       />
-      <ul v-else class="divide-y divide-default text-sm">
-        <li
-          v-for="row in data!.items"
-          :key="row.id"
-          class="row-hover flex items-center justify-between gap-3 py-2"
-        >
-          <span class="min-w-0">
-            <NuxtLink
-              v-if="row.instrumentId"
-              :to="`/investments/${row.instrumentId}`"
-              class="block truncate font-medium link-hover"
-            >
-              {{ row.instrumentName }}
-            </NuxtLink>
-            <span class="text-xs text-muted">
-              {{ formatDate(row.bookingDate) }} · {{ t(`transactionTypes.${row.type}`) }}
-              <template v-if="row.quantity">
-                · {{ Number(row.quantity).toLocaleString('de-DE') }}
-                {{ t('investments.pieces') }}</template
-              >
-            </span>
-          </span>
-          <Money :cents="row.amountCents" signed />
-        </li>
-      </ul>
-      <template v-if="data!.total > pageSize" #footer>
-        <UPagination v-model:page="page" :total="data!.total" :items-per-page="pageSize" />
-      </template>
-    </UCard>
+      <UInput
+        v-model="from"
+        type="date"
+        size="sm"
+        :aria-label="t('investments.tx.from')"
+        data-testid="tx-filter-from"
+      />
+      <UInput
+        v-model="to"
+        type="date"
+        size="sm"
+        :aria-label="t('investments.tx.to')"
+        data-testid="tx-filter-to"
+      />
+    </div>
+    <TransactionsTable :filters="filters" />
   </section>
 </template>
