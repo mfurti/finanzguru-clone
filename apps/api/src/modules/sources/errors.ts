@@ -18,11 +18,8 @@ export class AuthExpiredError extends Error {
 
 /** The upstream service failed → source status `error`, HTTP 502. */
 export class UpstreamError extends Error {
-  constructor(
-    message: string,
-    readonly cause?: unknown,
-  ) {
-    super(message)
+  constructor(message: string, cause?: unknown) {
+    super(message, { cause })
     this.name = 'UpstreamError'
   }
 }
