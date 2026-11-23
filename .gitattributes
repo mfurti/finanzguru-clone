@@ -1,2 +1,4 @@
 * text=auto eol=lf
 *.ps1 text eol=crlf
+# CSV fixtures keep their exact bytes (CRLF, Windows-1252) like real bank exports.
+apps/api/test/fixtures/csv/*.csv -text
