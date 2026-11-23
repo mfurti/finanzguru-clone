@@ -41,6 +41,24 @@ New migration `0005_investment_analysis` applies on API start. The demo seed add
 
 The 001 numbers are about twice the T075 values (86 ms, 11.6 s) while their code paths did not change; both runs had the dev server and browser running, so the difference is attributed to machine load. All targets pass.
 
+## Local test results (T082, 2026-11-23)
+
+| Scenario | How | Result |
+|---|---|---|
+| W1–W5 | Playwright `us7-analysis`, API `analysis.e2e-spec`, unit `breakdown`/`volatility`/`period-returns` | pass |
+| W6–W7 | Playwright `us8-dividends`, API `dividends.e2e-spec`, unit `dividends` | pass |
+| W8–W9 | Playwright `us9-bookings` (desktop + phone), API `investments-transactions.e2e-spec` | pass |
+| W10–W11 | Playwright `us10-taxes`, API `taxes.e2e-spec`, unit `vorabpauschale` (3 reference cases) / `exemption` | pass |
+| W12 | Playwright `us11-benchmark`, API `benchmarks.e2e-spec` + `import-prices.e2e-spec` (Kursliste) | pass |
+| W13 | Playwright `us12-watchlists`, API `watchlists.e2e-spec` | pass |
+| W14 | Playwright `us13-budget-pie`, component `budget-pie` | pass |
+| W15 | Playwright `responsive` (19 pages incl. the new ones, 360/768/1280 px, dark + light) | pass |
+| W16 | `pnpm --filter api perf` | pass (see Performance results) |
+
+Gates: `pnpm lint` 0 errors (3 existing warnings), `pnpm typecheck` clean, Vitest 324 passed (shared 12, web 33, api 279), Playwright 47 passed, 26 skipped (desktop-only journeys on the mobile project and vice versa).
+
+Fixed during the run: the Datenquellen header overflowed by 69 px at 360 px after the Inflation button was added; it wraps now.
+
 ## Feature 001 remains open
 
 Not part of this feature, still tracked in [001 tasks](../001-wealth-tracker-dashboard/tasks.md): US3 Scalable sync (T054–T058, needs the owner's Scalable login) and the deployment (T079–T083, each server step only with the owner's OK).
