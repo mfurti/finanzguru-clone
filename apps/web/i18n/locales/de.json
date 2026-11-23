@@ -1,5 +1,23 @@
 {
   "app": {
-    "name": "Vermögenskompass"
+    "name": "Vermögenskompass",
+    "footer": "Deine Daten bleiben auf deinem Server."
+  },
+  "nav": {
+    "label": "Hauptnavigation",
+    "overview": "Übersicht",
+    "investments": "Investments",
+    "budget": "Budget",
+    "insurance": "Versicherung"
+  },
+  "header": {
+    "search": "Suche",
+    "settings": "Einstellungen"
+  },
+  "filter": {
+    "allAccounts": "Alle Konten",
+    "oneAccount": "1 Konto",
+    "nAccounts": "{n} Konten",
+    "noAccounts": "Noch keine Konten vorhanden."
   }
 }

@@ -4,6 +4,8 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ['@nuxt/ui', '@nuxtjs/i18n'],
   css: ['~/assets/css/main.css'],
+  // Components are referenced by file name (AccountFilter, not CommonAccountFilter).
+  components: [{ path: '~/components', pathPrefix: false }],
   devServer: {
     port: 3000,
   },
