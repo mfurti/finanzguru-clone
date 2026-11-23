@@ -137,9 +137,13 @@ watch([kind, query], () => {
       v-if="data!.items.length === 0"
       :title="t('budget.noData')"
       icon="i-lucide-tags"
-      class="p-6"
+      class="p-6 md:min-h-[452px]"
     />
-    <div v-else class="grid grid-cols-1 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+    <!-- Fixed minimum height so the card does not jump between Ausgaben and Einnahmen. -->
+    <div
+      v-else
+      class="grid grid-cols-1 md:min-h-[452px] md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]"
+    >
       <ul class="divide-y divide-default text-sm md:border-r md:border-default">
         <li
           class="flex items-center justify-between gap-3 px-4 py-3 font-semibold sm:px-6"

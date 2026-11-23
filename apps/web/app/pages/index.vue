@@ -60,18 +60,18 @@ async function saveLayout(next: WidgetLayoutItem[]): Promise<void> {
 
 <template>
   <OverviewSection>
+    <template #actions>
+      <UButton
+        icon="i-lucide-layout-dashboard"
+        variant="ghost"
+        color="neutral"
+        :label="t('overview.customize.button')"
+        data-testid="customize-open"
+        @click="customizing = true"
+      />
+    </template>
     <section>
-      <div class="mb-4 flex items-center justify-between gap-2">
-        <h1 class="text-xl font-semibold">{{ t('nav.overview') }}</h1>
-        <UButton
-          icon="i-lucide-layout-dashboard"
-          variant="soft"
-          color="neutral"
-          :label="t('overview.customize.button')"
-          data-testid="customize-open"
-          @click="customizing = true"
-        />
-      </div>
+      <h1 class="sr-only">{{ t('nav.overview') }}</h1>
 
       <!--
       Like the reference: wide widgets span the page, the others flow into two

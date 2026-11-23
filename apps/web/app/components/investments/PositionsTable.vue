@@ -8,10 +8,15 @@ import {
   type PositionDto,
 } from '@finance/shared'
 
-/** Open positions with asset filter, column visibility, CSV export and sold positions (US4). */
+/**
+ * Positions card like the reference: title and Positionen/Assetklassen tabs in
+ * the header, asset-class filter, Export and Spalten in a toolbar, then the
+ * table (or the asset-class list) and sold positions (US4).
+ */
 const { t } = useI18n()
 const { accountsParam } = useAccountFilter()
 const assetClass = ref<AssetClass | 'all'>('all')
+const view = ref<'positions' | 'assetClasses'>('positions')
 
 const query = computed(() => ({
   accounts: accountsParam.value,
@@ -31,9 +36,12 @@ const { data: all } = await useApi<PositionDto[]>('/api/investments/positions', 
   default: () => [],
 })
 
-const chips = computed(() => {
+const assetClassItems = computed(() => {
   const present = [...new Set((all.value ?? []).map((row) => row.assetClass))]
-  return ['all' as const, ...present]
+  return [
+    { value: 'all', label: t('investments.allAssetClasses') },
+    ...present.map((value) => ({ value, label: t(`assetClasses.${value}`) })),
+  ]
 })
 
 const Money = resolveComponent('Money')
@@ -65,6 +73,7 @@ const columns = computed<TableColumn<PositionDto>[]>(() => [
   },
   {
     id: 'price',
+    meta: { class: { th: 'text-right' } },
     header: t('investments.columns.price'),
     cell: ({ row }) =>
       h('div', { class: 'text-right' }, [
@@ -74,6 +83,7 @@ const columns = computed<TableColumn<PositionDto>[]>(() => [
   },
   {
     id: 'value',
+    meta: { class: { th: 'text-right' } },
     header: t('investments.columns.value'),
     cell: ({ row }) =>
       h('div', { class: 'text-right' }, [
@@ -87,6 +97,7 @@ const columns = computed<TableColumn<PositionDto>[]>(() => [
   },
   {
     id: 'entryValue',
+    meta: { class: { th: 'text-right' } },
     header: t('investments.columns.entryValue'),
     cell: ({ row }) =>
       h('div', { class: 'text-right' }, [
@@ -96,6 +107,7 @@ const columns = computed<TableColumn<PositionDto>[]>(() => [
   },
   {
     id: 'gain',
+    meta: { class: { th: 'text-right' } },
     header: t('investments.columns.gain'),
     cell: ({ row }) =>
       h('div', { class: 'text-right' }, [
@@ -105,12 +117,14 @@ const columns = computed<TableColumn<PositionDto>[]>(() => [
   },
   {
     id: 'allocation',
+    meta: { class: { th: 'text-right' } },
     header: t('investments.columns.allocation'),
     cell: ({ row }) =>
       h('div', { class: 'text-right' }, [percent(row.original.allocationPct, false)]),
   },
   {
     id: 'dividends',
+    meta: { class: { th: 'text-right' } },
     header: t('investments.columns.dividends'),
     cell: ({ row }) =>
       h(
@@ -166,65 +180,91 @@ const soldOpen = ref(false)
 </script>
 
 <template>
-  <UCard data-testid="positions-card">
+  <UCard :ui="{ header: 'p-0 sm:p-0' }" data-testid="positions-card">
     <template #header>
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <h2 class="font-semibold">
-          {{ t('investments.positions', { n: positions?.length ?? 0 }) }}
+      <div
+        class="flex flex-wrap items-end gap-x-8 gap-y-2 border-b border-default px-4 pt-5 sm:px-6 sm:pt-6"
+      >
+        <h2 class="pb-3">
+          {{
+            view === 'positions'
+              ? t('investments.positions', { n: positions?.length ?? 0 })
+              : t('investments.views.assetClasses')
+          }}
         </h2>
+        <div class="-mb-px flex gap-6" role="tablist">
+          <button
+            v-for="tab in [
+              { label: t('investments.views.positions'), value: 'positions' as const },
+              { label: t('investments.views.assetClasses'), value: 'assetClasses' as const },
+            ]"
+            :key="tab.value"
+            type="button"
+            role="tab"
+            :aria-selected="view === tab.value"
+            class="border-b-2 pb-3 text-sm font-medium transition-colors"
+            :class="
+              view === tab.value
+                ? 'border-(--ui-text-highlighted) text-highlighted'
+                : 'border-transparent text-muted hover:text-default'
+            "
+            :data-testid="`positions-view-${tab.value}`"
+            @click="view = tab.value"
+          >
+            {{ tab.label }}
+          </button>
+        </div>
+      </div>
+    </template>
+
+    <AssetClassTable v-if="view === 'assetClasses'" />
+    <template v-else>
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <USelect
+          v-model="assetClass"
+          :items="assetClassItems"
+          class="w-full sm:w-60"
+          data-testid="asset-class-filter"
+        />
         <div class="flex gap-2">
-          <UDropdownMenu :items="visibilityItems" :content="{ align: 'end' }">
-            <UButton
-              icon="i-lucide-columns-3"
-              variant="soft"
-              color="neutral"
-              size="sm"
-              :label="t('investments.columnsButton')"
-              data-testid="columns-menu"
-            />
-          </UDropdownMenu>
           <UButton
             icon="i-lucide-download"
             variant="soft"
             color="neutral"
-            size="sm"
             :label="t('investments.export')"
             :href="exportUrl"
             external
             download
             data-testid="positions-export"
           />
+          <UDropdownMenu :items="visibilityItems" :content="{ align: 'end' }">
+            <UButton
+              icon="i-lucide-columns-3"
+              variant="soft"
+              color="neutral"
+              :label="t('investments.columnsButton')"
+              data-testid="columns-menu"
+            />
+          </UDropdownMenu>
         </div>
       </div>
-      <div class="mt-3 flex flex-wrap gap-1">
-        <UButton
-          v-for="chip in chips"
-          :key="chip"
-          size="xs"
-          :variant="assetClass === chip ? 'solid' : 'soft'"
-          :color="assetClass === chip ? 'primary' : 'neutral'"
-          :label="chip === 'all' ? t('investments.all') : t(`assetClasses.${chip}`)"
-          :data-testid="`chip-${chip}`"
-          @click="assetClass = chip"
-        />
-      </div>
+
+      <EmptyState
+        v-if="(positions?.length ?? 0) === 0"
+        :title="t('investments.empty')"
+        icon="i-lucide-briefcase"
+      />
+      <UTable
+        v-else
+        v-model:column-visibility="columnVisibility"
+        :data="positions ?? []"
+        :columns="columns"
+        class="w-full"
+        data-testid="positions-table"
+      />
     </template>
 
-    <EmptyState
-      v-if="(positions?.length ?? 0) === 0"
-      :title="t('investments.empty')"
-      icon="i-lucide-briefcase"
-    />
-    <UTable
-      v-else
-      v-model:column-visibility="columnVisibility"
-      :data="positions ?? []"
-      :columns="columns"
-      class="w-full"
-      data-testid="positions-table"
-    />
-
-    <template v-if="(sold?.length ?? 0) > 0" #footer>
+    <template v-if="view === 'positions' && (sold?.length ?? 0) > 0" #footer>
       <UCollapsible v-model:open="soldOpen">
         <UButton
           variant="ghost"

@@ -11,7 +11,7 @@ const { data } = await useApi<AssetClassDto[]>('/api/investments/asset-classes',
 </script>
 
 <template>
-  <UCard data-testid="asset-classes-card">
+  <div data-testid="asset-classes-card">
     <EmptyState
       v-if="(data?.length ?? 0) === 0"
       :title="t('investments.empty')"
@@ -21,7 +21,7 @@ const { data } = await useApi<AssetClassDto[]>('/api/investments/asset-classes',
       <li
         v-for="row in data"
         :key="row.assetClass"
-        class="flex items-center justify-between gap-3 py-2"
+        class="row-hover flex items-center justify-between gap-3 py-3"
       >
         <span>
           {{ t(`assetClasses.${row.assetClass}`) }}
@@ -33,5 +33,5 @@ const { data } = await useApi<AssetClassDto[]>('/api/investments/asset-classes',
         </span>
       </li>
     </ul>
-  </UCard>
+  </div>
 </template>

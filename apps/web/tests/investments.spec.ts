@@ -35,13 +35,13 @@ registerEndpoint('/api/investments/asset-classes', () => [
 ])
 
 describe('PositionsTable', () => {
-  it('renders positions, asset chips, export link and sold positions', async () => {
+  it('renders positions, asset-class filter, export link and sold positions', async () => {
     const wrapper = await mountSuspended(PositionsTable)
     const text = wrapper.text()
     expect(text).toContain('iShares Core MSCI World')
     expect(text).toContain('1.619,08 €')
     expect(text).toContain('+152,09 €')
-    expect(wrapper.find('[data-testid="chip-etf"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="asset-class-filter"]').exists()).toBe(true)
     const href = wrapper.get('[data-testid="positions-export"]').attributes('href')
     expect(href).toContain('/api/investments/positions.csv?columns=name%2CassetClass')
     expect(wrapper.text()).toContain('Verkaufte Investments (1)')

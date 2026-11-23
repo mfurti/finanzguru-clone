@@ -55,18 +55,17 @@ onMounted(() => {
 })
 onBeforeUnmount(() => observer?.disconnect())
 const subCount = computed(() => nodesIn.value.filter((node) => node.kind === 'sub').length)
-const height = computed(() =>
-  width.value >= 900 ? 800 : Math.max(420, Math.min(800, subCount.value * 40 + 120)),
-)
+/** Grows with the number of entries (reference: 800 px for ~20 entries). */
+const height = computed(() => Math.max(420, Math.min(800, subCount.value * 52 + 160)))
 
 const layout = computed(() => {
   if (linksIn.value.length === 0) return { nodes: [] as LaidNode[], links: [] as LaidLink[] }
-  const nodeWidth = Math.min(200, Math.max(90, width.value * 0.18))
+  const nodeWidth = Math.min(180, Math.max(80, width.value * 0.16))
   const generator = sankey<NodeIn, LinkIn>()
     .nodeId((node) => node.id)
     .nodeAlign(sankeyLeft)
     .nodeWidth(nodeWidth)
-    .nodePadding(12)
+    .nodePadding(14)
     .nodeSort((a, b) => rankOf(a.id) - rankOf(b.id))
     .linkSort(
       (a, b) =>
@@ -100,15 +99,28 @@ const format = (cents: number) =>
     ? formatEur(cents)
     : formatPct(props.incomeCents > 0 ? cents / props.incomeCents : 0)
 
+/** Soft pastel tones like the reference (lavender, salmon, mint, …). */
+const PASTEL = [
+  '#8f93f2',
+  '#f4a582',
+  '#6fd9ad',
+  '#f0c870',
+  '#82c3f0',
+  '#e39ed6',
+  '#a9db7b',
+  '#ee8f96',
+  '#a3b1c4',
+]
 const colorOf = (id: string) => {
   const node = nodesIn.value.find((n) => n.id === id)
-  if (!node || node.kind === 'income') return 'var(--color-emerald-400)'
+  if (!node || node.kind === 'income') return '#7fdcb5'
   const group = order.value.group.get(id) ?? id
-  if (nodesIn.value.find((n) => n.id === group)?.kind === 'balance') return 'var(--color-sky-400)'
-  return paletteColor(order.value.rank.get(group) ?? 0)
+  if (nodesIn.value.find((n) => n.id === group)?.kind === 'balance') return '#82c3f0'
+  return PASTEL[(order.value.rank.get(group) ?? 0) % PASTEL.length]!
 }
-const nodeFill = (id: string) => `color-mix(in oklab, ${colorOf(id)} 78%, white)`
-const linkFill = (id: string) => `color-mix(in oklab, ${colorOf(id)} 35%, transparent)`
+const nodeFill = (id: string) => colorOf(id)
+/** Links in the target color, translucent so they read as soft bands. */
+const linkFill = (id: string) => `color-mix(in oklab, ${colorOf(id)} 28%, transparent)`
 
 /** Hover: a node or a link plus everything connected to it. */
 const active = ref<{ nodes: Set<string>; links: Set<number> } | null>(null)
@@ -193,7 +205,6 @@ const ariaLabel = computed(() =>
                   :width="node.x1 - node.x0"
                   :height="Math.max(1, node.y1 - node.y0)"
                   :fill="nodeFill(node.id)"
-                  rx="2"
                 />
                 <text
                   :x="node.kind === 'income' ? node.x0 + 8 : node.x1 - 8"
@@ -232,11 +243,11 @@ const ariaLabel = computed(() =>
 }
 .sankey-label {
   fill: #fff;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
   paint-order: stroke;
-  stroke: rgb(0 0 0 / 0.35);
-  stroke-width: 3px;
+  stroke: rgb(0 0 0 / 0.18);
+  stroke-width: 2px;
   pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) {

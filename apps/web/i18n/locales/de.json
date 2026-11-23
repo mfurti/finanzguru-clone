@@ -336,7 +336,8 @@
       "to": "Bis",
       "allDepots": "Alle Depots",
       "allSecurities": "Alle Wertpapiere"
-    }
+    },
+    "allAssetClasses": "Alle Assetklassen"
   },
   "assetClasses": {
     "stock": "Aktien",

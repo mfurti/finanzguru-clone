@@ -9,7 +9,8 @@ test.describe('US4 investments', () => {
   test('filters by asset class', async ({ page }) => {
     const table = page.getByTestId('positions-table')
     await expect(table).toContainText('Apple Inc.')
-    await page.getByTestId('chip-etf').click()
+    await page.getByTestId('asset-class-filter').click()
+    await page.getByRole('option', { name: 'ETF', exact: true }).click()
     await expect(table).not.toContainText('Apple Inc.')
     await expect(table).toContainText('MSCI World')
   })

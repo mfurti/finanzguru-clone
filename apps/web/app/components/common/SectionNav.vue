@@ -4,7 +4,9 @@ import type { RouteLocationRaw } from 'vue-router'
 /**
  * Section navigation like the reference: a sticky sidebar on wide screens
  * (active entry as a pill) and a dropdown button above the content below
- * 1024 px. The page content goes into the default slot.
+ * 1024 px. Above the content sits the action row like the reference: the
+ * dropdown on the left, page actions (slot) and "Hinzufügen" on the right.
+ * The page content goes into the default slot.
  */
 export interface SectionNavItem {
   key: string
@@ -14,7 +16,7 @@ export interface SectionNavItem {
 }
 
 const props = defineProps<{ items: SectionNavItem[]; label: string }>()
-defineSlots<{ default(): unknown }>()
+defineSlots<{ default(): unknown; actions(): unknown }>()
 
 const current = computed(() => props.items.find((item) => item.active) ?? props.items[0])
 const menuItems = computed(() =>
@@ -53,17 +55,23 @@ const menuItems = computed(() =>
     </aside>
 
     <div class="min-w-0">
-      <div class="mb-4 lg:hidden">
-        <UDropdownMenu :items="menuItems" :content="{ align: 'start' }">
-          <UButton
-            color="neutral"
-            variant="soft"
-            trailing-icon="i-lucide-chevron-down"
-            :label="current?.label"
-            class="rounded-full bg-(--app-card) px-4"
-            data-testid="section-nav-menu"
-          />
-        </UDropdownMenu>
+      <div class="mb-4 flex min-h-9 items-center gap-2" data-testid="section-actions">
+        <div class="lg:hidden">
+          <UDropdownMenu :items="menuItems" :content="{ align: 'start' }">
+            <UButton
+              color="neutral"
+              variant="soft"
+              trailing-icon="i-lucide-chevron-down"
+              :label="current?.label"
+              class="rounded-full bg-(--app-card) px-4"
+              data-testid="section-nav-menu"
+            />
+          </UDropdownMenu>
+        </div>
+        <div class="ml-auto flex items-center gap-1 sm:gap-2">
+          <slot name="actions" />
+          <AddMenu />
+        </div>
       </div>
       <slot />
     </div>
