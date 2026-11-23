@@ -13,6 +13,8 @@ import { OverviewModule } from './modules/overview/overview.module'
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
+      // Tests set their env explicitly; a developer's .env must not leak into them.
+      ignoreEnvFile: process.env.NODE_ENV === 'test',
       validate: validateEnv,
     }),
     LoggerModule.forRootAsync({
