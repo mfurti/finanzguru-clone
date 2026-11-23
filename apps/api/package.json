@@ -19,6 +19,7 @@
     "dev:local": "nest start --watch"
   },
   "dependencies": {
+    "@fastify/multipart": "^9.4.0",
     "@fastify/secure-session": "^8.4.2",
     "@fastify/static": "^10.1.12",
     "@finance/shared": "workspace:*",

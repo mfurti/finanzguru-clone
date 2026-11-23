@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import multipart from '@fastify/multipart'
 import secureSession from '@fastify/secure-session'
 import { ConfigService } from '@nestjs/config'
 import type { NestFastifyApplication } from '@nestjs/platform-fastify'
@@ -35,6 +36,9 @@ export async function configureApp(app: NestFastifyApplication): Promise<void> {
       maxAge: SESSION_MAX_AGE_SECONDS,
     },
   })
+
+  // CSV uploads: one file, max 20 MB.
+  await app.register(multipart, { limits: { fileSize: 20 * 1024 * 1024, files: 1 } })
 
   app.useGlobalPipes(new ZodValidationPipe())
   app.useGlobalFilters(new HttpExceptionFilter())
