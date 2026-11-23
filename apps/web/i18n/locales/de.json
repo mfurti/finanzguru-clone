@@ -88,6 +88,27 @@
         "inflation": "Jährliche Inflationsrate laut Einstellungen.",
         "realReturn": "Rendite nach Abzug der Inflation."
       }
+    },
+    "holdings": {
+      "title": "Holdings",
+      "top": "Top",
+      "flop": "Flop",
+      "range": {
+        "1D": "1 Tag",
+        "1W": "1 Woche",
+        "1M": "1 Monat",
+        "1Y": "1 Jahr"
+      }
+    },
+    "accounts": {
+      "title": "Portfolios & Konten",
+      "depots": "Depots",
+      "accounts": "Konten",
+      "empty": "Noch keine Konten"
+    },
+    "review": {
+      "label": "Ungeprüfte Transaktionen",
+      "action": "Alle anzeigen"
     }
   },
   "periodLong": {
