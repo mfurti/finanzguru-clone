@@ -1,0 +1,82 @@
+/**
+ * Read-only guard for Scalable MCP tools (FR-054, research R3).
+ * A tool may be called only if it is on the explicit allowlist AND neither its
+ * name nor its description looks like it could move money or change orders.
+ * The check runs before anything is sent to the server.
+ */
+import { ForbiddenToolError } from '../errors'
+
+/**
+ * Read tools the sync uses. Finalized from the server's real `tools/list`
+ * (T054); until then nothing is callable, which keeps the default safe.
+ */
+export const READ_TOOLS: ReadonlySet<string> = new Set<string>([])
+
+/**
+ * Anything that could place, change or cancel orders or move money (tasks.md T052).
+ * Matched against name and description; may be narrowed after T054 shows the real tools.
+ */
+export const DENY_PATTERN = /order|trade|buy|sell|cancel|transfer|savings.?plan|withdraw/i
+
+export interface ToolInfo {
+  name: string
+  description?: string
+  annotations?: { readOnlyHint?: boolean; destructiveHint?: boolean }
+}
+
+export interface ToolDecision {
+  name: string
+  allowed: boolean
+  reason: 'allowlisted' | 'not_allowlisted' | 'denied_pattern' | 'not_read_only'
+}
+
+export function decideTool(
+  tool: ToolInfo,
+  allowlist: ReadonlySet<string> = READ_TOOLS,
+): ToolDecision {
+  if (DENY_PATTERN.test(tool.name) || DENY_PATTERN.test(tool.description ?? '')) {
+    return { name: tool.name, allowed: false, reason: 'denied_pattern' }
+  }
+  if (tool.annotations?.readOnlyHint === false || tool.annotations?.destructiveHint === true) {
+    return { name: tool.name, allowed: false, reason: 'not_read_only' }
+  }
+  if (!allowlist.has(tool.name)) {
+    return { name: tool.name, allowed: false, reason: 'not_allowlisted' }
+  }
+  return { name: tool.name, allowed: true, reason: 'allowlisted' }
+}
+
+export function decideTools(
+  tools: readonly ToolInfo[],
+  allowlist: ReadonlySet<string> = READ_TOOLS,
+): ToolDecision[] {
+  return tools.map((tool) => decideTool(tool, allowlist))
+}
+
+export interface ToolCaller {
+  callTool(params: { name: string; arguments?: Record<string, unknown> }): Promise<unknown>
+}
+
+/**
+ * Wraps an MCP client so only allowed tools reach the transport.
+ * `known` are the tools from `tools/list` (descriptions matter for the check).
+ */
+export class ReadOnlyToolGuard {
+  private readonly decisions: Map<string, ToolDecision>
+
+  constructor(
+    private readonly client: ToolCaller,
+    known: readonly ToolInfo[],
+    allowlist: ReadonlySet<string> = READ_TOOLS,
+  ) {
+    this.decisions = new Map(
+      decideTools(known, allowlist).map((decision) => [decision.name, decision]),
+    )
+  }
+
+  async call(name: string, args: Record<string, unknown> = {}): Promise<unknown> {
+    const decision = this.decisions.get(name)
+    if (!decision?.allowed) throw new ForbiddenToolError(name)
+    return this.client.callTool({ name, arguments: args })
+  }
+}
