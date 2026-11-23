@@ -14,7 +14,8 @@
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "nest build && node --env-file-if-exists=.env dist/scripts/migrate.js",
-    "owner:set-password": "nest build && node --env-file-if-exists=.env dist/scripts/set-password.js"
+    "owner:set-password": "nest build && node --env-file-if-exists=.env dist/scripts/set-password.js",
+    "db:seed": "nest build && node --env-file-if-exists=.env dist/scripts/seed.js"
   },
   "dependencies": {
     "@fastify/secure-session": "^8.4.2",
