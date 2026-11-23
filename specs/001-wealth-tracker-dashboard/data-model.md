@@ -204,7 +204,7 @@ account 1─* net_worth_snapshot
 
 - **transaction.review_status**: `unreviewed` → `reviewed` (category set manually or confirmed). A rule match on import sets the category but keeps `unreviewed` until confirmed. The overview count = `unreviewed` with `category_id IS NULL`.
 - **data_source.status**: `planned` (Sparkasse) · `disabled` → `active` (connect ok) → `needs_reauth` (401/expired refresh) → `active` (reconnect) · any → `error` (sync failure) → `active` (next successful sync).
-- **import_job.status**: `running` → `succeeded` | `partial` (some rows failed) | `failed` (nothing imported; DB transaction rolled back).
+- **import_job.status**: `pending` (CSV uploaded, waiting for confirm/mapping) → `running` → `succeeded` | `partial` (some rows failed) | `failed` (nothing imported; DB transaction rolled back).
 
 ## Derived recomputation
 

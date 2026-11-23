@@ -30,6 +30,11 @@ import {
   TRANSACTION_SOURCES,
   TRANSACTION_TYPES,
   WIDGET_KEYS,
+  AMOUNT_SIGNS,
+  IMPORT_JOB_KINDS,
+  IMPORT_JOB_STATUSES,
+  RULE_MATCH_FIELDS,
+  RULE_OPERATORS,
 } from '@finance/shared'
 
 const id = () =>
@@ -276,6 +281,82 @@ export const dashboardLayout = sqliteTable(
   () => [check('dashboard_layout_widget_key', inList('widget_key', WIDGET_KEYS))],
 )
 
+/** One CSV upload or sync run (US2). Max 500 row errors are kept. */
+export const importJob = sqliteTable(
+  'import_job',
+  {
+    id: id(),
+    sourceId: text('source_id')
+      .notNull()
+      .references(() => dataSource.id),
+    kind: text('kind', { enum: IMPORT_JOB_KINDS }).notNull(),
+    fileName: text('file_name'),
+    fileSha256: text('file_sha256'),
+    format: text('format'),
+    accountId: text('account_id').references(() => account.id, { onDelete: 'set null' }),
+    status: text('status', { enum: IMPORT_JOB_STATUSES }).notNull().default('pending'),
+    imported: integer('imported').notNull().default(0),
+    skipped: integer('skipped').notNull().default(0),
+    failed: integer('failed').notNull().default(0),
+    /** `[{ line, reason }]`, max 500 kept. */
+    errors: text('errors', { mode: 'json' })
+      .$type<{ line?: number; reason: string }[]>()
+      .notNull()
+      .default([]),
+    startedAt: text('started_at').notNull().default(nowIso),
+    finishedAt: text('finished_at'),
+  },
+  () => [
+    check('import_job_kind', inList('kind', IMPORT_JOB_KINDS)),
+    check('import_job_status', inList('status', IMPORT_JOB_STATUSES)),
+  ],
+)
+
+/** Saved column mapping for a CSV layout, recognized by its header signature. */
+export const csvMapping = sqliteTable('csv_mapping', {
+  id: id(),
+  name: text('name').notNull(),
+  /** Hash of the normalized header row. */
+  headerSignature: text('header_signature').notNull().unique(),
+  delimiter: text('delimiter').notNull(),
+  encoding: text('encoding').notNull(),
+  dateFormat: text('date_format').notNull(),
+  decimalSeparator: text('decimal_separator').notNull(),
+  skipRows: integer('skip_rows').notNull().default(0),
+  columns: text('columns', { mode: 'json' }).$type<Record<string, number>>().notNull(),
+  defaultAccountId: text('default_account_id').references(() => account.id, {
+    onDelete: 'set null',
+  }),
+})
+
+/** Ordered auto-categorization rule; first match wins (research R11). */
+export const categorizationRule = sqliteTable(
+  'categorization_rule',
+  {
+    id: id(),
+    /** Ascending, unique. */
+    priority: integer('priority').notNull().unique(),
+    matchField: text('match_field', { enum: RULE_MATCH_FIELDS }).notNull(),
+    operator: text('operator', { enum: RULE_OPERATORS }).notNull(),
+    /** For `regex` the pattern must compile (validated in the API). */
+    pattern: text('pattern').notNull(),
+    amountSign: text('amount_sign', { enum: AMOUNT_SIGNS }),
+    categoryId: text('category_id')
+      .notNull()
+      .references(() => category.id, { onDelete: 'cascade' }),
+    enabled: integer('enabled', { mode: 'boolean' }).notNull().default(true),
+  },
+  (t) => [
+    check('categorization_rule_match_field', inList('match_field', RULE_MATCH_FIELDS)),
+    check('categorization_rule_operator', inList('operator', RULE_OPERATORS)),
+    check(
+      'categorization_rule_amount_sign',
+      sql`${t.amountSign} IS NULL OR ${inList('amount_sign', AMOUNT_SIGNS)}`,
+    ),
+    check('categorization_rule_pattern_len', sql`length(${t.pattern}) BETWEEN 1 AND 200`),
+  ],
+)
+
 export const schema = {
   owner,
   institution,
@@ -288,4 +369,7 @@ export const schema = {
   netWorthSnapshot,
   positionLot,
   dashboardLayout,
+  importJob,
+  csvMapping,
+  categorizationRule,
 }

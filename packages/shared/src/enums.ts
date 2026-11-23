@@ -58,6 +58,21 @@ export type SourceKind = (typeof SOURCE_KINDS)[number]
 export const SOURCE_STATUSES = ['active', 'needs_reauth', 'error', 'planned', 'disabled'] as const
 export type SourceStatus = (typeof SOURCE_STATUSES)[number]
 
+export const IMPORT_JOB_KINDS = ['csv_upload', 'sync'] as const
+export type ImportJobKind = (typeof IMPORT_JOB_KINDS)[number]
+
+export const IMPORT_JOB_STATUSES = ['pending', 'running', 'succeeded', 'partial', 'failed'] as const
+export type ImportJobStatus = (typeof IMPORT_JOB_STATUSES)[number]
+
+export const RULE_MATCH_FIELDS = ['counterparty', 'purpose', 'counterparty_iban'] as const
+export type RuleMatchField = (typeof RULE_MATCH_FIELDS)[number]
+
+export const RULE_OPERATORS = ['contains', 'equals', 'starts_with', 'regex'] as const
+export type RuleOperator = (typeof RULE_OPERATORS)[number]
+
+export const AMOUNT_SIGNS = ['positive', 'negative'] as const
+export type AmountSign = (typeof AMOUNT_SIGNS)[number]
+
 /** Overview widgets in their default order (dashboard_layout.widget_key). */
 export const WIDGET_KEYS = [
   'networth',
