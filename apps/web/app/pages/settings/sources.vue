@@ -22,13 +22,22 @@ const statusColor = (status: DataSourceDto['status']) =>
   <section class="space-y-4">
     <div class="flex items-center justify-between gap-2">
       <h1 class="text-xl font-semibold">{{ t('settings.sources') }}</h1>
-      <UButton
-        to="/settings/categories"
-        variant="soft"
-        color="neutral"
-        icon="i-lucide-tags"
-        :label="t('settings.categories')"
-      />
+      <div class="flex gap-2">
+        <UButton
+          to="/settings/inflation"
+          variant="soft"
+          color="neutral"
+          icon="i-lucide-percent"
+          :label="t('settings.inflation')"
+        />
+        <UButton
+          to="/settings/categories"
+          variant="soft"
+          color="neutral"
+          icon="i-lucide-tags"
+          :label="t('settings.categories')"
+        />
+      </div>
     </div>
 
     <UCard>

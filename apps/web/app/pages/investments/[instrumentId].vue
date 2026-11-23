@@ -137,6 +137,10 @@ const tooltip = (point: Point) =>
           </li>
         </ul>
       </UCard>
+      <ClassificationForm
+        :instrument-id="data.instrument.id"
+        :is-fund="data.instrument.assetClass === 'etf' || data.instrument.assetClass === 'fund'"
+      />
     </template>
   </section>
 </template>
