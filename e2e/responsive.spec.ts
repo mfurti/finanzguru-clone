@@ -5,12 +5,17 @@ const PAGES = [
   '/',
   '/investments',
   '/investments/transactions',
+  '/investments/analysis',
+  '/investments/dividends',
+  '/investments/taxes',
+  '/investments/watchlists',
   '/budget',
   '/budget/review',
   '/budget/budgets',
   '/insurance',
   '/settings/sources',
   '/settings/categories',
+  '/settings/inflation',
 ]
 
 const VIEWPORTS = [

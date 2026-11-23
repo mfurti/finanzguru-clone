@@ -232,7 +232,7 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 
 ## Phase 10: Polish & Cross-Cutting Concerns
 
-- [ ] T078 [P] Add the new pages (`/investments/analysis`, `/investments/dividends`, `/investments/taxes`, `/investments/watchlists`) to `e2e/responsive.spec.ts` (360/768/1280 px, dark and light, no overflow, no NaN) — W15
+- [X] T078 [P] Add the new pages (`/investments/analysis`, `/investments/dividends`, `/investments/taxes`, `/investments/watchlists`) to `e2e/responsive.spec.ts` (360/768/1280 px, dark and light, no overflow, no NaN) — W15
 - [ ] T079 [P] Extend `apps/api/src/scripts/perf.ts` and `apps/api/src/database/perf-seed.ts` with classifications, dividends and the new endpoints; record results (each page < 2 s, SC-005) in `specs/002-investment-analysis/quickstart.md` — W16
 - [ ] T080 [P] Update `README.md`, `apps/api/README.md` and `apps/web/README.md` (new pages, Kursliste CSV, tax estimate disclaimer) and `specs/001-wealth-tracker-dashboard/contracts/http-api.md` cross-reference to the 002 contract
 - [ ] T081 [P] Security pass: new endpoints behind `SessionGuard`, zod validation on all bodies/queries, CSV export escapes formula prefixes (`=`, `+`, `-`, `@`) in text cells; add cases to `apps/api/test/e2e/security.e2e-spec.ts`
