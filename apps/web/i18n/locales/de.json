@@ -27,5 +27,21 @@
     "submit": "Anmelden",
     "wrong": "Passwort falsch.",
     "tooMany": "Zu viele Versuche. Bitte warte eine Minute."
+  },
+  "period": {
+    "1W": "1W",
+    "1M": "1M",
+    "YTD": "YTD",
+    "1Y": "1J",
+    "3Y": "3J",
+    "5Y": "5J",
+    "ALL": "Gesamt"
+  },
+  "placeholder": {
+    "title": "Diese Ansicht folgt",
+    "description": "Die Daten dafür sind vorbereitet; die Oberfläche kommt in einem der nächsten Schritte."
+  },
+  "settings": {
+    "sources": "Datenquellen"
   }
 }
