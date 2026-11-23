@@ -5,7 +5,8 @@
 import { and, eq, isNull } from 'drizzle-orm'
 import type { CategoryKind } from '@finance/shared'
 import type { AppDatabase } from './drizzle.module'
-import { category, dataSource, institution } from './schema'
+import { WIDGET_KEYS } from '@finance/shared'
+import { category, dashboardLayout, dataSource, institution } from './schema'
 
 type Db = Pick<AppDatabase, 'select' | 'insert'>
 
@@ -112,6 +113,11 @@ export function seedDefaults(db: Db): void {
         displayName: 'Sparkasse (Live-Abfrage)',
       },
     ])
+    .onConflictDoNothing()
+    .run()
+
+  db.insert(dashboardLayout)
+    .values(WIDGET_KEYS.map((widgetKey, position) => ({ widgetKey, position, visible: true })))
     .onConflictDoNothing()
     .run()
 }

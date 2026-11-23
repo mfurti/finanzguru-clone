@@ -29,6 +29,7 @@ import {
   SOURCE_STATUSES,
   TRANSACTION_SOURCES,
   TRANSACTION_TYPES,
+  WIDGET_KEYS,
 } from '@finance/shared'
 
 const id = () =>
@@ -264,6 +265,17 @@ export const positionLot = sqliteTable(
   ],
 )
 
+/** Order and visibility of the overview widgets (US1, FR-013). */
+export const dashboardLayout = sqliteTable(
+  'dashboard_layout',
+  {
+    widgetKey: text('widget_key', { enum: WIDGET_KEYS }).primaryKey(),
+    position: integer('position').notNull(),
+    visible: integer('visible', { mode: 'boolean' }).notNull().default(true),
+  },
+  () => [check('dashboard_layout_widget_key', inList('widget_key', WIDGET_KEYS))],
+)
+
 export const schema = {
   owner,
   institution,
@@ -275,4 +287,5 @@ export const schema = {
   transaction,
   netWorthSnapshot,
   positionLot,
+  dashboardLayout,
 }

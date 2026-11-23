@@ -58,6 +58,19 @@ export type SourceKind = (typeof SOURCE_KINDS)[number]
 export const SOURCE_STATUSES = ['active', 'needs_reauth', 'error', 'planned', 'disabled'] as const
 export type SourceStatus = (typeof SOURCE_STATUSES)[number]
 
+/** Overview widgets in their default order (dashboard_layout.widget_key). */
+export const WIDGET_KEYS = [
+  'networth',
+  'allocation',
+  'kpis',
+  'holdings',
+  'accounts',
+  'review',
+  'cashflow',
+  'budgets',
+] as const
+export type WidgetKey = (typeof WIDGET_KEYS)[number]
+
 /** Chart/KPI periods (contracts/http-api.md, common query param `period`). */
 export const PERIODS = ['1W', '1M', 'YTD', '1Y', '3Y', '5Y', 'ALL'] as const
 export type Period = (typeof PERIODS)[number]
