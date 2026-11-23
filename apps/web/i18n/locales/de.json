@@ -59,6 +59,43 @@
       "title": "Noch keine Daten",
       "description": "Importiere eine CSV-Datei oder verbinde ein Depot, um dein Vermögen zu sehen.",
       "action": "Daten hinzufügen"
+    },
+    "allocation": {
+      "title": "Aufteilung",
+      "center": "Vermögen"
+    },
+    "kpis": {
+      "title": "Kennzahlen",
+      "invested": "Investiertes Kapital",
+      "priceGain": "Kursgewinn",
+      "realized": "Realisierte Gewinne",
+      "otherGains": "Sonstige Gewinne",
+      "dividends": "Dividenden",
+      "interest": "Zinsen",
+      "taxesFees": "Steuern & Gebühren",
+      "totalReturn": "Gesamtertrag",
+      "net": "Netto",
+      "twror": "TWROR",
+      "irr": "IZF",
+      "inflation": "Inflation",
+      "realReturn": "Realrendite",
+      "info": {
+        "priceGain": "Wertänderung der Positionen im Zeitraum ohne Ein-/Auszahlungen, realisierte Gewinne und Handelskosten.",
+        "realized": "Gewinne aus Verkäufen im Zeitraum nach FIFO; netto nach Gebühren und Steuern.",
+        "otherGains": "Sonstige Erträge, z. B. aus Kapitalmaßnahmen.",
+        "twror": "Zeitgewichtete Rendite: misst die Anlageentscheidung unabhängig vom Zeitpunkt der Ein- und Auszahlungen.",
+        "irr": "Interner Zinsfuß (geldgewichtet, p. a.): berücksichtigt Zeitpunkt und Höhe deiner Ein- und Auszahlungen.",
+        "inflation": "Jährliche Inflationsrate laut Einstellungen.",
+        "realReturn": "Rendite nach Abzug der Inflation."
+      }
     }
+  },
+  "periodLong": {
+    "1M": "1 Monat",
+    "YTD": "Seit Jahresbeginn",
+    "1Y": "1 Jahr",
+    "3Y": "3 Jahre",
+    "5Y": "5 Jahre",
+    "ALL": "Gesamt"
   }
 }
