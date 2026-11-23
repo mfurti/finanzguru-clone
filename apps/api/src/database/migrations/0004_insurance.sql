@@ -1,0 +1,20 @@
+CREATE TABLE `insurance_contract` (
+	`id` text PRIMARY KEY NOT NULL,
+	`type` text NOT NULL,
+	`provider` text NOT NULL,
+	`contract_number` text,
+	`premium_cents` integer NOT NULL,
+	`interval` text NOT NULL,
+	`start_date` text NOT NULL,
+	`end_date` text,
+	`notes` text,
+	`linked_category_id` text,
+	`created_at` text DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
+	FOREIGN KEY (`linked_category_id`) REFERENCES `category`(`id`) ON UPDATE no action ON DELETE set null,
+	CONSTRAINT "insurance_type" CHECK(type IN ('health', 'term_life', 'liability', 'household', 'disability', 'car', 'legal', 'other')),
+	CONSTRAINT "insurance_interval" CHECK(interval IN ('monthly', 'quarterly', 'semiannual', 'annual')),
+	CONSTRAINT "insurance_premium_positive" CHECK("insurance_contract"."premium_cents" > 0),
+	CONSTRAINT "insurance_end_after_start" CHECK("insurance_contract"."end_date" IS NULL OR "insurance_contract"."end_date" >= "insurance_contract"."start_date"),
+	CONSTRAINT "insurance_notes_len" CHECK("insurance_contract"."notes" IS NULL OR length("insurance_contract"."notes") <= 2000),
+	CONSTRAINT "insurance_provider_len" CHECK(length("insurance_contract"."provider") BETWEEN 1 AND 120)
+);

@@ -11,6 +11,7 @@ import { CashflowModule } from './modules/cashflow/cashflow.module'
 import { CategoriesModule } from './modules/categories/categories.module'
 import { HealthModule } from './modules/health/health.module'
 import { ImportModule } from './modules/import/import.module'
+import { InsuranceModule } from './modules/insurance/insurance.module'
 import { InvestmentsModule } from './modules/investments/investments.module'
 import { OverviewModule } from './modules/overview/overview.module'
 import { TransactionsModule } from './modules/transactions/transactions.module'
@@ -62,6 +63,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module'
     CashflowModule,
     CategoriesModule,
     BudgetsModule,
+    InsuranceModule,
   ],
 })
 export class AppModule {}

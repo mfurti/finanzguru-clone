@@ -35,6 +35,8 @@ import {
   IMPORT_JOB_STATUSES,
   RULE_MATCH_FIELDS,
   RULE_OPERATORS,
+  INSURANCE_TYPES,
+  PREMIUM_INTERVALS,
 } from '@finance/shared'
 
 const id = () =>
@@ -373,6 +375,37 @@ export const budget = sqliteTable(
   (t) => [check('budget_limit_positive', sql`${t.monthlyLimitCents} > 0`)],
 )
 
+/** Manual insurance contract (US6). */
+export const insuranceContract = sqliteTable(
+  'insurance_contract',
+  {
+    id: id(),
+    type: text('type', { enum: INSURANCE_TYPES }).notNull(),
+    provider: text('provider').notNull(),
+    contractNumber: text('contract_number'),
+    /** Premium per interval, > 0. */
+    premiumCents: integer('premium_cents').notNull(),
+    interval: text('interval', { enum: PREMIUM_INTERVALS }).notNull(),
+    startDate: text('start_date').notNull(),
+    /** Optional, >= start_date. */
+    endDate: text('end_date'),
+    /** At most 2000 characters. */
+    notes: text('notes'),
+    linkedCategoryId: text('linked_category_id').references(() => category.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: text('created_at').notNull().default(nowIso),
+  },
+  (t) => [
+    check('insurance_type', inList('type', INSURANCE_TYPES)),
+    check('insurance_interval', inList('interval', PREMIUM_INTERVALS)),
+    check('insurance_premium_positive', sql`${t.premiumCents} > 0`),
+    check('insurance_end_after_start', sql`${t.endDate} IS NULL OR ${t.endDate} >= ${t.startDate}`),
+    check('insurance_notes_len', sql`${t.notes} IS NULL OR length(${t.notes}) <= 2000`),
+    check('insurance_provider_len', sql`length(${t.provider}) BETWEEN 1 AND 120`),
+  ],
+)
+
 export const schema = {
   owner,
   institution,
@@ -389,4 +422,5 @@ export const schema = {
   csvMapping,
   categorizationRule,
   budget,
+  insuranceContract,
 }

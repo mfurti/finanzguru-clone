@@ -73,6 +73,21 @@ export type RuleOperator = (typeof RULE_OPERATORS)[number]
 export const AMOUNT_SIGNS = ['positive', 'negative'] as const
 export type AmountSign = (typeof AMOUNT_SIGNS)[number]
 
+export const INSURANCE_TYPES = [
+  'health',
+  'term_life',
+  'liability',
+  'household',
+  'disability',
+  'car',
+  'legal',
+  'other',
+] as const
+export type InsuranceType = (typeof INSURANCE_TYPES)[number]
+
+export const PREMIUM_INTERVALS = ['monthly', 'quarterly', 'semiannual', 'annual'] as const
+export type PremiumInterval = (typeof PREMIUM_INTERVALS)[number]
+
 /** Overview widgets in their default order (dashboard_layout.widget_key). */
 export const WIDGET_KEYS = [
   'networth',
