@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import type { CashflowCategories, TransactionListItem } from '@finance/shared'
-import { formatDate } from '@finance/shared'
-import { VisDonut, VisSingleContainer } from '@unovis/vue'
+import { formatDate, formatEur, formatPct } from '@finance/shared'
 
-/** Expense/income categories of the period with counts, totals, donut and drill-down. */
+/** Expense/income categories of the period with counts, totals, pie chart and drill-down (US5/US7). */
 const { t } = useI18n()
 const { query } = useBudgetPeriod()
 const kind = ref<'expense' | 'income'>('expense')
 const selected = ref<string | null>(null)
+/** Category under the mouse, shared by list and pie chart (US7). */
+const hovered = ref<string | null>(null)
+const unit = ref<'eur' | 'pct'>('eur')
 
 const { data } = await useApi<CashflowCategories>('/api/cashflow/categories', {
   query: computed(() => ({ ...query.value, kind: kind.value })),
@@ -28,8 +30,14 @@ const PALETTE = [
 ]
 type Item = CashflowCategories['items'][number]
 const colorOf = (_: Item, index: number) => PALETTE[index % PALETTE.length]!
-const value = (item: Item) => item.totalCents
 const sign = computed(() => (kind.value === 'expense' ? -1 : 1))
+const display = (cents: number) =>
+  unit.value === 'eur'
+    ? formatEur(sign.value * cents)
+    : formatPct(data.value!.totalCents ? cents / data.value!.totalCents : 0)
+function toggle(categoryId: string): void {
+  selected.value = selected.value === categoryId ? null : categoryId
+}
 
 // Drill-down: bookings of the selected category in the period.
 const periodRange = computed(() => {
@@ -62,7 +70,10 @@ const { data: bookings } = await useApi<{ items: TransactionListItem[]; total: n
     default: () => ({ items: [], total: 0 }),
   },
 )
-watch([kind, query], () => (selected.value = null))
+watch([kind, query], () => {
+  selected.value = null
+  hovered.value = null
+})
 </script>
 
 <template>
@@ -70,15 +81,33 @@ watch([kind, query], () => (selected.value = null))
     <template #header>
       <div class="flex items-center justify-between gap-2">
         <h2 class="font-semibold">{{ t('budget.categories') }}</h2>
-        <UTabs
-          v-model="kind"
-          :items="[
-            { label: t('budget.expenses'), value: 'expense' },
-            { label: t('budget.income'), value: 'income' },
-          ]"
-          :content="false"
-          size="xs"
-        />
+        <div class="flex items-center gap-2">
+          <UFieldGroup size="xs">
+            <UButton
+              :variant="unit === 'eur' ? 'soft' : 'ghost'"
+              color="neutral"
+              label="€"
+              data-testid="category-unit-eur"
+              @click="unit = 'eur'"
+            />
+            <UButton
+              :variant="unit === 'pct' ? 'soft' : 'ghost'"
+              color="neutral"
+              label="%"
+              data-testid="category-unit-pct"
+              @click="unit = 'pct'"
+            />
+          </UFieldGroup>
+          <UTabs
+            v-model="kind"
+            :items="[
+              { label: t('budget.expenses'), value: 'expense' },
+              { label: t('budget.income'), value: 'income' },
+            ]"
+            :content="false"
+            size="xs"
+          />
+        </div>
       </div>
     </template>
     <EmptyState v-if="data!.items.length === 0" :title="t('budget.noData')" icon="i-lucide-tags" />
@@ -90,20 +119,24 @@ watch([kind, query], () => (selected.value = null))
               data!.count
             }})</span
           >
-          <Money :cents="sign * data!.totalCents" />
+          <span class="tabular-nums">{{ display(data!.totalCents) }}</span>
         </li>
         <li v-for="(item, index) in data!.items" :key="item.categoryId">
           <button
             type="button"
             class="flex w-full items-center justify-between gap-3 py-2 text-left row-hover"
+            :class="{ 'bg-elevated/70': hovered === item.categoryId }"
             :data-testid="`category-${item.name}`"
-            @click="selected = selected === item.categoryId ? null : item.categoryId"
+            :data-hovered="hovered === item.categoryId || undefined"
+            @click="toggle(item.categoryId)"
+            @mouseenter="hovered = item.categoryId"
+            @mouseleave="hovered = null"
           >
             <span class="flex items-center gap-2">
               <span class="size-2.5 rounded-full" :style="{ background: colorOf(item, index) }" />
               {{ item.name }} <span class="text-muted">({{ item.count }})</span>
             </span>
-            <Money :cents="sign * item.totalCents" />
+            <span class="tabular-nums">{{ display(item.totalCents) }}</span>
           </button>
           <ul
             v-if="selected === item.categoryId"
@@ -124,13 +157,14 @@ watch([kind, query], () => (selected.value = null))
           </ul>
         </li>
       </ul>
-      <div class="mx-auto size-44 shrink-0">
-        <ClientOnly>
-          <VisSingleContainer :data="data!.items" :height="176">
-            <VisDonut :value="value" :color="colorOf" :arc-width="20" />
-          </VisSingleContainer>
-        </ClientOnly>
-      </div>
+      <CategoryDonut
+        v-model:hovered="hovered"
+        :items="data!.items"
+        :total-cents="data!.totalCents"
+        :sign="sign"
+        :colors="colorOf"
+        @select="toggle"
+      />
     </div>
   </UCard>
 </template>

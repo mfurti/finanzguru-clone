@@ -218,12 +218,12 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 
 ### Tests for User Story 7
 
-- [ ] T074 [P] [US7] Component test for `CategoryDonut.vue` (slices match input, % sum within 100 ± 0.1, empty state when no data) in `apps/web/test/components/CategoryDonut.spec.ts`
+- [X] T074 [P] [US7] Component test for `CategoryDonut.vue` (slices match input, % sum within 100 ± 0.1, empty state when no data) in `apps/web/test/components/CategoryDonut.spec.ts`
 
 ### Implementation for User Story 7
 
-- [ ] T075 [US7] Build `apps/web/app/components/budget/CategoryDonut.vue` (VisDonut with `.chart-hover`, €/% toggle, emits hover/select by category id, empty state)
-- [ ] T076 [US7] Integrate it into `apps/web/app/components/budget/CategoryList.vue` / `apps/web/app/pages/budget/index.vue` with a shared `hoveredCategoryId` (row highlight on slice hover and vice versa) and click opening the category like the list
+- [X] T075 [US7] Build `apps/web/app/components/budget/CategoryDonut.vue` (VisDonut with `.chart-hover`, €/% toggle, emits hover/select by category id, empty state)
+- [X] T076 [US7] Integrate it into `apps/web/app/components/budget/CategoryList.vue` / `apps/web/app/pages/budget/index.vue` with a shared `hoveredCategoryId` (row highlight on slice hover and vice versa) and click opening the category like the list
 - [ ] T077 [US7] Playwright journey W14 in `e2e/us13-budget-pie.spec.ts`
 
 **Checkpoint**: All user stories independently functional
