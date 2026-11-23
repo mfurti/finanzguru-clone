@@ -172,13 +172,13 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 
 ### Tests for User Story 5
 
-- [ ] T060 [P] [US5] Unit tests for benchmark return series (rebased to 0 % on the period start, carry-forward, stale after 4 days, start at first available price) in `apps/api/test/unit/benchmark.spec.ts`
-- [ ] T061 [P] [US5] E2E tests for `/api/benchmarks`, `/api/benchmarks/:instrumentId/series` and `GET/PUT /api/settings/charts` (keys allowlisted: `chart.networth.benchmark`, `chart.investments.benchmark`) in `apps/api/test/e2e/benchmarks.e2e-spec.ts`
+- [X] T060 [P] [US5] Unit tests for benchmark return series (rebased to 0 % on the period start, carry-forward, stale after 4 days, start at first available price) in `apps/api/test/unit/benchmark.spec.ts`
+- [X] T061 [P] [US5] E2E tests for `/api/benchmarks`, `/api/benchmarks/:instrumentId/series` and `GET/PUT /api/settings/charts` (keys allowlisted: `chart.networth.benchmark`, `chart.investments.benchmark`) in `apps/api/test/e2e/benchmarks.e2e-spec.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T062 [P] [US5] Implement `apps/api/src/domain/benchmark.ts` (return series from prices with 001 carry-forward rule)
-- [ ] T063 [US5] Create `apps/api/src/modules/benchmarks/` (benchmark list, series, chart settings via `user_setting`); register module
+- [X] T062 [P] [US5] Implement `apps/api/src/domain/benchmark.ts` (return series from prices with 001 carry-forward rule)
+- [X] T063 [US5] Create `apps/api/src/modules/benchmarks/` (benchmark list, series, chart settings via `user_setting`); register module
 - [ ] T064 [P] [US5] Build `apps/web/app/components/common/BenchmarkSelect.vue` (select of benchmarks + "Keiner", link to price import when empty)
 - [ ] T065 [US5] Add the benchmark line, legend and tooltip value to `apps/web/app/components/dashboard/NetWorthChart.vue` (Rendite mode only) and `apps/web/app/components/investments/PerformanceChart.vue` (% mode), loading and saving the selection via `/api/settings/charts`
 - [ ] T066 [US5] Add one benchmark instrument with daily prices to `apps/api/src/database/demo.ts` (synthetic, deterministic)
