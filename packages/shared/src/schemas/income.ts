@@ -32,6 +32,8 @@ export const dividendCalendarEntry = z.object({
   status: z.enum(['expected', 'received']),
   cents,
   amountPerShare: decimalString.nullable(),
+  exDate: isoDate.nullable(),
+  note: z.string().nullable(),
 })
 export type DividendCalendarEntry = z.infer<typeof dividendCalendarEntry>
 

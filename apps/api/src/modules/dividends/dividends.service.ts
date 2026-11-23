@@ -121,6 +121,8 @@ export class DividendsService {
         status: 'received' as const,
         cents: b.cents,
         amountPerShare: null,
+        exDate: null,
+        note: null,
       })),
       ...expected.map((e) => ({
         id: e.id,
@@ -130,6 +132,8 @@ export class DividendsService {
         status: 'expected' as const,
         cents: valueCents(quantityOn(e.instrumentId, e.payDate), e.amountPerShare),
         amountPerShare: e.amountPerShare,
+        exDate: e.exDate,
+        note: e.note,
       })),
     ].sort((a, b) => a.date.localeCompare(b.date))
   }

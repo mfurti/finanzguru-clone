@@ -104,9 +104,9 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 
 - [X] T035 [P] [US2] Implement `apps/api/src/domain/dividends.ts` (summary figures, yearly rows with change to previous year, per-security split, expected amount via FIFO quantity on the pay date)
 - [X] T036 [US2] Create `apps/api/src/modules/dividends/` (service, controller, module) with summary, calendar and expected CRUD per contract; register module
-- [ ] T037 [P] [US2] Build `apps/web/app/components/dividends/DividendSummary.vue` (tiles Letzte 12 Monate, Ø pro Monat, Dividendenrendite YTD, CAGR) and `DividendHistory.vue` (yearly bar chart + table Jahr, Betrag, Zum Vorjahr)
-- [ ] T038 [P] [US2] Build `apps/web/app/components/dividends/DividendCalendar.vue` (month list with expected/received badges) and `ExpectedForm.vue` (modal: Wertpapier, Zahltag, Ex-Tag, Betrag je Anteil, Notiz)
-- [ ] T039 [US2] Create `apps/web/app/pages/investments/dividends.vue` with summary, history, per-security list and calendar
+- [X] T037 [P] [US2] Build `apps/web/app/components/dividends/DividendSummary.vue` (tiles Letzte 12 Monate, Ø pro Monat, Dividendenrendite YTD, CAGR) and `DividendHistory.vue` (yearly bar chart + table Jahr, Betrag, Zum Vorjahr)
+- [X] T038 [P] [US2] Build `apps/web/app/components/dividends/DividendCalendar.vue` (month list with expected/received badges) and `ExpectedForm.vue` (modal: Wertpapier, Zahltag, Ex-Tag, Betrag je Anteil, Notiz)
+- [X] T039 [US2] Create `apps/web/app/pages/investments/dividends.vue` with summary, history, per-security list and calendar
 - [ ] T040 [US2] Add one expected dividend for the distributing demo ETF to `apps/api/src/database/demo.ts`
 - [ ] T041 [US2] Playwright journey W6–W7 in `e2e/us8-dividends.spec.ts`
 

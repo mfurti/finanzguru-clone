@@ -91,7 +91,12 @@ const barTooltip = (p: BarPoint) =>
       <ClientOnly v-else>
         <VisXYContainer :data="bars" :height="220" class="chart chart-hover">
           <VisGroupedBar :x="barX" :y="barY" :color="barColor" :rounded-corners="3" />
-          <VisAxis type="x" :tick-format="tickYear" :num-ticks="bars.length" :grid-line="false" />
+          <VisAxis
+            type="x"
+            :tick-format="tickYear"
+            :tick-values="bars.map((bar) => bar.index)"
+            :grid-line="false"
+          />
           <VisAxis type="y" :tick-format="tickPct" :num-ticks="4" />
           <VisCrosshair :template="barTooltip" />
           <VisTooltip />
