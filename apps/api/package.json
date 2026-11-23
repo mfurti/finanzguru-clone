@@ -20,6 +20,7 @@
     "perf": "nest build && node dist/scripts/perf.js"
   },
   "dependencies": {
+    "@fastify/helmet": "^13.2.0",
     "@fastify/multipart": "^9.4.0",
     "@fastify/secure-session": "^8.4.2",
     "@fastify/static": "^10.1.12",

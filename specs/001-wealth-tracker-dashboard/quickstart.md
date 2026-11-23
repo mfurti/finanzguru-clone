@@ -96,4 +96,11 @@ Measured 2026-11-23 on the development machine (Node 26, SQLite WAL):
 
 Existing indexes (`transactions(account_id, booking_date)`, `transactions(category_id)`, `position_lot(account_id, instrument_id)`, primary keys on `price` and `net_worth_snapshot`) cover the hot queries; no new index was needed.
 
+## Security checks (T076)
+
+- API: `@fastify/helmet` (nosniff, frame options, HSTS, no `x-powered-by`); production adds a deny-all CSP. Covered by `apps/api/test/e2e/security.e2e-spec.ts`, which also checks that `/api/sources` never returns credentials, `/api/auth/session` never returns the password hash, and uploads over 20 MB return 400.
+- Web: production responses carry a same-origin CSP plus `X-Frame-Options: DENY`, `Referrer-Policy` and `Permissions-Policy` (`nuxt.config.ts`). Checked against `node .output/server/index.mjs`: all pages render with no CSP violations in the console.
+- Logs: pino redacts cookies, the authorization header and `set-cookie`.
+- `pnpm audit --audit-level high`: no high or critical findings (3 moderate on 2026-11-23).
+
 Contracts: [http-api.md](./contracts/http-api.md), [data-source.md](./contracts/data-source.md), [csv-formats.md](./contracts/csv-formats.md). Entities: [data-model.md](./data-model.md).

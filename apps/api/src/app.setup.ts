@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import helmet from '@fastify/helmet'
 import multipart from '@fastify/multipart'
 import secureSession from '@fastify/secure-session'
 import { ConfigService } from '@nestjs/config'
@@ -23,6 +24,15 @@ export async function configureApp(app: NestFastifyApplication): Promise<void> {
   app.setGlobalPrefix('api')
   app.useLogger(app.get(Logger))
 
+  const production = config.get<string>('NODE_ENV') === 'production'
+  // Security headers. The API only serves JSON, so production gets a deny-all CSP;
+  // outside production CSP stays off for the Swagger UI.
+  await app.register(helmet, {
+    contentSecurityPolicy: production
+      ? { directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"] } }
+      : false,
+  })
+
   await app.register(secureSession, {
     cookieName: SESSION_COOKIE,
     // 32-byte key derived from API_SESSION_SECRET (>= 32 bytes, validated at startup).
@@ -43,7 +53,7 @@ export async function configureApp(app: NestFastifyApplication): Promise<void> {
   app.useGlobalPipes(new ZodValidationPipe())
   app.useGlobalFilters(new HttpExceptionFilter())
 
-  if (config.get<string>('NODE_ENV') !== 'production') {
+  if (!production) {
     const document = SwaggerModule.createDocument(
       app,
       new DocumentBuilder()
