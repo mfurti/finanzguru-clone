@@ -423,6 +423,7 @@ export function seedDemo(db: Db, today = todayIso()): DemoResult {
 
     seedDemoAnalysis(tx, instrumentIds)
     seedDemoTaxes(tx, broker.id)
+    seedDemoBenchmark(tx)
 
     new RecomputeService().recompute(
       tx,
@@ -588,4 +589,42 @@ function seedDemoTaxes(tx: Pick<Db, 'insert'>, brokerId: string): void {
   tx.insert(exemptionOrder)
     .values({ institutionId: brokerId, year: Number(DEMO_END.slice(0, 4)), amountCents: 80_000 })
     .run()
+}
+
+/** Benchmark for "Vergleichen mit" (US5), not held in the depot. */
+export const DEMO_BENCHMARK = {
+  isin: 'IE00B5BMR087',
+  wkn: 'A0YEDG',
+  name: 'iShares Core S&P 500 UCITS ETF (Acc)',
+}
+
+/**
+ * Weekday closes from a smooth deterministic curve (no use of the demo's
+ * random generator, so the other demo values stay unchanged).
+ */
+function seedDemoBenchmark(tx: Pick<Db, 'insert'>): void {
+  const id = tx
+    .insert(instrument)
+    .values({ ...DEMO_BENCHMARK, assetClass: 'etf', fundType: 'equity', isBenchmark: true })
+    .returning()
+    .get().id
+  const rows: (typeof price.$inferInsert)[] = []
+  let i = 0
+  for (const day of eachDay(DEMO_START, DEMO_END)) {
+    if (!isWeekday(day)) continue
+    const level =
+      400 * Math.exp(0.0004 * i) * (1 + 0.04 * Math.sin(i / 23) + 0.015 * Math.sin(i / 5))
+    rows.push({
+      instrumentId: id,
+      date: day,
+      close: new D(level).toDecimalPlaces(2).toString(),
+      source: 'manual',
+    })
+    i++
+  }
+  for (let start = 0; start < rows.length; start += 500) {
+    tx.insert(price)
+      .values(rows.slice(start, start + 500))
+      .run()
+  }
 }

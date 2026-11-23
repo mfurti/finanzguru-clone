@@ -33,6 +33,16 @@ const yValue = (point: Point) => point.valueCents / 100
 const yInvested = (point: Point) => point.investedCents / 100
 const yReturn = (point: Point) => (point.returnPct === null ? 0 : Number(point.returnPct) * 100)
 
+/** "Vergleichen mit" (US5): benchmark return over the displayed range, Rendite mode only. */
+const benchmark = useBenchmark('networthBenchmark', () =>
+  series.value.length > 0 ? { from: series.value[0]!.date, to: series.value.at(-1)!.date } : null,
+)
+const yBenchmark = (point: Point) => {
+  const value = benchmark.byDate.value.get(point.date)
+  return value === undefined ? undefined : value * 100
+}
+const showBenchmark = computed(() => mode.value === 'return' && benchmark.byDate.value.size > 0)
+
 const tickDate = (index: number) => {
   const point = series.value[Math.round(index)]
   if (!point) return ''
@@ -58,6 +68,9 @@ const tooltip = (point: Point) => {
             t('overview.netWorth.return'),
             point.returnPct === null ? '–' : formatPctSigned(Number(point.returnPct)),
           ],
+          ...(showBenchmark.value && yBenchmark(point) !== undefined
+            ? [[benchmark.name.value ?? '', formatPctSigned(yBenchmark(point)! / 100)]]
+            : []),
         ]
   return `<div class="text-xs"><div class="mb-1 font-medium">${formatDate(point.date)}</div>${rows
     .map(
@@ -81,7 +94,15 @@ const tooltip = (point: Point) => {
         size="sm"
       />
     </div>
-    <PeriodTabs v-model="period" class="mb-3" />
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+      <PeriodTabs v-model="period" />
+      <BenchmarkSelect
+        v-if="mode === 'return'"
+        v-model="benchmark.selected.value"
+        :benchmarks="benchmark.benchmarks.value ?? []"
+        :stale="benchmark.series.value?.stale"
+      />
+    </div>
 
     <div class="mb-4 flex flex-wrap items-end gap-x-6 gap-y-1">
       <div>
@@ -106,6 +127,22 @@ const tooltip = (point: Point) => {
       :action-label="t('overview.empty.action')"
       action-to="/settings/sources"
     />
+    <div
+      v-if="showBenchmark"
+      class="mb-2 flex flex-wrap gap-3 text-xs text-muted"
+      data-testid="benchmark-legend"
+    >
+      <span class="flex items-center gap-1"
+        ><span class="h-0.5 w-3 rounded" style="background: var(--ui-primary)" />{{
+          t('overview.netWorth.return')
+        }}</span
+      >
+      <span class="flex items-center gap-1"
+        ><span class="h-0.5 w-3 rounded" style="background: var(--color-amber-500)" />{{
+          benchmark.name.value
+        }}</span
+      >
+    </div>
     <ClientOnly v-else>
       <VisXYContainer :data="points" :height="260" class="networth-chart">
         <template v-if="mode === 'value'">
@@ -115,6 +152,14 @@ const tooltip = (point: Point) => {
         </template>
         <template v-else>
           <VisLine :x="x" :y="yReturn" color="var(--ui-primary)" :line-width="2" />
+          <VisLine
+            v-if="showBenchmark"
+            :x="x"
+            :y="yBenchmark"
+            color="var(--color-amber-500)"
+            :line-width="1.5"
+            data-testid="benchmark-line"
+          />
         </template>
         <VisAxis type="x" :tick-format="tickDate" :num-ticks="4" :grid-line="false" />
         <VisAxis type="y" :tick-format="tickY" :num-ticks="4" />
