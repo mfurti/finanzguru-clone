@@ -67,7 +67,7 @@ See `deploy/README.md`: copy `deploy/compose.yaml` and `deploy/.env.example` to 
 | V18 | API | Open `http://localhost:3001/api/docs`; call `GET /api/overview/kpis` without a cookie | Swagger lists all endpoints from [http-api.md](./contracts/http-api.md); request returns 401 |
 | V19 | Docker local | `compose.local.yaml` up, import a CSV, `down`, `up` again | Data still present (bind mount `./data-local/api`); both healthchecks `healthy` |
 | V20 | Release | Push to `main` | `release.yml` publishes `finanzguru-clone-web` and `-api` with `latest` + `sha-*` tags to GHCR |
-| V21 | Server | On `the home server`: `docker compose -f <STACK_DIR>/compose.yaml config` | Valid; order `name`, `networks`, `services`; only bind mounts; `.36` + fixed MAC on `${MACVLAN_NETWORK}` |
+| V21 | Server | On the server: `docker compose -f <STACK_DIR>/compose.yaml config` | Valid; order `name`, `networks`, `services`; only bind mounts; `${FINANCE_WEB_IP}` + fixed MAC on the macvlan network |
 | V22 | Server | After `pull` + `up -d`: open `http://${FINANCE_WEB_IP}:3000` from the LAN; recreate containers | Login works; data unchanged after recreation (SC-008) |
 
 Contracts: [http-api.md](./contracts/http-api.md), [data-source.md](./contracts/data-source.md), [csv-formats.md](./contracts/csv-formats.md). Entities: [data-model.md](./data-model.md).
