@@ -7,6 +7,7 @@ import { DrizzleModule } from './database/drizzle.module'
 import { AccountsModule } from './modules/accounts/accounts.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { CashflowModule } from './modules/cashflow/cashflow.module'
+import { CategoriesModule } from './modules/categories/categories.module'
 import { HealthModule } from './modules/health/health.module'
 import { ImportModule } from './modules/import/import.module'
 import { InvestmentsModule } from './modules/investments/investments.module'
@@ -58,6 +59,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module'
     ImportModule,
     InvestmentsModule,
     CashflowModule,
+    CategoriesModule,
   ],
 })
 export class AppModule {}
