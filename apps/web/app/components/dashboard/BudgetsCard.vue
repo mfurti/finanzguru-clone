@@ -12,7 +12,7 @@ const { data } = await useApi<BudgetDto[]>('/api/budgets', {
 <template>
   <UCard data-testid="budgets-card">
     <template #header>
-      <NuxtLink to="/budget/budgets" class="font-semibold hover:underline">
+      <NuxtLink to="/budget/budgets" class="font-semibold link-hover">
         {{ t('overview.budgets.title') }}
       </NuxtLink>
     </template>

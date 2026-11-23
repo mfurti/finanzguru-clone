@@ -58,7 +58,7 @@ async function assign(row: TransactionListItem, categoryId: string): Promise<voi
         <li
           v-for="row in data!.items"
           :key="row.id"
-          class="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
+          class="row-hover flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
           :data-testid="`review-${row.id}`"
         >
           <div class="min-w-0">

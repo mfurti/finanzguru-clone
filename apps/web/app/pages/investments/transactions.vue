@@ -66,13 +66,13 @@ const { data } = await useApi<{ items: Row[]; total: number }>('/api/investments
         <li
           v-for="row in data!.items"
           :key="row.id"
-          class="flex items-center justify-between gap-3 py-2"
+          class="row-hover flex items-center justify-between gap-3 py-2"
         >
           <span class="min-w-0">
             <NuxtLink
               v-if="row.instrumentId"
               :to="`/investments/${row.instrumentId}`"
-              class="block truncate font-medium hover:underline"
+              class="block truncate font-medium link-hover"
             >
               {{ row.instrumentName }}
             </NuxtLink>

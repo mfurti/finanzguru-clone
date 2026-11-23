@@ -12,7 +12,7 @@ const { t } = useI18n()
     <li
       v-for="contract in contracts"
       :key="contract.id"
-      class="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
+      class="row-hover flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
     >
       <div class="min-w-0">
         <div class="font-medium">

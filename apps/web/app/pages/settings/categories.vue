@@ -123,7 +123,7 @@ async function applyRules(): Promise<void> {
         <li
           v-for="rule in rules"
           :key="rule.id"
-          class="flex items-center justify-between gap-2 py-2"
+          class="row-hover flex items-center justify-between gap-2 py-2"
         >
           <span>
             <span class="text-muted">{{ rule.priority }}.</span>

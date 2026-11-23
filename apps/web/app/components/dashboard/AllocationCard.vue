@@ -60,14 +60,16 @@ const display = (slice: Slice) =>
       icon="i-lucide-chart-pie"
     />
     <div v-else class="flex flex-col items-center gap-4 sm:flex-row">
-      <div class="relative size-44 shrink-0">
+      <div class="chart-hover relative size-44 shrink-0">
         <ClientOnly>
           <VisSingleContainer :data="slices" :height="176">
             <VisDonut :value="value" :color="color" :arc-width="22" :pad-angle="0.01" />
           </VisSingleContainer>
         </ClientOnly>
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <span class="font-semibold"><Money :cents="data!.totalCents" /></span>
+        <div
+          class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center"
+        >
+          <span class="font-semibold"><Money :cents="data!.totalCents" animate /></span>
           <span class="text-xs text-muted">{{ t('overview.allocation.center') }}</span>
         </div>
       </div>
@@ -75,7 +77,7 @@ const display = (slice: Slice) =>
         <li
           v-for="slice in slices"
           :key="slice.key"
-          class="flex items-center justify-between gap-3 py-2"
+          class="row-hover flex items-center justify-between gap-3 py-2"
         >
           <span class="flex items-center gap-2">
             <span class="size-3 rounded-sm" :style="{ background: color(slice) }" />

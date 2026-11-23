@@ -63,9 +63,11 @@ async function saveLayout(next: WidgetLayoutItem[]): Promise<void> {
     <div class="grid gap-4 lg:grid-cols-2">
       <component
         :is="WIDGETS[item.widgetKey]"
-        v-for="item in visible"
+        v-for="(item, index) in visible"
         :key="item.widgetKey"
+        class="reveal card-hover"
         :class="{ 'lg:col-span-2': WIDE.has(item.widgetKey) }"
+        :style="{ '--i': index }"
       />
     </div>
 

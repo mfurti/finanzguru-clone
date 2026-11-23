@@ -27,7 +27,7 @@ const groups = computed<{ key: 'top' | 'flop'; items: Holding[] }[]>(() => [
   <UCard data-testid="holdings-card">
     <template #header>
       <div class="flex items-center justify-between gap-2">
-        <NuxtLink to="/investments" class="font-semibold hover:underline">
+        <NuxtLink to="/investments" class="font-semibold link-hover">
           {{ t('overview.holdings.title') }}
         </NuxtLink>
         <USelect v-model="range" :items="rangeItems" size="sm" class="w-28" />
@@ -42,9 +42,9 @@ const groups = computed<{ key: 'top' | 'flop'; items: Holding[] }[]>(() => [
           <li
             v-for="item in group.items"
             :key="item.instrumentId"
-            class="flex items-center justify-between gap-3 py-2 text-sm"
+            class="row-hover flex items-center justify-between gap-3 py-2 text-sm"
           >
-            <NuxtLink :to="`/investments/${item.instrumentId}`" class="min-w-0 hover:underline">
+            <NuxtLink :to="`/investments/${item.instrumentId}`" class="min-w-0 link-hover">
               <span class="block truncate font-medium">{{ item.name }}</span>
               <span class="text-xs text-muted"><Money :cents="item.priceCents" /></span>
             </NuxtLink>

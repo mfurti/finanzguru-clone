@@ -95,7 +95,7 @@ watch([kind, query], () => (selected.value = null))
         <li v-for="(item, index) in data!.items" :key="item.categoryId">
           <button
             type="button"
-            class="flex w-full items-center justify-between gap-3 py-2 text-left hover:bg-elevated"
+            class="flex w-full items-center justify-between gap-3 py-2 text-left row-hover"
             :data-testid="`category-${item.name}`"
             @click="selected = selected === item.categoryId ? null : item.categoryId"
           >

@@ -73,7 +73,7 @@ const rows = computed<Row[]>(() => {
         <div
           v-for="row in rows"
           :key="row.key"
-          class="flex items-center justify-between gap-3 py-2"
+          class="row-hover flex items-center justify-between gap-3 py-2"
           :class="{ 'font-semibold': row.bold }"
         >
           <dt class="flex items-center gap-1">
@@ -94,7 +94,7 @@ const rows = computed<Row[]>(() => {
             <span v-if="row.net !== undefined && row.net !== null" class="text-muted">
               {{ t('overview.kpis.net') }} <Money :cents="row.net" signed :colored="false" />
             </span>
-            <Money :cents="row.cents" :signed="row.signed" />
+            <Money :cents="row.cents" :signed="row.signed" animate />
           </dd>
         </div>
       </dl>

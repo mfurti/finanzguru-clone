@@ -47,7 +47,7 @@ const statusColor = (status: DataSourceDto['status']) =>
         <li
           v-for="source in sources"
           :key="source.id"
-          class="flex items-center justify-between gap-3 py-2 text-sm"
+          class="row-hover flex items-center justify-between gap-3 py-2 text-sm"
         >
           <span>
             <span class="block font-medium">{{ source.displayName }}</span>

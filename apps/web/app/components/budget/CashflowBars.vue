@@ -33,7 +33,7 @@ const barEvents = { [GroupedBar.selectors.bar]: { click: (bar: Bar) => emit('sel
       >
     </div>
     <ClientOnly>
-      <VisXYContainer :data="data" :height="200" class="chart" :padding="{ top: 8 }">
+      <VisXYContainer :data="data" :height="200" class="chart chart-hover" :padding="{ top: 8 }">
         <VisGroupedBar
           :x="x"
           :y="y"

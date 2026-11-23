@@ -33,7 +33,7 @@ const toggle = (type: string) => {
       <section v-for="group in data!.groups" :key="group.type">
         <button
           type="button"
-          class="flex w-full items-center justify-between gap-2 py-2 font-medium"
+          class="row-hover flex w-full items-center justify-between gap-2 py-2 font-medium"
           :aria-expanded="!collapsed[group.type]"
           @click="toggle(group.type)"
         >
@@ -48,12 +48,12 @@ const toggle = (type: string) => {
         </button>
         <ul v-show="!collapsed[group.type]" class="divide-y divide-default">
           <template v-for="item in group.items" :key="item.id">
-            <li class="flex items-center justify-between gap-3 py-2 pl-5">
+            <li class="row-hover flex items-center justify-between gap-3 py-2 pl-7">
               <span class="min-w-0">
                 <NuxtLink
                   v-if="group.type === 'depots'"
                   :to="{ path: '/investments', query: { accounts: item.id } }"
-                  class="block truncate hover:underline"
+                  class="block truncate link-hover"
                 >
                   {{ item.name }}
                 </NuxtLink>
@@ -65,7 +65,7 @@ const toggle = (type: string) => {
             <li
               v-for="child in item.children ?? []"
               :key="child.id"
-              class="flex items-center justify-between gap-3 py-2 pl-10 text-muted"
+              class="row-hover flex items-center justify-between gap-3 py-2 pl-12 text-muted"
             >
               <span class="flex min-w-0 items-center gap-1">
                 <UIcon name="i-lucide-corner-down-right" class="size-3.5 shrink-0" />

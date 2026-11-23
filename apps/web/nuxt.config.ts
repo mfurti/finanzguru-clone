@@ -32,6 +32,10 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ['@nuxt/ui', '@nuxtjs/i18n'],
   css: ['~/assets/css/main.css'],
+  // Short fade/slide between routes (styles in main.css, off for reduced motion).
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' },
+  },
   // Components are referenced by file name (AccountFilter, not CommonAccountFilter).
   components: [{ path: '~/components', pathPrefix: false }],
   devServer: {

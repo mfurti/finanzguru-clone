@@ -86,13 +86,13 @@ const tooltip = (point: Point) => {
     <div class="mb-4 flex flex-wrap items-end gap-x-6 gap-y-1">
       <div>
         <div class="text-3xl font-semibold" data-testid="networth-total">
-          <Money :cents="hasData ? data!.totalCents : null" />
+          <Money :cents="hasData ? data!.totalCents : null" animate />
         </div>
         <div class="text-xs text-muted">{{ t('overview.netWorth.total') }}</div>
       </div>
       <div>
         <div class="text-lg font-medium">
-          <Money :cents="hasData ? data!.gainCents : null" signed />
+          <Money :cents="hasData ? data!.gainCents : null" signed animate />
         </div>
         <div class="text-xs text-muted">{{ t('overview.netWorth.gain') }}</div>
       </div>

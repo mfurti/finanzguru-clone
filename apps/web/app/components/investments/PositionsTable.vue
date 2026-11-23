@@ -53,7 +53,7 @@ const columns = computed<TableColumn<PositionDto>[]>(() => [
       h('div', { class: 'min-w-40' }, [
         h(
           NuxtLink,
-          { to: `/investments/${row.original.instrumentId}`, class: 'font-medium hover:underline' },
+          { to: `/investments/${row.original.instrumentId}`, class: 'font-medium link-hover' },
           () => row.original.name,
         ),
         h(
@@ -240,7 +240,7 @@ const soldOpen = ref(false)
               :key="row.instrumentId"
               class="flex items-center justify-between gap-3 py-2"
             >
-              <NuxtLink :to="`/investments/${row.instrumentId}`" class="hover:underline">{{
+              <NuxtLink :to="`/investments/${row.instrumentId}`" class="link-hover">{{
                 row.name
               }}</NuxtLink>
               <span class="text-right">

@@ -14,19 +14,19 @@ const { t } = useI18n()
       <div class="p-3">
         <div class="text-xs text-muted">{{ t('budget.income') }}</div>
         <div class="font-semibold text-success" data-testid="tile-income">
-          <Money :cents="summary.incomeCents" />
+          <Money :cents="summary.incomeCents" animate />
         </div>
       </div>
       <div class="p-3">
         <div class="text-xs text-muted">{{ t('budget.expenses') }}</div>
         <div class="font-semibold text-error" data-testid="tile-expenses">
-          <Money :cents="-summary.expenseCents" />
+          <Money :cents="-summary.expenseCents" animate />
         </div>
       </div>
       <div class="p-3">
         <div class="text-xs text-muted">{{ t('budget.balance') }}</div>
         <div class="font-semibold" data-testid="tile-balance">
-          <Money :cents="summary.balanceCents" signed />
+          <Money :cents="summary.balanceCents" signed animate />
         </div>
       </div>
     </div>
@@ -37,7 +37,7 @@ const { t } = useI18n()
         <div class="flex items-center justify-center gap-1 text-xs text-muted">
           {{ t('budget.saved') }} <InfoTooltip :text="t('budget.savedInfo')" />
         </div>
-        <div class="font-semibold text-success"><Money :cents="summary.savedCents" /></div>
+        <div class="font-semibold text-success"><Money :cents="summary.savedCents" animate /></div>
       </div>
       <div class="p-3">
         <div class="flex items-center justify-center gap-1 text-xs text-muted">
