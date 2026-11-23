@@ -2,6 +2,7 @@ import { mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { defineConfig, devices } from '@playwright/test'
+import { E2E_PASSWORD } from './constants'
 
 // Own ports so E2E never collides with a running dev server.
 const WEB_PORT = 3200
@@ -15,6 +16,7 @@ const apiEnv = {
   API_SESSION_SECRET: 'e2e-session-secret-0123456789abcdef',
   API_ENCRYPTION_KEY: Buffer.alloc(32, 7).toString('base64'),
   COOKIE_SECURE: 'false',
+  OWNER_PASSWORD: E2E_PASSWORD,
 }
 
 export default defineConfig({
@@ -43,7 +45,7 @@ export default defineConfig({
   webServer: [
     {
       command:
-        'pnpm --filter @finance/shared build && pnpm --filter api build && node apps/api/dist/main.js',
+        'pnpm --filter @finance/shared build && pnpm --filter api build && node apps/api/dist/scripts/set-password.js --name E2E && node apps/api/dist/main.js',
       cwd: '..',
       env: apiEnv,
       url: `http://localhost:${API_PORT}/api/health`,

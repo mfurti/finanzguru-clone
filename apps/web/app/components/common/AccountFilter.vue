@@ -4,7 +4,7 @@ import type { AccountDto } from '@finance/shared'
 const { selected, isAll, toggle, reset } = useAccountFilter()
 const { t } = useI18n()
 
-const { data: accounts } = useFetch<AccountDto[]>('/api/accounts', {
+const { data: accounts } = useApi<AccountDto[]>('/api/accounts', {
   key: 'accounts',
   default: () => [],
 })

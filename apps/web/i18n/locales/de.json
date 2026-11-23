@@ -12,12 +12,20 @@
   },
   "header": {
     "search": "Suche",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "logout": "Abmelden"
   },
   "filter": {
     "allAccounts": "Alle Konten",
     "oneAccount": "1 Konto",
     "nAccounts": "{n} Konten",
     "noAccounts": "Noch keine Konten vorhanden."
+  },
+  "login": {
+    "title": "Anmelden",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "wrong": "Passwort falsch.",
+    "tooMany": "Zu viele Versuche. Bitte warte eine Minute."
   }
 }

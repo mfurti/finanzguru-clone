@@ -3,6 +3,13 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 
 const { t } = useI18n()
 const route = useRoute()
+const session = useState<{ displayName: string } | null>('session')
+
+async function logout(): Promise<void> {
+  await $fetch('/api/auth/logout', { method: 'POST' }).catch(() => undefined)
+  session.value = null
+  await navigateTo('/login')
+}
 
 /** Keep the account filter when switching tabs. */
 const withFilter = (path: string) => ({
@@ -59,6 +66,15 @@ const tabs = computed<NavigationMenuItem[]>(() => [
           variant="ghost"
           to="/settings/sources"
           :aria-label="t('header.settings')"
+        />
+        <UButton
+          icon="i-lucide-log-out"
+          color="neutral"
+          variant="ghost"
+          :aria-label="t('header.logout')"
+          :title="session?.displayName"
+          data-testid="logout"
+          @click="logout"
         />
       </div>
       <nav
