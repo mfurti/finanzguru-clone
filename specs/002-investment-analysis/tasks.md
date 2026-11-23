@@ -130,7 +130,7 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 - [X] T044 [US3] Add `GET /api/investments/transactions.csv` reusing the query and the 001 CSV writer in `apps/api/src/modules/investments/investments.controller.ts`
 - [X] T045 [P] [US3] Build `apps/web/app/components/investments/TransactionsTable.vue` (UTable with columns Datum, Typ, Name (WKN/ISIN), Depot, Kaufpreis/Stück, Stück, Steuern, Gebühren, Gesamtbetrag; column visibility as in PositionsTable; server paging 50; footer total; card layout below `sm`)
 - [X] T046 [US3] Rebuild `apps/web/app/pages/investments/transactions.vue` with filter bar (Typ, Depot, Zeitraum, Wertpapier), TransactionsTable and Export button passing visible columns and filters
-- [ ] T047 [US3] Update the 001 journey `e2e/us4-investments.spec.ts` for the new table and add W8–W9 in `e2e/us9-bookings.spec.ts`
+- [X] T047 [US3] Update the 001 journey `e2e/us4-investments.spec.ts` for the new table and add W8–W9 in `e2e/us9-bookings.spec.ts`
 
 **Checkpoint**: Bookings table works independently
 
