@@ -13,12 +13,18 @@ test.describe('US1 overview', () => {
     await expect(page.getByTestId('networth-total')).toBeVisible()
   })
 
-  test('shows the demo net worth to the cent and all widgets', async ({ page }) => {
+  test('shows the demo net worth to the cent and all widgets', async ({ page, request }) => {
     await expect(page.getByTestId('networth-total')).toHaveText(formatEur(expected.totalCents))
     for (const id of ['allocation-card', 'kpi-card', 'holdings-card', 'accounts-card']) {
       await expect(page.getByTestId(id)).toBeVisible()
     }
-    await expect(page.getByTestId('review-banner')).toContainText(String(expected.unreviewed))
+    // Other journeys categorize bookings, so compare with the API instead of the seed value.
+    const { count } = (await (await request.get('/api/transactions/unreviewed/count')).json()) as {
+      count: number
+    }
+    if (count > 0) await expect(page.getByTestId('review-banner')).toContainText(String(count))
+    else await expect(page.getByTestId('review-banner')).toHaveCount(0)
+    expect(count).toBeLessThanOrEqual(expected.unreviewed)
     await expect(page.locator('body')).not.toContainText('NaN')
   })
 
