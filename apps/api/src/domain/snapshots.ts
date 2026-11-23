@@ -92,7 +92,8 @@ export function computeDepotSnapshots(
       apply(tx)
     }
 
-    let value: DecimalValue = new D(0)
+    // Rounded per holding, like a broker statement, so totals equal the sum of positions.
+    let value = 0
     let invested = 0
     let stale = false
     for (const [instrumentId, state] of states) {
@@ -103,12 +104,12 @@ export function computeDepotSnapshots(
       let close: DecimalValue | null = point ? new D(point.close) : state.lastTradePrice
       if (!point || daysBetween(point.date, day) > STALE_AFTER_DAYS) stale = true
       close ??= new D(0)
-      value = value.plus(quantity.times(close))
+      value += eurosToCents(quantity.times(close))
     }
     result.push({
       accountId,
       date: day,
-      valueCents: eurosToCents(value),
+      valueCents: value,
       investedCents: invested,
       externalFlowCents: flow,
       priceStale: stale,
