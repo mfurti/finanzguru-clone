@@ -226,5 +226,48 @@
       "planned": "geplant",
       "disabled": "deaktiviert"
     }
+  },
+  "add": {
+    "button": "Hinzufügen",
+    "csv": "CSV importieren",
+    "account": "Konto anlegen",
+    "transaction": "Transaktion erfassen",
+    "noAccounts": "Lege zuerst ein Konto an."
+  },
+  "forms": {
+    "name": "Name",
+    "type": "Art",
+    "iban": "IBAN",
+    "balance": "Aktueller Kontostand",
+    "optional": "optional",
+    "failed": "Speichern fehlgeschlagen.",
+    "account": "Konto",
+    "date": "Datum",
+    "amount": "Betrag",
+    "quantity": "Stück",
+    "counterparty": "Empfänger/Zahler",
+    "purpose": "Verwendungszweck"
+  },
+  "accountTypes": {
+    "depot": "Depot",
+    "checking": "Girokonto",
+    "savings": "Sparkonto",
+    "reference": "Referenzkonto",
+    "credit_card": "Kreditkarte",
+    "cash": "Bargeld"
+  },
+  "transactionTypes": {
+    "income": "Einnahme",
+    "expense": "Ausgabe",
+    "transfer": "Umbuchung",
+    "buy": "Kauf",
+    "sell": "Verkauf",
+    "dividend": "Dividende",
+    "interest": "Zinsen",
+    "tax": "Steuer",
+    "fee": "Gebühr",
+    "split": "Split",
+    "deposit": "Einzahlung",
+    "withdrawal": "Auszahlung"
   }
 }
