@@ -2,7 +2,11 @@
 import { formatEur, formatPct, type SankeyResponse } from '@finance/shared'
 import { VisSankey, VisSingleContainer } from '@unovis/vue'
 
-/** Income → categories → sub categories, € or % of income (US5 scenario 3). */
+/**
+ * Income → categories → sub categories, € or % of income (US5 scenario 3).
+ * Nodes and links are ordered so that no links cross (utils/sankey-order.ts);
+ * each main category has its own color, shared by its sub categories and links.
+ */
 const props = defineProps<{ graph: SankeyResponse; incomeCents: number }>()
 const { t } = useI18n()
 const unit = ref<'eur' | 'pct'>('eur')
@@ -10,7 +14,7 @@ const unit = ref<'eur' | 'pct'>('eur')
 interface Node {
   id: string
   label: string
-  kind: string
+  kind: 'income' | 'main' | 'sub' | 'balance'
 }
 interface Link {
   source: string
@@ -40,14 +44,28 @@ const format = (cents: number) =>
     : formatPct(props.incomeCents > 0 ? cents / props.incomeCents : 0)
 const label = (node: Node) => node.label
 const subLabel = (node: Node) => format(totals.value.get(node.id) ?? 0)
-const nodeColor = (node: Node) =>
-  node.kind === 'income'
-    ? 'var(--color-emerald-500)'
-    : node.kind === 'balance'
-      ? 'var(--color-sky-500)'
-      : node.kind === 'main'
-        ? 'var(--color-rose-500)'
-        : 'var(--color-rose-300)'
+const order = computed(() => sankeyOrder(data.value.nodes, data.value.links))
+/** Ids may be strings (input) or node objects (after the layout). */
+const idOf = (end: string | { id: string }) => (typeof end === 'string' ? end : end.id)
+const rankOf = (end: string | { id: string }) => order.value.rank.get(idOf(end)) ?? 0
+const nodeSort = (a: Node, b: Node) => rankOf(a) - rankOf(b)
+const linkSort = (
+  a: { source: string | Node; target: string | Node },
+  b: { source: string | Node; target: string | Node },
+) => rankOf(a.target) - rankOf(b.target) || rankOf(a.source) - rankOf(b.source)
+
+/** Palette color per main category (by rank), balance and income fixed. */
+const colorOf = (id: string) => {
+  const node = data.value.nodes.find((n) => n.id === id)
+  if (!node || node.kind === 'income') return 'var(--color-emerald-500)'
+  const group = order.value.group.get(id) ?? id
+  const groupNode = data.value.nodes.find((n) => n.id === group)
+  if (groupNode?.kind === 'balance') return 'var(--color-sky-500)'
+  return paletteColor(order.value.rank.get(group) ?? 0)
+}
+const nodeColor = (node: Node) => colorOf(node.id)
+const linkColor = (link: { target: string | Node }) =>
+  `color-mix(in oklab, ${colorOf(idOf(link.target))} 45%, transparent)`
 const height = computed(() =>
   Math.max(240, props.graph.nodes.filter((node) => node.kind === 'sub').length * 28),
 )
@@ -83,7 +101,9 @@ const height = computed(() =>
             :label="label"
             :sub-label="subLabel"
             :node-color="nodeColor"
-            :link-color="() => 'var(--ui-border-accented)'"
+            :link-color="linkColor"
+            :node-sort="nodeSort"
+            :link-sort="linkSort"
             :node-width="10"
             :node-padding="10"
             label-position="right"

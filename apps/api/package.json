@@ -8,16 +8,16 @@
   ],
   "scripts": {
     "build": "nest build",
-    "dev": "nest start --watch",
+    "dev": "nest start --watch --config nest-cli.dev.json",
     "start": "node dist/main.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "nest build && node --env-file-if-exists=.env dist/scripts/migrate.js",
-    "owner:set-password": "nest build && node --env-file-if-exists=.env dist/scripts/set-password.js",
-    "db:seed": "nest build && node --env-file-if-exists=.env dist/scripts/seed.js",
-    "dev:local": "nest start --watch",
-    "perf": "nest build && node dist/scripts/perf.js"
+    "db:migrate": "nest build --config nest-cli.dev.json && node --env-file-if-exists=.env dist/scripts/migrate.js",
+    "owner:set-password": "nest build --config nest-cli.dev.json && node --env-file-if-exists=.env dist/scripts/set-password.js",
+    "db:seed": "nest build --config nest-cli.dev.json && node --env-file-if-exists=.env dist/scripts/seed.js",
+    "dev:local": "nest start --watch --config nest-cli.dev.json",
+    "perf": "nest build --config nest-cli.dev.json && node dist/scripts/perf.js"
   },
   "dependencies": {
     "@fastify/helmet": "^13.2.0",
