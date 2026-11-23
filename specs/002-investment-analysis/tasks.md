@@ -27,9 +27,9 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 
 **Purpose**: Shared key lists and DTO skeletons used by several stories
 
-- [ ] T001 [P] Add classification key lists to `packages/shared/src/classification.ts`: `REGIONS` (Nordamerika, Europa, Japan, Pazifik ex Japan, Schwellenländer, Sonstige), the 11 GICS `SECTORS`, `CURRENCIES` (ISO 4217 subset incl. EUR, USD, GBP, CHF, JPY), `FUND_TYPES = ['equity','mixed','other']` with German labels and partial exemption rates (0.30, 0.15, 0), and `UNASSIGNED_KEY`; export from `packages/shared/src/index.ts`
-- [ ] T002 [P] Add zod DTO schemas for analysis, dividends, taxes, benchmarks, watchlists and instrument classification exactly as in `specs/002-investment-analysis/contracts/http-api.md` to `packages/shared/src/dto/` (one file per area) and export them
-- [ ] T003 [P] Add German i18n keys for the new pages, navigation, empty states and errors (e.g. "Nicht zugeordnet", "Basiszins fehlt", "Sparerpauschbetrag überschritten", "Keine Kurse") to `apps/web/i18n/locales/de.json`
+- [X] T001 [P] Add classification key lists to `packages/shared/src/classification.ts`: `REGIONS` (Nordamerika, Europa, Japan, Pazifik ex Japan, Schwellenländer, Sonstige), the 11 GICS `SECTORS`, `CURRENCIES` (ISO 4217 subset incl. EUR, USD, GBP, CHF, JPY), `FUND_TYPES = ['equity','mixed','other']` with German labels and partial exemption rates (0.30, 0.15, 0), and `UNASSIGNED_KEY`; export from `packages/shared/src/index.ts`
+- [X] T002 [P] Add zod DTO schemas for analysis, dividends, taxes, benchmarks, watchlists and instrument classification exactly as in `specs/002-investment-analysis/contracts/http-api.md` to `packages/shared/src/dto/` (one file per area) and export them
+- [X] T003 [P] Add German i18n keys for the new pages, navigation, empty states and errors (e.g. "Nicht zugeordnet", "Basiszins fehlt", "Sparerpauschbetrag überschritten", "Keine Kurse") to `apps/web/i18n/locales/de.json`
 
 ---
 

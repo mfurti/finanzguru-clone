@@ -43,7 +43,8 @@
   },
   "settings": {
     "sources": "Datenquellen",
-    "categories": "Kategorien & Regeln"
+    "categories": "Kategorien & Regeln",
+    "inflation": "Inflation"
   },
   "overview": {
     "netWorth": {
@@ -151,7 +152,11 @@
     "save": "Speichern",
     "cancel": "Abbrechen",
     "delete": "Löschen",
-    "edit": "Bearbeiten"
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "close": "Schließen",
+    "estimate": "Schätzung",
+    "loading": "Lädt …"
   },
   "import": {
     "title": "CSV importieren",
@@ -287,7 +292,11 @@
     "views": {
       "positions": "Positionen",
       "assetClasses": "Assetklassen",
-      "transactions": "Transaktionen"
+      "transactions": "Transaktionen",
+      "analysis": "Analyse",
+      "dividends": "Dividenden",
+      "taxes": "Steuern",
+      "watchlists": "Watchlists"
     },
     "columns": {
       "name": "Name",
@@ -367,6 +376,10 @@
       "analysis": "Analyse",
       "review": "Prüfen",
       "budgets": "Budgets"
+    },
+    "chart": {
+      "title": "Verteilung",
+      "total": "Gesamt"
     }
   },
   "categories": {
@@ -428,5 +441,131 @@
       "semiannual": "/ Halbjahr",
       "annual": "/ Jahr"
     }
+  },
+  "analysis": {
+    "title": "Analyse",
+    "breakdown": "Aufteilung",
+    "unassigned": "Nicht zugeordnet",
+    "dimensions": {
+      "assetClass": "Assetklassen",
+      "region": "Regionen",
+      "sector": "Branchen",
+      "currency": "Währungen",
+      "volatility": "Volatilität",
+      "return": "Rendite",
+      "grouping": "Eigene Aufteilung"
+    },
+    "returns": {
+      "title": "Rendite",
+      "line": "Linie",
+      "heatmap": "Heatmap",
+      "bars": "Balken",
+      "yearly": "Wertentwicklung",
+      "year": "Jahr",
+      "twror": "TWROR",
+      "xirr": "IZF",
+      "inflation": "Inflation",
+      "real": "Realrendite",
+      "ytd": "YTD",
+      "total": "Jahr gesamt"
+    },
+    "compare": {
+      "title": "Portfoliovergleich",
+      "select": "Depots auswählen",
+      "empty": "Mindestens zwei Depots auswählen"
+    },
+    "classification": {
+      "title": "Klassifizierung",
+      "fundType": "Fondsart",
+      "benchmark": "Als Benchmark verwenden",
+      "sum": "Summe {sum}",
+      "sumTooHigh": "Summe {sum} – höchstens 100 %",
+      "add": "Eintrag hinzufügen",
+      "saved": "Klassifizierung gespeichert"
+    },
+    "grouping": {
+      "manage": "Aufteilungen verwalten",
+      "new": "Neue Aufteilung",
+      "name": "Name",
+      "groups": "Gruppen (eine pro Zeile)",
+      "none": "Keine eigene Aufteilung",
+      "assign": "Zuordnung",
+      "noGroup": "Keine Gruppe"
+    },
+    "empty": "Noch keine Positionen für eine Analyse"
+  },
+  "dividends": {
+    "title": "Dividenden",
+    "last12": "Letzte 12 Monate",
+    "avgMonth": "Ø pro Monat",
+    "yieldYtd": "Dividendenrendite YTD",
+    "cagr": "CAGR",
+    "history": "Entwicklung",
+    "bySecurity": "Nach Wertpapieren",
+    "calendar": "Dividendenkalender",
+    "year": "Jahr",
+    "amount": "Betrag",
+    "change": "Zum Vorjahr",
+    "expected": "erwartet",
+    "received": "erhalten",
+    "addExpected": "Erwartete Zahlung",
+    "payDate": "Zahltag",
+    "exDate": "Ex-Tag",
+    "perShare": "Betrag je Anteil",
+    "note": "Notiz",
+    "security": "Wertpapier",
+    "empty": "Noch keine Dividenden",
+    "deleteExpected": "Erwartete Zahlung löschen?"
+  },
+  "taxes": {
+    "title": "Steuern",
+    "allowance": "Freibetrag",
+    "available": "{amount} noch verfügbar",
+    "assessment": "Veranlagung",
+    "single": "Einzelveranlagung",
+    "joint": "Zusammenveranlagung",
+    "orders": "Freistellungsaufträge {year}",
+    "addOrder": "Freistellungsauftrag hinzufügen",
+    "broker": "Broker",
+    "amount": "Betrag",
+    "used": "{used} von {amount} genutzt",
+    "remaining": "Verbleibend",
+    "income": "Kapitalerträge",
+    "exceeds": "Sparerpauschbetrag überschritten: Summe der Aufträge {total} > {allowance}",
+    "baseRate": "Basiszins {year}",
+    "baseRateMissing": "Basiszins fehlt",
+    "vorab": "Geschätzte Vorabpauschale {year}",
+    "vorabNote": "Schätzung ohne Gewähr; maßgeblich ist die Abrechnung deines Brokers.",
+    "basisertrag": "Basisertrag",
+    "vorabpauschale": "Vorabpauschale",
+    "taxable": "Steuerpflichtig",
+    "fundType": "Fondsart",
+    "noFunds": "Keine Fonds im Bestand",
+    "deleteOrder": "Freistellungsauftrag löschen?"
+  },
+  "benchmark": {
+    "compare": "Vergleichen mit",
+    "none": "Keiner",
+    "empty": "Keine Benchmark mit Kursen – Kurse unter Datenquellen importieren",
+    "stale": "Kurse veraltet"
+  },
+  "watchlists": {
+    "title": "Watchlists",
+    "new": "Neue Watchlist",
+    "name": "Name",
+    "rename": "Umbenennen",
+    "delete": "Watchlist löschen?",
+    "add": "Wertpapier hinzufügen",
+    "isin": "ISIN",
+    "securityName": "Name",
+    "invalidIsin": "Ungültige ISIN",
+    "empty": "Noch nichts hinzugefügt",
+    "emptyLists": "Noch keine Watchlist",
+    "noPrices": "Keine Kurse",
+    "importPrices": "Kurse importieren",
+    "count": "{n} Wertpapiere",
+    "price": "Kurs",
+    "change": "Veränderung",
+    "remove": "Entfernen"
   }
 }
