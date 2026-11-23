@@ -386,5 +386,46 @@
       "starts_with": "beginnt mit",
       "regex": "passt auf"
     }
+  },
+  "insurance": {
+    "add": "Versicherung hinzufügen",
+    "edit": "Versicherung bearbeiten",
+    "type": "Art",
+    "provider": "Versicherer",
+    "contractNumber": "Vertragsnummer",
+    "premium": "Beitrag",
+    "interval": "Zahlweise",
+    "start": "Beginn",
+    "end": "Ende",
+    "notes": "Notizen",
+    "since": "seit {date}",
+    "perYear": "pro Jahr",
+    "total": "Gesamtkosten pro Jahr",
+    "emptyTitle": "Noch keine Versicherungen",
+    "emptyDescription": "Erfasse deine Verträge, um Beiträge und Laufzeiten im Blick zu behalten.",
+    "deleteTitle": "Vertrag löschen?",
+    "deleteText": "Der Vertrag bei {name} wird gelöscht.",
+    "types": {
+      "health": "Krankenversicherung",
+      "term_life": "Risiko-Lebensversicherung",
+      "liability": "Haftpflicht",
+      "household": "Hausrat",
+      "disability": "Berufsunfähigkeit",
+      "car": "Kfz",
+      "legal": "Rechtsschutz",
+      "other": "Sonstige"
+    },
+    "intervals": {
+      "monthly": "monatlich",
+      "quarterly": "vierteljährlich",
+      "semiannual": "halbjährlich",
+      "annual": "jährlich"
+    },
+    "per": {
+      "monthly": "/ Monat",
+      "quarterly": "/ Quartal",
+      "semiannual": "/ Halbjahr",
+      "annual": "/ Jahr"
+    }
   }
 }
