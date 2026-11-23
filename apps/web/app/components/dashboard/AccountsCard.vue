@@ -50,7 +50,14 @@ const toggle = (type: string) => {
           <template v-for="item in group.items" :key="item.id">
             <li class="flex items-center justify-between gap-3 py-2 pl-5">
               <span class="min-w-0">
-                <span class="block truncate">{{ item.name }}</span>
+                <NuxtLink
+                  v-if="group.type === 'depots'"
+                  :to="{ path: '/investments', query: { accounts: item.id } }"
+                  class="block truncate hover:underline"
+                >
+                  {{ item.name }}
+                </NuxtLink>
+                <span v-else class="block truncate">{{ item.name }}</span>
                 <span class="text-xs text-muted">{{ item.institution }}</span>
               </span>
               <Money :cents="item.valueCents" />
