@@ -122,3 +122,19 @@ describe('manual accounts and transactions (FR-056)', () => {
     expect((await call('DELETE', `/api/accounts/${acc.id}`)).statusCode).toBe(404)
   })
 })
+
+describe('GET /api/sources', () => {
+  it('lists the default sources without credentials', async () => {
+    const app = await createTestApp()
+    const cookie = await loginCookie(app)
+    const res = await app.inject({ method: 'GET', url: '/api/sources', headers: { cookie } })
+    expect(res.statusCode).toBe(200)
+    const body = res.json() as { kind: string; status: string }[]
+    expect(body.map((source) => [source.kind, source.status])).toEqual([
+      ['csv', 'active'],
+      ['sparkasse_fints', 'planned'],
+    ])
+    expect(JSON.stringify(body)).not.toContain('encrypted')
+    await app.close()
+  })
+})

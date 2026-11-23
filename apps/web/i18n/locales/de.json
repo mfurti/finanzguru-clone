@@ -151,5 +151,80 @@
     "cancel": "Abbrechen",
     "delete": "Löschen",
     "edit": "Bearbeiten"
+  },
+  "import": {
+    "title": "CSV importieren",
+    "subtitle": "Kontoauszüge der Sparkasse, Exporte von Scalable Capital oder eigene CSV-Dateien.",
+    "drop": "CSV-Datei hierher ziehen",
+    "dropHint": "oder klicken zum Auswählen (max. 20 MB)",
+    "upload": "Hochladen",
+    "confirm": "Importieren",
+    "detected": "Erkanntes Format: {format}",
+    "unknownLayout": "Unbekanntes Format – bitte Spalten zuordnen.",
+    "targetAccount": "Zielkonto",
+    "autoAccount": "Automatisch (aus der Datei)",
+    "failed": "Import fehlgeschlagen.",
+    "errors": "Fehlerhafte Zeilen",
+    "line": "Zeile {n}",
+    "status": {
+      "succeeded": "Import abgeschlossen",
+      "partial": "Import mit Fehlern abgeschlossen",
+      "failed": "Import fehlgeschlagen",
+      "pending": "Wartet auf Bestätigung",
+      "running": "Import läuft"
+    },
+    "counts": {
+      "imported": "Neu",
+      "skipped": "Bereits vorhanden",
+      "failed": "Fehler"
+    },
+    "reasons": {
+      "invalid_date": "Ungültiges Datum",
+      "invalid_amount": "Ungültiger Betrag",
+      "unknown_currency_no_rate": "Fremdwährung ohne Kurs",
+      "missing_isin": "ISIN fehlt",
+      "invalid_isin": "ISIN ungültig",
+      "missing_quantity": "Stückzahl fehlt",
+      "not_executed": "Nicht ausgeführt",
+      "not_booked": "Nur vorgemerkt",
+      "unknown_type": "Unbekannte Buchungsart"
+    },
+    "fields": {
+      "date": "Datum",
+      "amount": "Betrag",
+      "counterparty": "Empfänger/Zahler",
+      "purpose": "Verwendungszweck",
+      "iban": "IBAN",
+      "valueDate": "Valuta",
+      "isin": "ISIN",
+      "quantity": "Stück",
+      "price": "Kurs",
+      "fee": "Gebühr",
+      "tax": "Steuer",
+      "type": "Buchungsart"
+    },
+    "mapping": {
+      "none": "– nicht verwenden –",
+      "dateFormat": "Datumsformat",
+      "decimal": "Dezimaltrennzeichen",
+      "comma": "Komma (1.234,56)",
+      "dot": "Punkt (1,234.56)",
+      "delimiter": "Trennzeichen",
+      "encoding": "Zeichensatz",
+      "skipRows": "Zeilen überspringen",
+      "saveAs": "Zuordnung speichern als",
+      "saveHint": "optional, für den nächsten Import"
+    }
+  },
+  "sources": {
+    "title": "Datenquellen",
+    "lastSync": "Letzte Synchronisierung: {at}",
+    "status": {
+      "active": "aktiv",
+      "needs_reauth": "Verbindung erneuern",
+      "error": "Fehler",
+      "planned": "geplant",
+      "disabled": "deaktiviert"
+    }
   }
 }
