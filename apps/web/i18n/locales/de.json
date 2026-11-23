@@ -367,5 +367,24 @@
       "review": "Prüfen",
       "budgets": "Budgets"
     }
+  },
+  "categories": {
+    "title": "Kategorien",
+    "newSub": "Neue Unterkategorie",
+    "add": "Hinzufügen",
+    "rules": "Regeln",
+    "apply": "Regeln anwenden",
+    "noRules": "Noch keine Regeln. Lege sie beim Prüfen von Buchungen an.",
+    "fields": {
+      "counterparty": "Empfänger",
+      "purpose": "Verwendungszweck",
+      "counterparty_iban": "IBAN"
+    },
+    "operators": {
+      "contains": "enthält",
+      "equals": "ist",
+      "starts_with": "beginnt mit",
+      "regex": "passt auf"
+    }
   }
 }

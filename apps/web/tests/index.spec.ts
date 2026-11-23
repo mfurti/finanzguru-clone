@@ -15,6 +15,7 @@ const layout = [
 
 registerEndpoint('/api/dashboard/layout', () => layout)
 registerEndpoint('/api/accounts/tree', () => ({ groups: [] }))
+registerEndpoint('/api/budgets', () => [])
 registerEndpoint('/api/overview/net-worth', () => ({
   totalCents: 0,
   gainCents: 0,
