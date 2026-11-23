@@ -42,7 +42,8 @@
     "description": "Die Daten dafür sind vorbereitet; die Oberfläche kommt in einem der nächsten Schritte."
   },
   "settings": {
-    "sources": "Datenquellen"
+    "sources": "Datenquellen",
+    "categories": "Kategorien & Regeln"
   },
   "overview": {
     "netWorth": {
@@ -320,5 +321,51 @@
     "commodity": "Rohstoffe",
     "other": "Sonstige",
     "cash": "Cash"
+  },
+  "budget": {
+    "title": "Budget",
+    "analysis": "Analyse",
+    "month": "Monat",
+    "quarter": "Quartal",
+    "year": "Jahr",
+    "previous": "Vorheriger Zeitraum",
+    "next": "Nächster Zeitraum",
+    "current": "Aktueller Zeitraum",
+    "income": "Einnahmen",
+    "expenses": "Ausgaben",
+    "balance": "Saldo",
+    "saved": "Gespart",
+    "savedInfo": "Ausgaben in Spar-Kategorien wie „Sparen und Anlegen“.",
+    "savingsRate": "Sparquote",
+    "savingsRateInfo": "Gespart geteilt durch Einnahmen im Zeitraum.",
+    "categories": "Kategorien",
+    "expensesTotal": "Ausgaben gesamt",
+    "incomeTotal": "Einnahmen gesamt",
+    "noData": "Keine Buchungen in diesem Zeitraum",
+    "sankey": "Geldfluss",
+    "review": {
+      "title": "Ungeprüfte Transaktionen",
+      "empty": "Alles geprüft – keine offenen Buchungen.",
+      "category": "Kategorie",
+      "saveRule": "Regel speichern",
+      "ruleHint": "Künftige Buchungen von „{party}“ automatisch so kategorisieren",
+      "done": "Kategorisiert",
+      "applied": "{n} Buchungen kategorisiert"
+    },
+    "budgets": {
+      "title": "Budgets",
+      "create": "Budget anlegen",
+      "limit": "Monatliches Limit",
+      "spent": "ausgegeben",
+      "remaining": "übrig",
+      "over": "überschritten",
+      "category": "Kategorie",
+      "delete": "Budget löschen"
+    },
+    "nav": {
+      "analysis": "Analyse",
+      "review": "Prüfen",
+      "budgets": "Budgets"
+    }
   }
 }
