@@ -157,8 +157,8 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 - [X] T055 [P] [US4] Build `apps/web/app/components/taxes/ExemptionOrders.vue` (allowance bar "x / 1.000,00 €", per broker used/remaining, add/edit modal, warning banner when exceeded, assessment switch Einzel/Zusammen)
 - [X] T056 [P] [US4] Build `apps/web/app/components/taxes/VorabpauschaleTable.vue` (per fund: Basisertrag, Vorabpauschale, steuerpflichtig; total; "Schätzung" label; "Basiszins fehlt" link to the base rate field)
 - [X] T057 [US4] Create `apps/web/app/pages/investments/taxes.vue` with year switcher, base rate input, ExemptionOrders and VorabpauschaleTable
-- [ ] T058 [US4] Add a demo tax year (single, base rate) and one exemption order to `apps/api/src/database/demo.ts`
-- [ ] T059 [US4] Playwright journey W10–W11 in `e2e/us10-taxes.spec.ts`
+- [X] T058 [US4] Add a demo tax year (single, base rate) and one exemption order to `apps/api/src/database/demo.ts`
+- [X] T059 [US4] Playwright journey W10–W11 in `e2e/us10-taxes.spec.ts`
 
 **Checkpoint**: Taxes page works independently
 

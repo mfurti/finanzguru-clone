@@ -15,12 +15,14 @@ import {
   customGroup,
   customGrouping,
   customGroupMember,
+  exemptionOrder,
   expectedDividend,
   inflationRate,
   institution,
   instrument,
   instrumentWeight,
   price,
+  taxYear,
   transaction,
 } from './schema'
 import { seedDefaults } from './seed'
@@ -420,6 +422,7 @@ export function seedDemo(db: Db, today = todayIso()): DemoResult {
         .run()
 
     seedDemoAnalysis(tx, instrumentIds)
+    seedDemoTaxes(tx, broker.id)
 
     new RecomputeService().recompute(
       tx,
@@ -562,5 +565,27 @@ function seedDemoAnalysis(tx: Pick<Db, 'insert'>, instrumentIds: Map<string, str
       amountPerShare: '0.45',
       note: 'Quartalsausschüttung',
     })
+    .run()
+}
+
+/** Demo tax settings (US4): Basiszins per year (demo values) and one exemption order at the broker. */
+export const DEMO_BASE_RATES: Record<number, string> = {
+  2024: '0.0229',
+  2025: '0.0253',
+  2026: '0.032',
+}
+
+function seedDemoTaxes(tx: Pick<Db, 'insert'>, brokerId: string): void {
+  tx.insert(taxYear)
+    .values(
+      Object.entries(DEMO_BASE_RATES).map(([year, baseRate]) => ({
+        year: Number(year),
+        assessment: 'single' as const,
+        baseRate,
+      })),
+    )
+    .run()
+  tx.insert(exemptionOrder)
+    .values({ institutionId: brokerId, year: Number(DEMO_END.slice(0, 4)), amountCents: 80_000 })
     .run()
 }
