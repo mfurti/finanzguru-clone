@@ -21,7 +21,9 @@ export type Env = z.infer<typeof envSchema>
 
 /** Validates process env for `ConfigModule.forRoot({ validate })`. */
 export function validateEnv(config: Record<string, unknown>): Env {
-  const result = envSchema.safeParse(config)
+  // API_PORT wins over PORT: tools that start web + api together set PORT for the web app.
+  const withPort = config.API_PORT ? { ...config, PORT: config.API_PORT } : config
+  const result = envSchema.safeParse(withPort)
   if (!result.success) {
     const issues = result.error.issues
       .map((issue) => `${issue.path.join('.')}: ${issue.message}`)

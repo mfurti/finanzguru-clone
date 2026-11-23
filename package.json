@@ -16,7 +16,8 @@
     "test": "pnpm --filter @finance/shared build && pnpm -r test",
     "test:e2e": "playwright test -c e2e/playwright.config.ts",
     "docker:local": "docker compose -f compose.local.yaml up -d --build",
-    "docker:local:down": "docker compose -f compose.local.yaml down"
+    "docker:local:down": "docker compose -f compose.local.yaml down",
+    "dev:local": "pnpm --filter @finance/shared build && pnpm --parallel --filter api --filter web run dev:local"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^1.17.0",

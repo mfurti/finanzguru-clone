@@ -18,6 +18,18 @@ pnpm --filter api owner:set-password
 pnpm dev                                        # api :3001 + web :3000 in parallel → http://localhost:3000
 ```
 
+## Local dev server (testing, no Docker)
+
+Fixed ports so it never collides with other local projects: web `3100`, API `3101`.
+
+```powershell
+pnpm --filter api db:seed -- --demo      # once: demo data into apps/api/data/app.db
+pnpm --filter api owner:set-password     # once: local login
+pnpm dev:local                           # http://localhost:3100 (API on API_PORT=3101)
+```
+
+`apps/api/.env` sets `API_PORT=3101` and `apps/web/.env` sets `NUXT_API_BASE_URL=http://localhost:3101`. In the Claude Code desktop app the same server starts from `.claude/launch.json` (configuration `app`).
+
 ## Quality gates
 
 ```powershell

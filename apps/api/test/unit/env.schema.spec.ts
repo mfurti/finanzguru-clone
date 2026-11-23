@@ -14,6 +14,10 @@ describe('validateEnv', () => {
     expect(env.DATABASE_PATH).toBe('./data/app.db')
   })
 
+  it('prefers API_PORT over PORT', () => {
+    expect(validateEnv({ ...valid, PORT: '3100', API_PORT: '3101' }).PORT).toBe(3101)
+  })
+
   it('parses COOKIE_SECURE=false', () => {
     expect(validateEnv({ ...valid, COOKIE_SECURE: 'false' }).COOKIE_SECURE).toBe(false)
   })

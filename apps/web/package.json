@@ -9,7 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "typecheck": "vue-tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "dev:local": "nuxt dev --port 3100"
   },
   "dependencies": {
     "@finance/shared": "workspace:*",
