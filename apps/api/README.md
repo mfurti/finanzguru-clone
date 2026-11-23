@@ -4,16 +4,16 @@ NestJS 11 (Fastify) backend of Vermögenskompass. Design: `specs/001-wealth-trac
 
 ## Layout
 
-| Path                              | What                                                                                                                                    |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/main.ts`, `src/app.setup.ts` | Bootstrap: `/api` prefix, pino logger, helmet, sealed session cookie, multipart (20 MB), zod validation, error filter, Swagger          |
-| `src/config/env.schema.ts`        | Validated environment (see `.env.example`)                                                                                              |
-| `src/common`                      | Session guard, `@Public()`, error filter, AES-256-GCM `CryptoService`                                                                   |
-| `src/domain`                      | Pure logic with unit tests: money (cents, decimal.js), periods, FIFO positions, snapshots, TWROR/XIRR, dedupe, categorization, cashflow |
-| `src/database`                    | Drizzle schema, migrations (applied on startup), default seed, demo and perf datasets                                                   |
-| `src/modules`                     | Feature modules: auth, overview, accounts, transactions, import, investments, cashflow, categories, budgets, insurance, health          |
-| `src/modules/sources`             | Data source adapters: CSV (Sparkasse, Scalable, mapped), Scalable MCP (read-only allowlist, OAuth PKCE), Sparkasse live query (planned) |
-| `src/scripts`                     | `migrate`, `seed` (`--demo`), `set-password`, `perf`                                                                                    |
+| Path                              | What                                                                                                                                                                                                                                                                                      |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/main.ts`, `src/app.setup.ts` | Bootstrap: `/api` prefix, pino logger, helmet, sealed session cookie, multipart (20 MB), zod validation, error filter, Swagger                                                                                                                                                            |
+| `src/config/env.schema.ts`        | Validated environment (see `.env.example`)                                                                                                                                                                                                                                                |
+| `src/common`                      | Session guard, `@Public()`, error filter, AES-256-GCM `CryptoService`                                                                                                                                                                                                                     |
+| `src/domain`                      | Pure logic with unit tests: money (cents, decimal.js), periods, FIFO positions, snapshots, TWROR/XIRR, dedupe, categorization, cashflow; feature 002: breakdown (largest remainder), volatility, period returns, dividends, exemption orders, Vorabpauschale, benchmark series            |
+| `src/database`                    | Drizzle schema, migrations (applied on startup), default seed, demo and perf datasets                                                                                                                                                                                                     |
+| `src/modules`                     | Feature modules: auth, overview, accounts, transactions, import, investments, cashflow, categories, budgets, insurance, health; feature 002: analysis (breakdowns, returns, groupings, inflation), instruments (create, prices, classification), dividends, taxes, benchmarks, watchlists |
+| `src/modules/sources`             | Data source adapters: CSV (Sparkasse, Scalable, Kursliste, mapped), Scalable MCP (read-only allowlist, OAuth PKCE), Sparkasse live query (planned)                                                                                                                                        |
+| `src/scripts`                     | `migrate`, `seed` (`--demo`), `set-password`, `perf`                                                                                                                                                                                                                                      |
 
 ## Scripts
 

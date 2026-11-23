@@ -3,8 +3,12 @@
 Self-hosted personal wealth tracker: net worth, investments, budget and insurance in one dashboard. Runs on your own machine or home server; your financial data never leaves it.
 
 - **Übersicht**: net worth over time, allocation, KPIs (TWROR, XIRR, gains), top/flop holdings, accounts, cashflow and budgets.
-- **Investments**: performance chart, positions, asset classes, transactions, per-instrument detail with CSV export.
-- **Budget**: monthly/quarterly/yearly cashflow, Sankey diagram, categories, review queue with rules, budgets.
+- **Investments**: performance chart, positions, asset classes, bookings table with filters and CSV export, per-instrument detail and classification.
+  - **Analyse**: split by asset class, region, sector, currency, volatility, return and own groupings; returns as line, month × year heatmap and yearly bars; yearly IZF vs. inflation vs. real return; depot comparison.
+  - **Dividenden**: last 12 months, Ø per month, yield, CAGR, yearly history, per security, calendar with expected payments.
+  - **Steuern**: Freistellungsaufträge per broker with used/remaining amount, Vorabpauschale estimate.
+  - **Watchlists** and **Vergleichen mit** (benchmark line in the net-worth and investment charts).
+- **Budget**: monthly/quarterly/yearly cashflow, Sankey diagram, categories with linked pie chart, review queue with rules, budgets.
 - **Versicherung**: insurance contracts with yearly cost.
 
 German UI, dark and light mode, usable down to 360 px.
@@ -20,6 +24,7 @@ pnpm monorepo, Node 26, TypeScript.
 | `packages/shared`                    | Zod schemas, DTO types, enums and formatters used by both apps.                                                      |
 | `e2e`                                | Playwright journeys (desktop and 360 px).                                                                            |
 | `specs/001-wealth-tracker-dashboard` | Spec, plan, data model, API contracts, tasks and the [quickstart](specs/001-wealth-tracker-dashboard/quickstart.md). |
+| `specs/002-investment-analysis`      | Analyse, Dividenden, Steuern, benchmarks, watchlists ([quickstart](specs/002-investment-analysis/quickstart.md)).    |
 
 ```
 Browser ──> web (Nuxt, :3000) ──/api/**──> api (Nest, :3001) ──> SQLite file
@@ -31,6 +36,7 @@ Browser ──> web (Nuxt, :3000) ──/api/**──> api (Nest, :3001) ──>
 
 | Source               | Status      | How                                                                                                                                     |
 | -------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Kursliste (CSV)      | available   | Daily closes (`Datum;Schlusskurs`, optional `ISIN`) for benchmarks, watchlists or missing prices.                                       |
 | CSV import           | available   | Sparkasse (CSV-CAMT) and Scalable Capital exports are detected automatically; any other CSV via column mapping. Duplicates are skipped. |
 | Scalable Capital MCP | in progress | Official MCP server, OAuth login on Scalable's own page, **read-only**: trading tools are blocked by an allowlist.                      |
 | Sparkasse live query | planned     | Shown as "geplant" under Datenquellen.                                                                                                  |
@@ -76,4 +82,6 @@ Images are built by GitHub Actions and published to GHCR (`ghcr.io/mfurti/finanz
 - Security headers (helmet on the API, CSP on the web app); CSV uploads limited to 20 MB.
 - Keep `.env` files and the `data` directory out of version control and backups you share.
 
-This is a personal tool, not financial advice.
+Regions, sectors, Basiszins and inflation rates are entered by you; there is no market-data feed. The Vorabpauschale is an estimate; your broker's statement is authoritative.
+
+This is a personal tool, not financial or tax advice.

@@ -80,3 +80,7 @@ Served by `apps/api` (NestJS, Fastify adapter, global prefix `api`, port 3001). 
 | POST | `/api/sources/:id/sync` | → `ImportJob` (202 while running); 409 if running; 502 on upstream error |
 | DELETE | `/api/sources/:id` | revoke local grant, keep data → 204 |
 | GET | `/api/settings` · PATCH | `{ displayName, inflationRate }` |
+
+## Feature 002
+
+Analyse, Dividenden, Steuern, benchmarks, watchlists, instruments and the extended `GET /api/investments/transactions` (+ `.csv`) are specified in [002 http-api.md](../../002-investment-analysis/contracts/http-api.md).
