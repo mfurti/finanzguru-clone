@@ -37,6 +37,9 @@ import {
   RULE_OPERATORS,
   INSURANCE_TYPES,
   PREMIUM_INTERVALS,
+  ASSESSMENTS,
+  FUND_TYPES,
+  WEIGHT_DIMENSIONS,
 } from '@finance/shared'
 
 const id = () =>
@@ -134,8 +137,13 @@ export const instrument = sqliteTable(
     name: text('name').notNull(),
     assetClass: text('asset_class', { enum: ASSET_CLASSES }).notNull(),
     currency: text('currency').notNull().default('EUR'),
+    /** Partial exemption class for funds (feature 002); null for non-funds. */
+    fundType: text('fund_type', { enum: FUND_TYPES }),
+    /** Selectable in "Vergleichen mit" (feature 002). */
+    isBenchmark: integer('is_benchmark', { mode: 'boolean' }).notNull().default(false),
   },
   (t) => [
+    check('instrument_fund_type', sql`${t.fundType} IS NULL OR ${inList('fund_type', FUND_TYPES)}`),
     check('instrument_isin_len', sql`length(${t.isin}) = 12`),
     check('instrument_wkn_len', sql`${t.wkn} IS NULL OR length(${t.wkn}) = 6`),
     check('instrument_asset_class', inList('asset_class', ASSET_CLASSES)),
@@ -406,6 +414,180 @@ export const insuranceContract = sqliteTable(
   ],
 )
 
+// --- Feature 002: investment analysis, dividends, taxes, watchlists ---
+
+/** Weighted region/sector/currency share of an instrument; Σ per dimension <= 1. */
+export const instrumentWeight = sqliteTable(
+  'instrument_weight',
+  {
+    instrumentId: text('instrument_id')
+      .notNull()
+      .references(() => instrument.id, { onDelete: 'cascade' }),
+    dimension: text('dimension', { enum: WEIGHT_DIMENSIONS }).notNull(),
+    key: text('key').notNull(),
+    /** Decimal string, 0 < w <= 1. */
+    weight: text('weight').notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.instrumentId, t.dimension, t.key] }),
+    check('instrument_weight_dimension', inList('dimension', WEIGHT_DIMENSIONS)),
+    check(
+      'instrument_weight_range',
+      sql`CAST(${t.weight} AS REAL) > 0 AND CAST(${t.weight} AS REAL) <= 1`,
+    ),
+  ],
+)
+
+/** Owner-defined grouping (e.g. "Kern/Satellit"). */
+export const customGrouping = sqliteTable(
+  'custom_grouping',
+  {
+    id: id(),
+    name: text('name').notNull().unique(),
+  },
+  (t) => [check('custom_grouping_name_len', sql`length(${t.name}) BETWEEN 1 AND 60`)],
+)
+
+export const customGroup = sqliteTable(
+  'custom_group',
+  {
+    id: id(),
+    groupingId: text('grouping_id')
+      .notNull()
+      .references(() => customGrouping.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    position: integer('position').notNull().default(0),
+  },
+  (t) => [
+    uniqueIndex('custom_group_name_unique').on(t.groupingId, t.name),
+    check('custom_group_name_len', sql`length(${t.name}) BETWEEN 1 AND 60`),
+  ],
+)
+
+/** One group per grouping and instrument. */
+export const customGroupMember = sqliteTable(
+  'custom_group_member',
+  {
+    groupingId: text('grouping_id')
+      .notNull()
+      .references(() => customGrouping.id, { onDelete: 'cascade' }),
+    groupId: text('group_id')
+      .notNull()
+      .references(() => customGroup.id, { onDelete: 'cascade' }),
+    instrumentId: text('instrument_id')
+      .notNull()
+      .references(() => instrument.id, { onDelete: 'cascade' }),
+  },
+  (t) => [primaryKey({ columns: [t.groupingId, t.instrumentId] })],
+)
+
+/** Yearly inflation; falls back to owner.inflation_rate. */
+export const inflationRate = sqliteTable(
+  'inflation_rate',
+  {
+    year: integer('year').primaryKey(),
+    rate: text('rate').notNull(),
+  },
+  (t) => [
+    check('inflation_rate_year', sql`${t.year} BETWEEN 1990 AND 2100`),
+    check(
+      'inflation_rate_range',
+      sql`CAST(${t.rate} AS REAL) >= -0.1 AND CAST(${t.rate} AS REAL) <= 0.5`,
+    ),
+  ],
+)
+
+/** Owner-entered upcoming dividend payment. */
+export const expectedDividend = sqliteTable(
+  'expected_dividend',
+  {
+    id: id(),
+    instrumentId: text('instrument_id')
+      .notNull()
+      .references(() => instrument.id, { onDelete: 'cascade' }),
+    payDate: text('pay_date').notNull(),
+    exDate: text('ex_date'),
+    /** EUR per share, decimal string > 0. */
+    amountPerShare: text('amount_per_share').notNull(),
+    note: text('note'),
+  },
+  (t) => [
+    index('expected_dividend_pay_date_idx').on(t.payDate),
+    check(
+      'expected_dividend_ex_before_pay',
+      sql`${t.exDate} IS NULL OR ${t.exDate} <= ${t.payDate}`,
+    ),
+    check('expected_dividend_amount_positive', sql`CAST(${t.amountPerShare} AS REAL) > 0`),
+    check('expected_dividend_note_len', sql`${t.note} IS NULL OR length(${t.note}) <= 200`),
+  ],
+)
+
+/** Tax settings per calendar year. */
+export const taxYear = sqliteTable(
+  'tax_year',
+  {
+    year: integer('year').primaryKey(),
+    assessment: text('assessment', { enum: ASSESSMENTS }).notNull().default('single'),
+    /** Basiszins as decimal string, 0 … 0.2. */
+    baseRate: text('base_rate'),
+  },
+  (t) => [
+    check('tax_year_assessment', inList('assessment', ASSESSMENTS)),
+    check(
+      'tax_year_base_rate',
+      sql`${t.baseRate} IS NULL OR (CAST(${t.baseRate} AS REAL) >= 0 AND CAST(${t.baseRate} AS REAL) <= 0.2)`,
+    ),
+  ],
+)
+
+/** Freistellungsauftrag per broker and year. */
+export const exemptionOrder = sqliteTable(
+  'exemption_order',
+  {
+    id: id(),
+    institutionId: text('institution_id')
+      .notNull()
+      .references(() => institution.id, { onDelete: 'cascade' }),
+    year: integer('year').notNull(),
+    amountCents: integer('amount_cents').notNull(),
+  },
+  (t) => [
+    uniqueIndex('exemption_order_institution_year').on(t.institutionId, t.year),
+    check('exemption_order_amount', sql`${t.amountCents} >= 0`),
+  ],
+)
+
+export const watchlist = sqliteTable(
+  'watchlist',
+  {
+    id: id(),
+    name: text('name').notNull().unique(),
+    position: integer('position').notNull().default(0),
+  },
+  (t) => [check('watchlist_name_len', sql`length(${t.name}) BETWEEN 1 AND 60`)],
+)
+
+export const watchlistEntry = sqliteTable(
+  'watchlist_entry',
+  {
+    watchlistId: text('watchlist_id')
+      .notNull()
+      .references(() => watchlist.id, { onDelete: 'cascade' }),
+    instrumentId: text('instrument_id')
+      .notNull()
+      .references(() => instrument.id, { onDelete: 'cascade' }),
+    position: integer('position').notNull().default(0),
+    addedAt: text('added_at').notNull().default(nowIso),
+  },
+  (t) => [primaryKey({ columns: [t.watchlistId, t.instrumentId] })],
+)
+
+/** Allowlisted key/value settings (chart benchmarks). */
+export const userSetting = sqliteTable('user_setting', {
+  key: text('key').primaryKey(),
+  value: text('value'),
+})
+
 export const schema = {
   owner,
   institution,
@@ -423,4 +605,15 @@ export const schema = {
   categorizationRule,
   budget,
   insuranceContract,
+  instrumentWeight,
+  customGrouping,
+  customGroup,
+  customGroupMember,
+  inflationRate,
+  expectedDividend,
+  taxYear,
+  exemptionOrder,
+  watchlist,
+  watchlistEntry,
+  userSetting,
 }
