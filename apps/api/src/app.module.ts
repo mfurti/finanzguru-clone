@@ -1,7 +1,9 @@
-import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { Module, RequestMethod } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { LoggerModule } from 'nestjs-pino'
 import { validateEnv } from './config/env.schema'
 import { DrizzleModule } from './database/drizzle.module'
+import { HealthModule } from './modules/health/health.module'
 
 @Module({
   imports: [
@@ -10,7 +12,34 @@ import { DrizzleModule } from './database/drizzle.module'
       cache: true,
       validate: validateEnv,
     }),
+    LoggerModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const env = config.get<string>('NODE_ENV')
+        return {
+          // Docker polls /api/health every 30 s; keep it out of the request log.
+          exclude: [{ method: RequestMethod.GET, path: 'health' }],
+          pinoHttp: {
+            level: env === 'test' ? 'silent' : 'info',
+            // Never log session cookies or auth headers.
+            redact: {
+              paths: [
+                'req.headers.cookie',
+                'req.headers.authorization',
+                'res.headers["set-cookie"]',
+              ],
+              censor: '[redacted]',
+            },
+            transport:
+              env === 'development'
+                ? { target: 'pino-pretty', options: { singleLine: true } }
+                : undefined,
+          },
+        }
+      },
+    }),
     DrizzleModule,
+    HealthModule,
   ],
 })
 export class AppModule {}

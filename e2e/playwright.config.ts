@@ -46,7 +46,7 @@ export default defineConfig({
         'pnpm --filter @finance/shared build && pnpm --filter api build && node apps/api/dist/main.js',
       cwd: '..',
       env: apiEnv,
-      port: API_PORT,
+      url: `http://localhost:${API_PORT}/api/health`,
       reuseExistingServer: false,
       timeout: 180_000,
     },
