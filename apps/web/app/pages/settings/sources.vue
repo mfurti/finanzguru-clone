@@ -57,7 +57,12 @@ const statusColor = (status: DataSourceDto['status']) =>
               }}
             </span>
           </span>
-          <UBadge :color="statusColor(source.status)" variant="subtle">
+          <UBadge
+            :color="statusColor(source.status)"
+            variant="subtle"
+            :data-testid="`source-status-${source.kind}`"
+            :title="source.status === 'planned' ? t('sources.plannedHint') : undefined"
+          >
             {{ t(`sources.status.${source.status}`) }}
           </UBadge>
         </li>

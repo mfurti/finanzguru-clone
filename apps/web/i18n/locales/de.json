@@ -226,7 +226,8 @@
       "error": "Fehler",
       "planned": "geplant",
       "disabled": "deaktiviert"
-    }
+    },
+    "plannedHint": "Kommt in einer späteren Version. Bis dahin Sparkasse-Umsätze als CSV importieren."
   },
   "add": {
     "button": "Hinzufügen",

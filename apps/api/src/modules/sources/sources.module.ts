@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { CsvSource } from './csv/csv.source'
 import { DATA_SOURCES, type DataSource } from './data-source.interface'
+import { SparkasseFintsSource } from './sparkasse-fints/sparkasse-fints.source'
 import { SourcesController } from './sources.controller'
 import { SourcesRegistry } from './sources.registry'
 
@@ -8,9 +9,10 @@ import { SourcesRegistry } from './sources.registry'
   controllers: [SourcesController],
   providers: [
     CsvSource,
+    SparkasseFintsSource,
     {
       provide: DATA_SOURCES,
-      inject: [CsvSource],
+      inject: [CsvSource, SparkasseFintsSource],
       useFactory: (...sources: DataSource[]) => sources,
     },
     SourcesRegistry,
