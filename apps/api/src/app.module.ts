@@ -6,6 +6,7 @@ import { validateEnv } from './config/env.schema'
 import { DrizzleModule } from './database/drizzle.module'
 import { AccountsModule } from './modules/accounts/accounts.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { BudgetsModule } from './modules/budgets/budgets.module'
 import { CashflowModule } from './modules/cashflow/cashflow.module'
 import { CategoriesModule } from './modules/categories/categories.module'
 import { HealthModule } from './modules/health/health.module'
@@ -60,6 +61,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module'
     InvestmentsModule,
     CashflowModule,
     CategoriesModule,
+    BudgetsModule,
   ],
 })
 export class AppModule {}

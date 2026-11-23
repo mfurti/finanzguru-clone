@@ -35,3 +35,18 @@ export type CreateCategoryInput = z.infer<typeof createCategoryInput>
 
 export const updateCategoryInput = createCategoryInput.partial()
 export type UpdateCategoryInput = z.infer<typeof updateCategoryInput>
+
+export const budgetInput = z.object({
+  categoryId: z.string().min(1),
+  monthlyLimitCents: z.number().int().positive(),
+})
+export type BudgetInput = z.infer<typeof budgetInput>
+
+export const budgetDto = budgetInput.extend({
+  id: z.string(),
+  categoryName: z.string(),
+  color: z.string(),
+  spentCents: z.number().int(),
+  remainingCents: z.number().int(),
+})
+export type BudgetDto = z.infer<typeof budgetDto>
