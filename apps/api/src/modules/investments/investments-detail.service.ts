@@ -1,9 +1,17 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common'
-import type { Period, PositionColumn, PositionDto } from '@finance/shared'
-import { and, asc, count, desc, eq, gte, inArray, lte } from 'drizzle-orm'
+import type {
+  InvestmentTransactionRow,
+  InvestmentTransactionsQuery,
+  InvestmentTransactionsResponse,
+  Period,
+  PositionColumn,
+  PositionDto,
+  TransactionColumn,
+} from '@finance/shared'
+import { and, asc, count, desc, eq, gte, inArray, lte, sql } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
-import { instrument, price, transaction } from '../../database/schema'
+import { account, instrument, price, transaction } from '../../database/schema'
 import { resolvePeriod, todayIso } from '../../domain/period'
 import { downsample } from '../overview/overview.service'
 import { InvestmentsService } from './investments.service'
@@ -83,6 +91,76 @@ export function positionsToCsv(
   return `\uFEFF${lines.join('\r\n')}\r\n`
 }
 
+const TRANSACTION_HEADERS: Record<TransactionColumn, string> = {
+  date: 'Datum',
+  type: 'Typ',
+  name: 'Name',
+  wkn: 'WKN',
+  isin: 'ISIN',
+  account: 'Depot',
+  unitPrice: 'Kaufpreis/Stück',
+  quantity: 'Stück',
+  tax: 'Steuern',
+  fee: 'Gebühren',
+  amount: 'Gesamtbetrag',
+}
+
+const TYPE_LABELS: Record<string, string> = {
+  buy: 'Kauf',
+  sell: 'Verkauf',
+  dividend: 'Dividende',
+  interest: 'Zinsen',
+  tax: 'Steuer',
+  fee: 'Gebühr',
+  split: 'Split',
+  deposit: 'Einzahlung',
+  withdrawal: 'Auszahlung',
+}
+
+/** Text cells starting with = + - @ would run as formulas in spreadsheets. */
+const safeText = (value: string) => (/^[=+\-@\t\r]/.test(value) ? `'${value}` : value)
+
+function transactionCell(row: InvestmentTransactionRow, column: TransactionColumn): string {
+  switch (column) {
+    case 'date':
+      return row.bookingDate.split('-').reverse().join('.')
+    case 'type':
+      return TYPE_LABELS[row.type] ?? row.type
+    case 'name':
+      return safeText(row.instrumentName ?? '')
+    case 'wkn':
+      return row.wkn ?? ''
+    case 'isin':
+      return row.isin ?? ''
+    case 'account':
+      return safeText(row.accountName)
+    case 'unitPrice':
+      return row.unitPrice === null ? '' : decimal(row.unitPrice)
+    case 'quantity':
+      return row.quantity === null ? '' : decimal(row.quantity, 0)
+    case 'tax':
+      return euros(row.taxCents)
+    case 'fee':
+      return euros(row.feeCents)
+    case 'amount':
+      return euros(row.amountCents)
+  }
+}
+
+/** Bookings CSV: same format as the positions export. */
+export function transactionsToCsv(
+  rows: readonly InvestmentTransactionRow[],
+  columns: readonly TransactionColumn[],
+): string {
+  const quote = (value: string) =>
+    /[;"\n\r]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value
+  const lines = [
+    columns.map((column) => quote(TRANSACTION_HEADERS[column])).join(';'),
+    ...rows.map((row) => columns.map((column) => quote(transactionCell(row, column))).join(';')),
+  ]
+  return `\uFEFF${lines.join('\r\n')}\r\n`
+}
+
 @Injectable()
 export class InvestmentsDetailService {
   constructor(
@@ -132,29 +210,35 @@ export class InvestmentsDetailService {
     return { instrument: info, position, series, transactions }
   }
 
-  transactions(query: {
-    accounts?: string[]
-    type?: string
-    instrumentId?: string
-    from?: string
-    to?: string
-    page: number
-    pageSize: number
-  }) {
+  /** Bookings of the selected depots, filtered and sorted; `sumCents` covers all filtered rows. */
+  transactions(
+    query: Omit<InvestmentTransactionsQuery, 'page' | 'pageSize'> & {
+      page?: number
+      pageSize?: number
+    },
+  ): InvestmentTransactionsResponse {
     const depots = this.investments.depotIds(query.accounts)
-    if (depots.length === 0) return { items: [], total: 0 }
+    if (depots.length === 0) return { items: [], total: 0, sumCents: 0 }
     const where = and(
       inArray(transaction.accountId, depots),
-      query.type ? eq(transaction.type, query.type as never) : undefined,
+      query.type ? eq(transaction.type, query.type) : undefined,
       query.instrumentId ? eq(transaction.instrumentId, query.instrumentId) : undefined,
       query.from ? gte(transaction.bookingDate, query.from) : undefined,
       query.to ? lte(transaction.bookingDate, query.to) : undefined,
     )
-    const total = this.db.select({ n: count() }).from(transaction).where(where).get()?.n ?? 0
-    const items = this.db
+    const totals = this.db
+      .select({ n: count(), sum: sql<number>`coalesce(sum(${transaction.amountCents}), 0)` })
+      .from(transaction)
+      .where(where)
+      .get()
+    const order = query.dir === 'asc' ? asc : desc
+    const primary =
+      query.sort === 'amount' ? order(transaction.amountCents) : order(transaction.bookingDate)
+    let rows = this.db
       .select({
         id: transaction.id,
         accountId: transaction.accountId,
+        accountName: account.name,
         bookingDate: transaction.bookingDate,
         type: transaction.type,
         amountCents: transaction.amountCents,
@@ -165,14 +249,17 @@ export class InvestmentsDetailService {
         instrumentId: transaction.instrumentId,
         instrumentName: instrument.name,
         isin: instrument.isin,
+        wkn: instrument.wkn,
       })
       .from(transaction)
+      .innerJoin(account, eq(account.id, transaction.accountId))
       .leftJoin(instrument, eq(instrument.id, transaction.instrumentId))
       .where(where)
-      .orderBy(desc(transaction.bookingDate), desc(transaction.createdAt))
-      .limit(query.pageSize)
-      .offset((query.page - 1) * query.pageSize)
-      .all()
-    return { items, total }
+      .orderBy(primary, order(transaction.createdAt))
+      .$dynamic()
+    if (query.pageSize) {
+      rows = rows.limit(query.pageSize).offset(((query.page ?? 1) - 1) * query.pageSize)
+    }
+    return { items: rows.all(), total: totals?.n ?? 0, sumCents: Number(totals?.sum ?? 0) }
   }
 }

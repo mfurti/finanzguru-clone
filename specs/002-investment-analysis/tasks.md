@@ -122,12 +122,12 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 
 ### Tests for User Story 3
 
-- [ ] T042 [P] [US3] E2E tests for the extended `GET /api/investments/transactions` (filters `type`, `accounts`, `from`, `to`, `instrumentId`; `sort=date|amount`, `dir`; `sumCents` over all filtered rows; paging) and `transactions.csv` (BOM, `;`, de-DE decimals, only requested `columns`) in `apps/api/test/e2e/investments-transactions.e2e-spec.ts`
+- [X] T042 [P] [US3] E2E tests for the extended `GET /api/investments/transactions` (filters `type`, `accounts`, `from`, `to`, `instrumentId`; `sort=date|amount`, `dir`; `sumCents` over all filtered rows; paging) and `transactions.csv` (BOM, `;`, de-DE decimals, only requested `columns`) in `apps/api/test/e2e/investments-transactions.e2e-spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T043 [US3] Extend the transactions query and DTO (WKN, ISIN, account name, unit price, quantity, tax, fees) with filters, sort and `sumCents` in `apps/api/src/modules/investments/investments.service.ts` and controller
-- [ ] T044 [US3] Add `GET /api/investments/transactions.csv` reusing the query and the 001 CSV writer in `apps/api/src/modules/investments/investments.controller.ts`
+- [X] T043 [US3] Extend the transactions query and DTO (WKN, ISIN, account name, unit price, quantity, tax, fees) with filters, sort and `sumCents` in `apps/api/src/modules/investments/investments.service.ts` and controller
+- [X] T044 [US3] Add `GET /api/investments/transactions.csv` reusing the query and the 001 CSV writer in `apps/api/src/modules/investments/investments.controller.ts`
 - [ ] T045 [P] [US3] Build `apps/web/app/components/investments/TransactionsTable.vue` (UTable with columns Datum, Typ, Name (WKN/ISIN), Depot, Kaufpreis/Stück, Stück, Steuern, Gebühren, Gesamtbetrag; column visibility as in PositionsTable; server paging 50; footer total; card layout below `sm`)
 - [ ] T046 [US3] Rebuild `apps/web/app/pages/investments/transactions.vue` with filter bar (Typ, Depot, Zeitraum, Wertpapier), TransactionsTable and Export button passing visible columns and filters
 - [ ] T047 [US3] Update the 001 journey `e2e/us4-investments.spec.ts` for the new table and add W8–W9 in `e2e/us9-bookings.spec.ts`

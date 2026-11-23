@@ -100,6 +100,68 @@ export const investmentTransactionsQuery = z.object({
   instrumentId: z.string().optional(),
   from: isoDate.optional(),
   to: isoDate.optional(),
+  sort: z.enum(['date', 'amount']).default('date'),
+  dir: z.enum(['asc', 'desc']).default('desc'),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(200).default(50),
 })
+export type InvestmentTransactionsQuery = z.infer<typeof investmentTransactionsQuery>
+
+/** Columns of the bookings table / CSV export (feature 002, US3). */
+export const TRANSACTION_COLUMNS = [
+  'date',
+  'type',
+  'name',
+  'wkn',
+  'isin',
+  'account',
+  'unitPrice',
+  'quantity',
+  'tax',
+  'fee',
+  'amount',
+] as const
+export type TransactionColumn = (typeof TRANSACTION_COLUMNS)[number]
+
+export const investmentTransactionsCsvQuery = investmentTransactionsQuery
+  .omit({ page: true, pageSize: true })
+  .extend({
+    columns: z
+      .string()
+      .optional()
+      .transform((value) =>
+        value
+          ? value
+              .split(',')
+              .filter((column): column is TransactionColumn =>
+                (TRANSACTION_COLUMNS as readonly string[]).includes(column),
+              )
+          : [...TRANSACTION_COLUMNS],
+      ),
+  })
+
+export const investmentTransactionRow = z.object({
+  id: z.string(),
+  accountId: z.string(),
+  accountName: z.string(),
+  bookingDate: isoDate,
+  type: z.string(),
+  amountCents: cents,
+  quantity: decimalString.nullable(),
+  unitPrice: decimalString.nullable(),
+  feeCents: cents,
+  taxCents: cents,
+  instrumentId: z.string().nullable(),
+  instrumentName: z.string().nullable(),
+  isin: z.string().nullable(),
+  wkn: z.string().nullable(),
+})
+export type InvestmentTransactionRow = z.infer<typeof investmentTransactionRow>
+
+export const investmentTransactionsResponse = z.object({
+  items: z.array(investmentTransactionRow),
+  total: z.number().int(),
+  /** Σ amount over all filtered rows (not only the page). */
+  sumCents: cents,
+})
+export type InvestmentTransactionsResponse = z.infer<typeof investmentTransactionsResponse>

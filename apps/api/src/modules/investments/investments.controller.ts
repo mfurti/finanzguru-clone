@@ -4,7 +4,9 @@ import {
   accountsParam,
   type AssetClassDto,
   instrumentDetailQuery,
+  investmentTransactionsCsvQuery,
   investmentTransactionsQuery,
+  type InvestmentTransactionsResponse,
   performanceQuery,
   type PerformanceResponse,
   type PositionDto,
@@ -14,7 +16,11 @@ import {
 import type { FastifyReply } from 'fastify'
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
-import { InvestmentsDetailService, positionsToCsv } from './investments-detail.service'
+import {
+  InvestmentsDetailService,
+  positionsToCsv,
+  transactionsToCsv,
+} from './investments-detail.service'
 import { InvestmentsService } from './investments.service'
 
 class PerformanceQueryDto extends createZodDto(performanceQuery) {}
@@ -23,6 +29,7 @@ class AccountsQueryDto extends createZodDto(z.object({ accounts: accountsParam }
 class PositionsCsvQueryDto extends createZodDto(positionsCsvQuery) {}
 class InstrumentDetailQueryDto extends createZodDto(instrumentDetailQuery) {}
 class InvestmentTransactionsQueryDto extends createZodDto(investmentTransactionsQuery) {}
+class InvestmentTransactionsCsvQueryDto extends createZodDto(investmentTransactionsCsvQuery) {}
 
 @ApiTags('investments')
 @Controller('investments')
@@ -66,7 +73,20 @@ export class InvestmentsController {
   }
 
   @Get('transactions')
-  transactions(@Query() query: InvestmentTransactionsQueryDto) {
+  transactions(@Query() query: InvestmentTransactionsQueryDto): InvestmentTransactionsResponse {
     return this.detail.transactions(query)
+  }
+
+  /** Filtered bookings with the visible columns as CSV (US3). */
+  @Get('transactions.csv')
+  transactionsCsv(
+    @Query() query: InvestmentTransactionsCsvQueryDto,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ): string {
+    const { items } = this.detail.transactions(query)
+    void reply
+      .header('content-type', 'text/csv; charset=utf-8')
+      .header('content-disposition', 'attachment; filename="buchungen.csv"')
+    return transactionsToCsv(items, query.columns)
   }
 }
