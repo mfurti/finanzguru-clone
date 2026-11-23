@@ -8,7 +8,8 @@
     "dev": "nuxt dev",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@finance/shared": "workspace:*",
@@ -18,5 +19,10 @@
     "tailwindcss": "^4.3.5",
     "vue": "^3.5.46",
     "vue-router": "^5.5.1"
+  },
+  "devDependencies": {
+    "@nuxt/test-utils": "^4.4.0",
+    "@vue/test-utils": "^2.6.0",
+    "happy-dom": "^21.0.4"
   }
 }
