@@ -103,4 +103,28 @@ Existing indexes (`transactions(account_id, booking_date)`, `transactions(catego
 - Logs: pino redacts cookies, the authorization header and `set-cookie`.
 - `pnpm audit --audit-level high`: no high or critical findings (3 moderate on 2026-11-23).
 
+## Local test results (T078, 2026-11-23)
+
+| Scenario | How | Result |
+|---|---|---|
+| V1–V4 | Playwright `us2-csv-import` | pass |
+| V5, V6 | Playwright `us1-overview` | pass |
+| V7 | Vitest `returns` against `returns-reference.json` | pass |
+| V8 | Playwright `us4-investments` | pass |
+| V9–V11 | Playwright `us5-budget` | pass |
+| V12 | Playwright `us6-insurance` | pass |
+| V13, V14 | – | open: needs the owner's Scalable login (US3, T054+) |
+| V15 | Playwright `smoke` (Datenquellen) | pass |
+| V16 | Playwright `responsive` (360/768/1280 px, dark + light) | pass |
+| V17 | `pnpm --filter api perf` | pass (see Performance results) |
+| V18 | `curl` on the dev API: `/api/docs` 200 with 39 paths; `/api/overview/kpis` without cookie 401 | pass |
+| V19 | `compose.local.yaml` on `FINANCE_LOCAL_PORT=3300`: both containers `healthy`, Sparkasse CSV imported (8), `down` + `up`, data still present, re-import skips 8 | pass |
+
+Totals: Vitest 246 passed (shared 12, web 26, api 208); Playwright 35 passed, 14 skipped (desktop-only journeys on the mobile project).
+
+Fixed during the run:
+
+- API image build: a host `tsconfig.tsbuildinfo` reached the build context, so `tsc -b` skipped emitting `@finance/shared`. `.dockerignore` now excludes `**/*.tsbuildinfo`.
+- `compose.local.yaml` reads `apps/api/.env`, which carries the dev-server overrides `API_PORT=3101` and `MIGRATIONS_FOLDER`. The compose file now clears both, so the container listens on 3001 and uses its bundled migrations.
+
 Contracts: [http-api.md](./contracts/http-api.md), [data-source.md](./contracts/data-source.md), [csv-formats.md](./contracts/csv-formats.md). Entities: [data-model.md](./data-model.md).

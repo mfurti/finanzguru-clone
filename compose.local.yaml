@@ -21,6 +21,9 @@ services:
       TZ: Europe/Berlin
       NODE_ENV: production
       PORT: '3001'
+      # apps/api/.env is the dev-server file; neutralize its dev-only overrides.
+      API_PORT: ''
+      MIGRATIONS_FOLDER: ''
       DATABASE_PATH: /data/app.db
       COOKIE_SECURE: 'false'
     volumes:
