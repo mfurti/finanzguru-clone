@@ -99,3 +99,12 @@ All Technical Context items are resolved; no `NEEDS CLARIFICATION` remains.
 
 - **Decision**: CSV import and Scalable sync run in-process as async jobs (`import_job` row and status polling). An optional daily sync uses `@nestjs/schedule`. There is no queue system.
 - **Rationale**: Single user, low volume; BullMQ/Redis would only add operations work.
+
+## R18 — Containerization and deployment
+
+- **Decision**: Build two images (web, api) with multi-stage Dockerfiles on `node:26-bookworm-slim`. GitHub Actions (`release.yml`, `docker/build-push-action`, `GITHUB_TOKEN` with `packages: write`) pushes them to `ghcr.io/mfurti/finanzguru-clone-{web,api}` with the tags `latest`, `sha-<short>` and semver tags. The server stack in `<STACK_DIR>/compose.yaml` pulls by `${FINANCE_TAG:-latest}`. Locally, `compose.local.yaml` builds the same Dockerfiles for the pre-deploy test.
+- **Rationale**: This matches the pattern of the existing stacks on `the home server` (code is not on the server, images come from GHCR, `compose.yaml` + `.env` + `data/` only). The bookworm (glibc) base avoids `better-sqlite3` musl rebuild issues.
+- **Network**: The web container gets its own LAN IP `${FINANCE_WEB_IP}` via the external macvlan `${MACVLAN_NETWORK}` with a fixed `mac_address` (server conventions: otherwise duplicate devices in Fritzbox/HA). On 2026-11-23, `.36` gave no ping answer and was not attached to `${MACVLAN_NETWORK}`. The API stays off the LAN on its own bridge.
+- **Data**: SQLite at `<STACK_DIR>/data/api/app.db` (bind mount). `backup.sh` uses `sqlite3 .backup` (or the API's `VACUUM INTO`) into `data/api/backup/`, keeps 7 days, and runs from root's crontab after asking (pattern: the other stacks' backups). It is picked up by the existing 04:00 rsync of `the server's stack folder`.
+- **GHCR visibility**: If the images are private, the server needs a `docker login ghcr.io` with a read-only token. Making the packages public avoids storing a token. Open decision for the owner.
+- **Alternatives considered**: A single image running both processes — breaks one-process-per-container and the pattern of the existing stacks. Building on the server — violates "only Docker components on the server".
