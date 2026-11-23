@@ -17,6 +17,7 @@ import { AnalysisModule } from './modules/analysis/analysis.module'
 import { DividendsModule } from './modules/dividends/dividends.module'
 import { TaxesModule } from './modules/taxes/taxes.module'
 import { BenchmarksModule } from './modules/benchmarks/benchmarks.module'
+import { WatchlistsModule } from './modules/watchlists/watchlists.module'
 import { InvestmentsModule } from './modules/investments/investments.module'
 import { OverviewModule } from './modules/overview/overview.module'
 import { TransactionsModule } from './modules/transactions/transactions.module'
@@ -74,6 +75,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module'
     DividendsModule,
     TaxesModule,
     BenchmarksModule,
+    WatchlistsModule,
   ],
 })
 export class AppModule {}

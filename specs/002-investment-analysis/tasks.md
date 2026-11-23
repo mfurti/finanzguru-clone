@@ -196,11 +196,11 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 
 ### Tests for User Story 6
 
-- [ ] T068 [P] [US6] E2E tests for watchlist CRUD (name 1–60 unique), entries (ISIN checksum, creates instrument if missing, duplicate entry rejected) and `GET /api/watchlists/:id?period` (change €/%, `stale`, `hasPrices`) in `apps/api/test/e2e/watchlists.e2e-spec.ts`
+- [X] T068 [P] [US6] E2E tests for watchlist CRUD (name 1–60 unique), entries (ISIN checksum, creates instrument if missing, duplicate entry rejected) and `GET /api/watchlists/:id?period` (change €/%, `stale`, `hasPrices`) in `apps/api/test/e2e/watchlists.e2e-spec.ts`
 
 ### Implementation for User Story 6
 
-- [ ] T069 [US6] Create `apps/api/src/modules/watchlists/` (service, controller, module) per contract, reusing period start resolution from `apps/api/src/domain/period.ts`; register module
+- [X] T069 [US6] Create `apps/api/src/modules/watchlists/` (service, controller, module) per contract, reusing period start resolution from `apps/api/src/domain/period.ts`; register module
 - [ ] T070 [P] [US6] Build `apps/web/app/components/watchlists/WatchlistTable.vue` (Name/ISIN, Kurs + Datum, Veränderung €/%, outdated marker, "Keine Kurse" with import link, remove) and `AddSecurityForm.vue` (ISIN + Name with checksum validation)
 - [ ] T071 [US6] Create `apps/web/app/pages/investments/watchlists/index.vue` (lists, create/rename/delete) and `[id].vue` (PeriodTabs + WatchlistTable)
 - [ ] T072 [US6] Add one demo watchlist with the benchmark instrument to `apps/api/src/database/demo.ts`
