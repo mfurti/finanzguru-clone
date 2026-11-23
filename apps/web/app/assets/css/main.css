@@ -31,10 +31,11 @@ html {
   background-color: var(--app-page);
 }
 
-/* Card titles a step larger, like the reference. */
+/* Card titles like the reference (about 22 px, bold). */
 [data-slot='header'] h2 {
-  font-size: 1.125rem;
-  line-height: 1.5rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
 }
 
 /* Links in card headers and lists: underline fades in, text takes the accent. */

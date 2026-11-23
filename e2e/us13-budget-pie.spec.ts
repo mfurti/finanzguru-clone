@@ -10,9 +10,8 @@ test.describe('002 US7 Budget-Kreisdiagramm', () => {
     await expect(list.getByTestId('category-donut')).toBeVisible()
 
     await list.getByTestId('category-unit-pct').click()
-    const rows = list.locator(
-      '[data-testid^="category-"]:not([data-testid^="category-unit"]):not([data-testid="category-donut"]):not([data-testid="category-list"]):not([data-testid="category-bookings"])',
-    )
+    // Category rows only (not the total row, tabs or the €/% switch).
+    const rows = list.locator('li > button[data-testid^="category-"]')
     const texts = await rows.allTextContents()
     const shares = texts
       .map((text) => /(\d+,\d+) %/.exec(text)?.[1])

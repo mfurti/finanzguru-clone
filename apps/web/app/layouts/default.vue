@@ -22,7 +22,7 @@ const tabs = computed<NavigationMenuItem[]>(() => [
     label: t('nav.overview'),
     icon: 'i-lucide-compass',
     to: withFilter('/'),
-    active: route.path === '/',
+    active: ['/', '/accounts', '/transactions'].includes(route.path),
   },
   {
     label: t('nav.investments'),

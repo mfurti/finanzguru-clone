@@ -1,122 +1,248 @@
 <script setup lang="ts">
 import { formatEur, formatPct, type SankeyResponse } from '@finance/shared'
-import { VisSankey, VisSingleContainer } from '@unovis/vue'
+import { sankey, sankeyLeft, sankeyLinkHorizontal } from 'd3-sankey'
 
 /**
- * Income → categories → sub categories, € or % of income (US5 scenario 3).
- * Nodes and links are ordered so that no links cross (utils/sankey-order.ts);
- * each main category has its own color, shared by its sub categories and links.
+ * Income → categories → sub categories (US5 scenario 3), drawn like the
+ * reference: wide colored blocks with the label inside, links in the block
+ * color, 800 px tall on wide screens. Hovering a block or a link highlights it
+ * with everything connected to it and dims the rest; a tooltip shows the
+ * amount. Order comes from utils/sankey-order.ts, so no links cross.
  */
-const props = defineProps<{ graph: SankeyResponse; incomeCents: number }>()
+const props = defineProps<{ graph: SankeyResponse; incomeCents: number; unit: 'eur' | 'pct' }>()
 const { t } = useI18n()
-const unit = ref<'eur' | 'pct'>('eur')
 
-interface Node {
+interface NodeIn {
   id: string
   label: string
   kind: 'income' | 'main' | 'sub' | 'balance'
 }
-interface Link {
+interface LinkIn {
   source: string
   target: string
   value: number
 }
+type LaidNode = NodeIn & { x0: number; x1: number; y0: number; y1: number; index: number }
+type LaidLink = {
+  source: LaidNode
+  target: LaidNode
+  value: number
+  width: number
+  index: number
+  y0: number
+  y1: number
+}
 
-const data = computed(() => ({
-  nodes: props.graph.nodes as Node[],
-  links: props.graph.links.map((link) => ({
-    source: link.source,
-    target: link.target,
-    value: link.valueCents,
-  })) as Link[],
-}))
+const nodesIn = computed(() => props.graph.nodes as NodeIn[])
+const linksIn = computed<LinkIn[]>(() =>
+  props.graph.links
+    .filter((link) => link.valueCents > 0)
+    .map((link) => ({ source: link.source, target: link.target, value: link.valueCents })),
+)
+const order = computed(() => sankeyOrder(nodesIn.value, linksIn.value))
+const rankOf = (id: string) => order.value.rank.get(id) ?? 0
 
+/** Width follows the card; height is 800 px on wide screens like the reference. */
+const root = useTemplateRef<HTMLDivElement>('root')
+const width = ref(900)
+let observer: ResizeObserver | undefined
+onMounted(() => {
+  if (!root.value) return
+  observer = new ResizeObserver(([entry]) => {
+    width.value = Math.max(560, Math.round(entry!.contentRect.width))
+  })
+  observer.observe(root.value)
+})
+onBeforeUnmount(() => observer?.disconnect())
+const subCount = computed(() => nodesIn.value.filter((node) => node.kind === 'sub').length)
+const height = computed(() =>
+  width.value >= 900 ? 800 : Math.max(420, Math.min(800, subCount.value * 40 + 120)),
+)
+
+const layout = computed(() => {
+  if (linksIn.value.length === 0) return { nodes: [] as LaidNode[], links: [] as LaidLink[] }
+  const nodeWidth = Math.min(200, Math.max(90, width.value * 0.18))
+  const generator = sankey<NodeIn, LinkIn>()
+    .nodeId((node) => node.id)
+    .nodeAlign(sankeyLeft)
+    .nodeWidth(nodeWidth)
+    .nodePadding(12)
+    .nodeSort((a, b) => rankOf(a.id) - rankOf(b.id))
+    .linkSort(
+      (a, b) =>
+        rankOf((a.target as NodeIn).id) - rankOf((b.target as NodeIn).id) ||
+        rankOf((a.source as NodeIn).id) - rankOf((b.source as NodeIn).id),
+    )
+    .extent([
+      [0, 0],
+      [width.value, height.value],
+    ])
+  const graph = generator({
+    nodes: nodesIn.value.map((node) => ({ ...node })),
+    links: linksIn.value.map((link) => ({ ...link })),
+  })
+  return {
+    nodes: graph.nodes as unknown as LaidNode[],
+    links: graph.links as unknown as LaidLink[],
+  }
+})
+const linkPath = sankeyLinkHorizontal()
+
+/** Totals per node: incoming links, income = total income. */
 const totals = computed(() => {
   const map = new Map<string, number>()
-  for (const link of props.graph.links)
-    map.set(link.target, (map.get(link.target) ?? 0) + link.valueCents)
+  for (const link of linksIn.value) map.set(link.target, (map.get(link.target) ?? 0) + link.value)
   map.set('income', props.incomeCents)
   return map
 })
 const format = (cents: number) =>
-  unit.value === 'eur'
+  props.unit === 'eur'
     ? formatEur(cents)
     : formatPct(props.incomeCents > 0 ? cents / props.incomeCents : 0)
-const label = (node: Node) => node.label
-const subLabel = (node: Node) => format(totals.value.get(node.id) ?? 0)
-const order = computed(() => sankeyOrder(data.value.nodes, data.value.links))
-/** Ids may be strings (input) or node objects (after the layout). */
-const idOf = (end: string | { id: string }) => (typeof end === 'string' ? end : end.id)
-const rankOf = (end: string | { id: string }) => order.value.rank.get(idOf(end)) ?? 0
-const nodeSort = (a: Node, b: Node) => rankOf(a) - rankOf(b)
-const linkSort = (
-  a: { source: string | Node; target: string | Node },
-  b: { source: string | Node; target: string | Node },
-) => rankOf(a.target) - rankOf(b.target) || rankOf(a.source) - rankOf(b.source)
 
-/** Palette color per main category (by rank), balance and income fixed. */
 const colorOf = (id: string) => {
-  const node = data.value.nodes.find((n) => n.id === id)
-  if (!node || node.kind === 'income') return 'var(--color-emerald-500)'
+  const node = nodesIn.value.find((n) => n.id === id)
+  if (!node || node.kind === 'income') return 'var(--color-emerald-400)'
   const group = order.value.group.get(id) ?? id
-  const groupNode = data.value.nodes.find((n) => n.id === group)
-  if (groupNode?.kind === 'balance') return 'var(--color-sky-500)'
+  if (nodesIn.value.find((n) => n.id === group)?.kind === 'balance') return 'var(--color-sky-400)'
   return paletteColor(order.value.rank.get(group) ?? 0)
 }
-const nodeColor = (node: Node) => colorOf(node.id)
-const linkColor = (link: { target: string | Node }) =>
-  `color-mix(in oklab, ${colorOf(idOf(link.target))} 45%, transparent)`
-const height = computed(() =>
-  Math.max(240, props.graph.nodes.filter((node) => node.kind === 'sub').length * 28),
+const nodeFill = (id: string) => `color-mix(in oklab, ${colorOf(id)} 78%, white)`
+const linkFill = (id: string) => `color-mix(in oklab, ${colorOf(id)} 35%, transparent)`
+
+/** Hover: a node or a link plus everything connected to it. */
+const active = ref<{ nodes: Set<string>; links: Set<number> } | null>(null)
+const tooltip = ref<{ x: number; y: number; text: string } | null>(null)
+function hoverNode(node: LaidNode): void {
+  const links = layout.value.links.filter(
+    (link) => link.source.id === node.id || link.target.id === node.id,
+  )
+  active.value = {
+    nodes: new Set([node.id, ...links.flatMap((link) => [link.source.id, link.target.id])]),
+    links: new Set(links.map((link) => link.index)),
+  }
+}
+function hoverLink(link: LaidLink): void {
+  active.value = { nodes: new Set([link.source.id, link.target.id]), links: new Set([link.index]) }
+}
+function move(event: PointerEvent, text: string): void {
+  const box = root.value!.getBoundingClientRect()
+  tooltip.value = { x: event.clientX - box.left + 12, y: event.clientY - box.top + 12, text }
+}
+function leave(): void {
+  active.value = null
+  tooltip.value = null
+}
+const nodeOpacity = (id: string) => (active.value && !active.value.nodes.has(id) ? 0.25 : 1)
+const linkOpacity = (index: number) =>
+  active.value ? (active.value.links.has(index) ? 1 : 0.15) : 1
+
+const labelOf = (node: LaidNode) => `${node.label}: ${format(totals.value.get(node.id) ?? 0)}`
+const ariaLabel = computed(() =>
+  layout.value.nodes
+    .filter((node) => node.kind !== 'income')
+    .map(labelOf)
+    .join(', '),
 )
 </script>
 
 <template>
   <div data-testid="sankey">
-    <div class="mb-2 flex justify-end">
-      <UFieldGroup size="xs">
-        <UButton
-          :variant="unit === 'eur' ? 'soft' : 'ghost'"
-          color="neutral"
-          label="€"
-          @click="unit = 'eur'"
-        />
-        <UButton
-          :variant="unit === 'pct' ? 'soft' : 'ghost'"
-          color="neutral"
-          label="%"
-          @click="unit = 'pct'"
-        />
-      </UFieldGroup>
-    </div>
-    <EmptyState
-      v-if="graph.links.length === 0"
-      :title="t('budget.noData')"
-      icon="i-lucide-git-fork"
-    />
+    <EmptyState v-if="linksIn.length === 0" :title="t('budget.noData')" icon="i-lucide-git-fork" />
     <div v-else class="overflow-x-auto">
-      <ClientOnly>
-        <VisSingleContainer :data="data" :height="height" class="min-w-[560px] sankey">
-          <VisSankey
-            :label="label"
-            :sub-label="subLabel"
-            :node-color="nodeColor"
-            :link-color="linkColor"
-            :node-sort="nodeSort"
-            :link-sort="linkSort"
-            :node-width="10"
-            :node-padding="10"
-            label-position="right"
-          />
-        </VisSingleContainer>
-      </ClientOnly>
+      <div ref="root" class="relative min-w-[560px]" @pointerleave="leave">
+        <ClientOnly>
+          <svg
+            :width="width"
+            :height="height"
+            :viewBox="`0 0 ${width} ${height}`"
+            role="img"
+            :aria-label="ariaLabel"
+            class="block"
+          >
+            <g fill="none">
+              <path
+                v-for="link in layout.links"
+                :key="`l${link.index}`"
+                :d="linkPath(link as never) ?? ''"
+                :stroke="linkFill(link.target.id)"
+                :stroke-width="Math.max(1, link.width)"
+                :stroke-opacity="linkOpacity(link.index)"
+                class="sankey-link"
+                data-testid="sankey-link"
+                @pointerenter="hoverLink(link)"
+                @pointermove="
+                  move($event, `${link.source.label} → ${link.target.label}: ${format(link.value)}`)
+                "
+              />
+            </g>
+            <g>
+              <g
+                v-for="node in layout.nodes"
+                :key="node.id"
+                :opacity="nodeOpacity(node.id)"
+                class="sankey-node"
+                data-testid="sankey-node"
+                :data-node="node.id"
+                @pointerenter="hoverNode(node)"
+                @pointermove="move($event, labelOf(node))"
+              >
+                <rect
+                  :x="node.x0"
+                  :y="node.y0"
+                  :width="node.x1 - node.x0"
+                  :height="Math.max(1, node.y1 - node.y0)"
+                  :fill="nodeFill(node.id)"
+                  rx="2"
+                />
+                <text
+                  :x="node.kind === 'income' ? node.x0 + 8 : node.x1 - 8"
+                  :y="(node.y0 + node.y1) / 2"
+                  :text-anchor="node.kind === 'income' ? 'start' : 'end'"
+                  dominant-baseline="middle"
+                  class="sankey-label"
+                >
+                  {{ labelOf(node) }}
+                </text>
+              </g>
+            </g>
+          </svg>
+          <template #fallback><USkeleton class="h-[420px] w-full" /></template>
+        </ClientOnly>
+        <div
+          v-if="tooltip"
+          class="pointer-events-none absolute z-10 rounded-md border border-default bg-elevated px-2 py-1 text-xs whitespace-nowrap shadow-sm"
+          :style="{ left: `${tooltip.x}px`, top: `${tooltip.y}px` }"
+          data-testid="sankey-tooltip"
+        >
+          {{ tooltip.text }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.sankey {
-  --vis-sankey-node-label-color: var(--ui-text);
-  --vis-sankey-node-sublabel-color: var(--ui-text-muted);
+.sankey-link,
+.sankey-node {
+  cursor: pointer;
+  transition:
+    stroke-opacity 150ms ease,
+    opacity 150ms ease;
+}
+.sankey-label {
+  fill: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  paint-order: stroke;
+  stroke: rgb(0 0 0 / 0.35);
+  stroke-width: 3px;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sankey-link,
+  .sankey-node {
+    transition: none;
+  }
 }
 </style>

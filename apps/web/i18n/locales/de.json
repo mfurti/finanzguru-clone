@@ -138,6 +138,11 @@
       "up": "Nach oben",
       "down": "Nach unten",
       "error": "Layout konnte nicht gespeichert werden."
+    },
+    "views": {
+      "dashboard": "Dashboard",
+      "accounts": "Portfolios & Konten",
+      "transactions": "Transaktionen"
     }
   },
   "periodLong": {

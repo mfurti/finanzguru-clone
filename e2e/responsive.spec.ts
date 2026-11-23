@@ -3,6 +3,8 @@ import { expect, test } from '@playwright/test'
 /** Every page of the app (SC-006: no horizontal scroll down to 360 px). */
 const PAGES = [
   '/',
+  '/accounts',
+  '/transactions',
   '/investments',
   '/investments/transactions',
   '/investments/analysis',

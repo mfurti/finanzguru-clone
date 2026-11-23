@@ -29,4 +29,20 @@ test.describe('section navigation', () => {
     await expect(page).toHaveURL(/\/budget\/budgets/)
     await expect(page.getByTestId('section-nav-menu')).toHaveText(/Budgets/)
   })
+
+  test('Übersicht has Dashboard, Portfolios & Konten and Transaktionen', async ({ page }) => {
+    await page.setViewportSize({ width: 900, height: 800 })
+    await page.goto('/')
+    const menu = page.getByTestId('section-nav-menu')
+    await expect(menu).toHaveText(/Dashboard/)
+    await menu.click()
+    await page.getByRole('menuitem', { name: 'Transaktionen' }).click()
+    await expect(page).toHaveURL(/\/transactions$/)
+    await expect(page.getByTestId('all-transactions')).toBeVisible()
+
+    await page.getByTestId('section-nav-menu').click()
+    await page.getByRole('menuitem', { name: 'Portfolios & Konten' }).click()
+    await expect(page).toHaveURL(/\/accounts$/)
+    await expect(page.getByTestId('accounts-card')).toBeVisible()
+  })
 })

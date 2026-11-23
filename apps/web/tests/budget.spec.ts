@@ -70,7 +70,7 @@ describe('CategoryList', () => {
     })
     expect(wrapper.text()).toContain('Ausgaben gesamt (42)')
     expect(wrapper.text()).toContain('-1.778,24 €')
-    expect(wrapper.text()).toContain('Wohnen (3)')
+    expect(wrapper.text()).toMatch(/Wohnen\s*\(3\)/)
     expect(wrapper.text()).toContain('-845,00 €')
   })
 })

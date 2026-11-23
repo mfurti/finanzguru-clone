@@ -30,7 +30,7 @@ const items = computed(() => [
         data-testid="period-next"
         @click="next"
       />
-      <span class="ml-1 text-lg font-semibold" data-testid="period-label">{{ label }}</span>
+      <span class="ml-1 text-xl font-bold" data-testid="period-label">{{ label }}</span>
     </div>
     <div class="flex items-center gap-2">
       <UButton
