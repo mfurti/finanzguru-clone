@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { type InstrumentDto, instrumentInput, pricesInput } from '@finance/shared'
 import { createZodDto } from 'nestjs-zod'
@@ -11,6 +11,12 @@ class PricesInputDto extends createZodDto(pricesInput) {}
 @Controller('instruments')
 export class InstrumentsController {
   constructor(private readonly instruments: InstrumentsService) {}
+
+  /** All instruments, for pickers (price import, watchlists, benchmarks). */
+  @Get()
+  list(): (InstrumentDto & { isBenchmark: boolean })[] {
+    return this.instruments.list()
+  }
 
   @Post()
   create(@Body() body: InstrumentInputDto): InstrumentDto {

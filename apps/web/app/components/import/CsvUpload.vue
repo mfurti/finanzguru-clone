@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import type { AccountDto, CsvMappingInput, CsvUploadResponse, ImportJobDto } from '@finance/shared'
+import type {
+  AccountDto,
+  CsvMappingInput,
+  CsvUploadResponse,
+  ImportJobDto,
+  InstrumentDto,
+} from '@finance/shared'
 import type { FetchError } from 'ofetch'
 
 /** CSV import wizard: upload → (mapping) → confirm → result (US2). */
@@ -36,8 +42,28 @@ const accountItems = computed(() => [
   })),
 ])
 
+/** "Kursliste" without an ISIN column: the owner picks the instrument. */
+const instrumentId = ref<string | undefined>()
+const isPriceList = computed(() => upload.value?.detectedFormat === 'price-list')
+const needsInstrument = computed(
+  () =>
+    isPriceList.value &&
+    !(upload.value?.headers ?? []).some((header) => header.trim().toLowerCase() === 'isin'),
+)
+const { data: instruments } = await useApi<InstrumentDto[]>('/api/instruments', {
+  key: 'instruments',
+  default: () => [],
+})
+const instrumentItems = computed(() =>
+  (instruments.value ?? []).map((item) => ({
+    label: `${item.name} · ${item.isin}`,
+    value: item.id,
+  })),
+)
+
 const canConfirm = computed(() => {
   if (!upload.value) return false
+  if (needsInstrument.value) return !!instrumentId.value
   if (!upload.value.needsMapping) return true
   const columns = mapping.value.columns
   return columns.date >= 0 && columns.amount >= 0 && accountId.value !== AUTO
@@ -77,7 +103,8 @@ async function confirm(): Promise<void> {
   error.value = null
   try {
     const body: Record<string, unknown> = {}
-    if (accountId.value !== AUTO) body.accountId = accountId.value
+    if (accountId.value !== AUTO && !isPriceList.value) body.accountId = accountId.value
+    if (needsInstrument.value) body.instrumentId = instrumentId.value
     if (upload.value.needsMapping) {
       body.mapping = mapping.value
       if (saveAs.value.trim()) body.saveMappingAs = saveAs.value.trim()
@@ -102,6 +129,7 @@ function reset(): void {
   result.value = null
   error.value = null
   file.value = null
+  instrumentId.value = undefined
 }
 </script>
 
@@ -133,7 +161,20 @@ function reset(): void {
         </span>
         <span v-else>{{ t('import.unknownLayout') }}</span>
       </p>
-      <UFormField :label="t('import.targetAccount')" :required="upload.needsMapping">
+      <UFormField v-if="needsInstrument" :label="t('import.instrument')" required>
+        <USelectMenu
+          v-model="instrumentId"
+          :items="instrumentItems"
+          value-key="value"
+          class="w-full"
+          data-testid="csv-instrument"
+        />
+      </UFormField>
+      <UFormField
+        v-if="!isPriceList"
+        :label="t('import.targetAccount')"
+        :required="upload.needsMapping"
+      >
         <USelect
           v-model="accountId"
           :items="accountItems"

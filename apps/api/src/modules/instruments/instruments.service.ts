@@ -11,7 +11,7 @@ import {
   isValidIsin,
   type PricesInput,
 } from '@finance/shared'
-import { eq } from 'drizzle-orm'
+import { asc, eq } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { instrument, price, transaction } from '../../database/schema'
@@ -37,6 +37,15 @@ export class InstrumentsService {
     @Inject(DB) private readonly db: AppDatabase,
     private readonly recompute: RecomputeService,
   ) {}
+
+  list(): (InstrumentDto & { isBenchmark: boolean })[] {
+    return this.db
+      .select()
+      .from(instrument)
+      .orderBy(asc(instrument.name))
+      .all()
+      .map((row) => ({ ...toInstrumentDto(row), isBenchmark: row.isBenchmark }))
+  }
 
   create(input: InstrumentInput): InstrumentDto {
     if (!isValidIsin(input.isin)) throw new BadRequestException('Ungültige ISIN')

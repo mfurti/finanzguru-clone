@@ -220,7 +220,8 @@
       "skipRows": "Zeilen überspringen",
       "saveAs": "Zuordnung speichern als",
       "saveHint": "optional, für den nächsten Import"
-    }
+    },
+    "instrument": "Wertpapier für die Kursliste"
   },
   "sources": {
     "title": "Datenquellen",

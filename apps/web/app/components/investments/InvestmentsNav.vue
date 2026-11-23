@@ -1,16 +1,26 @@
 <script setup lang="ts">
-/** Sub navigation of the Investments tab. */
+/** Sub navigation of the Investments tab (scrolls horizontally on phones). */
 const { t } = useI18n()
 const route = useRoute()
-const items = computed(() => [
-  { label: t('investments.views.positions'), to: { path: '/investments', query: route.query } },
-  {
-    label: t('investments.views.transactions'),
-    to: { path: '/investments/transactions', query: route.query },
-  },
-])
+const VIEWS = [
+  ['positions', '/investments'],
+  ['transactions', '/investments/transactions'],
+  ['analysis', '/investments/analysis'],
+  ['dividends', '/investments/dividends'],
+  ['taxes', '/investments/taxes'],
+  ['watchlists', '/investments/watchlists'],
+] as const
+const items = computed(() =>
+  VIEWS.map(([key, path]) => ({
+    label: t(`investments.views.${key}`),
+    to: { path, query: route.query },
+    active: path === '/investments' ? route.path === path : route.path.startsWith(path),
+  })),
+)
 </script>
 
 <template>
-  <UNavigationMenu :items="items" class="mb-4 border-b border-default" />
+  <nav class="mb-4 overflow-x-auto border-b border-default [scrollbar-width:none]">
+    <UNavigationMenu :items="items" class="min-w-max" />
+  </nav>
 </template>

@@ -46,8 +46,8 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 - [X] T008 [P] E2E test for instrument creation and manual prices (duplicate ISIN 409, bad checksum 400, upsert keeps one row per day) in `apps/api/test/e2e/instruments.e2e-spec.ts`
 - [X] T009 Add the "Kursliste" CSV format in `apps/api/src/modules/sources/csv/price-list.ts` (header `Datum;Schlusskurs`, optional `ISIN`, dates `DD.MM.YYYY` or ISO, decimal comma or point), detection in `apps/api/src/modules/sources/csv/detector.ts`, and the import path in `apps/api/src/modules/import/import.service.ts` (confirm takes `{ instrumentId }` when no ISIN column; job counts `imported`, `updated`, `skipped`; prices stored with `source = 'csv'`)
 - [X] T010 [P] Fixtures `apps/api/test/fixtures/csv/price-list.csv` and `price-list-isin.csv` plus unit tests for parsing in `apps/api/test/unit/price-list.spec.ts` and an e2e upload/confirm test in `apps/api/test/e2e/import-prices.e2e-spec.ts`; document the format in `specs/001-wealth-tracker-dashboard/contracts/csv-formats.md`
-- [ ] T011 [P] Extend `apps/web/app/components/investments/InvestmentsNav.vue` to six entries (Positionen, Transaktionen, Analyse, Dividenden, Steuern, Watchlists), horizontally scrollable below `sm` like the main tabs
-- [ ] T012 [P] Add a "Kurse importieren" option for instruments to `apps/web/app/components/import/CsvUpload.vue` (instrument picker shown when the detected format is `price-list` without ISIN)
+- [X] T011 [P] Extend `apps/web/app/components/investments/InvestmentsNav.vue` to six entries (Positionen, Transaktionen, Analyse, Dividenden, Steuern, Watchlists), horizontally scrollable below `sm` like the main tabs
+- [X] T012 [P] Add a "Kurse importieren" option for instruments to `apps/web/app/components/import/CsvUpload.vue` (instrument picker shown when the detected format is `price-list` without ISIN)
 
 **Checkpoint**: Schema migrated, prices can be imported for any instrument, navigation lists all new pages
 
