@@ -182,7 +182,7 @@ description: "Task list for feature 002: investment analysis, dividends, taxes, 
 - [X] T064 [P] [US5] Build `apps/web/app/components/common/BenchmarkSelect.vue` (select of benchmarks + "Keiner", link to price import when empty)
 - [X] T065 [US5] Add the benchmark line, legend and tooltip value to `apps/web/app/components/dashboard/NetWorthChart.vue` (Rendite mode only) and `apps/web/app/components/investments/PerformanceChart.vue` (% mode), loading and saving the selection via `/api/settings/charts`
 - [X] T066 [US5] Add one benchmark instrument with daily prices to `apps/api/src/database/demo.ts` (synthetic, deterministic)
-- [ ] T067 [US5] Playwright journey W12 in `e2e/us11-benchmark.spec.ts`
+- [X] T067 [US5] Playwright journey W12 in `e2e/us11-benchmark.spec.ts`
 
 **Checkpoint**: Benchmark comparison works independently
 
