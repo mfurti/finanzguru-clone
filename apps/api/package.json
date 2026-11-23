@@ -16,7 +16,8 @@
     "db:migrate": "nest build && node --env-file-if-exists=.env dist/scripts/migrate.js",
     "owner:set-password": "nest build && node --env-file-if-exists=.env dist/scripts/set-password.js",
     "db:seed": "nest build && node --env-file-if-exists=.env dist/scripts/seed.js",
-    "dev:local": "nest start --watch"
+    "dev:local": "nest start --watch",
+    "perf": "nest build && node dist/scripts/perf.js"
   },
   "dependencies": {
     "@fastify/multipart": "^9.4.0",

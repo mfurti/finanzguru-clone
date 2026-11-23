@@ -82,4 +82,18 @@ See `deploy/README.md`: copy `deploy/compose.yaml` and `deploy/.env.example` to 
 | V21 | Server | On the server: `docker compose -f <STACK_DIR>/compose.yaml config` | Valid; order `name`, `networks`, `services`; only bind mounts; `${FINANCE_WEB_IP}` + fixed MAC on the macvlan network |
 | V22 | Server | After `pull` + `up -d`: open `http://${FINANCE_WEB_IP}:3000` from the LAN; recreate containers | Login works; data unchanged after recreation (SC-008) |
 
+## Performance results (T075)
+
+Run `pnpm --filter api perf`. It seeds a temporary DB (5 years of daily prices for 10 ETFs, 10,600 transactions), times every API call of the overview page one after another, then uploads and imports a generated 50,000-row Sparkasse CSV. Exit code 1 if a target is missed.
+
+Measured 2026-11-23 on the development machine (Node 26, SQLite WAL):
+
+| Measurement | Result | Target |
+|---|---|---|
+| Overview API calls (10 requests, sequential) | 86 ms total; slowest `kpis?period=1Y` 43 ms | page < 2 s (SC-002) |
+| CSV import 50,000 rows (upload + confirm + recompute) | 11.6 s | < 30 s |
+| Seed 10,600 transactions + 13,050 prices | 1.5 s | – |
+
+Existing indexes (`transactions(account_id, booking_date)`, `transactions(category_id)`, `position_lot(account_id, instrument_id)`, primary keys on `price` and `net_worth_snapshot`) cover the hot queries; no new index was needed.
+
 Contracts: [http-api.md](./contracts/http-api.md), [data-source.md](./contracts/data-source.md), [csv-formats.md](./contracts/csv-formats.md). Entities: [data-model.md](./data-model.md).
