@@ -6,8 +6,7 @@ const view = ref<'positions' | 'assetClasses'>('positions')
 
 <template>
   <section class="space-y-4">
-    <h1 class="text-xl font-semibold">{{ t('nav.investments') }}</h1>
-    <InvestmentsNav />
+    <h1 class="sr-only">{{ t('nav.investments') }}</h1>
     <PerformanceChart />
     <UTabs
       v-model="view"

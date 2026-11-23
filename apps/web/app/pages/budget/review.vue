@@ -43,8 +43,7 @@ async function assign(row: TransactionListItem, categoryId: string): Promise<voi
 
 <template>
   <section class="space-y-4">
-    <h1 class="text-xl font-semibold">{{ t('nav.budget') }}</h1>
-    <BudgetNav />
+    <h1 class="sr-only">{{ t('nav.budget') }}</h1>
     <UCard data-testid="review-list">
       <template #header>
         <h2 class="font-semibold">{{ t('budget.review.title') }} ({{ data!.total }})</h2>

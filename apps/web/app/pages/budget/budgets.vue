@@ -37,8 +37,7 @@ async function remove(id: string): Promise<void> {
 
 <template>
   <section class="space-y-4">
-    <h1 class="text-xl font-semibold">{{ t('nav.budget') }}</h1>
-    <BudgetNav />
+    <h1 class="sr-only">{{ t('nav.budget') }}</h1>
     <UCard>
       <template #header>
         <h2 class="font-semibold">{{ t('budget.budgets.create') }}</h2>

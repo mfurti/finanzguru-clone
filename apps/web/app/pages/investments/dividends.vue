@@ -32,8 +32,7 @@ async function remove(entry: DividendCalendarEntry): Promise<void> {
 
 <template>
   <section class="space-y-4">
-    <h1 class="text-xl font-semibold">{{ t('nav.investments') }}</h1>
-    <InvestmentsNav />
+    <h1 class="sr-only">{{ t('nav.investments') }}</h1>
     <template v-if="summary">
       <DividendSummary :summary="summary" />
       <div class="grid gap-4 lg:grid-cols-2">

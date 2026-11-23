@@ -29,21 +29,22 @@ const donutItems = computed(() =>
 </script>
 
 <template>
-  <div class="mx-auto shrink-0" data-testid="category-donut">
+  <div class="mx-auto flex shrink-0 justify-center" data-testid="category-donut">
     <EmptyState v-if="items.length === 0" :title="t('budget.noData')" icon="i-lucide-chart-pie" />
     <DonutChart
       v-else
       v-model:hovered="hovered"
       :items="donutItems"
-      :thickness="24"
+      :size="260"
+      :thickness="30"
       @select="(key) => emit('select', key)"
     >
       <template #center="{ item }">
-        <span class="text-lg font-semibold">
+        <span class="text-2xl font-semibold">
           <Money v-if="item" :cents="sign * item.value" />
           <Money v-else :cents="sign * totalCents" animate />
         </span>
-        <span class="line-clamp-2 text-xs text-muted" data-testid="donut-center-label">
+        <span class="line-clamp-2 text-sm text-muted" data-testid="donut-center-label">
           {{ item ? item.label : t('budget.chart.total') }}
         </span>
       </template>

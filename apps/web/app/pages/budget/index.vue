@@ -14,8 +14,7 @@ const { data: graph } = await useApi<SankeyResponse>('/api/cashflow/sankey', {
 
 <template>
   <section class="space-y-4">
-    <h1 class="text-xl font-semibold">{{ t('nav.budget') }}</h1>
-    <BudgetNav />
+    <h1 class="sr-only">{{ t('nav.budget') }}</h1>
     <UCard v-if="summary">
       <PeriodSwitcher :label="summary.period.label" class="mb-4" />
       <CashflowBars :bars="summary.bars" class="mb-4" @select="setAnchor" />

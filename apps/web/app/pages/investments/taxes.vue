@@ -51,8 +51,7 @@ async function refreshAll(): Promise<void> {
 
 <template>
   <section class="space-y-4">
-    <h1 class="text-xl font-semibold">{{ t('nav.investments') }}</h1>
-    <InvestmentsNav />
+    <h1 class="sr-only">{{ t('nav.investments') }}</h1>
     <div class="flex flex-wrap items-end justify-between gap-3">
       <div class="flex items-center gap-1">
         <UButton

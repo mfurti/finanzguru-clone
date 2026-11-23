@@ -59,8 +59,7 @@ const filters = computed(() => ({
 
 <template>
   <section class="space-y-4">
-    <h1 class="text-xl font-semibold">{{ t('nav.investments') }}</h1>
-    <InvestmentsNav />
+    <h1 class="sr-only">{{ t('nav.investments') }}</h1>
     <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5" data-testid="tx-filters">
       <USelect v-model="type" :items="typeItems" size="sm" data-testid="tx-filter-type" />
       <USelect v-model="depot" :items="depotItems" size="sm" data-testid="tx-filter-depot" />

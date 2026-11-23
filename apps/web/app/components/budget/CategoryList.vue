@@ -111,7 +111,7 @@ watch([kind, query], () => {
       </div>
     </template>
     <EmptyState v-if="data!.items.length === 0" :title="t('budget.noData')" icon="i-lucide-tags" />
-    <div v-else class="flex flex-col gap-4 md:flex-row">
+    <div v-else class="grid items-center gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
       <ul class="w-full divide-y divide-default text-sm">
         <li class="flex justify-between py-2 font-semibold">
           <span
