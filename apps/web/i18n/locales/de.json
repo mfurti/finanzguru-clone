@@ -109,6 +109,33 @@
     "review": {
       "label": "Ungeprüfte Transaktionen",
       "action": "Alle anzeigen"
+    },
+    "cashflow": {
+      "title": "Einnahmen & Ausgaben",
+      "empty": "Noch keine Kontobewegungen"
+    },
+    "budgets": {
+      "title": "Budgets",
+      "emptyTitle": "Keine Daten verfügbar",
+      "emptyDescription": "Du hast noch keine Budgets erstellt.",
+      "create": "Jetzt Budgets erstellen"
+    },
+    "widgets": {
+      "networth": "Vermögensverlauf",
+      "allocation": "Aufteilung",
+      "kpis": "Kennzahlen",
+      "holdings": "Holdings",
+      "accounts": "Portfolios & Konten",
+      "review": "Ungeprüfte Transaktionen",
+      "cashflow": "Einnahmen & Ausgaben",
+      "budgets": "Budgets"
+    },
+    "customize": {
+      "button": "Anpassen",
+      "title": "Übersicht anpassen",
+      "up": "Nach oben",
+      "down": "Nach unten",
+      "error": "Layout konnte nicht gespeichert werden."
     }
   },
   "periodLong": {
@@ -118,5 +145,11 @@
     "3Y": "3 Jahre",
     "5Y": "5 Jahre",
     "ALL": "Gesamt"
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten"
   }
 }
