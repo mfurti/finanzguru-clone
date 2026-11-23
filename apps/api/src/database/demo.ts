@@ -24,6 +24,8 @@ import {
   price,
   taxYear,
   transaction,
+  watchlist,
+  watchlistEntry,
 } from './schema'
 import { seedDefaults } from './seed'
 
@@ -627,4 +629,8 @@ function seedDemoBenchmark(tx: Pick<Db, 'insert'>): void {
       .values(rows.slice(start, start + 500))
       .run()
   }
+
+  // Demo watchlist (US6) with the benchmark.
+  const list = tx.insert(watchlist).values({ name: 'Beobachten', position: 0 }).returning().get()
+  tx.insert(watchlistEntry).values({ watchlistId: list.id, instrumentId: id, position: 0 }).run()
 }
