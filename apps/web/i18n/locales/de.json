@@ -43,5 +43,22 @@
   },
   "settings": {
     "sources": "Datenquellen"
+  },
+  "overview": {
+    "netWorth": {
+      "tabValue": "Vermögen",
+      "tabReturn": "Rendite",
+      "total": "Gesamtvermögen",
+      "gain": "Gewinn",
+      "value": "Vermögen inkl. Cash & Dividenden",
+      "invested": "Investiertes Kapital",
+      "cash": "Cash",
+      "return": "Rendite"
+    },
+    "empty": {
+      "title": "Noch keine Daten",
+      "description": "Importiere eine CSV-Datei oder verbinde ein Depot, um dein Vermögen zu sehen.",
+      "action": "Daten hinzufügen"
+    }
   }
 }
