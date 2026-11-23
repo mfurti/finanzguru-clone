@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { arc } from 'd3-shape'
+
 /**
  * Donut chart with the reference tool's motion: the ring sweeps in clockwise
  * from 12 o'clock, a hovered slice gets brighter with a translucent halo, and
  * the center slot receives the hovered item (amount and name instead of the
- * total). Slices are separated by a thin gap in the card color. Hover state is
+ * total). Every slice has rounded ends and a small gap to its neighbours. Hover state is
  * a v-model so a list next to the chart can drive it too.
  */
 export interface DonutItem {
@@ -56,23 +58,25 @@ watch(
 )
 onBeforeUnmount(() => cancelAnimationFrame(frame))
 
-const point = (radius: number, angle: number) => {
-  const a = angle - Math.PI / 2
-  return `${center.value + radius * Math.cos(a)} ${center.value + radius * Math.sin(a)}`
-}
-/** Ring segment between two angles (radians, clockwise from 12 o'clock). */
-function ringPath(r0: number, r1: number, a0: number, a1: number): string {
-  const span = Math.min(a1 - a0, Math.PI * 2 - 1e-4)
-  if (span <= 0) return ''
-  const end = a0 + span
-  const large = span > Math.PI ? 1 : 0
-  return [
-    `M ${point(r1, a0)}`,
-    `A ${r1} ${r1} 0 ${large} 1 ${point(r1, end)}`,
-    `L ${point(r0, end)}`,
-    `A ${r0} ${r0} 0 ${large} 0 ${point(r0, a0)}`,
-    'Z',
-  ].join(' ')
+/** Rounded ends and the gap between slices (d3 arc, angles clockwise from 12 o'clock). */
+const CORNER = 5
+const PAD = 0.03
+function ringPath(r0: number, r1: number, a0: number, a1: number, corner = CORNER): string {
+  if (a1 - a0 <= 0) return ''
+  const single = visible.value.length === 1
+  return (
+    arc()
+      .innerRadius(r0)
+      .outerRadius(r1)
+      .cornerRadius(corner)
+      .padAngle(single ? 0 : PAD)
+      .padRadius(outer.value)({
+      innerRadius: r0,
+      outerRadius: r1,
+      startAngle: a0,
+      endAngle: a1,
+    }) ?? ''
+  )
 }
 
 const slices = computed(() => {
@@ -87,7 +91,7 @@ const slices = computed(() => {
       item,
       share,
       path: ringPath(inner.value, outer.value, a0, a1),
-      halo: ringPath(outer.value, outer.value + HALO, a0, a1),
+      halo: ringPath(outer.value + 2, outer.value + HALO, a0, a1, 3),
     }
   })
 })
@@ -110,7 +114,11 @@ const ariaLabel = computed(() =>
       class="donut"
       data-testid="donut-chart"
     >
-      <g v-for="slice in slices" :key="slice.item.key">
+      <g
+        v-for="slice in slices"
+        :key="slice.item.key"
+        :transform="`translate(${center} ${center})`"
+      >
         <path
           :d="slice.halo"
           :fill="slice.item.color"
@@ -143,8 +151,6 @@ const ariaLabel = computed(() =>
 <style scoped>
 .donut-slice {
   cursor: pointer;
-  stroke: var(--ui-bg);
-  stroke-width: 1.5px;
   transition: filter 150ms ease;
 }
 .donut-slice.is-active {
