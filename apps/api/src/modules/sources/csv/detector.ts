@@ -5,10 +5,12 @@
  */
 import { createHash } from 'node:crypto'
 import Papa from 'papaparse'
+import { isPriceList } from './price-list'
 
 export type CsvEncoding = 'utf-8' | 'windows-1252'
 export type CsvDelimiter = ';' | ',' | '\t'
-export type KnownLayout = 'sparkasse-camt-v8' | 'sparkasse-mt940' | 'scalable-transactions'
+export type KnownLayout =
+  'sparkasse-camt-v8' | 'sparkasse-mt940' | 'scalable-transactions' | 'price-list'
 
 export interface ParsedCsv {
   encoding: CsvEncoding
@@ -61,6 +63,8 @@ export const LAYOUT_COLUMNS: Record<KnownLayout, string[]> = {
     'tax',
     'currency',
   ],
+  // Minimal columns; aliases (date, kurs, close) are handled in price-list.ts.
+  'price-list': ['datum', 'schlusskurs'],
 }
 
 export function decode(file: Buffer): { text: string; encoding: CsvEncoding } {
@@ -96,9 +100,11 @@ function detectLayout(headers: readonly string[]): KnownLayout | null {
   const present = new Set(headers.map(normalizeHeader))
   // MT940 is checked first: its columns are a superset-variant of CAMT ("kontonummer" + "blz").
   const order: KnownLayout[] = ['sparkasse-mt940', 'sparkasse-camt-v8', 'scalable-transactions']
-  return (
-    order.find((layout) => LAYOUT_COLUMNS[layout].every((column) => present.has(column))) ?? null
+  const known = order.find((layout) =>
+    LAYOUT_COLUMNS[layout].every((column) => present.has(column)),
   )
+  if (known) return known
+  return isPriceList(headers) ? 'price-list' : null
 }
 
 export function parseCsv(

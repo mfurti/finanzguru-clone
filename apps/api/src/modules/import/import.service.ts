@@ -7,14 +7,23 @@ import type {
   CsvUploadResponse,
   ImportJobDto,
 } from '@finance/shared'
-import { eq } from 'drizzle-orm'
+import { and, eq, inArray } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
-import { account, csvMapping, importJob } from '../../database/schema'
+import {
+  account,
+  csvMapping,
+  importJob,
+  instrument,
+  price,
+  transaction,
+} from '../../database/schema'
 import { CsvSource, NeedsMappingError } from '../sources/csv/csv.source'
 import { parseCsv } from '../sources/csv/detector'
 import { MAPPED_ACCOUNT_REF } from '../sources/csv/generic-mapped'
+import { parsePriceList } from '../sources/csv/price-list'
 import { ImportPipeline } from './import.pipeline'
+import { RecomputeService } from './recompute.service'
 
 /** Uploaded files wait here until confirmed (single process, cleared after 30 min). */
 const PENDING_TTL_MS = 30 * 60 * 1000
@@ -34,6 +43,7 @@ export class ImportService {
     @Inject(DB) private readonly db: AppDatabase,
     private readonly csv: CsvSource,
     private readonly pipeline: ImportPipeline,
+    private readonly recompute: RecomputeService,
   ) {}
 
   upload(file: Buffer, fileName: string): CsvUploadResponse {
@@ -80,6 +90,11 @@ export class ImportService {
     const job = this.db.select().from(importJob).where(eq(importJob.id, jobId)).get()
     if (!job || !upload) throw new NotFoundException('Upload nicht gefunden oder abgelaufen')
     if (job.status !== 'pending') throw new BadRequestException('Upload wurde bereits verarbeitet')
+    if (upload.layout === 'price-list') {
+      const result = this.importPrices(jobId, upload.file, input.instrumentId)
+      this.pending.delete(jobId)
+      return result
+    }
 
     if (input.accountId) {
       const exists = this.db
@@ -154,6 +169,83 @@ export class ImportService {
       .run()
     this.pending.delete(jobId)
     return this.pipeline.run(batch, { jobId, source: 'csv', sourceId: 'csv', targetAccountId })
+  }
+
+  /**
+   * "Kursliste": upserts daily closes with source `csv`. `imported` counts new
+   * or changed prices, `skipped` unchanged ones, `failed` invalid rows. Depots
+   * holding an affected instrument are recomputed from the earliest new date.
+   */
+  private importPrices(jobId: string, file: Buffer, instrumentId?: string): ImportJobDto {
+    const parsed = parsePriceList(parseCsv(file))
+    if (!parsed.hasIsinColumn && !instrumentId) {
+      throw new BadRequestException('Bitte das Wertpapier für die Kursliste wählen')
+    }
+    const byIsin = new Map(
+      this.db
+        .select({ id: instrument.id, isin: instrument.isin })
+        .from(instrument)
+        .all()
+        .map((row) => [row.isin, row.id]),
+    )
+    if (!parsed.hasIsinColumn && ![...byIsin.values()].includes(instrumentId!)) {
+      throw new BadRequestException('Wertpapier nicht gefunden')
+    }
+    const errors = [...parsed.errors]
+    let imported = 0
+    let skipped = 0
+
+    this.db.transaction((tx) => {
+      const earliest = new Map<string, string>()
+      for (const row of parsed.rows) {
+        const target = row.isin ? byIsin.get(row.isin) : instrumentId
+        if (!target) {
+          errors.push({ line: row.line, reason: `Wertpapier ${row.isin} unbekannt` })
+          continue
+        }
+        const current = tx
+          .select({ close: price.close })
+          .from(price)
+          .where(and(eq(price.instrumentId, target), eq(price.date, row.date)))
+          .get()
+        if (current?.close === row.close) {
+          skipped++
+          continue
+        }
+        tx.insert(price)
+          .values({ instrumentId: target, date: row.date, close: row.close, source: 'csv' })
+          .onConflictDoUpdate({
+            target: [price.instrumentId, price.date],
+            set: { close: row.close, source: 'csv' },
+          })
+          .run()
+        imported++
+        const first = earliest.get(target)
+        if (!first || row.date < first) earliest.set(target, row.date)
+      }
+      if (earliest.size > 0) {
+        const holders = tx
+          .selectDistinct({ accountId: transaction.accountId })
+          .from(transaction)
+          .where(inArray(transaction.instrumentId, [...earliest.keys()]))
+          .all()
+          .map((row) => row.accountId)
+        const from = [...earliest.values()].sort()[0]
+        this.recompute.recompute(tx, holders, from)
+      }
+      tx.update(importJob)
+        .set({
+          status: errors.length === 0 ? 'succeeded' : imported + skipped > 0 ? 'partial' : 'failed',
+          imported,
+          skipped,
+          failed: errors.length,
+          errors: errors.slice(0, 500),
+          finishedAt: new Date().toISOString(),
+        })
+        .where(eq(importJob.id, jobId))
+        .run()
+    })
+    return this.job(jobId)
   }
 
   job(id: string): ImportJobDto {

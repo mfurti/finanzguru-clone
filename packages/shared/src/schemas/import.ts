@@ -74,6 +74,8 @@ export type CsvUploadResponse = z.infer<typeof csvUploadResponse>
 /** Body of `POST /api/import/csv/:jobId/confirm`. */
 export const csvConfirmInput = z.object({
   accountId: z.string().optional(),
+  /** Price list without an ISIN column: the instrument the prices belong to. */
+  instrumentId: z.string().optional(),
   mapping: csvMappingInput.optional(),
   saveMappingAs: z.string().trim().min(1).max(60).optional(),
 })
