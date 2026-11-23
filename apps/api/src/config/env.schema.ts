@@ -7,16 +7,12 @@ const booleanFromString = z
 export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().min(1).max(65535).default(3001),
-  API_SESSION_SECRET: z
-    .string()
-    .refine((value) => Buffer.byteLength(value, 'utf8') >= 32, {
-      message: 'API_SESSION_SECRET must be at least 32 bytes',
-    }),
-  API_ENCRYPTION_KEY: z
-    .string()
-    .refine((value) => Buffer.from(value, 'base64').length === 32, {
-      message: 'API_ENCRYPTION_KEY must be 32 bytes, base64 encoded',
-    }),
+  API_SESSION_SECRET: z.string().refine((value) => Buffer.byteLength(value, 'utf8') >= 32, {
+    message: 'API_SESSION_SECRET must be at least 32 bytes',
+  }),
+  API_ENCRYPTION_KEY: z.string().refine((value) => Buffer.from(value, 'base64').length === 32, {
+    message: 'API_ENCRYPTION_KEY must be 32 bytes, base64 encoded',
+  }),
   DATABASE_PATH: z.string().min(1).default('./data/app.db'),
   COOKIE_SECURE: booleanFromString.default(true),
 })

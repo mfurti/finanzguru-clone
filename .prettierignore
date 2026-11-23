@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+coverage/
+.nuxt/
+.output/
+pnpm-lock.yaml
+specs/
+.specify/
+.claude/
