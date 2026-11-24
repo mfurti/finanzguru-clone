@@ -86,7 +86,7 @@ const tabs = computed<NavigationMenuItem[]>(() => [
           highlight-color="neutral"
           class="min-w-max"
           :ui="{
-            link: 'px-3 py-3 font-medium',
+            link: 'px-3 py-3 font-medium after:h-0.5',
             linkLeadingIcon: 'size-4',
             indicator: 'hidden',
           }"

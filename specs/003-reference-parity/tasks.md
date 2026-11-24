@@ -351,7 +351,7 @@
 
 **Independent Test**: The computed font is Outfit, and no third-party host is requested (quickstart W12).
 
-- [ ] T073 [US8] Write the Playwright test `e2e/us-p8-look.spec.ts`:
+- [X] T073 [US8] Write the Playwright test `e2e/us-p8-look.spec.ts`:
   - `getComputedStyle(document.body).fontFamily` starts with `Outfit`.
   - The active main tab has a bottom border and a transparent background.
   - Visit every page and assert that all network requests go to the app origin (SC-007).
