@@ -41,6 +41,12 @@ async function removeCategory(id: string): Promise<void> {
   }
 }
 
+/** Icon/color change (003 US3); every view reads the same category tree. */
+async function setAppearance(id: string, patch: { icon?: string; color?: string }): Promise<void> {
+  await apiFetch(`/api/categories/${id}`, { method: 'PATCH', body: patch })
+  await refreshTree()
+}
+
 async function removeRule(id: string): Promise<void> {
   await apiFetch(`/api/rules/${id}`, { method: 'DELETE' })
   await refreshRules()
@@ -62,14 +68,24 @@ async function applyRules(): Promise<void> {
       </template>
       <ul class="divide-y divide-default text-sm" data-testid="category-tree">
         <li v-for="main in tree" :key="main.id" class="py-2">
-          <div class="font-medium">{{ main.name }}</div>
+          <div class="flex items-center gap-2 font-medium">
+            <CategoryAppearancePicker :node="main" @change="(p) => setAppearance(main.id, p)" />
+            {{ main.name }}
+          </div>
           <ul class="ml-4 mt-1 space-y-1">
             <li
               v-for="child in main.children"
               :key="child.id"
               class="flex items-center justify-between"
             >
-              <span>{{ child.name }}</span>
+              <span class="flex items-center gap-2">
+                <CategoryAppearancePicker
+                  :node="child"
+                  :parent-color="main.color"
+                  @change="(p) => setAppearance(child.id, p)"
+                />
+                {{ child.name }}
+              </span>
               <UButton
                 v-if="!child.isDefault"
                 icon="i-lucide-trash-2"

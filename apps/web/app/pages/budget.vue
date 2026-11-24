@@ -7,6 +7,7 @@ const route = useRoute()
 
 const VIEWS = [
   ['analysis', '/budget'],
+  ['sankey', '/budget/sankey'],
   ['budgets', '/budget/budgets'],
 ] as const
 
@@ -15,7 +16,11 @@ const items = computed<SectionNavItem[]>(() =>
     key,
     label: t(`budget.nav.${key}`),
     to: { path, query: route.query },
-    active: path === '/budget' ? route.path === path : route.path.startsWith(path),
+    // Category detail pages belong to Analyse.
+    active:
+      path === '/budget'
+        ? route.path === path || route.path.startsWith('/budget/categories')
+        : route.path.startsWith(path),
   })),
 )
 </script>

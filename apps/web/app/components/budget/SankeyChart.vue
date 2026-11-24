@@ -9,7 +9,14 @@ import { sankey, sankeyLeft, sankeyLinkHorizontal } from 'd3-sankey'
  * with everything connected to it and dims the rest; a tooltip shows the
  * amount. Order comes from utils/sankey-order.ts, so no links cross.
  */
-const props = defineProps<{ graph: SankeyResponse; incomeCents: number; unit: 'eur' | 'pct' }>()
+const props = defineProps<{
+  graph: SankeyResponse
+  incomeCents: number
+  unit: 'eur' | 'pct'
+  /** Category id of the block that filters the bookings below (Sankey page, FR-019). */
+  selected?: string | null
+}>()
+const emit = defineEmits<{ select: [categoryId: string | null] }>()
 const { t } = useI18n()
 
 interface NodeIn {
@@ -99,24 +106,14 @@ const format = (cents: number) =>
     ? formatEur(cents)
     : formatPct(props.incomeCents > 0 ? cents / props.incomeCents : 0)
 
-/** Soft pastel tones like the reference (lavender, salmon, mint, …). */
-const PASTEL = [
-  '#8f93f2',
-  '#f4a582',
-  '#6fd9ad',
-  '#f0c870',
-  '#82c3f0',
-  '#e39ed6',
-  '#a9db7b',
-  '#ee8f96',
-  '#a3b1c4',
-]
+/** One color per category (research R9): main blocks in the category color, subs lighter. */
+const { colorOf: categoryColor, shade } = await useCategoryAppearance()
 const colorOf = (id: string) => {
   const node = nodesIn.value.find((n) => n.id === id)
   if (!node || node.kind === 'income') return '#7fdcb5'
-  const group = order.value.group.get(id) ?? id
-  if (nodesIn.value.find((n) => n.id === group)?.kind === 'balance') return '#82c3f0'
-  return PASTEL[(order.value.rank.get(group) ?? 0) % PASTEL.length]!
+  if (node.kind === 'balance') return '#82c3f0'
+  const categoryId = id.replace(/^(main|sub):/, '')
+  return node.kind === 'sub' ? shade(categoryId, 1) : categoryColor(categoryId)
 }
 const nodeFill = (id: string) => colorOf(id)
 /** Links in the target color, translucent so they read as soft bands. */
@@ -144,6 +141,19 @@ function move(event: PointerEvent, text: string): void {
 function leave(): void {
   active.value = null
   tooltip.value = null
+}
+/** Click a category block: filter the bookings; again (or another kind of block) clears it. */
+const selectedNode = computed(() =>
+  props.selected
+    ? (nodesIn.value.find(
+        (n) => n.id === `main:${props.selected}` || n.id === `sub:${props.selected}`,
+      )?.id ?? null)
+    : null,
+)
+function clickNode(node: LaidNode): void {
+  if (node.kind !== 'main' && node.kind !== 'sub') return emit('select', null)
+  const categoryId = node.id.replace(/^(main|sub):/, '')
+  emit('select', props.selected === categoryId ? null : categoryId)
 }
 const nodeOpacity = (id: string) => (active.value && !active.value.nodes.has(id) ? 0.25 : 1)
 const linkOpacity = (index: number) =>
@@ -196,8 +206,10 @@ const ariaLabel = computed(() =>
                 class="sankey-node"
                 data-testid="sankey-node"
                 :data-node="node.id"
+                :class="{ 'sankey-node--selected': selectedNode === node.id }"
                 @pointerenter="hoverNode(node)"
                 @pointermove="move($event, labelOf(node))"
+                @click="clickNode(node)"
               >
                 <rect
                   :x="node.x0"
@@ -249,6 +261,10 @@ const ariaLabel = computed(() =>
   stroke: rgb(0 0 0 / 0.18);
   stroke-width: 2px;
   pointer-events: none;
+}
+.sankey-node--selected rect {
+  stroke: var(--ui-text-highlighted);
+  stroke-width: 2px;
 }
 @media (prefers-reduced-motion: reduce) {
   .sankey-link,

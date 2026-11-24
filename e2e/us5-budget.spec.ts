@@ -22,6 +22,8 @@ test.describe('US5 budget', () => {
     await page.getByTestId('period-prev').click()
     await expect(label).toHaveText(String(year - 1))
     await expect(page.getByTestId('tile-income')).not.toHaveText('0,00 €')
+    // The Sankey has its own page since 003 (Analyse | Sankey | Budgets).
+    await page.goto('/budget/sankey')
     await expect(page.getByTestId('sankey')).toBeVisible()
   })
 

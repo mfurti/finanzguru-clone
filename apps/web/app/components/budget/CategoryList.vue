@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { CashflowCategories, TransactionListItem } from '@finance/shared'
-import { formatDate, formatEur, formatPct } from '@finance/shared'
+import type { CashflowCategories } from '@finance/shared'
+import { formatEur, formatPct } from '@finance/shared'
 
-/** Expense/income categories of the period with counts, totals, pie chart and drill-down (US5/US7). */
+/** Expense/income categories of the period with counts, totals and pie chart (US5/US7); rows open the detail page (003 US3). */
 const { t } = useI18n()
+const route = useRoute()
 const { query } = useBudgetPeriod()
 const kind = ref<'expense' | 'income'>('expense')
-const selected = ref<string | null>(null)
 /** Category under the mouse, shared by list and pie chart (US7). */
 const hovered = ref<string | null>(null)
 const unit = ref<'eur' | 'pct'>('eur')
@@ -16,64 +16,19 @@ const { data } = await useApi<CashflowCategories>('/api/cashflow/categories', {
   default: () => ({ totalCents: 0, count: 0, items: [] }),
 })
 
-const PALETTE = [
-  '#6366f1',
-  '#10b981',
-  '#f43f5e',
-  '#f59e0b',
-  '#0ea5e9',
-  '#8b5cf6',
-  '#14b8a6',
-  '#ec4899',
-  '#84cc16',
-  '#64748b',
-]
+const { colorOf: categoryColor, iconOf } = await useCategoryAppearance()
 type Item = CashflowCategories['items'][number]
-const colorOf = (_: Item, index: number) => PALETTE[index % PALETTE.length]!
+const colorOf = (item: Item) => categoryColor(item.categoryId)
 const sign = computed(() => (kind.value === 'expense' ? -1 : 1))
 const display = (cents: number) =>
   unit.value === 'eur'
     ? formatEur(sign.value * cents)
     : formatPct(data.value!.totalCents ? cents / data.value!.totalCents : 0)
-function toggle(categoryId: string): void {
-  selected.value = selected.value === categoryId ? null : categoryId
+/** Chevron / donut click: open the category detail page (FR-021). */
+function open(categoryId: string): void {
+  void navigateTo({ path: `/budget/categories/${categoryId}`, query: route.query })
 }
-
-// Drill-down: bookings of the selected category in the period.
-const periodRange = computed(() => {
-  const anchor = query.value.anchor
-  const year = Number(anchor.slice(0, 4))
-  const month = Number(anchor.slice(5, 7)) - 1
-  const start =
-    query.value.granularity === 'month'
-      ? month
-      : query.value.granularity === 'quarter'
-        ? Math.floor(month / 3) * 3
-        : 0
-  const span =
-    query.value.granularity === 'month' ? 1 : query.value.granularity === 'quarter' ? 3 : 12
-  const from = new Date(Date.UTC(year, start, 1)).toISOString().slice(0, 10)
-  const to = new Date(Date.UTC(year, start + span, 0)).toISOString().slice(0, 10)
-  return { from, to }
-})
-const { data: bookings } = await useApi<{ items: TransactionListItem[]; total: number }>(
-  '/api/transactions',
-  {
-    query: computed(() => ({
-      accounts: query.value.accounts,
-      categoryId: selected.value ?? undefined,
-      ...periodRange.value,
-      pageSize: 100,
-    })),
-    immediate: false,
-    watch: [selected],
-    default: () => ({ items: [], total: 0 }),
-  },
-)
-watch([kind, query], () => {
-  selected.value = null
-  hovered.value = null
-})
+watch([kind, query], () => (hovered.value = null))
 </script>
 
 <template>
@@ -158,54 +113,27 @@ watch([kind, query], () => {
             <UIcon name="i-lucide-chevron-right" class="size-4 text-muted" />
           </span>
         </li>
-        <li v-for="(item, index) in data!.items" :key="item.categoryId">
+        <li v-for="item in data!.items" :key="item.categoryId">
           <button
             type="button"
             class="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-(--app-card-hover) sm:px-6"
             :class="{ 'bg-(--app-card-hover)': hovered === item.categoryId }"
             :data-testid="`category-${item.name}`"
             :data-hovered="hovered === item.categoryId || undefined"
-            :aria-expanded="selected === item.categoryId"
-            @click="toggle(item.categoryId)"
+            @click="open(item.categoryId)"
             @mouseenter="hovered = item.categoryId"
             @mouseleave="hovered = null"
           >
             <span class="flex min-w-0 items-center gap-3">
-              <span
-                class="flex size-7 shrink-0 items-center justify-center rounded-md"
-                :style="{ background: colorOf(item, index) }"
-              >
-                <UIcon name="i-lucide-tag" class="size-4 text-white" />
-              </span>
+              <CategoryIcon :icon="iconOf(item.categoryId)" :color="colorOf(item)" />
               <span class="truncate font-medium">{{ item.name }}</span>
               <span class="text-muted">({{ item.count }})</span>
             </span>
             <span class="flex shrink-0 items-center gap-2 tabular-nums">
               {{ display(item.totalCents) }}
-              <UIcon
-                name="i-lucide-chevron-right"
-                class="size-4 text-muted transition-transform"
-                :class="{ 'rotate-90': selected === item.categoryId }"
-              />
+              <UIcon name="i-lucide-chevron-right" class="size-4 text-muted" />
             </span>
           </button>
-          <ul
-            v-if="selected === item.categoryId"
-            class="divide-y divide-default px-4 pb-2 pl-14 text-xs sm:px-6 sm:pl-16"
-            data-testid="category-bookings"
-          >
-            <li
-              v-for="booking in bookings!.items"
-              :key="booking.id"
-              class="flex justify-between gap-2 py-1.5"
-            >
-              <span class="truncate"
-                >{{ formatDate(booking.bookingDate) }} ·
-                {{ booking.counterparty ?? booking.purpose }}</span
-              >
-              <Money :cents="booking.amountCents" />
-            </li>
-          </ul>
         </li>
       </ul>
       <div class="flex items-center justify-center p-6">
@@ -215,7 +143,7 @@ watch([kind, query], () => {
           :total-cents="data!.totalCents"
           :sign="sign"
           :colors="colorOf"
-          @select="toggle"
+          @select="open"
         />
       </div>
     </div>

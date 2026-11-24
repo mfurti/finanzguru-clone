@@ -200,7 +200,7 @@
 - [X] T038 [P] [US3] Write the API e2e test `apps/api/test/e2e/category-detail.e2e-spec.ts`:
   - `icon` is validated against `CATEGORY_ICONS` (an unknown key gives 400).
   - The detail returns a 12-month history and the total for the period.
-- [ ] T039 [P] [US3] Write the Playwright journey `e2e/us-p3-budget.spec.ts` (quickstart W7–W8): picker, Sankey click filters the table, icon and color consistent across list, donut and Sankey.
+- [X] T039 [P] [US3] Write the Playwright journey `e2e/us-p3-budget.spec.ts` (quickstart W7–W8): picker, Sankey click filters the table, icon and color consistent across list, donut and Sankey.
 
 ### Implementation for User Story 3
 
@@ -211,19 +211,19 @@
 - [X] T041 [US3] Accept and validate `icon` in `apps/api/src/modules/categories/` (create and update).
   - Add `GET /cashflow/categories/:id` (same period query as the other cashflow routes) that returns the total and a 12-month history, sub categories included.
   - Set default icons for the default and demo categories in `apps/api/src/database/demo.ts` and the default category seed.
-- [ ] T042 [P] [US3] Add an icon and color chooser to `apps/web/app/pages/settings/categories.vue`: an icon grid from `CATEGORY_ICONS` and color swatches from the R9 palette.
-- [ ] T043 [US3] Use `useCategoryAppearance` and `CategoryIcon` everywhere:
+- [X] T042 [P] [US3] Add an icon and color chooser to `apps/web/app/pages/settings/categories.vue`: an icon grid from `CATEGORY_ICONS` and color swatches from the R9 palette.
+- [X] T043 [US3] Use `useCategoryAppearance` and `CategoryIcon` everywhere:
   - `CategoryList.vue`: icon tile instead of the generic tag icon.
   - `CategoryDonut.vue` and `SankeyChart.vue`: slice and block colors.
-  - `CashflowBars.vue`: category-colored series where applicable.
+  - `CashflowBars.vue` stays income/expense (green/red); category colors appear in `MonthBars.vue`.
   - Remove the local `PASTEL` array from `SankeyChart.vue`.
-- [ ] T044 [US3] Create `apps/web/app/pages/budget/categories/[id].vue`:
+- [X] T044 [US3] Create `apps/web/app/pages/budget/categories/[id].vue`:
   - Header with icon, name and total.
-  - 12-month bar history with the current month hatched (reuse `CashflowBars`).
+  - 12-month bar history with the current month hatched (new `MonthBars.vue`, also used by the Budgets page).
   - `BookingsTable` filtered to the category and period.
   - An empty state when the period has no bookings.
   - The chevron in `CategoryList.vue` links here (it replaces the inline expand).
-- [ ] T045 [US3] Create `apps/web/app/pages/budget/sankey.vue`:
+- [X] T045 [US3] Create `apps/web/app/pages/budget/sankey.vue`:
   - PeriodPicker, a Sankey card (move the card and the €/% toggle out of `budget/index.vue`), and the `BookingsTable` below, filtered by period.
   - `SankeyChart.vue` emits `select(categoryId)` on node click; clicking again clears it. This toggles the `categoryIds` filter.
   - Add Sankey to the Budget section nav (Analyse | Sankey | Budgets) in `apps/web/app/pages/budget.vue`.
