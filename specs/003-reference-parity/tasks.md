@@ -54,7 +54,7 @@
   - `remove(ids)` copies the rows and their tag links, deletes them, writes a `deleted_import_marker` for imported rows (`source` ≠ `manual`), recomputes snapshots of the affected accounts, and returns an `undoToken`.
   - `restore(token)` re-inserts rows and links, removes their markers, recomputes snapshots; unknown or expired tokens (older than 10 s) throw 410.
   - Unit/e2e test in `apps/api/test/e2e/transactions-trash.e2e-spec.ts`: a deleted booking drops out of balance, cashflow and budget and comes back on restore; the token expires after 10 s (fake timers).
-- [ ] T008 [P] Create `apps/web/app/composables/useCategoryAppearance.ts` (research R9):
+- [X] T008 [P] Create `apps/web/app/composables/useCategoryAppearance.ts` (research R9):
   - One 12-color pastel palette, extending the Sankey set, mapped from `category.color` keys.
   - Sub categories inherit the main category's color.
   - Expose `colorOf(categoryId)`, `iconOf(categoryId)` and `shade(categoryId, depth)`.
