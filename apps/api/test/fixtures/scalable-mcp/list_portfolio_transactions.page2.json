@@ -1,0 +1,224 @@
+{
+  "portfolioId": "pf-001",
+  "page": {
+    "nextCursor": null,
+    "totalCount": 20,
+    "returnedCount": 10
+  },
+  "transactions": [
+    {
+      "id": "tx-011",
+      "kind": "security",
+      "category": "SECURITY_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": true,
+      "lastEventAt": "2026-06-27T09:47:48Z",
+      "description": "Vanguard FTSE All-World UCITS ETF (Dist)",
+      "custodian": "Demo Bank",
+      "security": {
+        "isin": "IE00B3RBWM25",
+        "transactionType": "SINGLE",
+        "quantity": "0.147545",
+        "amount": "18.50",
+        "side": "BUY",
+        "limitPrice": null,
+        "stopPrice": null
+      },
+      "cash": null,
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-012",
+      "kind": "cash",
+      "category": "CASH_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-06-23T00:00:00Z",
+      "description": "Einzahlung",
+      "custodian": "Demo Bank",
+      "security": null,
+      "cash": {
+        "relatedIsin": null,
+        "transactionType": "DEPOSIT",
+        "amount": "18.50"
+      },
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-013",
+      "kind": "cash",
+      "category": "CASH_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-06-16T04:40:04.327000Z",
+      "description": "Auszahlung",
+      "custodian": "Demo Bank",
+      "security": null,
+      "cash": {
+        "relatedIsin": null,
+        "transactionType": "WITHDRAWAL",
+        "amount": "-30.50"
+      },
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-014",
+      "kind": "security",
+      "category": "SECURITY_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-06-14T20:07:05.225000Z",
+      "description": "Apple Inc.",
+      "custodian": "Demo Bank",
+      "security": {
+        "isin": "US0378331005",
+        "transactionType": "SINGLE",
+        "quantity": "0.286195",
+        "amount": "30.50",
+        "side": "SELL",
+        "limitPrice": null,
+        "stopPrice": null
+      },
+      "cash": null,
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-015",
+      "kind": "security",
+      "category": "SECURITY_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-06-13T10:03:23.927000Z",
+      "description": "Apple Inc.",
+      "custodian": "Demo Bank",
+      "security": {
+        "isin": "US0378331005",
+        "transactionType": "SAVINGS_PLAN",
+        "quantity": "0.168121",
+        "amount": "-18.50",
+        "side": "BUY",
+        "limitPrice": null,
+        "stopPrice": null
+      },
+      "cash": null,
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-016",
+      "kind": "cash",
+      "category": "CASH_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-06-09T00:00:00Z",
+      "description": "Einzahlung",
+      "custodian": "Demo Bank",
+      "security": null,
+      "cash": {
+        "relatedIsin": null,
+        "transactionType": "DEPOSIT",
+        "amount": "18.50"
+      },
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-017",
+      "kind": "cash",
+      "category": "CASH_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-06-07T00:00:00Z",
+      "description": "Entgelt Broker",
+      "custodian": "Demo Bank",
+      "security": null,
+      "cash": {
+        "relatedIsin": null,
+        "transactionType": "FEE",
+        "amount": "-1.85"
+      },
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-018",
+      "kind": "cash",
+      "category": "CASH_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-06-07T00:00:00Z",
+      "description": "Einzahlung",
+      "custodian": "Demo Bank",
+      "security": null,
+      "cash": {
+        "relatedIsin": null,
+        "transactionType": "DEPOSIT",
+        "amount": "1.85"
+      },
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-019",
+      "kind": "security",
+      "category": "SECURITY_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-05-25T10:51:25.776000Z",
+      "description": "Vanguard FTSE All-World UCITS ETF (Dist)",
+      "custodian": "Demo Bank",
+      "security": {
+        "isin": "IE00B3RBWM25",
+        "transactionType": "SAVINGS_PLAN",
+        "quantity": "0.147669",
+        "amount": "-18.50",
+        "side": "BUY",
+        "limitPrice": null,
+        "stopPrice": null
+      },
+      "cash": null,
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-020",
+      "kind": "cash",
+      "category": "CASH_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-05-23T00:00:00Z",
+      "description": "Einzahlung",
+      "custodian": "Demo Bank",
+      "security": null,
+      "cash": {
+        "relatedIsin": null,
+        "transactionType": "DEPOSIT",
+        "amount": "18.50"
+      },
+      "nonTradeSecurity": null,
+      "eltif": null
+    }
+  ],
+  "crypto": {
+    "page": {
+      "nextCursor": null,
+      "totalCount": 0,
+      "returnedCount": 0
+    },
+    "transactions": []
+  }
+}

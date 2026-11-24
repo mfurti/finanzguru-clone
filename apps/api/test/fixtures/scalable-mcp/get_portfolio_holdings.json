@@ -1,0 +1,26 @@
+{
+  "portfolioId": "pf-001",
+  "holdings": [
+    {
+      "isin": "IE00B3RBWM25",
+      "name": "Vanguard FTSE All-World UCITS ETF (Dist)",
+      "fifoPrice": 110.664344,
+      "valuation": 609.8,
+      "valuationCurrency": "EUR",
+      "currentQuote": {
+        "currency": "EUR",
+        "midPrice": 124.3275,
+        "timestamp": "2026-10-18T16:05:35.612000Z"
+      },
+      "savingsPlan": {
+        "amount": 18.5,
+        "frequency": "MONTHLY"
+      },
+      "position": {
+        "blocked": 0.0,
+        "filled": 4.904798,
+        "pending": 0.0
+      }
+    }
+  ]
+}

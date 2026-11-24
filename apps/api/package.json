@@ -17,7 +17,8 @@
     "owner:set-password": "nest build --config nest-cli.dev.json && node --env-file-if-exists=.env dist/scripts/set-password.js",
     "db:seed": "nest build --config nest-cli.dev.json && node --env-file-if-exists=.env dist/scripts/seed.js",
     "dev:local": "nest start --watch --config nest-cli.dev.json",
-    "perf": "nest build --config nest-cli.dev.json && node dist/scripts/perf.js"
+    "perf": "nest build --config nest-cli.dev.json && node dist/scripts/perf.js",
+    "scalable:record": "nest build --config nest-cli.dev.json && node --env-file-if-exists=.env dist/scripts/scalable-record.js"
   },
   "dependencies": {
     "@fastify/helmet": "^13.2.0",

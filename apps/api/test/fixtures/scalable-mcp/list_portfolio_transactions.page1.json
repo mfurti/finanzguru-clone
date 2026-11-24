@@ -1,0 +1,228 @@
+{
+  "portfolioId": "pf-001",
+  "page": {
+    "nextCursor": "cursor-page-2",
+    "totalCount": 20,
+    "returnedCount": 10
+  },
+  "transactions": [
+    {
+      "id": "tx-001",
+      "kind": "security",
+      "category": "SECURITY_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-09-26T11:49:00.193000Z",
+      "description": "Vanguard FTSE All-World UCITS ETF (Dist)",
+      "custodian": "Demo Bank",
+      "security": {
+        "isin": "IE00B3RBWM25",
+        "transactionType": "SAVINGS_PLAN",
+        "quantity": "0.142714",
+        "amount": "-18.50",
+        "side": "BUY",
+        "limitPrice": null,
+        "stopPrice": null
+      },
+      "cash": null,
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-002",
+      "kind": "cash",
+      "category": "CASH_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-09-23T00:00:00Z",
+      "description": "Einzahlung",
+      "custodian": "Demo Bank",
+      "security": null,
+      "cash": {
+        "relatedIsin": null,
+        "transactionType": "DEPOSIT",
+        "amount": "18.50"
+      },
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-003",
+      "kind": "security",
+      "category": "SECURITY_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-08-25T10:26:52.069000Z",
+      "description": "Vanguard FTSE All-World UCITS ETF (Dist)",
+      "custodian": "Demo Bank",
+      "security": {
+        "isin": "IE00B3RBWM25",
+        "transactionType": "SAVINGS_PLAN",
+        "quantity": "0.143472",
+        "amount": "-18.50",
+        "side": "BUY",
+        "limitPrice": null,
+        "stopPrice": null
+      },
+      "cash": null,
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-004",
+      "kind": "cash",
+      "category": "CASH_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-08-24T00:00:00Z",
+      "description": "Einzahlung",
+      "custodian": "Demo Bank",
+      "security": null,
+      "cash": {
+        "relatedIsin": null,
+        "transactionType": "DEPOSIT",
+        "amount": "18.50"
+      },
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-005",
+      "kind": "security",
+      "category": "SECURITY_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-07-26T11:06:14.908000Z",
+      "description": "Vanguard FTSE All-World UCITS ETF (Dist)",
+      "custodian": "Demo Bank",
+      "security": {
+        "isin": "IE00B3RBWM25",
+        "transactionType": "SAVINGS_PLAN",
+        "quantity": "0.146268",
+        "amount": "-18.50",
+        "side": "BUY",
+        "limitPrice": null,
+        "stopPrice": null
+      },
+      "cash": null,
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-006",
+      "kind": "cash",
+      "category": "CASH_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-07-22T00:00:00Z",
+      "description": "Einzahlung",
+      "custodian": "Demo Bank",
+      "security": null,
+      "cash": {
+        "relatedIsin": null,
+        "transactionType": "DEPOSIT",
+        "amount": "18.50"
+      },
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-007",
+      "kind": "cash",
+      "category": "CASH_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-07-07T00:00:00Z",
+      "description": "Einzahlung",
+      "custodian": "Demo Bank",
+      "security": null,
+      "cash": {
+        "relatedIsin": null,
+        "transactionType": "DEPOSIT",
+        "amount": "1.85"
+      },
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-008",
+      "kind": "cash",
+      "category": "CASH_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-07-07T00:00:00Z",
+      "description": "Entgelt Broker",
+      "custodian": "Demo Bank",
+      "security": null,
+      "cash": {
+        "relatedIsin": null,
+        "transactionType": "FEE",
+        "amount": "-1.85"
+      },
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-009",
+      "kind": "security",
+      "category": "SECURITY_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-06-27T16:47:30.057000Z",
+      "description": "Vanguard FTSE All-World UCITS ETF (Dist)",
+      "custodian": "Demo Bank",
+      "security": {
+        "isin": "IE00B3RBWM25",
+        "transactionType": "SAVINGS_PLAN",
+        "quantity": "0.147545",
+        "amount": "-18.50",
+        "side": "BUY",
+        "limitPrice": null,
+        "stopPrice": null
+      },
+      "cash": null,
+      "nonTradeSecurity": null,
+      "eltif": null
+    },
+    {
+      "id": "tx-010",
+      "kind": "security",
+      "category": "SECURITY_TRANSACTION",
+      "status": "SETTLED",
+      "currency": "EUR",
+      "isCancellation": false,
+      "lastEventAt": "2026-06-27T09:47:48Z",
+      "description": "Vanguard FTSE All-World UCITS ETF (Dist)",
+      "custodian": "Demo Bank",
+      "security": {
+        "isin": "IE00B3RBWM25",
+        "transactionType": "SINGLE",
+        "quantity": "0.147545",
+        "amount": "-18.50",
+        "side": "BUY",
+        "limitPrice": null,
+        "stopPrice": null
+      },
+      "cash": null,
+      "nonTradeSecurity": null,
+      "eltif": null
+    }
+  ],
+  "crypto": {
+    "page": {
+      "nextCursor": null,
+      "totalCount": 0,
+      "returnedCount": 0
+    },
+    "transactions": []
+  }
+}

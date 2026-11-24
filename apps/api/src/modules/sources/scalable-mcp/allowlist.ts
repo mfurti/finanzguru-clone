@@ -7,16 +7,30 @@
 import { ForbiddenToolError } from '../errors'
 
 /**
- * Read tools the sync uses. Finalized from the server's real `tools/list`
- * (T054); until then nothing is callable, which keeps the default safe.
+ * Read tools the sync uses, finalized from Scalable's real `tools/list` on
+ * 2026-11-24 (004 T006; 36 tools, 23 marked read-only). All of them carry
+ * `readOnlyHint: true`; everything that writes (watchlist, alerts, groups) or
+ * touches orders and savings plans stays blocked.
  */
-export const READ_TOOLS: ReadonlySet<string> = new Set<string>([])
+export const READ_TOOLS: ReadonlySet<string> = new Set<string>([
+  'get_account_profile',
+  'list_accessible_portfolios',
+  'get_portfolio_overview',
+  'get_portfolio_holdings',
+  'get_portfolio_cash_breakdown',
+  'list_portfolio_transactions',
+  'get_overnight_summary',
+  'list_overnight_transactions',
+])
 
 /**
  * Anything that could place, change or cancel orders or move money (tasks.md T052).
- * Matched against name and description; may be narrowed after T054 shows the real tools.
+ * Tool names: any occurrence. Descriptions: whole words only, so read tools that
+ * merely mention e.g. "buying-power" are not caught (Scalable's real list, T006).
  */
 export const DENY_PATTERN = /order|trade|buy|sell|cancel|transfer|savings.?plan|withdraw/i
+export const DESCRIPTION_DENY_PATTERN =
+  /\b(orders?|trades?|trading|buy|sell|cancel|transfers?|savings.?plans?|withdraw(al|als)?)\b/i
 
 export interface ToolInfo {
   name: string
@@ -34,7 +48,7 @@ export function decideTool(
   tool: ToolInfo,
   allowlist: ReadonlySet<string> = READ_TOOLS,
 ): ToolDecision {
-  if (DENY_PATTERN.test(tool.name) || DENY_PATTERN.test(tool.description ?? '')) {
+  if (DENY_PATTERN.test(tool.name) || DESCRIPTION_DENY_PATTERN.test(tool.description ?? '')) {
     return { name: tool.name, allowed: false, reason: 'denied_pattern' }
   }
   if (tool.annotations?.readOnlyHint === false || tool.annotations?.destructiveHint === true) {

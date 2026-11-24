@@ -1,0 +1,18 @@
+{
+  "portfolioId": "pf-001",
+  "cash": {
+    "cashBalance": 0.0,
+    "buyingPower": 0.0,
+    "buyingPowerWithoutCredit": 0.0,
+    "pendingBuyOrdersAmount": 0.0,
+    "estimatedTaxes": 0.0
+  },
+  "credit": {
+    "availableCreditLine": 0.0,
+    "loaned": 0.0
+  },
+  "derivatives": {
+    "buyingPower": 0.0,
+    "availableForDerivatives": 0.0
+  }
+}

@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
 import { ForbiddenToolError } from '../../src/modules/sources/errors'
 import {
@@ -9,9 +11,36 @@ import {
 const allow = new Set(['get_portfolio', 'list_transactions'])
 
 describe('Scalable tool allowlist', () => {
-  it('is empty until the real tool list is known, so nothing is callable', () => {
-    expect(READ_TOOLS.size).toBe(0)
-    expect(decideTool({ name: 'get_portfolio' }).allowed).toBe(false)
+  it('allows exactly the read tools from the real Scalable tool list (004 T006)', () => {
+    const tools = (
+      JSON.parse(
+        readFileSync(join(__dirname, '../fixtures/scalable-mcp/tools-list.json'), 'utf8'),
+      ) as { tools: { name: string; description?: string; annotations?: object }[] }
+    ).tools
+    const allowed = tools.filter((tool) => decideTool(tool).allowed).map((tool) => tool.name)
+    expect(allowed.sort()).toEqual([...READ_TOOLS].sort())
+    for (const name of [
+      'get_trade_request_status',
+      'list_savings_plans',
+      'add_watchlist_item',
+      'create_price_alert',
+      'remove_portfolio_group',
+      'list_order_venues',
+      'get_transaction_details',
+    ]) {
+      expect(allowed, name).not.toContain(name)
+    }
+  })
+
+  it('matches risky words in descriptions only as whole words', () => {
+    const allow = new Set(['get_cash'])
+    expect(
+      decideTool({ name: 'get_cash', description: 'cash and buying-power breakdown' }, allow)
+        .allowed,
+    ).toBe(true)
+    expect(
+      decideTool({ name: 'get_cash', description: 'can place a sell order' }, allow).reason,
+    ).toBe('denied_pattern')
   })
 
   it('allows only allowlisted tools without risky words', () => {

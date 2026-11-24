@@ -58,7 +58,7 @@
 
 **Independent Test**: quickstart W1–W5.
 
-- [ ] T006 [US1] **Owner present.** Connect once to Scalable's real MCP server; the owner completes login and consent personally.
+- [X] T006 [US1] **Owner present.** Connect once to Scalable's real MCP server; the owner completes login and consent personally.
   - Record `tools/list` and the read-tool responses, anonymize them (names, IBANs, amounts scaled), and save them in `apps/api/test/fixtures/scalable-mcp/`.
   - Finalize `apps/api/src/modules/sources/scalable-mcp/allowlist.ts`, which allows read tools only.
   - If dynamic client registration is refused, stop and report the blocker (research R1). (former 001 T054)
