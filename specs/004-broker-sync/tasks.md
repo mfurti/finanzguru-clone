@@ -84,7 +84,7 @@
   - "Verbindung trennen" with confirmation;
   - the daily-sync state as read-only info.
   - Write the Playwright test `e2e/us-s1-scalable.spec.ts` with a mocked API via `page.route`. (former 001 T058)
-- [ ] T012 [US1] **Owner present.** Run quickstart W1–W5 against the real account and record the results, without personal data, in `specs/004-broker-sync/quickstart.md`.
+- [X] T012 [US1] **Owner present.** Run quickstart W1–W5 against the real account and record the results, without personal data, in `specs/004-broker-sync/quickstart.md`.
 
 **Checkpoint**: Scalable depot syncs.
 
