@@ -21,6 +21,7 @@ import { WatchlistsModule } from './modules/watchlists/watchlists.module'
 import { InvestmentsModule } from './modules/investments/investments.module'
 import { OverviewModule } from './modules/overview/overview.module'
 import { TransactionsModule } from './modules/transactions/transactions.module'
+import { TagsModule } from './modules/tags/tags.module'
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module'
     OverviewModule,
     AccountsModule,
     TransactionsModule,
+    TagsModule,
     ImportModule,
     InvestmentsModule,
     CashflowModule,
