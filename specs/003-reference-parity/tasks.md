@@ -152,10 +152,10 @@
 
 ### Tests for User Story 2
 
-- [ ] T027 [P] [US2] Write the domain unit test `apps/api/test/unit/sparkline.spec.ts`:
+- [X] T027 [P] [US2] Write the domain unit test `apps/api/test/unit/sparkline.spec.ts`:
   - 30-day series; fewer than 2 points gives a flat line.
   - IBAN masking `DE12 •••• •••• 3456`.
-- [ ] T028 [P] [US2] Write the API e2e test `apps/api/test/e2e/accounts-overview.e2e-spec.ts`:
+- [X] T028 [P] [US2] Write the API e2e test `apps/api/test/e2e/accounts-overview.e2e-spec.ts`:
   - Groups and totals.
   - `canSync` false for CSV accounts, with `lastUpdateKind: 'import'`.
   - Detail figures for a period.
@@ -164,8 +164,8 @@
 
 ### Implementation for User Story 2
 
-- [ ] T030 [P] [US2] Add `apps/api/src/domain/sparkline.ts`, which builds a 30-day series from snapshots, and `maskIban(iban)` in `apps/api/src/domain/iban.ts`.
-- [ ] T031 [US2] Add `GET /accounts/overview`, `GET /accounts/:id/detail` and `POST /accounts/:id/sync` to `apps/api/src/modules/accounts/` (accounts.service.ts and accounts.controller.ts):
+- [X] T030 [P] [US2] Add `apps/api/src/domain/sparkline.ts`, which builds a 30-day series from snapshots, and `maskIban(iban)` in `apps/api/src/domain/iban.ts`.
+- [X] T031 [US2] Add `GET /accounts/overview`, `GET /accounts/:id/detail` and `POST /accounts/:id/sync` to `apps/api/src/modules/accounts/` (accounts.service.ts and accounts.controller.ts):
   - Last update comes from `import_job`.
   - `canSync` comes from the data source type.
   - Sync returns 202 only for sync-capable sources.

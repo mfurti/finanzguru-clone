@@ -37,8 +37,8 @@
 
 | Method | Path | Query | Response |
 |---|---|---|---|
-| GET | `/accounts/overview` | – | `{ groups: { kind: 'depot'\|'account', totalCents, rows: { id, name, institution, initials, ibanMasked?, iban?, sparkline: number[], lastUpdateAt?, lastUpdateKind: 'sync'\|'import'\|null, canSync, balanceCents }[] }[] }` |
-| GET | `/accounts/:id/detail` | `period=1M\|3M\|YTD\|1J\|3J\|5J\|MAX` or `from,to` | `{ account, history: { date, valueCents }[], figures: { balanceCents, changeCents, inflowCents, outflowCents } }` |
+| GET | `/accounts/overview` | – | `{ groups: { kind: 'depot'\|'account', totalCents, rows: { id, name, type, institution, initials, ibanMasked?, iban?, sparkline: number[], lastUpdateAt?, lastUpdateKind: 'sync'\|'import'\|null, canSync, balanceCents }[] }[] }` |
+| GET | `/accounts/:id/detail` | `period=1W\|1M\|YTD\|1Y\|3Y\|5Y\|ALL` (existing periods) or `from,to` | `{ account, history: { date, valueCents }[], figures: { balanceCents, changeCents, inflowCents, outflowCents } }` |
 | POST | `/accounts/:id/sync` | – | 202 when `canSync`, 409 otherwise |
 
 ## Overview
