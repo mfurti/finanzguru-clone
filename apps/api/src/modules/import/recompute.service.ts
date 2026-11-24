@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common'
 import { and, asc, eq, gte, inArray } from 'drizzle-orm'
 import type { AppDatabase } from '../../database/drizzle.module'
-import { account, netWorthSnapshot, positionLot, price, transaction } from '../../database/schema'
+import {
+  account,
+  instrumentValueSnapshot,
+  netWorthSnapshot,
+  positionLot,
+  price,
+  transaction,
+} from '../../database/schema'
+import { computeInstrumentValues } from '../../domain/instrument-values'
 import { todayIso } from '../../domain/period'
 import { computePositions } from '../../domain/positions'
 import {
   computeCashSnapshots,
-  computeDepotSnapshots,
   type DailySnapshot,
   firstBookingDate,
   type PriceSeries,
@@ -63,7 +70,21 @@ export class RecomputeService {
             prices.set(row.instrumentId, series)
           }
         }
-        snapshots = computeDepotSnapshots(acc.id, txs, prices, start, today)
+        const computed = computeInstrumentValues(acc.id, txs, prices, start, today)
+        snapshots = computed.snapshots
+        db.delete(instrumentValueSnapshot)
+          .where(
+            and(
+              eq(instrumentValueSnapshot.accountId, acc.id),
+              gte(instrumentValueSnapshot.date, start),
+            ),
+          )
+          .run()
+        for (let i = 0; i < computed.holdings.length; i += CHUNK) {
+          db.insert(instrumentValueSnapshot)
+            .values(computed.holdings.slice(i, i + CHUNK))
+            .run()
+        }
 
         db.delete(positionLot).where(eq(positionLot.accountId, acc.id)).run()
         const lots = [...computePositions(txs).values()].flatMap((state) =>

@@ -97,7 +97,7 @@
 
 - [X] T013 [P] [US2] Add `apps/api/src/domain/instrument-values.ts`: per depot, instrument and day, the value (quantity × last known close) and invested amount (FIFO cost basis).
   - Unit test in `apps/api/test/unit/instrument-values.spec.ts`: the sum over instruments equals the depot snapshot within 1 cent per day, and prices are carried forward over gaps.
-- [ ] T014 [US2] Fill `instrument_value_snapshot` in `apps/api/src/modules/import/recompute.service.ts` alongside `net_worth_snapshot`. Backfill existing data on startup when the table is empty.
+- [X] T014 [US2] Fill `instrument_value_snapshot` in `apps/api/src/modules/import/recompute.service.ts` alongside `net_worth_snapshot`. Backfill existing data on startup when the table is empty.
 - [ ] T015 [US2] Accept `assetClass` on `GET /api/investments/performance` in `apps/api/src/modules/investments/`, summing the matching instruments' series. Add an e2e test in `apps/api/test/e2e/performance-asset-class.e2e-spec.ts`: for each class, the latest value equals the sum of that class's positions.
 - [ ] T016 [US2] Make `apps/web/app/components/investments/PerformanceChart.vue` follow `useState('positions-asset-class')`, and show the active class in the card header. Extend `e2e/us-p5-investments.spec.ts`: chip "ETF" changes the chart total to the ETF sum, and "Alle" restores it.
 
