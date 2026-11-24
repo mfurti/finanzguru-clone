@@ -78,6 +78,6 @@ describe('ReviewBanner', () => {
     const wrapper = await mountSuspended(ReviewBanner)
     expect(wrapper.text()).toContain('1.974')
     expect(wrapper.text()).toContain('Ungeprüfte Transaktionen')
-    expect(wrapper.find('a[href="/budget/review"]').exists()).toBe(true)
+    expect(wrapper.find('a[href="/transactions?review=unreviewed"]').exists()).toBe(true)
   })
 })

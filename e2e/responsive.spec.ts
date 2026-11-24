@@ -12,7 +12,7 @@ const PAGES = [
   '/investments/taxes',
   '/investments/watchlists',
   '/budget',
-  '/budget/review',
+  '/transactions?review=unreviewed',
   '/budget/budgets',
   '/insurance',
   '/settings/sources',

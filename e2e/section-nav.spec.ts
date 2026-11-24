@@ -38,7 +38,7 @@ test.describe('section navigation', () => {
     await menu.click()
     await page.getByRole('menuitem', { name: 'Transaktionen' }).click()
     await expect(page).toHaveURL(/\/transactions$/)
-    await expect(page.getByTestId('all-transactions')).toBeVisible()
+    await expect(page.getByTestId('bookings')).toBeVisible()
 
     await page.getByTestId('section-nav-menu').click()
     await page.getByRole('menuitem', { name: 'Portfolios & Konten' }).click()

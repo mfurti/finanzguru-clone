@@ -21,7 +21,7 @@ const formatted = computed(() => new Intl.NumberFormat('de-DE').format(count.val
         <span class="text-sm text-muted">{{ t('overview.review.label') }}</span>
       </span>
       <UButton
-        to="/budget/review"
+        :to="{ path: '/transactions', query: { review: 'unreviewed' } }"
         variant="ghost"
         color="neutral"
         :label="t('overview.review.action')"

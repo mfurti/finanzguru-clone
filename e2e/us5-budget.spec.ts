@@ -25,18 +25,17 @@ test.describe('US5 budget', () => {
     await expect(page.getByTestId('sankey')).toBeVisible()
   })
 
-  test('V10: categorizes an unreviewed booking with a rule and the count drops', async ({
-    page,
-    request,
-  }) => {
+  test('V10: categorizes an unreviewed booking and the count drops', async ({ page, request }) => {
     const before = (
       (await (await request.get('/api/transactions/unreviewed/count')).json()) as { count: number }
     ).count
     expect(before).toBeGreaterThan(0)
+    // The review list moved to Übersicht › Transaktionen (003): old link redirects there.
     await page.goto('/budget/review')
-    await page.getByTestId('review-category').first().click()
+    await expect(page).toHaveURL(/\/transactions\?review=unreviewed/)
+    await page.getByTestId('category-chip').first().click()
     await page.getByRole('option', { name: 'Lebenshaltung › Lebensmittel und Getränke' }).click()
-    await expect(page.getByText(/Buchungen kategorisiert/).first()).toBeVisible()
+    await expect(page.getByTestId('unreviewed-count')).toHaveText(String(before - 1))
     const after = (
       (await (await request.get('/api/transactions/unreviewed/count')).json()) as { count: number }
     ).count

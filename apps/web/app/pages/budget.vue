@@ -7,7 +7,6 @@ const route = useRoute()
 
 const VIEWS = [
   ['analysis', '/budget'],
-  ['review', '/budget/review'],
   ['budgets', '/budget/budgets'],
 ] as const
 

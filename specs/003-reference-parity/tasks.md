@@ -92,7 +92,7 @@
   - `restore` within 10 s; 410 after expiry.
   - A re-import of the same CSV skips the deleted rows (counted as skipped).
 - [X] T013 [P] [US1] Write the API e2e test `apps/api/test/e2e/tags.e2e-spec.ts`: CRUD; a case-insensitive duplicate gives 409; deleting a tag removes its links only.
-- [ ] T014 [P] [US1] Write the Playwright journey `e2e/us-p1-transactions.spec.ts`, covering quickstart W1–W5: unreviewed filter, bulk category, chip edit, delete plus undo, export of visible columns, `/budget/review` redirect.
+- [X] T014 [P] [US1] Write the Playwright journey `e2e/us-p1-transactions.spec.ts`, covering quickstart W1–W5: unreviewed filter, bulk category, chip edit, delete plus undo, export of visible columns, `/budget/review` redirect.
 
 ### Implementation for User Story 1
 
@@ -111,31 +111,31 @@
   - Same filter as the query, no paging.
   - `columns[]` picks and orders the columns.
   - `;` separator, UTF-8 BOM, German decimals.
-- [ ] T020 [P] [US1] Create `apps/web/app/components/transactions/BalanceTile.vue` (balance of the filtered accounts) and `UnreviewedTile.vue`:
+- [X] T020 [P] [US1] Create `apps/web/app/components/transactions/BalanceTile.vue` (balance of the filtered accounts) and `UnreviewedTile.vue`:
   - The tile shows the count and the toggle "Nur ungeprüfte anzeigen".
   - "Alle als geprüft markieren" opens a confirmation that shows the count, then calls bulk `markReviewed` with the current filter.
-- [ ] T021 [P] [US1] Create `apps/web/app/components/transactions/FilterPanel.vue`:
+- [X] T021 [P] [US1] Create `apps/web/app/components/transactions/BookingFilterPanel.vue`:
   - A popover with account, type, category, tag, period, amount range and reviewed state.
   - Show the active-filter count badge.
   - State lives in the route query.
-- [ ] T022 [US1] Create `apps/web/app/components/transactions/TransactionsTable.vue`:
+- [X] T022 [US1] Create `apps/web/app/components/transactions/BookingsTable.vue`:
   - UTable with a selection column ("Alle auswählen" for the page).
   - Columns: Name (avatar + counterparty + purpose), Datum, Kategorie (editable chip opening a category select), Eigenschaften (tags), Konto, Betrag.
   - `SortHeader` on every column; a dot for unreviewed rows; a delete icon on row hover.
   - Column visibility menu "Spalten", remembered in `localStorage`.
   - Page size 25/50/100 and pagination.
   - Search with a 300 ms debounce.
-- [ ] T023 [US1] Create `apps/web/app/components/transactions/BulkBar.vue`:
+- [X] T023 [US1] Create `apps/web/app/components/transactions/BulkBar.vue`:
   - Shown while rows are selected.
   - Actions: Kategorie setzen, Tags, Als geprüft markieren, Löschen.
   - Deleting shows a toast with "Rückgängig" for 10 s, which calls restore.
-- [ ] T024 [P] [US1] Create `apps/web/app/components/transactions/TagManager.vue`: a modal listing tags with usage; create, rename, recolor and delete.
-- [ ] T025 [US1] Rebuild `apps/web/app/pages/transactions.vue`:
+- [X] T024 [P] [US1] Create `apps/web/app/components/transactions/TagManager.vue`: a modal listing tags with usage; create, rename, recolor and delete.
+- [X] T025 [US1] Rebuild `apps/web/app/pages/transactions.vue`:
   - BalanceTile and UnreviewedTile side by side (stacked below `md`).
   - Toolbar: search, Filtern, Spalten, Tags, Kategorien (link to settings), Export (CSV of visible columns and filtered rows).
   - Then TransactionsTable and BulkBar.
   - Keep `OverviewSection` wrapping.
-- [ ] T026 [US1] Turn `apps/web/app/pages/budget/review.vue` into a redirect to `/transactions?review=unreviewed`.
+- [X] T026 [US1] Turn `apps/web/app/pages/budget/review.vue` into a redirect to `/transactions?review=unreviewed`.
   - Remove "Prüfen" from the Budget section nav in `apps/web/app/pages/budget.vue`.
   - Update the dashboard `ReviewBanner.vue` link.
   - Adjust the existing e2e tests that used `/budget/review`.
@@ -178,7 +178,7 @@
   - Header with avatar, name and balance.
   - History chart with PeriodTabs.
   - Key figures tiles.
-  - `TransactionsTable` with `accountIds=[id]`.
+  - `BookingsTable` with `accountIds=[id]`.
 - [ ] T036 [US2] Create `apps/web/app/pages/depots/[id].vue`: like the account page, plus `PositionsTable` and the investment bookings filtered to this depot. This needs an `accountIds` prop on `PositionsTable.vue`.
 
 **Checkpoint**: US1 and US2 both work.
@@ -220,11 +220,11 @@
 - [ ] T044 [US3] Create `apps/web/app/pages/budget/categories/[id].vue`:
   - Header with icon, name and total.
   - 12-month bar history with the current month hatched (reuse `CashflowBars`).
-  - `TransactionsTable` filtered to the category and period.
+  - `BookingsTable` filtered to the category and period.
   - An empty state when the period has no bookings.
   - The chevron in `CategoryList.vue` links here (it replaces the inline expand).
 - [ ] T045 [US3] Create `apps/web/app/pages/budget/sankey.vue`:
-  - PeriodPicker, a Sankey card (move the card and the €/% toggle out of `budget/index.vue`), and the `TransactionsTable` below, filtered by period.
+  - PeriodPicker, a Sankey card (move the card and the €/% toggle out of `budget/index.vue`), and the `BookingsTable` below, filtered by period.
   - `SankeyChart.vue` emits `select(categoryId)` on node click; clicking again clears it. This toggles the `categoryIds` filter.
   - Add Sankey to the Budget section nav (Analyse | Sankey | Budgets) in `apps/web/app/pages/budget.vue`.
 
@@ -291,7 +291,7 @@
   - Replace the asset-class `USelect` with shared state `useState('assetClass')`.
 - [ ] T056 [US5] Add the asset legend to `apps/web/app/components/investments/PerformanceChart.vue`: chips "Alle / Aktien / ETF / …" above the chart, bound to `useState('assetClass')`, filtering both chart and table.
 - [ ] T057 [US5] Add sort and filter query parameters to `GET /investments/transactions` in `apps/api/src/modules/investments/`.
-  - Add a `FilterPanel` variant (type, depot, security, period, amount) with an active count to `apps/web/app/pages/investments/transactions.vue`.
+  - Add a filter panel (type, depot, security, period, amount) with an active count to `apps/web/app/pages/investments/transactions.vue`.
   - All columns are sortable.
 - [ ] T058 [US5] Add `trailingReturns(asOf)` to `apps/api/src/domain/period-returns.ts` and the endpoint `GET /analysis/returns/trailing` in `apps/api/src/modules/analysis/`.
   - Add a "Jahre | Zeiträume" switch to `apps/web/app/components/analysis/YearlyTable.vue`, with IZF, inflation and real return per period.
@@ -379,8 +379,8 @@
 - **Setup (Phase 1)**: No dependencies.
 - **Foundational (Phase 2)**: Depends on Setup. Blocks all stories.
 - **US1 (P1)**: After Foundational. It is the MVP.
-- **US2 (P1)**: After Foundational. It reuses `TransactionsTable` from T022, so start T035/T036 after T022.
-- **US3 (P2)**: After Foundational. T044 and T045 reuse `TransactionsTable` (T022).
+- **US2 (P1)**: After Foundational. It reuses `BookingsTable` from T022, so start T035/T036 after T022.
+- **US3 (P2)**: After Foundational. T044 and T045 reuse `BookingsTable` (T022).
 - **US4 (P2)**: After T040 (PeriodPicker). Otherwise independent.
 - **US5 (P2)**: After Foundational. Independent of the other stories.
 - **US6 (P3)**: After Foundational. T066 links to the US1 route.
