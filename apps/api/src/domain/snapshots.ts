@@ -59,12 +59,23 @@ function depotFlowCents(tx: PositionTx): number {
 }
 
 /** Snapshots of one depot for every day in `[from, to]`. */
+/** Value and invested amount of one holding on one day (instrument_value_snapshot). */
+export interface HoldingValue {
+  accountId: string
+  instrumentId: string
+  date: string
+  valueCents: number
+  investedCents: number
+}
+
 export function computeDepotSnapshots(
   accountId: string,
   transactions: readonly PositionTx[],
   prices: PriceSeries,
   from: string,
   to: string,
+  /** Optional per-holding rows (004 US2); their sums equal the depot snapshot exactly. */
+  perHolding?: (row: HoldingValue) => void,
 ): DailySnapshot[] {
   const sorted = [...transactions].sort((a, b) => a.bookingDate.localeCompare(b.bookingDate))
   const states = new Map<string, PositionState>()
@@ -99,12 +110,21 @@ export function computeDepotSnapshots(
     for (const [instrumentId, state] of states) {
       const quantity = quantityOf(state)
       if (quantity.lte(0)) continue
-      invested += investedCentsOf(state)
+      const holdingInvested = investedCentsOf(state)
+      invested += holdingInvested
       const point = cursors.get(instrumentId)!.at(day)
       let close: DecimalValue | null = point ? new D(point.close) : state.lastTradePrice
       if (!point || daysBetween(point.date, day) > STALE_AFTER_DAYS) stale = true
       close ??= new D(0)
-      value += eurosToCents(quantity.times(close))
+      const holdingValue = eurosToCents(quantity.times(close))
+      value += holdingValue
+      perHolding?.({
+        accountId,
+        instrumentId,
+        date: day,
+        valueCents: holdingValue,
+        investedCents: holdingInvested,
+      })
     }
     result.push({
       accountId,
