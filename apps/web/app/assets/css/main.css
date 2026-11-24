@@ -1,11 +1,14 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
+/* Outfit (OFL-1.1), bundled from npm and served by the app itself: no font CDN (FR-023, FR-025). */
+@import '@fontsource-variable/outfit';
 
 /*
  * Motion and hover system. Durations stay short (120-320 ms) so the app feels
  * responsive, and every movement is switched off for prefers-reduced-motion.
  */
 @theme {
+  --font-sans: 'Outfit Variable', 'Outfit', Arial, sans-serif;
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 

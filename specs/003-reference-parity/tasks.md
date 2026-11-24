@@ -30,10 +30,9 @@
   - `category-detail.ts`.
   - Extend `TransactionRow` with `tags`, `categoryIcon`, `categoryColor` and `accountName`.
 - [X] T003 [P] Add German i18n keys to `apps/web/i18n/locales/de.json` for all new texts. Examples: "Nur ungeprüfte anzeigen", "Alle als geprüft markieren", "Alle auswählen", "Filtern", "Spalten", "Tags", "Export", "Rückgängig", "Letzter Import", "Aktualisieren", "Aktueller Monat", "Budgethöhe", "Ausgaben", "Status", "Differenz", "Gesamtbudget", "Zeiträume", "Jahre", "Regionen", "Branchen", "Keine Treffer", "Suchen …".
-- [ ] T004 [P] Add the Outfit font and use it everywhere:
-  - Put the Outfit variable font as `apps/web/public/fonts/Outfit-Variable.woff2` (latin and latin-ext subset), with `apps/web/public/fonts/OFL.txt` next to it.
-  - Add `@font-face` with `font-display: swap` to `apps/web/app/assets/css/main.css`.
-  - Set `--font-sans: 'Outfit', Arial, sans-serif` (research R11).
+- [X] T004 [P] Add the Outfit font and use it everywhere:
+  - Bundle the Outfit variable font from the npm package `@fontsource-variable/outfit` (OFL-1.1, latin and latin-ext, `font-display: swap`) via `@import` in `apps/web/app/assets/css/main.css`; Vite serves the woff2 files from the app origin.
+  - Set `--font-sans: 'Outfit Variable', 'Outfit', Arial, sans-serif` and turn off the Nuxt UI font provider (`ui: { fonts: false }`) so no font is fetched from a third party (research R11).
 
 ---
 

@@ -68,8 +68,10 @@ All decisions for feature 003. No open NEEDS CLARIFICATION.
 
 ## R11 Font Outfit
 
-- **Decision**: Ship `Outfit[wght].woff2` (variable, latin + latin-ext subset, OFL) in `apps/web/public/fonts/`, with `@font-face` (`font-display: swap`) in `main.css`. Set `--font-sans: 'Outfit', Arial, sans-serif` and include the OFL license text next to the file.
-- **Alternatives**: @nuxt/fonts with the Google provider (rejected because it fetches from a third party at build or runtime).
+- **Decision**: Bundle Outfit from the npm package `@fontsource-variable/outfit` (variable, latin + latin-ext, OFL-1.1, license file inside the package) via `@import` in `main.css`. Vite serves the woff2 files from the app origin.
+  - Set `--font-sans: 'Outfit Variable', 'Outfit', Arial, sans-serif`.
+  - Turn off the Nuxt UI font provider (`ui: { fonts: false }`), so nothing is fetched from a font service at build or run time.
+- **Alternatives**: @nuxt/fonts with the Google provider (rejected because it fetches from a third party). Copying the woff2 file into `public/` by hand (rejected because updates would be manual).
 
 ## R12 Budgets overview
 
