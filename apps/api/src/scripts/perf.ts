@@ -126,6 +126,41 @@ async function main(): Promise<void> {
     )
   }
 
+  // 003: transactions table (SC-003, < 1 s) and search (SC-004, < 300 ms), p95 over 20 runs.
+  const p95 = async (url: string) => {
+    const runs: number[] = []
+    for (let i = 0; i < 20; i++) {
+      const start = performance.now()
+      const res = await app.inject({ method: 'GET', url, headers: { cookie } })
+      if (res.statusCode !== 200) throw new Error(`${url} -> ${res.statusCode}`)
+      runs.push(performance.now() - start)
+    }
+    runs.sort((x, y) => x - y)
+    return Math.round(runs[Math.ceil(runs.length * 0.95) - 1]!)
+  }
+  const TABLE_CALLS = [
+    '/api/transactions?pageSize=100',
+    '/api/transactions?sort=amount&dir=asc&pageSize=100&page=5',
+    '/api/transactions?q=Laden&review=all&pageSize=50',
+    '/api/transactions?types=expense&minCents=-5000&maxCents=0&sort=counterparty&pageSize=100',
+    '/api/transactions/unreviewed/count',
+  ]
+  const SEARCH_CALLS = ['/api/search?q=Laden', '/api/search?q=MSCI', '/api/search?q=Giro']
+  let worstTable = 0
+  for (const url of TABLE_CALLS) {
+    const ms = await p95(url)
+    worstTable = Math.max(worstTable, ms)
+    console.log(`  ${String(ms).padStart(5)} ms  p95 ${url}`)
+  }
+  let worstSearch = 0
+  for (const url of SEARCH_CALLS) {
+    const ms = await p95(url)
+    worstSearch = Math.max(worstSearch, ms)
+    console.log(`  ${String(ms).padStart(5)} ms  p95 ${url}`)
+  }
+  console.log(`transactions table p95 max: ${worstTable} ms (target < 1000)`)
+  console.log(`search p95 max: ${worstSearch} ms (target < 300)`)
+
   const csv = sparkasseCsv(50_000)
   const form = new FormData()
   form.append('file', new Blob([new Uint8Array(csv)]), 'perf.csv')

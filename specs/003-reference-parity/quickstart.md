@@ -38,3 +38,12 @@ pnpm lint; pnpm format:check; pnpm typecheck; pnpm test; pnpm e2e
 ## Responsive
 
 `pnpm e2e responsive` covers the new pages at 360 px in dark and light: no horizontal scroll and no "NaN".
+
+## Results (2026-11-24)
+
+Perf script (`pnpm --filter api perf`, ~10,000 bookings, 20 runs each):
+
+| Call | p95 |
+|---|---|
+| `/api/transactions` page, sort, search, filter (5 variants) | 3–13 ms (target < 1 s) |
+| `/api/search` (3 terms) | 7 ms (target < 300 ms) |

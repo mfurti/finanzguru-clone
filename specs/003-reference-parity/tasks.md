@@ -362,7 +362,7 @@
 ## Phase 11: Polish & Cross-Cutting Concerns
 
 - [X] T075 [P] Extend `e2e/responsive.spec.ts` with these pages at 360 px in dark and light: `/transactions`, `/accounts/:id`, `/depots/:id`, `/budget/sankey`, `/budget/budgets`, `/budget/categories/:id`. Check that there is no horizontal scroll and no "NaN".
-- [ ] T076 [P] Extend the perf script in `apps/api/scripts/perf.ts`:
+- [X] T076 [P] Extend the perf script in `apps/api/scripts/perf.ts`:
   - Seed 10,000 bookings.
   - Measure `/transactions` sort/filter/page p95 (target < 1 s) and `/search` p95 (target < 300 ms).
   - Write the results into `specs/003-reference-parity/quickstart.md`.
