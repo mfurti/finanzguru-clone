@@ -64,14 +64,15 @@
   - If dynamic client registration is refused, stop and report the blocker (research R1). (former 001 T054)
 - [ ] T007 [US1] Implement `apps/api/src/modules/sources/scalable-mcp/mapper.ts` and `ScalableMcpSource` in `apps/api/src/modules/sources/scalable-mcp/scalable-mcp.source.ts`.
   - The mapper turns tool results into a `SyncBatch` including `positionsSnapshot`, with money in cents.
+  - Register `ScalableMcpSource` under `DATA_SOURCES` so `POST /api/sources/scalable_mcp/sync` runs it, and turn a positions mismatch after a sync into an import-job warning.
   - Write contract tests against the fixtures in `apps/api/test/unit/scalable-mapper.spec.ts`. (former 001 T055)
-- [ ] T008 [US1] Add these routes to `apps/api/src/modules/sources/sources.controller.ts`:
+- [X] T008 [US1] Add these routes (previously planned in `sources.controller.ts`):
   - `POST /api/sources/scalable/connect`;
   - `GET /api/sources/scalable/callback`;
   - `POST /api/sources/:id/sync` (202; 409 while running or for CSV; 502 upstream);
   - `DELETE /api/sources/:id` (grant deleted, data kept);
   - `GET /api/sources` (never credentials).
-  - A positions mismatch after a sync becomes an import-job warning.
+  - Routes live in `apps/api/src/modules/sources/sync.controller.ts` (`SyncModule`); the connection logic is `scalable-mcp/scalable-connection.service.ts` with an injectable transport.
   - Write e2e tests with a mocked MCP server in `apps/api/test/e2e/scalable-sync.e2e-spec.ts`. (former 001 T056)
 - [ ] T009 [P] [US1] Add the optional daily sync in `apps/api/src/modules/sources/sync.scheduler.ts`. It is off unless `SCALABLE_DAILY_SYNC=true` (add it to `apps/api/src/config/env.schema.ts`), and missed runs are not caught up. Unit test in `apps/api/test/unit/sync-scheduler.spec.ts`. (former 001 T057)
 - [ ] T010 [US1] Make `apps/api/src/modules/accounts/accounts-overview.service.ts` `sync()` delegate to `SyncService` for active sync-capable sources (202), keeping 409 for CSV accounts. Extend `apps/api/test/e2e/accounts-overview.e2e-spec.ts`.

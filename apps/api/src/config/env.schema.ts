@@ -22,6 +22,11 @@ export const envSchema = z.object({
     .string()
     .url()
     .default('http://localhost:3000/api/sources/scalable/callback'),
+  /** Daily Scalable sync (004 T009); off unless set to "true". */
+  SCALABLE_DAILY_SYNC: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((value) => value === 'true'),
   /** Login attempts per minute and client IP. */
   LOGIN_RATE_LIMIT: z.coerce.number().int().min(1).max(1000).default(5),
 })
