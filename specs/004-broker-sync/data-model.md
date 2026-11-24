@@ -1,4 +1,4 @@
-# Data Model: Broker Sync, Deployment and Open Follow-ups
+# Data Model: Broker Sync and Open Follow-ups
 
 Migration `0007_sync_and_history`. It is additive only: `CREATE TABLE` and `CREATE INDEX`.
 
@@ -45,7 +45,3 @@ any ──disconnect──▶ disabled (grant deleted, data kept)
 ```
 
 - `account.last_synced_at`: set at the end of a successful sync. 003 shows it as "Zuletzt …".
-
-## Not stored in the repository
-
-These values live only in the server's `.env` and documentation: network names, IP, MAC, stack directory and secrets.

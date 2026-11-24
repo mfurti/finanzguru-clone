@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-23
 
-**Status**: Implemented (US3 Scalable sync and deployment moved to feature 004, #5)
+**Status**: Implemented (US3 Scalable sync moved to feature 004, #5; deployment deferred to a separate plan)
 
 **Input**: User description: "Rebuild the tool shown in the integrated browser (a personal wealth-tracking web app with the tabs Overview, Investments, Budget, Insurance). Use Nuxt UI, TypeScript, Node 26. Data sources: CSV import and the Scalable Capital MCP server; Sparkasse via bank query later."
 

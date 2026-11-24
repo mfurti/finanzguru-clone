@@ -1,12 +1,12 @@
-# Implementation Plan: Broker Sync, Deployment and Open Follow-ups
+# Implementation Plan: Broker Sync and Open Follow-ups
 
-**Branch**: `4-sync-and-deploy` | **Date**: 2026-11-24 | **Spec**: [spec.md](./spec.md)
+**Branch**: `4-broker-sync` | **Date**: 2026-11-24 | **Spec**: [spec.md](./spec.md)
 
-**Input**: Feature specification from `specs/004-sync-and-deploy/spec.md`
+**Input**: Feature specification from `specs/004-broker-sync/spec.md`
 
 ## Summary
 
-This feature finishes the work still open from features 001–003:
+This feature finishes the work still open from features 001–003, tested locally only. Deployment gets its own plan later:
 
 1. **Scalable Capital sync.** It uses the existing 001 scaffolding (`scalable-mcp/` client, OAuth provider, credential store, allowlist). What is left:
    - the first real connection, made by the owner;
@@ -15,8 +15,7 @@ This feature finishes the work still open from features 001–003:
    - the optional daily scheduler;
    - the settings card;
    - the hook-up of "Aktualisieren" from 003.
-2. **Deployment.** As designed in 001 research R18: two GHCR images, a server stack template with placeholders, a backup script, and a rollout gated by the owner.
-3. **Asset-class performance chart.** It is driven by a derived per-instrument daily value series.
+2. **Asset-class performance chart.** It is driven by a derived per-instrument daily value series.
 
 ## Technical Context
 
@@ -35,9 +34,8 @@ This feature finishes the work still open from features 001–003:
 - Vitest: the mapper against recorded fixtures, the sync lock, and the asset-class series.
 - Nest e2e with a mocked MCP server.
 - Playwright for the settings card and the chart chips.
-- `docker compose config` for the stack template.
 
-**Target Platform**: Home server with a container engine (stack per 001 R18); local dev with `pnpm dev:local`
+**Target Platform**: Local dev server (`pnpm dev:local`, web 3100, API 3101); deployment is out of scope
 
 **Project Type**: Web application (pnpm monorepo)
 
@@ -49,9 +47,8 @@ This feature finishes the work still open from features 001–003:
 - The access grant is stored encrypted (AES-GCM, 001 R12).
 - Only read tools are used (allowlist, 001 R3).
 - No private infrastructure values in the repository, issues or PRs.
-- Every server command runs only after the owner's explicit OK.
 
-**Scale/Scope**: Single owner; 1 new external source, 4 endpoints, 1 scheduler, 1 settings card, deploy folder, 1 chart filter.
+**Scale/Scope**: Single owner; 1 new external source, 4 endpoints, 1 scheduler, 1 settings card, 1 chart filter.
 
 ## Constitution Check
 
@@ -63,9 +60,9 @@ The constitution is still the unfilled template. The working rules from 001–00
 |---|---|
 | Money as integer cents | Pass: the mapper converts to cents with `domain/money.ts` |
 | Data stays local, read-only external sources | Pass: only Scalable read tools; no other new external calls |
-| The owner does logins/consents and approves server steps | Pass: FR-001, FR-009, tasks gate on the owner |
+| The owner does logins/consents personally | Pass: FR-001, T006 needs the owner |
 | Test per layer | Pass: R6 |
-| Quality gates and leak guard per commit | Pass: `done4.sh` like 003 |
+| Quality gates and leak guard per commit; test locally first | Pass: `done4.sh` like 003; local dev server only |
 
 Post-design re-check: no violations.
 
@@ -74,12 +71,12 @@ Post-design re-check: no violations.
 ### Documentation (this feature)
 
 ```text
-specs/004-sync-and-deploy/
+specs/004-broker-sync/
 ├── spec.md
 ├── plan.md
-├── research.md          # R1–R6
+├── research.md          # R1–R5
 ├── data-model.md
-├── quickstart.md        # W1–W8
+├── quickstart.md        # W1–W6
 ├── contracts/http-api.md
 ├── checklists/requirements.md
 └── tasks.md
@@ -101,7 +98,6 @@ apps/api/src/
 apps/api/test/fixtures/scalable-mcp/                          # anonymized recorded responses
 apps/web/app/pages/settings/sources.vue                       # Scalable card
 apps/web/app/components/investments/PerformanceChart.vue      # follows the asset-class chips
-deploy/{compose.yaml, backup.sh, README.md}                   # placeholders only
 ```
 
 ## Phases

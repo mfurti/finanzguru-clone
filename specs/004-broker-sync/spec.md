@@ -1,12 +1,12 @@
-# Feature Specification: Broker Sync, Deployment and Open Follow-ups
+# Feature Specification: Broker Sync and Open Follow-ups
 
-**Feature Branch**: `4-sync-and-deploy`
+**Feature Branch**: `4-broker-sync`
 
 **Created**: 2026-11-24
 
 **Status**: Draft
 
-**Input**: User description: "Offene Arbeit aus Features 001–003 bündeln (Stand 2026-11-24): (1) Scalable Capital Sync aus 001 US3 (T054–T058) … (2) Deployment aus 001 (T079–T083) … (3) Folgearbeit aus 003: Wertentwicklungs-Chart nach Assetklasse filtern … Nicht im Umfang: Live-Bankabruf für Girokonten."
+**Input**: User description: "Offene Arbeit aus Features 001–003 bündeln (Stand 2026-11-24): (1) Scalable Capital Sync aus 001 US3 (T054–T058) … (2) Folgearbeit aus 003: Wertentwicklungs-Chart nach Assetklasse filtern … Nicht im Umfang: Deployment (eigener Plan, erst alles lokal testen) und Live-Bankabruf für Girokonten."
 
 ## Overview
 
@@ -15,10 +15,11 @@ A review of issues #1, #3 and #4 on 2026-11-24 found these items still open. Eve
 | Source | Open item | Why it is still open |
 |---|---|---|
 | 001 US3 (T054–T058) | Scalable Capital sync | Needs the owner's own Scalable login and consent; never started |
-| 001 Polish (T079–T083) | Deployment to the home server | Needs the owner's OK for every server step |
 | 003 US5 (T056 deviation) | Performance chart filtered by asset class | The chart is built from depot-level values; a per-security value history is missing |
 
 The open tasks are moved here. Issues #1, #3 and #4 are closed with a reference to the new issue.
+
+Deployment (001 T079–T083) is **not** part of this feature. Everything is tested locally first; deployment gets its own plan later.
 
 Not in scope: live retrieval of checking-account data (for example Sparkasse). It needs a separate decision between a direct bank protocol with its own product registration and a licensed account-information service. See Assumptions.
 
@@ -47,25 +48,7 @@ As the owner, I connect my Scalable Capital account once via Scalable's official
 
 ---
 
-### User Story 2 - Run the app on my home server (Priority: P1)
-
-As the owner, I run Vermögenskompass on my home server as a container stack with daily backups, rolled out step by step with my approval.
-
-**Why this priority**: The app is only useful day to day when it runs permanently.
-
-**Independent Test**: Validate the stack template locally, then deploy on the server after the owner's OK, open the app in the home network, log in and see the data.
-
-**Acceptance Scenarios**:
-
-1. **Given** the repository, **Then** it contains a stack template and a backup script with placeholders only. It contains no addresses, host names, paths or keys of the owner's infrastructure.
-2. **Given** a release, **Then** both app images exist for the release commit, and the stack template validates.
-3. **Given** the rollout, **Then** every server command is shown to the owner first and only run after an explicit OK.
-4. **Given** the running stack, **Then** a backup of the database is created daily and kept for 7 days. A restore from a backup works.
-5. **Given** the rollout is done, **Then** the server's own documentation is updated after the owner's OK, outside this repository.
-
----
-
-### User Story 3 - Performance chart by asset class (Priority: P3)
+### User Story 2 - Performance chart by asset class (Priority: P3)
 
 As the owner, I click an asset-class chip (e.g. "ETF") and both the positions table and the performance chart show only that asset class.
 
@@ -85,8 +68,6 @@ As the owner, I click an asset-class chip (e.g. "ETF") and both the positions ta
 - A booking already imported via CSV comes again through the sync: it is detected as a duplicate and not doubled.
 - A booking the owner deleted comes again through the sync: it stays deleted (deleted-import markers from 003).
 - Two depots at Scalable: each becomes its own depot with its reference account.
-- A backup runs while the app writes: the backup is still consistent.
-- The disk is full during a backup: the old backups stay, and the failure is logged.
 - A security without prices for part of the period: the asset-class chart carries the last known price forward, like the depot chart.
 
 ## Requirements *(mandatory)*
@@ -99,17 +80,13 @@ As the owner, I click an asset-class chip (e.g. "ETF") and both the positions ta
 - **FR-004**: Only one sync per source may run at a time. A running sync MUST reject a second start.
 - **FR-005**: "Aktualisieren" in Portfolios & Konten MUST start the sync for accounts whose source supports it, and show the last sync time.
 - **FR-006**: An optional daily sync MUST exist, switched off by default.
-- **FR-007**: The repository MUST contain a container stack template and a backup script that use placeholders for every private value.
-- **FR-008**: The backup MUST be a consistent copy of the database, run daily, keep 7 days, and log success or failure.
-- **FR-009**: Every server-side step of the rollout MUST be proposed to the owner and executed only after an explicit OK.
-- **FR-010**: The performance chart MUST filter by the asset class selected in the positions chips, with value, invested capital and return.
+- **FR-007**: The performance chart MUST filter by the asset class selected in the positions chips, with value, invested capital and return.
 
 ### Key Entities
 
 - **Data source connection**: Provider, status (active, needs re-auth, error, disabled), encrypted grant, last sync time, last error.
 - **Sync run**: Start, end, result (imported, skipped, failed), error text; one at a time per source.
 - **Instrument value history**: Daily value and invested amount per security per depot, derived from bookings and prices; basis for asset-class charts.
-- **Backup**: Date, file, size, result; 7 kept.
 
 ## Success Criteria *(mandatory)*
 
@@ -118,15 +95,13 @@ As the owner, I click an asset-class chip (e.g. "ETF") and both the positions ta
 - **SC-001**: After a sync, positions and cash of the Scalable depot match Scalable's own view to the cent for 100 % of positions.
 - **SC-002**: Ten syncs in a row add no duplicate bookings.
 - **SC-003**: A manual sync completes in under 1 minute for 5 years of history.
-- **SC-004**: The app on the home server is reachable in the home network 24/7. A database restore from yesterday's backup takes under 10 minutes.
-- **SC-005**: No private infrastructure value appears in the public repository, issues or pull requests (checked by the leak guard on every commit).
-- **SC-006**: For every asset class, the chart's current value equals the sum of that class's positions in the table.
+- **SC-004**: No private infrastructure value appears in the public repository, issues or pull requests (checked by the leak guard on every commit).
+- **SC-005**: For every asset class, the chart's current value equals the sum of that class's positions in the table.
 
 ## Assumptions
 
 - Scalable Capital offers an official connection for its customers that the owner may use for their own depot. The owner does login and consent personally (001 US3).
-- The home server runs a container engine. The owner provides private values (addresses, paths, secrets) only on the server, never in the repository.
-- Release images are built by the existing release workflow.
+- Everything in this feature is verified on the local dev server (web 3100, API 3101); deployment follows in a separate plan.
 - **Live bank data for checking accounts is out of scope.** Research on 2026-11-24 found these routes:
   - The reference tool uses licensed account-information services (wealthAPI, finAPI) under PSD2. Banks ask for a renewed consent about every 90 days.
   - For a self-hosted app, the realistic routes are:

@@ -1,4 +1,4 @@
-# Specification Quality Checklist: Broker Sync, Deployment and Open Follow-ups
+# Specification Quality Checklist: Broker Sync and Open Follow-ups
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-11-24
@@ -32,4 +32,4 @@
 ## Notes
 
 - Validation pass 1 (2026-11-24): all items pass. Source: review of issues #1, #3, #4 and the open tasks in specs 001–003.
-- Live bank data for checking accounts is excluded on purpose; the research result is recorded under Assumptions.
+- Live bank data for checking accounts and deployment are excluded on purpose (deployment gets its own plan after local testing); the research result is recorded under Assumptions.

@@ -1,14 +1,14 @@
-# Tasks: Broker Sync, Deployment and Open Follow-ups
+# Tasks: Broker Sync and Open Follow-ups
 
-**Input**: Design documents from `specs/004-sync-and-deploy/`
+**Input**: Design documents from `specs/004-broker-sync/`
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/http-api.md, quickstart.md
 
-**Tests**: Included, per research R6: unit, API e2e, Playwright, and a compose config check.
+**Tests**: Included, per research R5: unit, API e2e and Playwright, all against a fresh local database or the local dev server.
 
-**Origin**: This file replaces the open tasks of 001 (T054–T058 → US1, T079–T083 → US2) and the T056 deviation of 003 (→ US3).
+**Origin**: Replaces the open tasks of 001 US3 (T054–T058 → US1) and the T056 deviation of 003 (→ US2). Deployment (001 T079–T083) is not part of this feature; it gets its own plan after local testing.
 
-**Commits**: One commit per task, pushed immediately. The issue checklist is synced. Server steps run only with the owner's explicit OK.
+**Commits**: One commit per task, pushed immediately. The issue checklist is synced.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -82,58 +82,30 @@
   - "Verbindung trennen" with confirmation;
   - the daily-sync state as read-only info.
   - Write the Playwright test `e2e/us-s1-scalable.spec.ts` with a mocked API via `page.route`. (former 001 T058)
-- [ ] T012 [US1] **Owner present.** Run quickstart W1–W5 against the real account and record the results, without personal data, in `specs/004-sync-and-deploy/quickstart.md`.
+- [ ] T012 [US1] **Owner present.** Run quickstart W1–W5 against the real account and record the results, without personal data, in `specs/004-broker-sync/quickstart.md`.
 
 **Checkpoint**: Scalable depot syncs.
 
 ---
 
-## Phase 4: User Story 2 - Run the app on my home server (Priority: P1)
-
-**Goal**: The stack template, backup and gated rollout (former 001 T079–T083).
-
-**Independent Test**: quickstart W6–W7.
-
-- [ ] T013 [P] [US2] Create the server stack template `deploy/compose.yaml` per 001 research R18:
-  - `name: finance-clone`;
-  - external `${MACVLAN_NETWORK}` and `${PROXY_NETWORK}`, plus a `finance-internal` bridge;
-  - `finance-web` (image `ghcr.io/mfurti/finanzguru-clone-web:${FINANCE_TAG:-latest}`, `ipv4_address: ${FINANCE_WEB_IP}`, `mac_address: ${FINANCE_WEB_MAC}`);
-  - `finance-api` (internal only, `env_file: .env`, bind mount `./data/api`, healthcheck).
-  - Add `deploy/.env.example` with placeholders only. (former 001 T079)
-- [ ] T014 [P] [US2] Add `deploy/backup.sh` and `deploy/README.md`.
-  - The backup is an SQLite online `.backup` of `data/api/app.db` into `data/api/backup/`. It keeps 7 days, logs to `/var/log/finance-clone-backup.log`, and on a full disk keeps the old backups and exits non-zero.
-  - The README covers rollout, update (`docker compose pull && docker compose up -d`), rollback via `FINANCE_TAG`, restore, setting the owner password, and the open decisions (GHCR visibility, HTTPS via the reverse proxy). (former 001 T080)
-- [ ] T015 [US2] Check that `release.yml` published both images for the release commit (`gh run list`, GHCR tags), and that `docker compose -f deploy/compose.yaml --env-file deploy/.env.example config` is valid. Add that config check to `.github/workflows/ci.yml`. (former 001 T081)
-- [ ] T016 [US2] **Owner's OK per command.** Server rollout:
-  - create the stack directory, copy `compose.yaml` and `backup.sh`;
-  - the owner writes `.env`;
-  - `docker compose config`, `pull`, `up -d`;
-  - set the owner password;
-  - verify LAN access, and that recreating the containers loses no data;
-  - test a restore from a backup.
-  - Record the result, without private values, in `deploy/README.md`. (former 001 T082)
-- [ ] T017 [US2] **Owner's OK.** Add the crontab line for `backup.sh` and update the server's own documentation and config repository. Check `git diff --cached` for secrets there. Nothing of this goes into this repository. (former 001 T083)
-
----
-
-## Phase 5: User Story 3 - Performance chart by asset class (Priority: P3)
+## Phase 4: User Story 2 - Performance chart by asset class (Priority: P3)
 
 **Goal**: The asset-class chips filter the chart too (003 T056 deviation).
 
-**Independent Test**: quickstart W8.
+**Independent Test**: quickstart W6.
 
-- [ ] T018 [P] [US3] Add `apps/api/src/domain/instrument-values.ts`: per depot, instrument and day, the value (quantity × last known close) and invested amount (FIFO cost basis).
+- [ ] T013 [P] [US2] Add `apps/api/src/domain/instrument-values.ts`: per depot, instrument and day, the value (quantity × last known close) and invested amount (FIFO cost basis).
   - Unit test in `apps/api/test/unit/instrument-values.spec.ts`: the sum over instruments equals the depot snapshot within 1 cent per day, and prices are carried forward over gaps.
-- [ ] T019 [US3] Fill `instrument_value_snapshot` in `apps/api/src/modules/import/recompute.service.ts` alongside `net_worth_snapshot`. Backfill existing data on startup when the table is empty.
-- [ ] T020 [US3] Accept `assetClass` on `GET /api/investments/performance` in `apps/api/src/modules/investments/`, summing the matching instruments' series. Add an e2e test in `apps/api/test/e2e/performance-asset-class.e2e-spec.ts`: for each class, the latest value equals the sum of that class's positions.
-- [ ] T021 [US3] Make `apps/web/app/components/investments/PerformanceChart.vue` follow `useState('positions-asset-class')`, and show the active class in the card header. Extend `e2e/us-p5-investments.spec.ts`: chip "ETF" changes the chart total to the ETF sum, and "Alle" restores it.
+- [ ] T014 [US2] Fill `instrument_value_snapshot` in `apps/api/src/modules/import/recompute.service.ts` alongside `net_worth_snapshot`. Backfill existing data on startup when the table is empty.
+- [ ] T015 [US2] Accept `assetClass` on `GET /api/investments/performance` in `apps/api/src/modules/investments/`, summing the matching instruments' series. Add an e2e test in `apps/api/test/e2e/performance-asset-class.e2e-spec.ts`: for each class, the latest value equals the sum of that class's positions.
+- [ ] T016 [US2] Make `apps/web/app/components/investments/PerformanceChart.vue` follow `useState('positions-asset-class')`, and show the active class in the card header. Extend `e2e/us-p5-investments.spec.ts`: chip "ETF" changes the chart total to the ETF sum, and "Alle" restores it.
 
 ---
 
-## Phase 6: Polish
+## Phase 5: Polish
 
-- [ ] T022 [P] Update `README.md`: the Scalable sync and the deploy folder, with no private values.
-- [ ] T023 Run the full gates (`pnpm lint; pnpm format:check; pnpm typecheck; pnpm test; pnpm test:e2e`) and the responsive check, then mark the spec "Implemented".
+- [ ] T017 [P] Update `README.md`: the Scalable sync, with no private values.
+- [ ] T018 Run the full gates (`pnpm lint; pnpm format:check; pnpm typecheck; pnpm test; pnpm test:e2e`) and the responsive check, test W1–W6 on the local dev server, then mark the spec "Implemented".
 
 ---
 
@@ -144,22 +116,18 @@
   - T006 needs the owner and blocks T007, which blocks T008 and T012.
   - T009 runs after T005.
   - T010 and T011 run after T008.
-- **US2**: independent of US1.
-  - T013 and T014 run in parallel, then T015.
-  - T016 needs the owner and T015.
-  - T017 runs after T016.
-- **US3**: independent; T018, then T019, T020, T021.
+- **US2**: independent; T013, then T014, T015, T016.
 - **Polish**: last.
 
 ## Parallel Examples
 
 ```text
 T001, T002, T003 together
-T013, T014, T018 together (different areas)
+T009 and T013 together (different areas)
 ```
 
 ## Implementation Strategy
 
-- US2 (T013–T015) and US3 can start at once.
+- US2 can start at once; everything is tested on the local dev server.
 - US1 starts when the owner is available for T006.
-- Server steps (T016, T017) only run in a session with the owner.
+- Deployment is not part of this feature and gets its own plan after local testing.
