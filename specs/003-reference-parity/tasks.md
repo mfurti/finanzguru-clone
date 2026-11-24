@@ -329,12 +329,12 @@
 
 **Independent Test**: "MSCI" opens the security. "Vermieter" lands in Transaktionen filtered to that text (quickstart W11).
 
-- [ ] T069 [P] [US7] Write the API e2e test `apps/api/test/e2e/search.e2e-spec.ts`:
+- [X] T069 [P] [US7] Write the API e2e test `apps/api/test/e2e/search.e2e-spec.ts`:
   - Fewer than 2 characters gives 400.
   - Groups are capped at 5 each.
   - IBAN and ISIN match.
   - Soft-deleted bookings are excluded.
-- [ ] T070 [US7] Create the `apps/api/src/modules/search/` module with `GET /search?q=`, using `LIKE` queries per group as in research R3, and register it in `app.module.ts`.
+- [X] T070 [US7] Create the `apps/api/src/modules/search/` module with `GET /search?q=`, using `LIKE` queries per group as in research R3, and register it in `app.module.ts`.
 - [ ] T071 [US7] Create `apps/web/app/components/common/GlobalSearch.vue`:
   - A `UCommandPalette` in a `UModal` with a 200 ms debounce.
   - Groups: Seiten, Wertpapiere, Konten, Transaktionen.

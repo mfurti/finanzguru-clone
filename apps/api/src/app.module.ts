@@ -22,6 +22,7 @@ import { InvestmentsModule } from './modules/investments/investments.module'
 import { OverviewModule } from './modules/overview/overview.module'
 import { TransactionsModule } from './modules/transactions/transactions.module'
 import { TagsModule } from './modules/tags/tags.module'
+import { SearchModule } from './modules/search/search.module'
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { TagsModule } from './modules/tags/tags.module'
     AccountsModule,
     TransactionsModule,
     TagsModule,
+    SearchModule,
     ImportModule,
     InvestmentsModule,
     CashflowModule,
