@@ -16,13 +16,13 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 [P] Add `@nestjs/schedule` to `apps/api/package.json` and register `ScheduleModule.forRoot()` in `apps/api/src/app.module.ts`.
-- [ ] T002 [P] Add the zod DTOs from `contracts/http-api.md` to `packages/shared/src/schemas/source.ts`:
+- [X] T001 [P] Add `@nestjs/schedule` to `apps/api/package.json` and register `ScheduleModule.forRoot()` in `apps/api/src/app.module.ts`.
+- [X] T002 [P] Add the zod DTOs from `contracts/http-api.md` to `packages/shared/src/schemas/source.ts`:
   - `sourceDto` with `lastRun`;
   - `syncStarted { runId }`;
   - `connectResponse { authorizationUrl }`.
   - Add the optional `assetClass` to the performance query in `packages/shared/src/schemas/investments.ts`.
-- [ ] T003 [P] Add German texts to `apps/web/i18n/locales/de.json`: "Scalable Capital verbinden", "Verbunden", "Neu verbinden", "Synchronisieren", "Verbindung trennen", "Täglich synchronisieren", "Synchronisierung läuft bereits", and "Zuletzt synchronisiert {date}".
+- [X] T003 [P] Add German texts to `apps/web/i18n/locales/de.json`: "Scalable Capital verbinden", "Verbunden", "Neu verbinden", "Synchronisieren", "Verbindung trennen", "Täglich synchronisieren", "Synchronisierung läuft bereits", and "Zuletzt synchronisiert {date}".
 
 ---
 

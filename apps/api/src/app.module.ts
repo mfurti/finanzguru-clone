@@ -1,5 +1,6 @@
 import { Module, RequestMethod } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { ScheduleModule } from '@nestjs/schedule'
 import { LoggerModule } from 'nestjs-pino'
 import { CommonModule } from './common/common.module'
 import { validateEnv } from './config/env.schema'
@@ -26,6 +27,8 @@ import { SearchModule } from './modules/search/search.module'
 
 @Module({
   imports: [
+    // Daily Scalable sync (004 T009); jobs register only when enabled.
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,

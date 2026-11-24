@@ -743,5 +743,25 @@
     "1Y": "1 Jahr",
     "3Y": "3 Jahre",
     "5Y": "5 Jahre"
+  },
+  "scalable": {
+    "title": "Scalable Capital",
+    "connect": "Scalable Capital verbinden",
+    "connected": "Verbunden",
+    "reauth": "Neu verbinden",
+    "error": "Fehler",
+    "disabled": "Nicht verbunden",
+    "sync": "Synchronisieren",
+    "disconnect": "Verbindung trennen",
+    "disconnectConfirm": "Verbindung zu Scalable Capital trennen? Importierte Daten bleiben erhalten.",
+    "daily": "Täglich synchronisieren",
+    "dailyOn": "Tägliche Synchronisierung ist aktiv",
+    "dailyOff": "Tägliche Synchronisierung ist aus (Server-Einstellung)",
+    "running": "Synchronisierung läuft bereits",
+    "started": "Synchronisierung gestartet",
+    "lastSync": "Zuletzt synchronisiert {date}",
+    "lastRun": "{imported} neu, {skipped} übersprungen",
+    "never": "Noch nie synchronisiert",
+    "info": "Du meldest dich direkt bei Scalable Capital an. Vermögenskompass speichert nur den verschlüsselten Zugriffsschlüssel und nutzt ausschließlich lesende Funktionen."
   }
 }

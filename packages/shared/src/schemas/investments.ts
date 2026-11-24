@@ -4,6 +4,8 @@ import { accountsParam, cents, decimalString, isoDate, nullableRate, period } fr
 
 export const performanceQuery = z.object({
   accounts: accountsParam,
+  /** Only instruments of this asset class (004 US2). */
+  assetClass: z.enum(ASSET_CLASSES).optional(),
   period: period.default('1Y'),
   from: isoDate.optional(),
   to: isoDate.optional(),
