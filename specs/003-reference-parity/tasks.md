@@ -160,7 +160,7 @@
   - `canSync` false for CSV accounts, with `lastUpdateKind: 'import'`.
   - Detail figures for a period.
   - `POST /accounts/:id/sync` returns 409 for CSV accounts.
-- [ ] T029 [P] [US2] Write the Playwright journey `e2e/us-p2-accounts.spec.ts` (quickstart W6): copy the IBAN and check the clipboard, open the detail page, depot detail shows positions, "+" preselects the type.
+- [X] T029 [P] [US2] Write the Playwright journey `e2e/us-p2-accounts.spec.ts` (quickstart W6): copy the IBAN and check the clipboard, open the detail page, depot detail shows positions, "+" preselects the type.
 
 ### Implementation for User Story 2
 
@@ -169,17 +169,17 @@
   - Last update comes from `import_job`.
   - `canSync` comes from the data source type.
   - Sync returns 202 only for sync-capable sources.
-- [ ] T032 [P] [US2] Create `apps/web/app/components/accounts/AccountRow.vue`:
+- [X] T032 [P] [US2] Create `apps/web/app/components/accounts/AccountRow.vue`:
   - Avatar, name/institution, masked IBAN with CopyButton (copies the full IBAN), Sparkline, "Letzter Import: <date>" or "Aktualisieren" plus "Zuletzt …", and the balance.
   - The whole row links to the detail page.
-- [ ] T033 [P] [US2] Create `apps/web/app/components/accounts/AccountGroupCard.vue`: a card with the title (Depots / Konten), the total, and a "+" that opens `AccountFormModal` with the type preselected.
-- [ ] T034 [US2] Rebuild `apps/web/app/pages/accounts.vue`: one group card per group from `/accounts/overview`, with Anpassen and Hinzufügen in the SectionNav actions row.
-- [ ] T035 [US2] Create `apps/web/app/pages/accounts/[id].vue`:
+- [X] T033 [P] [US2] Create `apps/web/app/components/accounts/AccountGroupCard.vue`: a card with the title (Depots / Konten), the total, and a "+" that opens `AccountFormModal` with the type preselected.
+- [X] T034 [US2] Rebuild `apps/web/app/pages/accounts.vue`: one group card per group from `/accounts/overview`, with Anpassen and Hinzufügen in the SectionNav actions row.
+- [X] T035 [US2] Create `apps/web/app/pages/accounts/[id].vue`:
   - Header with avatar, name and balance.
   - History chart with PeriodTabs.
   - Key figures tiles.
   - `BookingsTable` with `accountIds=[id]`.
-- [ ] T036 [US2] Create `apps/web/app/pages/depots/[id].vue`: like the account page, plus `PositionsTable` and the investment bookings filtered to this depot. This needs an `accountIds` prop on `PositionsTable.vue`.
+- [X] T036 [US2] Create `apps/web/app/pages/depots/[id].vue`: like the account page, plus `PositionsTable` and the investment bookings filtered to this depot. This needs an `accountIds` prop on `PositionsTable.vue`.
 
 **Checkpoint**: US1 and US2 both work.
 

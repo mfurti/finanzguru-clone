@@ -4,6 +4,8 @@ import type { FetchError } from 'ofetch'
 
 /** "Konto anlegen" (FR-056). */
 const open = defineModel<boolean>('open', { default: false })
+/** Type preselected by the "+" of a group card (003 US2). */
+const props = defineProps<{ presetType?: AccountType }>()
 const emit = defineEmits<{ created: [account: AccountDto] }>()
 const { t } = useI18n()
 
@@ -15,7 +17,9 @@ const typeItems = computed(() =>
 )
 
 watch(open, (isOpen) => {
-  if (isOpen) Object.assign(form, { name: '', type: 'checking', iban: '', balance: 0 })
+  if (isOpen) {
+    Object.assign(form, { name: '', type: props.presetType ?? 'checking', iban: '', balance: 0 })
+  }
   error.value = null
 })
 

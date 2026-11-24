@@ -13,8 +13,11 @@ import {
  * the header, asset-class filter, Export and Spalten in a toolbar, then the
  * table (or the asset-class list) and sold positions (US4).
  */
+/** `accounts` pins the table to one depot (depot detail page, 003 US2). */
+const props = defineProps<{ accounts?: string }>()
 const { t } = useI18n()
-const { accountsParam } = useAccountFilter()
+const { accountsParam: globalAccounts } = useAccountFilter()
+const accountsParam = computed(() => props.accounts ?? globalAccounts.value)
 const assetClass = ref<AssetClass | 'all'>('all')
 const view = ref<'positions' | 'assetClasses'>('positions')
 
@@ -31,7 +34,7 @@ const { data: sold } = await useApi<PositionDto[]>('/api/investments/positions',
   default: () => [],
 })
 const { data: all } = await useApi<PositionDto[]>('/api/investments/positions', {
-  key: 'positions-all',
+  key: props.accounts ? `positions-all-${props.accounts}` : 'positions-all',
   query: computed(() => ({ accounts: accountsParam.value })),
   default: () => [],
 })

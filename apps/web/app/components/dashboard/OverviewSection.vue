@@ -18,7 +18,11 @@ const items = computed<SectionNavItem[]>(() =>
     label: t(`overview.views.${key}`),
     // Keep the account filter when switching views.
     to: { path, query: route.query.accounts ? { accounts: route.query.accounts } : {} },
-    active: route.path === path,
+    // Detail pages (/accounts/:id, /depots/:id) belong to Portfolios & Konten.
+    active:
+      path === '/'
+        ? route.path === '/'
+        : route.path.startsWith(path) || (key === 'accounts' && route.path.startsWith('/depots')),
   })),
 )
 </script>
