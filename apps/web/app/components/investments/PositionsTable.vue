@@ -18,7 +18,10 @@ const props = defineProps<{ accounts?: string }>()
 const { t } = useI18n()
 const { accountsParam: globalAccounts } = useAccountFilter()
 const accountsParam = computed(() => props.accounts ?? globalAccounts.value)
-const assetClass = ref<AssetClass | 'all'>('all')
+/** Asset-class chips (003 FR-013), shared via useState so other cards can follow. */
+const assetClass = useState<AssetClass | 'all'>('positions-asset-class', () => 'all')
+/** Column sort (003 FR-012); null = API order (by value). */
+const sort = ref<{ id: SortId; dir: 'asc' | 'desc' } | null>(null)
 const view = ref<'positions' | 'assetClasses'>('positions')
 
 const query = computed(() => ({
@@ -47,6 +50,57 @@ const assetClassItems = computed(() => {
   ]
 })
 
+type SortId = 'name' | 'price' | 'value' | 'entryValue' | 'gain' | 'allocation' | 'dividends'
+const sortValue: Record<SortId, (row: PositionDto) => string | number> = {
+  name: (row) => row.name.toLowerCase(),
+  price: (row) => row.priceCents ?? 0,
+  value: (row) => row.valueCents,
+  entryValue: (row) => row.entryValueCents,
+  gain: (row) => row.gainCents,
+  allocation: (row) => Number(row.allocationPct ?? 0),
+  dividends: (row) => row.dividendsCents ?? 0,
+}
+const sortedPositions = computed(() => {
+  const rows = [...(positions.value ?? [])]
+  if (!sort.value) return rows
+  const { id, dir } = sort.value
+  const read = sortValue[id]
+  return rows.sort((a, b) => {
+    const x = read(a)
+    const y = read(b)
+    const order = x < y ? -1 : x > y ? 1 : 0
+    return dir === 'asc' ? order : -order
+  })
+})
+function toggleSort(id: SortId): void {
+  sort.value =
+    sort.value?.id === id
+      ? { id, dir: sort.value.dir === 'asc' ? 'desc' : 'asc' }
+      : { id, dir: id === 'name' ? 'asc' : 'desc' }
+}
+const SortHeader = resolveComponent('SortHeader')
+const Avatar = resolveComponent('Avatar')
+const CopyButton = resolveComponent('CopyButton')
+const LABELS = computed<Record<SortId, string>>(() => ({
+  name: t('investments.columns.name'),
+  price: t('investments.columns.price'),
+  value: t('investments.columns.value'),
+  entryValue: t('investments.columns.entryValue'),
+  gain: t('investments.columns.gain'),
+  allocation: t('investments.columns.allocation'),
+  dividends: t('investments.columns.dividends'),
+}))
+const header =
+  (id: SortId, align: 'left' | 'right' = 'right') =>
+  () =>
+    h(SortHeader, {
+      label: LABELS.value[id],
+      align,
+      dir: sort.value?.id === id ? sort.value.dir : null,
+      'data-testid': `positions-sort-${id}`,
+      onToggle: () => toggleSort(id),
+    })
+
 const Money = resolveComponent('Money')
 const Percent = resolveComponent('Percent')
 const NuxtLink = resolveComponent('NuxtLink')
@@ -59,25 +113,36 @@ const number = (value: string | null) =>
 const columns = computed<TableColumn<PositionDto>[]>(() => [
   {
     id: 'name',
-    header: t('investments.columns.name'),
+    header: header('name', 'left'),
     cell: ({ row }) =>
-      h('div', { class: 'min-w-40' }, [
-        h(
-          NuxtLink,
-          { to: `/investments/${row.original.instrumentId}`, class: 'font-medium link-hover' },
-          () => row.original.name,
-        ),
-        h(
-          'div',
-          { class: 'text-xs text-muted' },
-          `${t(`assetClasses.${row.original.assetClass}`)} · ${row.original.wkn ?? ''} ${row.original.isin}`,
-        ),
+      h('div', { class: 'flex min-w-48 items-center gap-3' }, [
+        h(Avatar, { name: row.original.name, size: 'sm' }),
+        h('div', { class: 'min-w-0' }, [
+          h(
+            NuxtLink,
+            { to: `/investments/${row.original.instrumentId}`, class: 'font-medium link-hover' },
+            () => row.original.name,
+          ),
+          h('div', { class: 'flex flex-wrap items-center gap-x-1 text-xs text-muted' }, [
+            h('span', `${t(`assetClasses.${row.original.assetClass}`)} ·`),
+            row.original.wkn
+              ? h('span', { class: 'inline-flex items-center' }, [
+                  `WKN ${row.original.wkn}`,
+                  h(CopyButton, { value: row.original.wkn, label: 'WKN kopieren', class: '-my-1' }),
+                ])
+              : null,
+            h('span', { class: 'inline-flex items-center' }, [
+              row.original.isin,
+              h(CopyButton, { value: row.original.isin, label: 'ISIN kopieren', class: '-my-1' }),
+            ]),
+          ]),
+        ]),
       ]),
   },
   {
     id: 'price',
     meta: { class: { th: 'text-right' } },
-    header: t('investments.columns.price'),
+    header: header('price'),
     cell: ({ row }) =>
       h('div', { class: 'text-right' }, [
         money(row.original.priceCents),
@@ -87,7 +152,7 @@ const columns = computed<TableColumn<PositionDto>[]>(() => [
   {
     id: 'value',
     meta: { class: { th: 'text-right' } },
-    header: t('investments.columns.value'),
+    header: header('value'),
     cell: ({ row }) =>
       h('div', { class: 'text-right' }, [
         money(row.original.valueCents),
@@ -101,7 +166,7 @@ const columns = computed<TableColumn<PositionDto>[]>(() => [
   {
     id: 'entryValue',
     meta: { class: { th: 'text-right' } },
-    header: t('investments.columns.entryValue'),
+    header: header('entryValue'),
     cell: ({ row }) =>
       h('div', { class: 'text-right' }, [
         money(row.original.entryValueCents),
@@ -111,7 +176,7 @@ const columns = computed<TableColumn<PositionDto>[]>(() => [
   {
     id: 'gain',
     meta: { class: { th: 'text-right' } },
-    header: t('investments.columns.gain'),
+    header: header('gain'),
     cell: ({ row }) =>
       h('div', { class: 'text-right' }, [
         money(row.original.gainCents, true),
@@ -121,14 +186,14 @@ const columns = computed<TableColumn<PositionDto>[]>(() => [
   {
     id: 'allocation',
     meta: { class: { th: 'text-right' } },
-    header: t('investments.columns.allocation'),
+    header: header('allocation'),
     cell: ({ row }) =>
       h('div', { class: 'text-right' }, [percent(row.original.allocationPct, false)]),
   },
   {
     id: 'dividends',
     meta: { class: { th: 'text-right' } },
-    header: t('investments.columns.dividends'),
+    header: header('dividends'),
     cell: ({ row }) =>
       h(
         'div',
@@ -157,7 +222,7 @@ const visibilityItems = computed(() =>
     .filter((column) => column.id !== 'name')
     .map((column) => ({
       type: 'checkbox' as const,
-      label: String(column.header),
+      label: LABELS.value[column.id as SortId],
       checked: columnVisibility.value[column.id!] !== false,
       onUpdateChecked: (checked: boolean) => {
         columnVisibility.value = { ...columnVisibility.value, [column.id!]: checked }
@@ -223,12 +288,30 @@ const soldOpen = ref(false)
     <AssetClassTable v-if="view === 'assetClasses'" />
     <template v-else>
       <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <USelect
-          v-model="assetClass"
-          :items="assetClassItems"
-          class="w-full sm:w-60"
+        <div
+          class="flex flex-wrap gap-1.5"
+          role="radiogroup"
+          :aria-label="t('investments.allAssetClasses')"
           data-testid="asset-class-filter"
-        />
+        >
+          <button
+            v-for="item in assetClassItems"
+            :key="item.value"
+            type="button"
+            role="radio"
+            :aria-checked="assetClass === item.value"
+            class="rounded-full border px-3 py-1 text-xs font-medium transition-colors"
+            :class="
+              assetClass === item.value
+                ? 'border-(--ui-text-highlighted) bg-elevated text-highlighted'
+                : 'border-default text-muted hover:text-default'
+            "
+            :data-testid="`asset-chip-${item.value}`"
+            @click="assetClass = item.value as AssetClass | 'all'"
+          >
+            {{ item.value === 'all' ? t('refine.allAssets') : item.label }}
+          </button>
+        </div>
         <div class="flex gap-2">
           <UButton
             icon="i-lucide-download"
@@ -260,7 +343,7 @@ const soldOpen = ref(false)
       <UTable
         v-else
         v-model:column-visibility="columnVisibility"
-        :data="positions ?? []"
+        :data="sortedPositions"
         :columns="columns"
         class="w-full"
         data-testid="positions-table"

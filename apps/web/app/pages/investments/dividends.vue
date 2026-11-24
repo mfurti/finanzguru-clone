@@ -47,32 +47,7 @@ async function remove(entry: DividendCalendarEntry): Promise<void> {
           />
           <DividendHistory v-else :years="summary.years" />
         </UCard>
-        <UCard>
-          <template #header>
-            <h2 class="font-semibold">{{ t('dividends.bySecurity') }}</h2>
-          </template>
-          <p v-if="summary.bySecurity.length === 0" class="text-sm text-muted">
-            {{ t('dividends.empty') }}
-          </p>
-          <ul v-else class="divide-y divide-default text-sm" data-testid="dividends-by-security">
-            <li
-              v-for="row in summary.bySecurity"
-              :key="row.instrumentId"
-              class="row-hover flex items-center justify-between gap-3 py-2"
-            >
-              <NuxtLink
-                :to="`/investments/${row.instrumentId}`"
-                class="link-hover min-w-0 truncate"
-              >
-                {{ row.name }}
-              </NuxtLink>
-              <span class="flex shrink-0 gap-3">
-                <Percent :value="row.pct" class="text-muted" />
-                <Money :cents="row.cents" />
-              </span>
-            </li>
-          </ul>
-        </UCard>
+        <DividendSplit :summary="summary" />
       </div>
     </template>
     <UCard>

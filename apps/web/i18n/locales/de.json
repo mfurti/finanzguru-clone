@@ -533,7 +533,9 @@
     "note": "Notiz",
     "security": "Wertpapier",
     "empty": "Noch keine Dividenden",
-    "deleteExpected": "Erwartete Zahlung löschen?"
+    "deleteExpected": "Erwartete Zahlung löschen?",
+    "viewList": "Liste",
+    "viewGrid": "Kalender"
   },
   "taxes": {
     "title": "Steuern",

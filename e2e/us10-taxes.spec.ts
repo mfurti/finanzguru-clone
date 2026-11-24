@@ -38,7 +38,7 @@ test.describe('002 US4 Steuern', () => {
     const vorab = page.getByTestId('vorabpauschale')
     await expect(vorab).toContainText('Schätzung')
     await expect(vorab.getByTestId('base-rate-missing')).toBeHidden()
-    await expect(vorab.locator('tbody tr')).toHaveCount(3)
+    await expect(vorab.locator('tbody tr.row-hover')).toHaveCount(3)
     await expect(vorab.getByTestId('vorab-total')).toContainText('€')
     await expect(page.locator('body')).not.toContainText('NaN')
   })

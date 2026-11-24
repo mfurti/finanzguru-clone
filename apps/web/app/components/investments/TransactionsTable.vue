@@ -4,6 +4,7 @@ import type { TableColumn } from '@nuxt/ui'
 import {
   formatDate,
   type InvestmentTransactionRow,
+  type InvestmentTxSort,
   type InvestmentTransactionsResponse,
   TRANSACTION_COLUMNS,
   type TransactionColumn,
@@ -18,6 +19,9 @@ const props = defineProps<{
   filters: {
     accounts?: string
     type?: string
+    types?: string
+    minCents?: number
+    maxCents?: number
     instrumentId?: string
     from?: string
     to?: string
@@ -27,7 +31,7 @@ const { t } = useI18n()
 
 const PAGE_SIZE = 50
 const page = ref(1)
-const sort = ref<'date' | 'amount'>('date')
+const sort = ref<InvestmentTxSort>('date')
 const dir = ref<'asc' | 'desc'>('desc')
 watch(
   () => props.filters,
@@ -47,11 +51,11 @@ const { data } = await useApi<InvestmentTransactionsResponse>('/api/investments/
   default: () => ({ items: [], total: 0, sumCents: 0 }),
 })
 
-function toggleSort(column: 'date' | 'amount'): void {
+function toggleSort(column: InvestmentTxSort): void {
   if (sort.value === column) dir.value = dir.value === 'desc' ? 'asc' : 'desc'
   else {
     sort.value = column
-    dir.value = 'desc'
+    dir.value = column === 'name' || column === 'account' || column === 'type' ? 'asc' : 'desc'
   }
 }
 
@@ -62,7 +66,7 @@ const money = (cents: number, signed = false) => h(Money, { cents, signed })
 const number = (value: string | null, digits = 6) =>
   value === null ? '–' : Number(value).toLocaleString('de-DE', { maximumFractionDigits: digits })
 
-const sortHeader = (column: 'date' | 'amount', label: string) => () =>
+const sortHeader = (column: InvestmentTxSort, label: string) => () =>
   h(UButton, {
     variant: 'ghost',
     color: 'neutral',
@@ -87,12 +91,12 @@ const columns = computed<TableColumn<InvestmentTransactionRow>[]>(() => [
   },
   {
     id: 'type',
-    header: t('investments.tx.type'),
+    header: sortHeader('type', t('investments.tx.type')),
     cell: ({ row }) => t(`transactionTypes.${row.original.type}`),
   },
   {
     id: 'name',
-    header: t('investments.columns.name'),
+    header: sortHeader('name', t('investments.columns.name')),
     cell: ({ row }) =>
       h('div', { class: 'min-w-40' }, [
         row.original.instrumentId
@@ -111,10 +115,14 @@ const columns = computed<TableColumn<InvestmentTransactionRow>[]>(() => [
           : null,
       ]),
   },
-  { id: 'account', header: t('investments.tx.depot'), cell: ({ row }) => row.original.accountName },
+  {
+    id: 'account',
+    header: sortHeader('account', t('investments.tx.depot')),
+    cell: ({ row }) => row.original.accountName,
+  },
   {
     id: 'unitPrice',
-    header: t('investments.tx.unitPrice'),
+    header: sortHeader('unitPrice', t('investments.tx.unitPrice')),
     cell: ({ row }) =>
       h('div', { class: 'text-right' }, [
         row.original.unitPrice === null ? '–' : `${number(row.original.unitPrice, 4)} €`,
@@ -129,7 +137,7 @@ const columns = computed<TableColumn<InvestmentTransactionRow>[]>(() => [
   },
   {
     id: 'tax',
-    header: t('investments.tx.tax'),
+    header: sortHeader('tax', t('investments.tx.tax')),
     cell: ({ row }) =>
       h(
         'div',
@@ -139,7 +147,7 @@ const columns = computed<TableColumn<InvestmentTransactionRow>[]>(() => [
   },
   {
     id: 'fee',
-    header: t('investments.tx.fee'),
+    header: sortHeader('fee', t('investments.tx.fee')),
     cell: ({ row }) =>
       h(
         'div',
@@ -166,6 +174,15 @@ const EXPORT: Record<string, TransactionColumn[]> = {
   fee: ['fee'],
   amount: ['amount'],
 }
+/** Menu labels for columns whose header is a sort button. */
+const LABELS = computed<Record<string, string>>(() => ({
+  type: t('investments.tx.type'),
+  name: t('investments.columns.name'),
+  account: t('investments.tx.depot'),
+  unitPrice: t('investments.tx.unitPrice'),
+  tax: t('investments.tx.tax'),
+  fee: t('investments.tx.fee'),
+}))
 const columnVisibility = ref<Record<string, boolean>>({})
 const visibleIds = computed(() =>
   columns.value.map((c) => c.id!).filter((id) => columnVisibility.value[id] !== false),
@@ -175,7 +192,10 @@ const visibilityItems = computed(() =>
     .filter((column) => column.id !== 'date' && column.id !== 'amount')
     .map((column) => ({
       type: 'checkbox' as const,
-      label: typeof column.header === 'string' ? column.header : column.id!,
+      label:
+        typeof column.header === 'string'
+          ? column.header
+          : (LABELS.value[column.id!] ?? column.id!),
       checked: columnVisibility.value[column.id!] !== false,
       onUpdateChecked: (checked: boolean) => {
         columnVisibility.value = { ...columnVisibility.value, [column.id!]: checked }

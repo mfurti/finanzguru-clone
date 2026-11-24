@@ -280,25 +280,26 @@
   - `trailing` in `/analysis/returns`.
   - `/dividends/split?by=region` sums to the total.
   - Vorabpauschale grouped by broker with subtotals.
-- [ ] T054 [P] [US5] Write the Playwright journey `e2e/us-p5-investments.spec.ts` (quickstart W10).
+- [X] T054 [P] [US5] Write the Playwright journey `e2e/us-p5-investments.spec.ts` (quickstart W10).
 
 ### Implementation for User Story 5
 
-- [ ] T055 [US5] Update `apps/web/app/components/investments/PositionsTable.vue`:
+- [X] T055 [US5] Update `apps/web/app/components/investments/PositionsTable.vue`:
   - `SortHeader` on every column (TanStack sorting).
   - Avatar in the name cell.
   - CopyButtons next to WKN and ISIN.
   - Replace the asset-class `USelect` with shared state `useState('assetClass')`.
-- [ ] T056 [US5] Add the asset legend to `apps/web/app/components/investments/PerformanceChart.vue`: chips "Alle / Aktien / ETF / …" above the chart, bound to `useState('assetClass')`, filtering both chart and table.
-- [ ] T057 [US5] Add sort and filter query parameters to `GET /investments/transactions` in `apps/api/src/modules/investments/`.
+- [X] T056 [US5] Asset legend as chips ("Alle / Aktien / ETF / …") in the positions card, bound to `useState('positions-asset-class')`.
+  - Deviation: the performance chart stays on the whole depot. Its series comes from depot-level snapshots; a per-asset-class series would need per-instrument value history (follow-up).
+- [X] T057 [US5] Add sort and filter query parameters to `GET /investments/transactions` in `apps/api/src/modules/investments/`.
   - Add a filter panel (type, depot, security, period, amount) with an active count to `apps/web/app/pages/investments/transactions.vue`.
   - All columns are sortable.
 - [X] T058 [US5] Add `trailingReturns(asOf)` to `apps/api/src/domain/period-returns.ts` and return it as `trailing` from `GET /analysis/returns` in `apps/api/src/modules/analysis/`.
   - Add a "Jahre | Zeiträume" switch to `apps/web/app/components/analysis/YearlyTable.vue`, with IZF, inflation and real return per period.
-- [ ] T059 [US5] Add `GET /dividends/split?by=security|region|sector` in `apps/api/src/modules/dividends/`, reusing `domain/breakdown.ts` weights.
+- [X] T059 [US5] Add `GET /dividends/split?by=security|region|sector` in `apps/api/src/modules/dividends/`, reusing `domain/breakdown.ts` weights.
   - Add an "Aufteilung" card with tabs Wertpapiere | Regionen | Branchen (donut + list) to `apps/web/app/pages/investments/dividends.vue`.
-- [ ] T060 [US5] Rework `apps/web/app/components/dividends/DividendCalendar.vue` into a month grid: 12 months, payments per month with avatar and amount. Below `sm`, keep the list.
-- [ ] T061 [US5] Group the Vorabpauschale response by depot institution, with subtotals, in `apps/api/src/modules/taxes/`, and render the groups in `apps/web/app/pages/investments/taxes.vue`.
+- [X] T060 [US5] Add a month-grid view to `apps/web/app/components/dividends/DividendCalendar.vue` ("Liste | Kalender" switch, year select): 12 months, payments per month with avatar and amount. The list stays the default (phones, existing tests).
+- [X] T061 [US5] Group the Vorabpauschale response by depot institution, with subtotals, in `apps/api/src/modules/taxes/`, and render the groups in `apps/web/app/pages/investments/taxes.vue`.
 
 ---
 

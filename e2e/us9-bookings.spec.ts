@@ -8,10 +8,16 @@ test.describe('002 US3 Buchungen', () => {
     const table = page.getByTestId('tx-table')
     await expect(table).toBeVisible()
 
+    await page.getByTestId('tx-filter-button').click()
     await page.getByTestId('tx-filter-type').click()
     await page.getByRole('option', { name: 'Kauf', exact: true }).click()
     await page.getByTestId('tx-filter-security').click()
     await page.getByRole('option', { name: 'iShares Core MSCI World UCITS ETF (Acc)' }).click()
+    await page.keyboard.press('Escape')
+    if (await page.getByTestId('tx-filters').isVisible()) {
+      await page.getByTestId('tx-filter-button').click()
+    }
+    await expect(page.getByTestId('tx-filters')).toBeHidden()
     await expect(table.locator('tbody tr').first()).toContainText('Kauf')
 
     const api = await (

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FUND_TYPE_LABELS, type VorabpauschaleResponse } from '@finance/shared'
 
-/** Estimated Vorabpauschale per fund (US4); always labeled as an estimate. */
+/** Estimated Vorabpauschale per fund, grouped per broker with subtotals (US4, 003 FR-017); always an estimate. */
 defineProps<{ result: VorabpauschaleResponse }>()
 const emit = defineEmits<{ editBaseRate: [] }>()
 const { t } = useI18n()
@@ -41,8 +41,22 @@ const { t } = useI18n()
             <th class="py-2 text-right font-medium">{{ t('taxes.taxable') }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-default">
-          <tr v-for="row in result.rows" :key="row.instrumentId" class="row-hover">
+        <tbody
+          v-for="group in result.brokers"
+          :key="group.broker"
+          class="divide-y divide-default"
+          :data-testid="`vorab-broker-${group.broker}`"
+        >
+          <tr class="bg-elevated/50">
+            <th colspan="5" class="px-1 py-1.5 text-left text-xs font-semibold text-highlighted">
+              {{ group.broker }}
+            </th>
+          </tr>
+          <tr
+            v-for="row in group.rows"
+            :key="`${row.accountId}-${row.instrumentId}`"
+            class="row-hover"
+          >
             <td class="py-2 pr-2">
               <NuxtLink :to="`/investments/${row.instrumentId}`" class="link-hover">{{
                 row.name
@@ -52,6 +66,14 @@ const { t } = useI18n()
             <td class="py-2 text-right"><Money :cents="row.basisertragCents" /></td>
             <td class="py-2 text-right"><Money :cents="row.vorabpauschaleCents" /></td>
             <td class="py-2 text-right font-medium"><Money :cents="row.taxableCents" /></td>
+          </tr>
+          <tr>
+            <td colspan="4" class="py-1.5 text-right text-xs text-muted">
+              {{ t('refine.subtotal') }} {{ group.broker }}
+            </td>
+            <td class="py-1.5 text-right text-xs font-semibold" data-testid="vorab-subtotal">
+              <Money :cents="group.subtotalCents" />
+            </td>
           </tr>
         </tbody>
         <tfoot>
