@@ -59,9 +59,15 @@ describe('Enable Banking client (005 T007)', () => {
     const calls: string[] = []
     const result = await client({ status: 200, body: { balances: [] } }, calls).balances('u-1')
     expect(result).toEqual({ balances: [] })
-    expect(calls[0]).toMatch(
-      /^GET https:\/\/api\.example\.test\/accounts\/u%201\/balances Bearer ey/,
+    expect(calls[0]).toMatch(/^GET https:\/\/api\.example\.test\/accounts\/u-1\/balances Bearer ey/)
+  })
+
+  it('refuses ids with characters outside the allowlist pattern', async () => {
+    const calls: string[] = []
+    await expect(client({ status: 200, body: {} }, calls).balances('u 1')).rejects.toBeInstanceOf(
+      ForbiddenToolError,
     )
+    expect(calls).toEqual([])
   })
 
   it('maps a gone session to AuthExpiredError and other failures to UpstreamError', async () => {
