@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 import type { ImportJobDto, RowError, TransactionSource } from '@finance/shared'
-import { and, asc, eq, inArray, isNotNull, or } from 'drizzle-orm'
+import { and, asc, eq, gte, inArray, isNotNull, lte, ne, or } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import {
@@ -15,6 +15,8 @@ import {
   transaction,
 } from '../../database/schema'
 import { categorize, type Rule } from '../../domain/categorize'
+import { addDays } from '../../domain/period'
+import { findBankMatch, MATCH_WINDOW_DAYS } from '../../domain/bank-match'
 import { fingerprintBatch } from '../../domain/dedupe'
 import { D } from '../../domain/money'
 import type { NormalizedAccount, SyncBatch } from '../sources/data-source.interface'
@@ -31,6 +33,11 @@ export interface PipelineOptions {
   sourceId: string
   /** Put every batch account's transactions into this existing account (CSV confirm). */
   targetAccountId?: string
+  /**
+   * Link bookings to existing rows of other sources (same account, amount, date ±1 day)
+   * instead of inserting them (005 R2). Used by the live bank sync.
+   */
+  matchExisting?: boolean
 }
 
 export interface PipelineResult {
@@ -196,6 +203,14 @@ export class ImportPipeline {
           skipped++
           return
         }
+        if (
+          options.matchExisting &&
+          item.sourceRef &&
+          this.linkExisting(tx, accountId, item, options)
+        ) {
+          skipped++
+          return
+        }
         const instrumentId = item.isin ? instrumentIds.get(item.isin) : undefined
         if (item.isin && !instrumentId) throw new Error(`Unknown instrument ${item.isin}`)
         const category = categorize(item, rules, ownIbans)
@@ -277,6 +292,43 @@ export class ImportPipeline {
     }
 
     return { imported, skipped, failed: 0, accountIds: [...new Set(accountIds.byRef.values())] }
+  }
+
+  /**
+   * Links a live booking to the row another source already imported (005 R2): the row keeps its
+   * data and gets this source's reference, so later syncs skip it. Returns true when linked.
+   */
+  private linkExisting(
+    tx: Tx,
+    accountId: string,
+    item: SyncBatch['transactions'][number],
+    options: PipelineOptions,
+  ): boolean {
+    const candidates = tx
+      .select({
+        id: transaction.id,
+        bookingDate: transaction.bookingDate,
+        amountCents: transaction.amountCents,
+        counterparty: transaction.counterparty,
+      })
+      .from(transaction)
+      .where(
+        and(
+          eq(transaction.accountId, accountId),
+          eq(transaction.amountCents, item.amountCents),
+          gte(transaction.bookingDate, addDays(item.bookingDate, -MATCH_WINDOW_DAYS)),
+          lte(transaction.bookingDate, addDays(item.bookingDate, MATCH_WINDOW_DAYS)),
+          ne(transaction.source, options.source),
+        ),
+      )
+      .all()
+    const id = findBankMatch(item, candidates)
+    if (!id) return false
+    tx.update(transaction)
+      .set({ source: options.source, sourceRef: item.sourceRef })
+      .where(eq(transaction.id, id))
+      .run()
+    return true
   }
 
   private resolveAccounts(
