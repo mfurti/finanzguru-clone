@@ -8,6 +8,19 @@ const { data: sources, refresh } = await useApi<DataSourceDto[]>('/api/sources',
   default: () => [],
 })
 
+/** Scalable has its own card (004 US1); the list shows the other sources. */
+const scalable = computed(() => sources.value?.find((s) => s.kind === 'scalable_mcp') ?? null)
+const others = computed(() => (sources.value ?? []).filter((s) => s.kind !== 'scalable_mcp'))
+const route = useRoute()
+const toast = useToast()
+onMounted(() => {
+  if (route.query.connected === 'scalable') {
+    toast.add({ title: t('scalable.connected'), color: 'success' })
+  } else if (route.query.error === 'scalable') {
+    toast.add({ title: t('common.error'), color: 'error' })
+  }
+})
+
 const statusColor = (status: DataSourceDto['status']) =>
   status === 'active'
     ? 'success'
@@ -48,13 +61,15 @@ const statusColor = (status: DataSourceDto['status']) =>
       <CsvUpload @imported="refresh()" />
     </UCard>
 
+    <ScalableCard :source="scalable" @changed="refresh()" />
+
     <UCard>
       <template #header>
         <h2 class="font-semibold">{{ t('sources.title') }}</h2>
       </template>
       <ul class="divide-y divide-default" data-testid="sources-list">
         <li
-          v-for="source in sources"
+          v-for="source in others"
           :key="source.id"
           class="row-hover flex items-center justify-between gap-3 py-2 text-sm"
         >

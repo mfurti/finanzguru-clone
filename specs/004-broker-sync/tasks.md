@@ -76,7 +76,7 @@
   - Write e2e tests with a mocked MCP server in `apps/api/test/e2e/scalable-sync.e2e-spec.ts`. (former 001 T056)
 - [X] T009 [P] [US1] Add the optional daily sync in `apps/api/src/modules/sources/sync.scheduler.ts`. It is off unless `SCALABLE_DAILY_SYNC=true` (add it to `apps/api/src/config/env.schema.ts`), and missed runs are not caught up. Unit test in `apps/api/test/unit/sync-scheduler.spec.ts`. (former 001 T057)
 - [X] T010 [US1] Make `apps/api/src/modules/accounts/accounts-overview.service.ts` `sync()` delegate to `SyncService` for active sync-capable sources (202), keeping 409 for CSV accounts. Extend `apps/api/test/e2e/accounts-overview.e2e-spec.ts`.
-- [ ] T011 [US1] Extend `apps/web/app/pages/settings/sources.vue` with the Scalable card:
+- [X] T011 [US1] Extend `apps/web/app/pages/settings/sources.vue` with the Scalable card:
   - "Scalable Capital verbinden" redirects to the authorization URL;
   - status badge (Verbunden / Neu verbinden / Fehler);
   - last sync time and last run counts;
