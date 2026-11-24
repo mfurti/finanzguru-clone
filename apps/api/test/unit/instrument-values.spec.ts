@@ -61,4 +61,26 @@ describe('instrument values (004 US2)', () => {
     expect(etf.find((row) => row.date === '2026-01-08')!.valueCents).toBe(20355)
     expect(holdings.some((row) => row.date === '2026-01-01')).toBe(false)
   })
+
+  it('records the daily flow per instrument, also on the sell-out day (005 T006)', () => {
+    const { snapshots, holdings } = computeInstrumentValues(
+      'depot',
+      [...txs, tx('stock', 'sell', '2026-01-08', '7', '34')],
+      prices,
+      '2026-01-01',
+      '2026-01-09',
+    )
+    const row = (id: string, date: string) =>
+      holdings.find((h) => h.instrumentId === id && h.date === date)
+    expect(row('etf', '2026-01-02')!.flowCents).toBe(30000)
+    expect(row('etf', '2026-01-05')!.flowCents).toBe(0)
+    expect(row('etf', '2026-01-07')!.flowCents).toBe(-10200)
+    // Sold out: a value-0 row keeps the sale's flow; the day after there is no row.
+    expect(row('stock', '2026-01-08')).toMatchObject({ valueCents: 0, flowCents: -23800 })
+    expect(row('stock', '2026-01-09')).toBeUndefined()
+    for (const snapshot of snapshots) {
+      const day = holdings.filter((h) => h.date === snapshot.date)
+      expect(day.reduce((sum, h) => sum + h.flowCents, 0)).toBe(snapshot.externalFlowCents)
+    }
+  })
 })

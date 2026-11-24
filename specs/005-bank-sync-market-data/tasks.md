@@ -35,7 +35,7 @@
   - update the kind/status/source CHECK lists for the new enum values.
   - Test in `apps/api/test/unit/schema-005.spec.ts` (tables, checks, cascade).
   - Deviation: the CHECK changes make drizzle rebuild `data_source` and `transactions`. With foreign keys on, the old-table drop fails or cascades into `sync_run`/`transaction_tag`, so `runMigrations` in `apps/api/src/database/migrate.ts` now switches foreign keys off around the migrator and fails on a non-empty `foreign_key_check`. The test upgrades a 0007 database with child rows.
-- [ ] T006 [P] Write `flow_cents` (net buy + / sell − in cents per instrument and day) in `apps/api/src/domain/instrument-values.ts` and the `perHolding` callback of `domain/snapshots.ts`; `RecomputeService` refills it. Extend `apps/api/test/unit/instrument-values.spec.ts`: buy day +, sell day −, other days 0.
+- [X] T006 [P] Write `flow_cents` (net buy + / sell − in cents per instrument and day) in `apps/api/src/domain/instrument-values.ts` and the `perHolding` callback of `domain/snapshots.ts`; `RecomputeService` refills it. Extend `apps/api/test/unit/instrument-values.spec.ts`: buy day +, sell day −, other days 0. On the sell-out day a value-0 row keeps the sale's flow. `InstrumentBackfillService` also rebuilds depots whose rows carry no flows (rows from before 005); test in `apps/api/test/e2e/instrument-backfill.e2e-spec.ts`.
 
 **Checkpoint**: schema and enums ready; stories can start in parallel.
 

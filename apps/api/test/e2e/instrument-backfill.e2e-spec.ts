@@ -1,5 +1,5 @@
 import type { NestFastifyApplication } from '@nestjs/platform-fastify'
-import { count, eq, sum } from 'drizzle-orm'
+import { count, eq, ne, sum } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { DB } from '../../src/database/database.constants'
 import type { AppDatabase } from '../../src/database/drizzle.module'
@@ -44,6 +44,19 @@ describe('per-instrument values in the recompute (004 T014)', () => {
     const backfill = app.get(InstrumentBackfillService)
     expect(backfill.backfill()).toBeGreaterThan(0)
     expect(rows()).toBeGreaterThan(0)
+    expect(backfill.backfill()).toBe(0)
+  })
+
+  it('rebuilds rows from before 005 that carry no daily flows (005 T006)', () => {
+    db.update(instrumentValueSnapshot).set({ flowCents: 0 }).run()
+    const backfill = app.get(InstrumentBackfillService)
+    expect(backfill.backfill()).toBeGreaterThan(0)
+    const withFlow = db
+      .select({ n: count() })
+      .from(instrumentValueSnapshot)
+      .where(ne(instrumentValueSnapshot.flowCents, 0))
+      .get()!.n
+    expect(withFlow).toBeGreaterThan(0)
     expect(backfill.backfill()).toBe(0)
   })
 })

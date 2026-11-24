@@ -91,9 +91,7 @@
       "indexes": {
         "account_iban_unique": {
           "name": "account_iban_unique",
-          "columns": [
-            "iban"
-          ],
+          "columns": ["iban"],
           "isUnique": true
         }
       },
@@ -102,12 +100,8 @@
           "name": "account_institution_id_institution_id_fk",
           "tableFrom": "account",
           "tableTo": "institution",
-          "columnsFrom": [
-            "institution_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["institution_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -115,12 +109,8 @@
           "name": "account_parent_account_id_account_id_fk",
           "tableFrom": "account",
           "tableTo": "account",
-          "columnsFrom": [
-            "parent_account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_account_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -128,12 +118,8 @@
           "name": "account_source_id_data_source_id_fk",
           "tableFrom": "account",
           "tableTo": "data_source",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -187,9 +173,7 @@
       "indexes": {
         "budget_category_id_unique": {
           "name": "budget_category_id_unique",
-          "columns": [
-            "category_id"
-          ],
+          "columns": ["category_id"],
           "isUnique": true
         }
       },
@@ -198,12 +182,8 @@
           "name": "budget_category_id_category_id_fk",
           "tableFrom": "budget",
           "tableTo": "category",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -281,9 +261,7 @@
       "indexes": {
         "categorization_rule_priority_unique": {
           "name": "categorization_rule_priority_unique",
-          "columns": [
-            "priority"
-          ],
+          "columns": ["priority"],
           "isUnique": true
         }
       },
@@ -292,12 +270,8 @@
           "name": "categorization_rule_category_id_category_id_fk",
           "tableFrom": "categorization_rule",
           "tableTo": "category",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -393,10 +367,7 @@
       "indexes": {
         "category_parent_name_unique": {
           "name": "category_parent_name_unique",
-          "columns": [
-            "parent_key",
-            "name"
-          ],
+          "columns": ["parent_key", "name"],
           "isUnique": true
         }
       },
@@ -405,12 +376,8 @@
           "name": "category_parent_id_category_id_fk",
           "tableFrom": "category",
           "tableTo": "category",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -502,9 +469,7 @@
       "indexes": {
         "csv_mapping_header_signature_unique": {
           "name": "csv_mapping_header_signature_unique",
-          "columns": [
-            "header_signature"
-          ],
+          "columns": ["header_signature"],
           "isUnique": true
         }
       },
@@ -513,12 +478,8 @@
           "name": "csv_mapping_default_account_id_account_id_fk",
           "tableFrom": "csv_mapping",
           "tableTo": "account",
-          "columnsFrom": [
-            "default_account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["default_account_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -563,10 +524,7 @@
       "indexes": {
         "custom_group_name_unique": {
           "name": "custom_group_name_unique",
-          "columns": [
-            "grouping_id",
-            "name"
-          ],
+          "columns": ["grouping_id", "name"],
           "isUnique": true
         }
       },
@@ -575,12 +533,8 @@
           "name": "custom_group_grouping_id_custom_grouping_id_fk",
           "tableFrom": "custom_group",
           "tableTo": "custom_grouping",
-          "columnsFrom": [
-            "grouping_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["grouping_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -625,12 +579,8 @@
           "name": "custom_group_member_grouping_id_custom_grouping_id_fk",
           "tableFrom": "custom_group_member",
           "tableTo": "custom_grouping",
-          "columnsFrom": [
-            "grouping_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["grouping_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -638,12 +588,8 @@
           "name": "custom_group_member_group_id_custom_group_id_fk",
           "tableFrom": "custom_group_member",
           "tableTo": "custom_group",
-          "columnsFrom": [
-            "group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["group_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -651,22 +597,15 @@
           "name": "custom_group_member_instrument_id_instrument_id_fk",
           "tableFrom": "custom_group_member",
           "tableTo": "instrument",
-          "columnsFrom": [
-            "instrument_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["instrument_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "custom_group_member_grouping_id_instrument_id_pk": {
-          "columns": [
-            "grouping_id",
-            "instrument_id"
-          ],
+          "columns": ["grouping_id", "instrument_id"],
           "name": "custom_group_member_grouping_id_instrument_id_pk"
         }
       },
@@ -694,9 +633,7 @@
       "indexes": {
         "custom_grouping_name_unique": {
           "name": "custom_grouping_name_unique",
-          "columns": [
-            "name"
-          ],
+          "columns": ["name"],
           "isUnique": true
         }
       },
@@ -865,10 +802,7 @@
       "indexes": {
         "deleted_import_marker_unique": {
           "name": "deleted_import_marker_unique",
-          "columns": [
-            "source",
-            "fingerprint"
-          ],
+          "columns": ["source", "fingerprint"],
           "isUnique": true
         }
       },
@@ -912,10 +846,7 @@
       "indexes": {
         "exemption_order_institution_year": {
           "name": "exemption_order_institution_year",
-          "columns": [
-            "institution_id",
-            "year"
-          ],
+          "columns": ["institution_id", "year"],
           "isUnique": true
         }
       },
@@ -924,12 +855,8 @@
           "name": "exemption_order_institution_id_institution_id_fk",
           "tableFrom": "exemption_order",
           "tableTo": "institution",
-          "columnsFrom": [
-            "institution_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["institution_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -992,9 +919,7 @@
       "indexes": {
         "expected_dividend_pay_date_idx": {
           "name": "expected_dividend_pay_date_idx",
-          "columns": [
-            "pay_date"
-          ],
+          "columns": ["pay_date"],
           "isUnique": false
         }
       },
@@ -1003,12 +928,8 @@
           "name": "expected_dividend_instrument_id_instrument_id_fk",
           "tableFrom": "expected_dividend",
           "tableTo": "instrument",
-          "columnsFrom": [
-            "instrument_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["instrument_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1144,12 +1065,8 @@
           "name": "import_job_source_id_data_source_id_fk",
           "tableFrom": "import_job",
           "tableTo": "data_source",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1157,12 +1074,8 @@
           "name": "import_job_account_id_account_id_fk",
           "tableFrom": "import_job",
           "tableTo": "account",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["account_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1248,9 +1161,7 @@
       "indexes": {
         "institution_name_unique": {
           "name": "institution_name_unique",
-          "columns": [
-            "name"
-          ],
+          "columns": ["name"],
           "isUnique": true
         }
       },
@@ -1329,9 +1240,7 @@
       "indexes": {
         "instrument_isin_unique": {
           "name": "instrument_isin_unique",
-          "columns": [
-            "isin"
-          ],
+          "columns": ["isin"],
           "isUnique": true
         }
       },
@@ -1403,10 +1312,7 @@
       "indexes": {
         "instrument_value_snapshot_instrument_date_idx": {
           "name": "instrument_value_snapshot_instrument_date_idx",
-          "columns": [
-            "instrument_id",
-            "date"
-          ],
+          "columns": ["instrument_id", "date"],
           "isUnique": false
         }
       },
@@ -1415,12 +1321,8 @@
           "name": "instrument_value_snapshot_account_id_account_id_fk",
           "tableFrom": "instrument_value_snapshot",
           "tableTo": "account",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["account_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1428,23 +1330,15 @@
           "name": "instrument_value_snapshot_instrument_id_instrument_id_fk",
           "tableFrom": "instrument_value_snapshot",
           "tableTo": "instrument",
-          "columnsFrom": [
-            "instrument_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["instrument_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "instrument_value_snapshot_account_id_instrument_id_date_pk": {
-          "columns": [
-            "account_id",
-            "instrument_id",
-            "date"
-          ],
+          "columns": ["account_id", "instrument_id", "date"],
           "name": "instrument_value_snapshot_account_id_instrument_id_date_pk"
         }
       },
@@ -1489,23 +1383,15 @@
           "name": "instrument_weight_instrument_id_instrument_id_fk",
           "tableFrom": "instrument_weight",
           "tableTo": "instrument",
-          "columnsFrom": [
-            "instrument_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["instrument_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "instrument_weight_instrument_id_dimension_key_pk": {
-          "columns": [
-            "instrument_id",
-            "dimension",
-            "key"
-          ],
+          "columns": ["instrument_id", "dimension", "key"],
           "name": "instrument_weight_instrument_id_dimension_key_pk"
         }
       },
@@ -1609,12 +1495,8 @@
           "name": "insurance_contract_linked_category_id_category_id_fk",
           "tableFrom": "insurance_contract",
           "tableTo": "category",
-          "columnsFrom": [
-            "linked_category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["linked_category_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1702,22 +1584,15 @@
           "name": "net_worth_snapshot_account_id_account_id_fk",
           "tableFrom": "net_worth_snapshot",
           "tableTo": "account",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["account_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "net_worth_snapshot_account_id_date_pk": {
-          "columns": [
-            "account_id",
-            "date"
-          ],
+          "columns": ["account_id", "date"],
           "name": "net_worth_snapshot_account_id_date_pk"
         }
       },
@@ -1842,10 +1717,7 @@
       "indexes": {
         "position_lot_account_instrument_idx": {
           "name": "position_lot_account_instrument_idx",
-          "columns": [
-            "account_id",
-            "instrument_id"
-          ],
+          "columns": ["account_id", "instrument_id"],
           "isUnique": false
         }
       },
@@ -1854,12 +1726,8 @@
           "name": "position_lot_account_id_account_id_fk",
           "tableFrom": "position_lot",
           "tableTo": "account",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["account_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1867,12 +1735,8 @@
           "name": "position_lot_instrument_id_instrument_id_fk",
           "tableFrom": "position_lot",
           "tableTo": "instrument",
-          "columnsFrom": [
-            "instrument_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["instrument_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1924,22 +1788,15 @@
           "name": "price_instrument_id_instrument_id_fk",
           "tableFrom": "price",
           "tableTo": "instrument",
-          "columnsFrom": [
-            "instrument_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["instrument_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "price_instrument_id_date_pk": {
-          "columns": [
-            "instrument_id",
-            "date"
-          ],
+          "columns": ["instrument_id", "date"],
           "name": "price_instrument_id_date_pk"
         }
       },
@@ -2021,10 +1878,7 @@
       "indexes": {
         "sync_run_source_started_idx": {
           "name": "sync_run_source_started_idx",
-          "columns": [
-            "source_id",
-            "started_at"
-          ],
+          "columns": ["source_id", "started_at"],
           "isUnique": false
         }
       },
@@ -2033,12 +1887,8 @@
           "name": "sync_run_source_id_data_source_id_fk",
           "tableFrom": "sync_run",
           "tableTo": "data_source",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2097,9 +1947,7 @@
       "indexes": {
         "tag_name_lower_unique": {
           "name": "tag_name_lower_unique",
-          "columns": [
-            "lower(\"name\")"
-          ],
+          "columns": ["lower(\"name\")"],
           "isUnique": true
         }
       },
@@ -2319,40 +2167,27 @@
       "indexes": {
         "transactions_fingerprint_unique": {
           "name": "transactions_fingerprint_unique",
-          "columns": [
-            "fingerprint"
-          ],
+          "columns": ["fingerprint"],
           "isUnique": true
         },
         "transactions_account_booking_idx": {
           "name": "transactions_account_booking_idx",
-          "columns": [
-            "account_id",
-            "booking_date"
-          ],
+          "columns": ["account_id", "booking_date"],
           "isUnique": false
         },
         "transactions_booking_id_idx": {
           "name": "transactions_booking_id_idx",
-          "columns": [
-            "booking_date",
-            "id"
-          ],
+          "columns": ["booking_date", "id"],
           "isUnique": false
         },
         "transactions_category_idx": {
           "name": "transactions_category_idx",
-          "columns": [
-            "category_id"
-          ],
+          "columns": ["category_id"],
           "isUnique": false
         },
         "transactions_source_ref_unique": {
           "name": "transactions_source_ref_unique",
-          "columns": [
-            "source",
-            "source_ref"
-          ],
+          "columns": ["source", "source_ref"],
           "isUnique": true
         }
       },
@@ -2361,12 +2196,8 @@
           "name": "transactions_account_id_account_id_fk",
           "tableFrom": "transactions",
           "tableTo": "account",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["account_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2374,12 +2205,8 @@
           "name": "transactions_instrument_id_instrument_id_fk",
           "tableFrom": "transactions",
           "tableTo": "instrument",
-          "columnsFrom": [
-            "instrument_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["instrument_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -2387,12 +2214,8 @@
           "name": "transactions_category_id_category_id_fk",
           "tableFrom": "transactions",
           "tableTo": "category",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -2447,9 +2270,7 @@
       "indexes": {
         "transaction_tag_tag_idx": {
           "name": "transaction_tag_tag_idx",
-          "columns": [
-            "tag_id"
-          ],
+          "columns": ["tag_id"],
           "isUnique": false
         }
       },
@@ -2458,12 +2279,8 @@
           "name": "transaction_tag_transaction_id_transactions_id_fk",
           "tableFrom": "transaction_tag",
           "tableTo": "transactions",
-          "columnsFrom": [
-            "transaction_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["transaction_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2471,22 +2288,15 @@
           "name": "transaction_tag_tag_id_tag_id_fk",
           "tableFrom": "transaction_tag",
           "tableTo": "tag",
-          "columnsFrom": [
-            "tag_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tag_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "transaction_tag_transaction_id_tag_id_pk": {
-          "columns": [
-            "transaction_id",
-            "tag_id"
-          ],
+          "columns": ["transaction_id", "tag_id"],
           "name": "transaction_tag_transaction_id_tag_id_pk"
         }
       },
@@ -2546,9 +2356,7 @@
       "indexes": {
         "watchlist_name_unique": {
           "name": "watchlist_name_unique",
-          "columns": [
-            "name"
-          ],
+          "columns": ["name"],
           "isUnique": true
         }
       },
@@ -2602,12 +2410,8 @@
           "name": "watchlist_entry_watchlist_id_watchlist_id_fk",
           "tableFrom": "watchlist_entry",
           "tableTo": "watchlist",
-          "columnsFrom": [
-            "watchlist_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["watchlist_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2615,22 +2419,15 @@
           "name": "watchlist_entry_instrument_id_instrument_id_fk",
           "tableFrom": "watchlist_entry",
           "tableTo": "instrument",
-          "columnsFrom": [
-            "instrument_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["instrument_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "watchlist_entry_watchlist_id_instrument_id_pk": {
-          "columns": [
-            "watchlist_id",
-            "instrument_id"
-          ],
+          "columns": ["watchlist_id", "instrument_id"],
           "name": "watchlist_entry_watchlist_id_instrument_id_pk"
         }
       },

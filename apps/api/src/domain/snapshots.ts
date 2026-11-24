@@ -66,6 +66,8 @@ export interface HoldingValue {
   date: string
   valueCents: number
   investedCents: number
+  /** Net buys (+) minus sells (−) of this instrument on this day (005 R5). */
+  flowCents: number
 }
 
 export function computeDepotSnapshots(
@@ -97,9 +99,14 @@ export function computeDepotSnapshots(
   const result: DailySnapshot[] = []
   for (const day of eachDay(from, to)) {
     let flow = 0
+    const dayFlows = new Map<string, number>()
     while (index < sorted.length && sorted[index]!.bookingDate === day) {
       const tx = sorted[index++]!
-      flow += depotFlowCents(tx)
+      const txFlow = depotFlowCents(tx)
+      flow += txFlow
+      if (tx.instrumentId && txFlow !== 0) {
+        dayFlows.set(tx.instrumentId, (dayFlows.get(tx.instrumentId) ?? 0) + txFlow)
+      }
       apply(tx)
     }
 
@@ -109,7 +116,21 @@ export function computeDepotSnapshots(
     let stale = false
     for (const [instrumentId, state] of states) {
       const quantity = quantityOf(state)
-      if (quantity.lte(0)) continue
+      const holdingFlow = dayFlows.get(instrumentId) ?? 0
+      if (quantity.lte(0)) {
+        // Sold out today: keep the sale's flow so per-class returns see it (005 R5).
+        if (holdingFlow !== 0) {
+          perHolding?.({
+            accountId,
+            instrumentId,
+            date: day,
+            valueCents: 0,
+            investedCents: 0,
+            flowCents: holdingFlow,
+          })
+        }
+        continue
+      }
       const holdingInvested = investedCentsOf(state)
       invested += holdingInvested
       const point = cursors.get(instrumentId)!.at(day)
@@ -124,6 +145,7 @@ export function computeDepotSnapshots(
         date: day,
         valueCents: holdingValue,
         investedCents: holdingInvested,
+        flowCents: holdingFlow,
       })
     }
     result.push({
