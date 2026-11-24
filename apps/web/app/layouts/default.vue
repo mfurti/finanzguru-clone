@@ -81,7 +81,22 @@ const tabs = computed<NavigationMenuItem[]>(() => [
         class="mx-auto max-w-[1380px] overflow-x-auto px-2 sm:px-4 [scrollbar-width:none]"
         :aria-label="t('nav.label')"
       >
-        <UNavigationMenu :items="tabs" orientation="horizontal" class="min-w-max" />
+        <!-- Active tab underlined like the reference (FR-002), no pill background. -->
+        <UNavigationMenu
+          :items="tabs"
+          orientation="horizontal"
+          variant="link"
+          color="neutral"
+          highlight
+          highlight-color="neutral"
+          class="min-w-max"
+          :ui="{
+            link: 'px-3 py-3 font-medium',
+            linkLeadingIcon: 'size-4',
+            indicator: 'hidden',
+          }"
+          data-testid="main-tabs"
+        />
       </nav>
     </header>
 

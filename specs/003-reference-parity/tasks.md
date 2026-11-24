@@ -65,7 +65,7 @@
   - `Sparkline.vue`: SVG polyline; flat line if fewer than 2 points.
   - `SortHeader.vue`: header button with an asc/desc arrow and `aria-sort`.
   - `CategoryIcon.vue`: colored tile with a Lucide icon.
-- [ ] T010 Switch the main tabs to underline style:
+- [X] T010 Switch the main tabs to underline style:
   - Change `apps/web/app/layouts/default.vue` (or the main nav component it uses): active tab gets a 2 px bottom border and no background (FR-002).
   - Adjust `e2e/navigation*.spec.ts` selectors if needed.
 
