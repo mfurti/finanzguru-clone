@@ -5,12 +5,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import type { BudgetDto, BudgetInput } from '@finance/shared'
+import type { BudgetDto, BudgetInput, BudgetsOverview } from '@finance/shared'
 import { and, eq, gte, inArray, lt, lte, or } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { account, budget, category, transaction } from '../../database/schema'
-import { periodBounds, todayIso } from '../../domain/period'
+import { budgetSeries, figures } from '../../domain/budget-history'
+import { lastPeriods, periodBounds, todayIso } from '../../domain/period'
 
 @Injectable()
 export class BudgetsService {
@@ -33,6 +34,65 @@ export class BudgetsService {
       const spentCents = this.spent(row.categoryId, month.from, month.to)
       return { ...row, spentCents, remainingCents: row.monthlyLimitCents - spentCents }
     })
+  }
+
+  /**
+   * Budgets page (003 US4, FR-022): table rows and Gesamtbudget for the month
+   * of `period` (YYYY-MM), and 12 months of budget vs. spending.
+   */
+  overview(period?: string, today = todayIso()): BudgetsOverview {
+    const anchor = period ? `${period}-01` : today
+    const month = periodBounds('month', anchor)
+    const rows = this.db
+      .select({
+        id: budget.id,
+        categoryId: budget.categoryId,
+        limitCents: budget.monthlyLimitCents,
+        name: category.name,
+        icon: category.icon,
+        color: category.color,
+        createdAt: budget.createdAt,
+      })
+      .from(budget)
+      .innerJoin(category, eq(category.id, budget.categoryId))
+      .orderBy(category.name)
+      .all()
+    const months = lastPeriods('month', anchor, 12)
+    const cache = new Map<string, number>()
+    const spentIn = (budgetId: string, monthKey: string) => {
+      const key = `${budgetId}|${monthKey}`
+      if (!cache.has(key)) {
+        const row = rows.find((item) => item.id === budgetId)!
+        const bounds = months.find((m) => m.from.startsWith(monthKey)) ?? month
+        cache.set(key, this.spent(row.categoryId, bounds.from, bounds.to))
+      }
+      return cache.get(key)!
+    }
+    const monthKey = month.from.slice(0, 7)
+    const tableRows = rows.map((row) => ({
+      id: row.id,
+      categoryId: row.categoryId,
+      name: row.name,
+      icon: row.icon,
+      color: row.color,
+      ...figures(row.limitCents, spentIn(row.id, monthKey)),
+    }))
+    const totalLimit = tableRows.reduce((sum, row) => sum + row.limitCents, 0)
+    const totalSpent = tableRows.reduce((sum, row) => sum + row.spentCents, 0)
+    return {
+      period: monthKey,
+      rows: tableRows,
+      total: figures(totalLimit, totalSpent),
+      series: budgetSeries(
+        rows.map((row) => ({
+          id: row.id,
+          limitCents: row.limitCents,
+          createdMonth: row.createdAt.slice(0, 7),
+        })),
+        months.map((m) => m.from.slice(0, 7)),
+        spentIn,
+      ),
+    }
   }
 
   create(input: BudgetInput): BudgetDto {

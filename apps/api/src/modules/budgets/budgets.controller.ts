@@ -8,13 +8,23 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { type BudgetDto, budgetInput } from '@finance/shared'
+import { type BudgetDto, budgetInput, type BudgetsOverview } from '@finance/shared'
+import { z } from 'zod'
 import { createZodDto } from 'nestjs-zod'
 import { BudgetsService } from './budgets.service'
 
 class BudgetDtoIn extends createZodDto(budgetInput) {}
+class OverviewQueryDto extends createZodDto(
+  z.object({
+    period: z
+      .string()
+      .regex(/^\d{4}-(0[1-9]|1[0-2])$/)
+      .optional(),
+  }),
+) {}
 class BudgetPatchDto extends createZodDto(budgetInput.partial()) {}
 
 @ApiTags('budgets')
@@ -25,6 +35,12 @@ export class BudgetsController {
   @Get()
   list(): BudgetDto[] {
     return this.budgets.list()
+  }
+
+  /** Budgets page: table and 12-month chart (003 US4). */
+  @Get('overview')
+  overview(@Query() query: OverviewQueryDto): BudgetsOverview {
+    return this.budgets.overview(query.period)
   }
 
   @Post()

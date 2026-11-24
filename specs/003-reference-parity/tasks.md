@@ -240,7 +240,7 @@
 
 ### Tests for User Story 4
 
-- [ ] T046 [P] [US4] Write the domain unit test `apps/api/test/unit/budget-history.spec.ts`:
+- [X] T046 [P] [US4] Write the domain unit test `apps/api/test/unit/budget-history.spec.ts`:
   - A budget created mid-year gives `null` before its month.
   - Spending includes sub categories.
   - The total row sums correctly.
@@ -248,7 +248,7 @@
 
 ### Implementation for User Story 4
 
-- [ ] T048 [US4] Add `apps/api/src/domain/budget-history.ts` and `GET /budgets/overview?period=` in `apps/api/src/modules/budgets/`, following contracts/http-api.md.
+- [X] T048 [US4] Add `apps/api/src/domain/budget-history.ts` and `GET /budgets/overview?period=` in `apps/api/src/modules/budgets/`, following contracts/http-api.md.
 - [ ] T049 [P] [US4] Create `apps/web/app/components/budget/BudgetChart.vue`:
   - Grouped bars per month (budget vs. spent), with the hover and dim behaviour of `CashflowBars`.
   - Toggle "Gesamtbudget": total vs. a per-budget select.
