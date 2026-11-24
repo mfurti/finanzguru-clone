@@ -5,12 +5,12 @@
       "isin": "IE00B3RBWM25",
       "name": "Vanguard FTSE All-World UCITS ETF (Dist)",
       "fifoPrice": 110.664344,
-      "valuation": 609.8,
+      "valuation": 610.47,
       "valuationCurrency": "EUR",
       "currentQuote": {
         "currency": "EUR",
-        "midPrice": 124.3275,
-        "timestamp": "2026-10-18T16:05:35.612000Z"
+        "midPrice": 124.465,
+        "timestamp": "2026-10-18T16:11:43.726000Z"
       },
       "savingsPlan": {
         "amount": 18.5,

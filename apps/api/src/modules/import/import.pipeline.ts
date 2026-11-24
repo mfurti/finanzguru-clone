@@ -10,11 +10,13 @@ import {
   importJob,
   institution,
   instrument,
+  positionLot,
   price,
   transaction,
 } from '../../database/schema'
 import { categorize, type Rule } from '../../domain/categorize'
 import { fingerprintBatch } from '../../domain/dedupe'
+import { D } from '../../domain/money'
 import type { NormalizedAccount, SyncBatch } from '../sources/data-source.interface'
 import { RecomputeService } from './recompute.service'
 
@@ -245,9 +247,34 @@ export class ImportPipeline {
       }
     }
 
-    const touched = [...firstDate.keys()]
+    // Accounts whose balance came with the batch (sync) are rebuilt too, even without new bookings.
+    const balanced = batch.accounts
+      .filter((item) => item.balanceCents !== undefined)
+      .map((item) => accountIds.byRef.get(item.externalRef))
+      .filter((id): id is string => !!id)
+    const touched = [...new Set([...firstDate.keys(), ...balanced])]
     const earliest = [...firstDate.values()].sort()[0]
     if (touched.length > 0) this.recompute.recompute(tx, touched, earliest)
+
+    // Positions the source reports vs. positions from the imported bookings (004 T007).
+    for (const item of batch.positionsSnapshot ?? []) {
+      const accountId = accountIds.byRef.get(item.accountExternalRef)
+      const instrumentId = instrumentIds.get(item.isin)
+      if (!accountId || !instrumentId) continue
+      const lots = tx
+        .select({ quantity: positionLot.quantityOpen })
+        .from(positionLot)
+        .where(
+          and(eq(positionLot.accountId, accountId), eq(positionLot.instrumentId, instrumentId)),
+        )
+        .all()
+      const held = lots.reduce((sum, lot) => sum.plus(lot.quantity), new D(0))
+      if (held.minus(item.quantity).abs().gt('0.000001')) {
+        batch.rowErrors.push({
+          reason: `positions_mismatch:${item.isin}: Quelle ${item.quantity}, Buchungen ${held.toString()}`,
+        })
+      }
+    }
 
     return { imported, skipped, failed: 0, accountIds: [...new Set(accountIds.byRef.values())] }
   }

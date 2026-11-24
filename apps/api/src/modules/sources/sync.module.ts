@@ -1,12 +1,7 @@
 import { Module } from '@nestjs/common'
 import { CommonModule } from '../../common/common.module'
 import { ImportModule } from '../import/import.module'
-import { httpTransport } from './scalable-mcp/client'
-import { ScalableCredentialStore } from './scalable-mcp/credential-store'
-import {
-  SCALABLE_TRANSPORT,
-  ScalableConnectionService,
-} from './scalable-mcp/scalable-connection.service'
+import { ScalableConnectionService } from './scalable-mcp/scalable-connection.service'
 import { SourcesModule } from './sources.module'
 import { SyncController } from './sync.controller'
 import { SyncScheduler } from './sync.scheduler'
@@ -19,13 +14,7 @@ import { SyncService } from './sync.service'
 @Module({
   imports: [SourcesModule, ImportModule, CommonModule],
   controllers: [SyncController],
-  providers: [
-    SyncService,
-    SyncScheduler,
-    ScalableCredentialStore,
-    ScalableConnectionService,
-    { provide: SCALABLE_TRANSPORT, useValue: httpTransport },
-  ],
+  providers: [SyncService, SyncScheduler, ScalableConnectionService],
   exports: [SyncService],
 })
 export class SyncModule {}

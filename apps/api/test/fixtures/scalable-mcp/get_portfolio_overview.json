@@ -1,46 +1,46 @@
 {
   "portfolioId": "pf-001",
   "valuation": {
-    "total": 609.8,
-    "securities": 609.8,
+    "total": 610.47,
+    "securities": 610.47,
     "crypto": 0.0
   },
   "timestamps": {
-    "valuationTimestampUtc": "2026-10-18T16:05:40.404000Z",
+    "valuationTimestampUtc": "2026-10-18T16:11:48.157000Z",
     "inventoryTimestampUtc": "2026-10-18T02:37:26.391000Z"
   },
   "performance": [
     {
       "timeframe": "INTRADAY",
-      "simpleAbsoluteReturn": -11.92
+      "simpleAbsoluteReturn": -11.24
     },
     {
       "timeframe": "TWO_DAYS",
-      "simpleAbsoluteReturn": -11.92
+      "simpleAbsoluteReturn": -11.24
     },
     {
       "timeframe": "ONE_WEEK",
-      "simpleAbsoluteReturn": -23.34
+      "simpleAbsoluteReturn": -22.66
     },
     {
       "timeframe": "ONE_MONTH",
-      "simpleAbsoluteReturn": -27.54
+      "simpleAbsoluteReturn": -26.87
     },
     {
       "timeframe": "THREE_MONTHS",
-      "simpleAbsoluteReturn": -11.32
+      "simpleAbsoluteReturn": -10.64
     },
     {
       "timeframe": "SIX_MONTHS",
-      "simpleAbsoluteReturn": -3.35
+      "simpleAbsoluteReturn": -2.67
     },
     {
       "timeframe": "ONE_YEAR",
-      "simpleAbsoluteReturn": 62.1
+      "simpleAbsoluteReturn": 62.78
     },
     {
       "timeframe": "MAX",
-      "simpleAbsoluteReturn": 147.82
+      "simpleAbsoluteReturn": 148.49
     }
   ]
 }

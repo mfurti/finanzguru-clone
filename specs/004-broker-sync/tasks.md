@@ -62,7 +62,7 @@
   - Record `tools/list` and the read-tool responses, anonymize them (names, IBANs, amounts scaled), and save them in `apps/api/test/fixtures/scalable-mcp/`.
   - Finalize `apps/api/src/modules/sources/scalable-mcp/allowlist.ts`, which allows read tools only.
   - If dynamic client registration is refused, stop and report the blocker (research R1). (former 001 T054)
-- [ ] T007 [US1] Implement `apps/api/src/modules/sources/scalable-mcp/mapper.ts` and `ScalableMcpSource` in `apps/api/src/modules/sources/scalable-mcp/scalable-mcp.source.ts`.
+- [X] T007 [US1] Implement `apps/api/src/modules/sources/scalable-mcp/mapper.ts` and `ScalableMcpSource` in `apps/api/src/modules/sources/scalable-mcp/scalable-mcp.source.ts`.
   - The mapper turns tool results into a `SyncBatch` including `positionsSnapshot`, with money in cents.
   - Register `ScalableMcpSource` under `DATA_SOURCES` so `POST /api/sources/scalable_mcp/sync` runs it, and turn a positions mismatch after a sync into an import-job warning.
   - Write contract tests against the fixtures in `apps/api/test/unit/scalable-mapper.spec.ts`. (former 001 T055)

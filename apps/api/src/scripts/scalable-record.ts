@@ -81,7 +81,26 @@ async function main(): Promise<void> {
   await call('get_portfolio_overview', scoped)
   await call('get_portfolio_holdings', scoped)
   await call('get_portfolio_cash_breakdown', scoped)
-  await call('list_portfolio_transactions', scoped)
+  // Full history, all pages (100 per page), merged into one file.
+  const all: unknown[] = []
+  let cursor: string | undefined
+  let pages = 0
+  do {
+    const page = (await call('list_portfolio_transactions', {
+      ...scoped,
+      pageSize: 100,
+      ...(cursor ? { cursor } : {}),
+    })) as { transactions?: unknown[]; page?: { nextCursor?: string | null } } | null
+    all.push(...(page?.transactions ?? []))
+    cursor = page?.page?.nextCursor ?? undefined
+    pages++
+  } while (cursor && pages < 200)
+  save('list_portfolio_transactions', {
+    portfolioId,
+    page: { nextCursor: null, totalCount: all.length, returnedCount: all.length },
+    transactions: all,
+  })
+  console.log(`     ${all.length} transactions in ${pages} page(s)`)
   await call('get_overnight_summary')
   await call('list_overnight_transactions')
 

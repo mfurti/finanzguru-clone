@@ -9,9 +9,9 @@ import { UpstreamError } from '../errors'
 import { httpTransport, ScalableMcpClient, type TransportFactory } from './client'
 import { SCALABLE_SOURCE_ID, ScalableCredentialStore } from './credential-store'
 import { ScalableOAuthProvider } from './oauth-provider'
+import { SCALABLE_TRANSPORT } from './scalable-mcp.source'
 
-/** Transport factory token; tests swap in an in-memory MCP server. */
-export const SCALABLE_TRANSPORT = Symbol('SCALABLE_TRANSPORT')
+export { SCALABLE_TRANSPORT } from './scalable-mcp.source'
 
 /**
  * Connect / callback / disconnect for Scalable Capital (004 US1, research R1).
