@@ -2,7 +2,12 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { NestFastifyApplication } from '@nestjs/platform-fastify'
 import type { AccountDetail, AccountsOverview, CsvUploadResponse } from '@finance/shared'
+import { eq } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { DB } from '../../src/database/database.constants'
+import type { AppDatabase } from '../../src/database/drizzle.module'
+import { account, dataSource } from '../../src/database/schema'
+import { SyncService } from '../../src/modules/sources/sync.service'
 import type { DemoResult } from '../../src/database/demo'
 import { createDemoApp } from '../helpers/demo-app'
 import { multipartBody } from '../helpers/multipart'
@@ -113,5 +118,35 @@ describe('accounts overview and detail (003 US2)', () => {
       payload: { name: 'Tagesgeld neu' },
     })
     expect(patched.json()).toMatchObject({ name: 'Tagesgeld neu', balanceCents: 123456 })
+  })
+
+  it('"Aktualisieren" starts the source sync for a connected Scalable account (004 T010)', async () => {
+    const db = app.get<AppDatabase>(DB)
+    db.insert(dataSource)
+      .values({
+        id: 'scalable_mcp',
+        kind: 'scalable_mcp',
+        status: 'active',
+        displayName: 'Scalable',
+      })
+      .onConflictDoUpdate({ target: dataSource.id, set: { status: 'active' } })
+      .run()
+    const depot = db.select().from(account).where(eq(account.type, 'depot')).get()!
+    db.update(account).set({ sourceId: 'scalable_mcp' }).where(eq(account.id, depot.id)).run()
+    const sync = app.get(SyncService)
+    const started: string[] = []
+    sync.canSync = () => true
+    sync.start = (sourceId: string) => {
+      started.push(sourceId)
+      return { runId: 'run-1', done: Promise.resolve() as never }
+    }
+    const rows = (
+      (await call('GET', '/api/accounts/overview')).json() as AccountsOverview
+    ).groups.flatMap((group) => group.rows)
+    expect(rows.find((row) => row.id === depot.id)!.canSync).toBe(true)
+    const res = await call('POST', `/api/accounts/${depot.id}/sync`)
+    expect(res.statusCode).toBe(202)
+    expect(res.json()).toEqual({ runId: 'run-1' })
+    expect(started).toEqual(['scalable_mcp'])
   })
 })

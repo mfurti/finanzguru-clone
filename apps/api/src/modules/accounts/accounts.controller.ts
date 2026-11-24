@@ -67,7 +67,7 @@ export class AccountsController {
   /** "Aktualisieren": 202 for sync-capable sources, 409 for CSV accounts. */
   @Post(':id/sync')
   @HttpCode(HttpStatus.ACCEPTED)
-  sync(@Param('id') id: string): { accepted: true } {
+  sync(@Param('id') id: string): { runId: string } {
     return this.overviewRows.sync(id)
   }
 

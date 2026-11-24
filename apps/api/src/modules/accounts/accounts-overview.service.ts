@@ -7,6 +7,7 @@ import { account, dataSource, importJob, institution, transaction } from '../../
 import { addDays, todayIso } from '../../domain/period'
 import { initials, maskIban, sparkline } from '../../domain/sparkline'
 import { OverviewService } from '../overview/overview.service'
+import { SyncService } from '../sources/sync.service'
 
 /** Source kinds that can refresh themselves ("Aktualisieren"); CSV accounts only show the last import. */
 const SYNC_KINDS = new Set(['scalable_mcp', 'sparkasse_fints'])
@@ -21,6 +22,7 @@ export class AccountsOverviewService {
   constructor(
     @Inject(DB) private readonly db: AppDatabase,
     private readonly overview: OverviewService,
+    private readonly syncService: SyncService,
   ) {}
 
   overviewGroups(accountIds?: readonly string[], today = todayIso()): AccountsOverview {
@@ -79,15 +81,14 @@ export class AccountsOverviewService {
     }
   }
 
-  /** "Aktualisieren": only sources that can sync; CSV accounts get 409. */
-  sync(id: string): { accepted: true } {
+  /** "Aktualisieren": starts the source sync (004 T010); CSV accounts get 409. */
+  sync(id: string): { runId: string } {
     const row = this.baseRows().find((item) => item.id === id)
     if (!row) throw new NotFoundException('Konto nicht gefunden')
-    if (!this.canSync(row)) {
+    if (!this.canSync(row) || !row.sourceId) {
       throw new ConflictException('Dieses Konto wird per Import aktualisiert')
     }
-    // Sync sources arrive with 001 US3 (Scalable); until then no source qualifies.
-    throw new ConflictException('Synchronisierung ist noch nicht verfügbar')
+    return { runId: this.syncService.start(row.sourceId).runId }
   }
 
   private baseRows() {
@@ -100,6 +101,7 @@ export class AccountsOverviewService {
         institution: institution.name,
         isHidden: account.isHidden,
         lastSyncedAt: account.lastSyncedAt,
+        sourceId: dataSource.id,
         sourceKind: dataSource.kind,
         sourceStatus: dataSource.status,
         sourceSyncAt: dataSource.lastSyncAt,
@@ -112,8 +114,19 @@ export class AccountsOverviewService {
       .all()
   }
 
-  private canSync(row: { sourceKind: string | null; sourceStatus: string | null }): boolean {
-    return !!row.sourceKind && SYNC_KINDS.has(row.sourceKind) && row.sourceStatus === 'active'
+  /** Active connection of a pull source that is actually registered (sync would run). */
+  private canSync(row: {
+    sourceId: string | null
+    sourceKind: string | null
+    sourceStatus: string | null
+  }): boolean {
+    return (
+      !!row.sourceId &&
+      !!row.sourceKind &&
+      SYNC_KINDS.has(row.sourceKind) &&
+      row.sourceStatus === 'active' &&
+      this.syncService.canSync(row.sourceId)
+    )
   }
 
   private toRow(row: ReturnType<AccountsOverviewService['baseRows']>[number], today: string) {
