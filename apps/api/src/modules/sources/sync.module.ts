@@ -9,6 +9,7 @@ import {
 } from './scalable-mcp/scalable-connection.service'
 import { SourcesModule } from './sources.module'
 import { SyncController } from './sync.controller'
+import { SyncScheduler } from './sync.scheduler'
 import { SyncService } from './sync.service'
 
 /**
@@ -20,6 +21,7 @@ import { SyncService } from './sync.service'
   controllers: [SyncController],
   providers: [
     SyncService,
+    SyncScheduler,
     ScalableCredentialStore,
     ScalableConnectionService,
     { provide: SCALABLE_TRANSPORT, useValue: httpTransport },
