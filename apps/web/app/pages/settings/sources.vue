@@ -8,13 +8,27 @@ const { data: sources, refresh } = await useApi<DataSourceDto[]>('/api/sources',
   default: () => [],
 })
 
-/** Scalable has its own card (004 US1); the list shows the other sources. */
+/** Scalable (004 US1) and the bank (005 US1) have their own cards; the list shows the rest. */
+const OWN_CARDS = new Set(['scalable_mcp', 'enable_banking'])
 const scalable = computed(() => sources.value?.find((s) => s.kind === 'scalable_mcp') ?? null)
-const others = computed(() => (sources.value ?? []).filter((s) => s.kind !== 'scalable_mcp'))
+const bank = computed(() => sources.value?.find((s) => s.kind === 'enable_banking') ?? null)
+const others = computed(() => (sources.value ?? []).filter((s) => !OWN_CARDS.has(s.kind)))
 const route = useRoute()
 const toast = useToast()
 onMounted(() => {
-  if (route.query.connected === 'scalable') {
+  if (route.query.connected === 'bank') {
+    toast.add({ title: t('bank.connected'), color: 'success' })
+  } else if (route.query.error === 'bank') {
+    const reason = String(route.query.reason ?? '')
+    toast.add({
+      title: t('bank.errors.generic'),
+      description: ['denied', 'state', 'expired'].includes(reason)
+        ? t(`bank.errors.${reason}`)
+        : undefined,
+      color: 'error',
+      duration: 0,
+    })
+  } else if (route.query.connected === 'scalable') {
     toast.add({ title: t('scalable.connected'), color: 'success' })
   } else if (route.query.error === 'scalable') {
     const reason = route.query.reason
@@ -37,7 +51,7 @@ const statusColor = (status: DataSourceDto['status']) =>
     ? 'success'
     : status === 'planned' || status === 'disabled'
       ? 'neutral'
-      : status === 'needs_reauth'
+      : status === 'needs_reauth' || status === 'consent_expired'
         ? 'warning'
         : 'error'
 </script>
@@ -71,6 +85,8 @@ const statusColor = (status: DataSourceDto['status']) =>
       </template>
       <CsvUpload @imported="refresh()" />
     </UCard>
+
+    <BankCard :source="bank" @changed="refresh()" />
 
     <ScalableCard :source="scalable" @changed="refresh()" />
 

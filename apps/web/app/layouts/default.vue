@@ -96,6 +96,7 @@ const tabs = computed<NavigationMenuItem[]>(() => [
     </header>
 
     <main class="mx-auto max-w-[1380px] px-4 pt-4 pb-24 sm:px-6 sm:pt-6">
+      <BankConsentNotice />
       <slot />
     </main>
 
