@@ -46,6 +46,8 @@ test.describe('US5 budget', () => {
 
   test('V11: a budget for Lebenshaltung shows up on the overview', async ({ page }) => {
     await page.goto('/budget/budgets')
+    // Since 003 budgets are added in a dialog ("Hinzufügen").
+    await page.getByTestId('budget-empty').getByRole('button').click()
     await page.getByTestId('budget-category').click()
     await page.getByRole('option', { name: 'Lebenshaltung', exact: true }).click()
     await page.getByTestId('budget-limit').fill('500')

@@ -244,23 +244,23 @@
   - A budget created mid-year gives `null` before its month.
   - Spending includes sub categories.
   - The total row sums correctly.
-- [ ] T047 [P] [US4] Write the API e2e test `apps/api/test/e2e/budgets-overview.e2e-spec.ts` (rows, total, series length 12) and the Playwright journey `e2e/us-p4-budgets.spec.ts` (quickstart W9 and the empty state).
+- [X] T047 [P] [US4] Write the API e2e test `apps/api/test/e2e/budgets-overview.e2e-spec.ts` (rows, total, series length 12) and the Playwright journey `e2e/us-p4-budgets.spec.ts` (quickstart W9 and the empty state).
 
 ### Implementation for User Story 4
 
 - [X] T048 [US4] Add `apps/api/src/domain/budget-history.ts` and `GET /budgets/overview?period=` in `apps/api/src/modules/budgets/`, following contracts/http-api.md.
-- [ ] T049 [P] [US4] Create `apps/web/app/components/budget/BudgetChart.vue`:
+- [X] T049 [P] [US4] Add the budget chart (`MonthBars.vue` in `apps/web/app/pages/budget/budgets.vue`):
   - Grouped bars per month (budget vs. spent), with the hover and dim behaviour of `CashflowBars`.
   - Toggle "Gesamtbudget": total vs. a per-budget select.
   - Gaps where the budget is `null`.
-- [ ] T050 [P] [US4] Create `apps/web/app/components/budget/BudgetTable.vue`:
+- [X] T050 [P] [US4] Create `apps/web/app/components/budget/BudgetTable.vue`:
   - Columns: category (icon + name), Budgethöhe, Ausgaben, Status (progress bar, red when over), Differenz (negative in red).
   - A Gesamtbudget footer row.
   - Row menu ⋮ with Bearbeiten and Löschen (with confirmation).
-- [ ] T051 [US4] Rebuild `apps/web/app/pages/budget/budgets.vue`:
+- [X] T051 [US4] Rebuild `apps/web/app/pages/budget/budgets.vue`:
   - PeriodPicker, the BudgetChart card, and the BudgetTable card with "Hinzufügen", which opens the budget dialog (reuse the existing form inside a `UModal`).
   - Empty state with "Hinzufügen" when there are no budgets.
-  - Remove `BudgetProgressList.vue` if it is no longer used.
+  - Keep `BudgetProgressList.vue`: the dashboard budgets card still uses it.
 
 ---
 
