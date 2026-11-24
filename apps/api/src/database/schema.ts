@@ -635,6 +635,49 @@ export const deletedImportMarker = sqliteTable(
   (t) => [uniqueIndex('deleted_import_marker_unique').on(t.source, t.fingerprint)],
 )
 
+/** One sync of a pull source (004 US1); token values never go into `error`. */
+export const syncRun = sqliteTable(
+  'sync_run',
+  {
+    id: id(),
+    sourceId: text('source_id')
+      .notNull()
+      .references(() => dataSource.id, { onDelete: 'cascade' }),
+    startedAt: text('started_at').notNull().default(nowIso),
+    finishedAt: text('finished_at'),
+    status: text('status', { enum: ['running', 'succeeded', 'partial', 'failed'] }).notNull(),
+    imported: integer('imported').notNull().default(0),
+    skipped: integer('skipped').notNull().default(0),
+    error: text('error'),
+  },
+  (t) => [
+    index('sync_run_source_started_idx').on(t.sourceId, t.startedAt),
+    check('sync_run_status', inList('status', ['running', 'succeeded', 'partial', 'failed'])),
+    check('sync_run_counts', sql`${t.imported} >= 0 AND ${t.skipped} >= 0`),
+    check('sync_run_error_len', sql`${t.error} IS NULL OR length(${t.error}) <= 500`),
+  ],
+)
+
+/** Derived daily value per depot and instrument (004 US2); rebuilt with net_worth_snapshot. */
+export const instrumentValueSnapshot = sqliteTable(
+  'instrument_value_snapshot',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => account.id, { onDelete: 'cascade' }),
+    instrumentId: text('instrument_id')
+      .notNull()
+      .references(() => instrument.id, { onDelete: 'cascade' }),
+    date: text('date').notNull(),
+    valueCents: integer('value_cents').notNull(),
+    investedCents: integer('invested_cents').notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.accountId, t.instrumentId, t.date] }),
+    index('instrument_value_snapshot_instrument_date_idx').on(t.instrumentId, t.date),
+  ],
+)
+
 export const schema = {
   owner,
   institution,
@@ -666,4 +709,6 @@ export const schema = {
   tag,
   transactionTag,
   deletedImportMarker,
+  syncRun,
+  instrumentValueSnapshot,
 }

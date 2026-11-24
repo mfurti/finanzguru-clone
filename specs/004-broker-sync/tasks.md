@@ -28,7 +28,7 @@
 
 ## Phase 2: Foundational
 
-- [ ] T004 Extend `apps/api/src/database/schema.ts` and generate `apps/api/src/database/migrations/0007_sync_and_history.sql`.
+- [X] T004 Extend `apps/api/src/database/schema.ts` and generate `apps/api/src/database/migrations/0007_sync_and_history.sql`.
   - It must be additive only: `CREATE TABLE` and `CREATE INDEX`.
   - Add `sync_run`:
     - `status` ∈ `running|succeeded|partial|failed`;
