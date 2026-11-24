@@ -2,16 +2,18 @@
 
 Self-hosted personal wealth tracker: net worth, investments, budget and insurance in one dashboard. Runs on your own machine or home server; your financial data never leaves it.
 
-- **Übersicht**: net worth over time, allocation, KPIs (TWROR, XIRR, gains), top/flop holdings, accounts, cashflow and budgets.
-- **Investments**: performance chart, positions, asset classes, bookings table with filters and CSV export, per-instrument detail and classification.
-  - **Analyse**: split by asset class, region, sector, currency, volatility, return and own groupings; returns as line, month × year heatmap and yearly bars; yearly IZF vs. inflation vs. real return; depot comparison.
-  - **Dividenden**: last 12 months, Ø per month, yield, CAGR, yearly history, per security, calendar with expected payments.
-  - **Steuern**: Freistellungsaufträge per broker with used/remaining amount, Vorabpauschale estimate.
+- **Übersicht**: net worth over time (period tabs or custom date range), allocation, KPIs (TWROR, XIRR, gains), top/flop holdings, unreviewed bookings, cashflow and budgets.
+  - **Portfolios & Konten**: one card per group with sparkline, masked IBAN with copy, last import or sync; detail page per account and depot.
+  - **Transaktionen**: all bookings with search, filter panel, sorting, tags, multi-select (category, tags, reviewed, delete with undo), category chip, column choice, 25/50/100 rows and CSV export; review unreviewed bookings here.
+- **Investments**: performance chart, sortable positions with WKN/ISIN copy and asset-class chips, asset classes, bookings table with filter panel, sorting and CSV export, per-instrument detail and classification.
+  - **Analyse**: split by asset class, region, sector, currency, volatility, return and own groupings; returns as line, month × year heatmap and yearly bars; IZF vs. inflation vs. real return by year or trailing period (1M … Gesamt); depot comparison.
+  - **Dividenden**: last 12 months, Ø per month, yield, CAGR, yearly history, per security, split by securities, regions and sectors, calendar (list or month grid) with expected payments.
+  - **Steuern**: Freistellungsaufträge per broker with used/remaining amount, Vorabpauschale estimate per broker.
   - **Watchlists** and **Vergleichen mit** (benchmark line in the net-worth and investment charts).
-- **Budget**: monthly/quarterly/yearly cashflow, Sankey diagram, categories with linked pie chart, review queue with rules, budgets.
+- **Budget**: Analyse (cashflow by month/quarter/year with period picker, categories with icons, linked pie chart and detail pages), Sankey page with the period's bookings, Budgets page (12-month budget vs. spending chart and table with Gesamtbudget).
 - **Versicherung**: insurance contracts with yearly cost.
 
-German UI, dark and light mode, usable down to 360 px.
+Global search (magnifier or Ctrl/Cmd+K) over pages, securities, accounts and bookings. German UI with the Outfit font (bundled, no font CDN), dark and light mode, usable down to 360 px.
 
 ## Architecture
 
