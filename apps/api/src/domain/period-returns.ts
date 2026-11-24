@@ -98,5 +98,61 @@ export function yearlyReturns(
   })
 }
 
+export type TrailingPeriodKey = '1M' | '3M' | 'YTD' | '1Y' | '3Y' | '5Y' | 'ALL'
+const TRAILING: TrailingPeriodKey[] = ['1M', '3M', 'YTD', '1Y', '3Y', '5Y', 'ALL']
+
+function minusMonths(date: string, months: number): string {
+  const d = new Date(`${date}T00:00:00Z`)
+  const day = d.getUTCDate()
+  d.setUTCDate(1)
+  d.setUTCMonth(d.getUTCMonth() - months)
+  const last = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate()
+  d.setUTCDate(Math.min(day, last))
+  return d.toISOString().slice(0, 10)
+}
+
+/**
+ * "Zeiträume" (003 US5, FR-015): TWROR, IZF p.a., average inflation and real
+ * return for periods ending today. A period longer than the history starts at
+ * the first data point (edge case in spec.md).
+ */
+export function trailingReturns(
+  series: readonly ValuePoint[],
+  inflationFor: (year: number) => string,
+  today: string,
+) {
+  if (series.length < 2) return []
+  const first = series[0]!.date
+  return TRAILING.map((period) => {
+    const wanted =
+      period === 'ALL'
+        ? first
+        : period === 'YTD'
+          ? `${today.slice(0, 4)}-01-01`
+          : minusMonths(today, { '1M': 1, '3M': 3, '1Y': 12, '3Y': 36, '5Y': 60 }[period])
+    const from = wanted < first ? first : wanted
+    const slice = series.filter((point) => point.date >= from && point.date <= today)
+    const twr = slice.length >= 2 ? twror(slice) : null
+    const irr = slice.length >= 2 ? xirr(periodCashFlows(slice)) : null
+    // Geometric mean of the yearly rates the period touches.
+    const years: number[] = []
+    for (let y = Number(from.slice(0, 4)); y <= Number(today.slice(0, 4)); y++) years.push(y)
+    const inflation = years
+      .reduce((factor, year) => factor.times(new D(inflationFor(year)).plus(1)), new D(1))
+      .pow(new D(1).dividedBy(years.length))
+      .minus(1)
+      .toDecimalPlaces(6)
+      .toString()
+    return {
+      period,
+      from,
+      twror: twr,
+      xirr: irr,
+      inflation,
+      realReturn: realReturn(irr ?? twr, inflation),
+    }
+  })
+}
+
 /** TWROR of a slice; re-exported for callers that compare with the KPI card. */
 export { twror }

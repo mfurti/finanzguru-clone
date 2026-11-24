@@ -17,7 +17,7 @@ const period = ref<Period>('ALL')
 
 const { data } = await useApi<ReturnsResponse>('/api/analysis/returns', {
   query: { period, accounts: accountsParam },
-  default: () => ({ series: [], months: [], years: [] }),
+  default: () => ({ series: [], months: [], years: [], trailing: [] }),
 })
 
 type LinePoint = ReturnsResponse['series'][number] & { index: number }
@@ -105,7 +105,7 @@ const barTooltip = (p: BarPoint) =>
       </ClientOnly>
 
       <h3 class="mt-6 mb-2 text-sm font-semibold">{{ t('analysis.returns.yearly') }}</h3>
-      <YearlyTable :years="data!.years" />
+      <YearlyTable :years="data!.years" :trailing="data!.trailing" />
     </template>
   </UCard>
 </template>

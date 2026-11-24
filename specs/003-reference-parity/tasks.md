@@ -272,12 +272,12 @@
 
 ### Tests for User Story 5
 
-- [ ] T052 [P] [US5] Write the domain unit test `apps/api/test/unit/trailing-returns.spec.ts`:
+- [X] T052 [P] [US5] Write the domain unit test `apps/api/test/unit/trailing-returns.spec.ts`:
   - 1M, 3M, YTD, 1J, 3J, 5J and Gesamt against known cash flows.
   - Periods longer than the history start at the first data point.
 - [ ] T053 [P] [US5] Write the API e2e test `apps/api/test/e2e/investments-refinements.e2e-spec.ts`:
   - `/investments/transactions` sort and filter.
-  - `/analysis/returns/trailing`.
+  - `trailing` in `/analysis/returns`.
   - `/dividends/split?by=region` sums to the total.
   - Vorabpauschale grouped by broker with subtotals.
 - [ ] T054 [P] [US5] Write the Playwright journey `e2e/us-p5-investments.spec.ts` (quickstart W10).
@@ -293,7 +293,7 @@
 - [ ] T057 [US5] Add sort and filter query parameters to `GET /investments/transactions` in `apps/api/src/modules/investments/`.
   - Add a filter panel (type, depot, security, period, amount) with an active count to `apps/web/app/pages/investments/transactions.vue`.
   - All columns are sortable.
-- [ ] T058 [US5] Add `trailingReturns(asOf)` to `apps/api/src/domain/period-returns.ts` and the endpoint `GET /analysis/returns/trailing` in `apps/api/src/modules/analysis/`.
+- [X] T058 [US5] Add `trailingReturns(asOf)` to `apps/api/src/domain/period-returns.ts` and return it as `trailing` from `GET /analysis/returns` in `apps/api/src/modules/analysis/`.
   - Add a "Jahre | Zeiträume" switch to `apps/web/app/components/analysis/YearlyTable.vue`, with IZF, inflation and real return per period.
 - [ ] T059 [US5] Add `GET /dividends/split?by=security|region|sector` in `apps/api/src/modules/dividends/`, reusing `domain/breakdown.ts` weights.
   - Add an "Aufteilung" card with tabs Wertpapiere | Regionen | Branchen (donut + list) to `apps/web/app/pages/investments/dividends.vue`.

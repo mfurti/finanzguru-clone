@@ -65,6 +65,6 @@
 | Method | Path | Change |
 |---|---|---|
 | GET | `/investments/transactions` | `sort, dir`, filter `types[], accountIds[], instrumentIds[], from, to, minCents, maxCents` |
-| GET | `/analysis/returns/trailing` | `accountIds[]` → `{ period, xirr, inflation, real }[]` |
+| GET | `/analysis/returns` | response gets `trailing: { period: 1M\|3M\|YTD\|1Y\|3Y\|5Y\|ALL, from, twror, xirr, inflation, realReturn }[]` |
 | GET | `/dividends/split` | `by=security\|region\|sector, year?` → `{ key, label, cents, share }[]` |
 | GET | `/taxes/vorabpauschale` | response grouped `{ broker, rows[], subtotalCents }[]` |

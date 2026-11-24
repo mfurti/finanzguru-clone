@@ -29,7 +29,12 @@ import {
 import { type Bucket, groupedBreakdown, weightedBreakdown } from '../../domain/breakdown'
 import { ratio } from '../../domain/money'
 import { todayIso } from '../../domain/period'
-import { cumulativeTwror, monthlyReturns, yearlyReturns } from '../../domain/period-returns'
+import {
+  cumulativeTwror,
+  monthlyReturns,
+  trailingReturns,
+  yearlyReturns,
+} from '../../domain/period-returns'
 import type { ValuePoint } from '../../domain/returns'
 import { annualizedVolatility, returnClass, volatilityClass } from '../../domain/volatility'
 import { downsample, OverviewService } from '../overview/overview.service'
@@ -225,7 +230,7 @@ export class AnalysisService {
   /** Line for the selected period; months and years always over the full history. */
   returns(query: { accounts?: string[]; period: Period }, today = todayIso()): ReturnsResponse {
     const depots = this.depots(query.accounts)
-    if (depots.length === 0) return { series: [], months: [], years: [] }
+    if (depots.length === 0) return { series: [], months: [], years: [], trailing: [] }
     const range = this.overview.range(depots, { period: query.period }, today)
     const full = this.overview.range(depots, { period: 'ALL' }, today)
     const all = this.depotSeries(depots, full)
@@ -234,6 +239,7 @@ export class AnalysisService {
       series: downsample(cumulativeTwror(series)),
       months: monthlyReturns(all),
       years: yearlyReturns(all, this.inflationFor(), today),
+      trailing: trailingReturns(all, this.inflationFor(), today),
     }
   }
 

@@ -67,12 +67,28 @@ export const yearlyReturn = z.object({
 })
 export type YearlyReturn = z.infer<typeof yearlyReturn>
 
+/** Trailing periods of the Wertentwicklung "Zeiträume" view (003 US5, FR-015). */
+export const TRAILING_PERIODS = ['1M', '3M', 'YTD', '1Y', '3Y', '5Y', 'ALL'] as const
+export type TrailingPeriod = (typeof TRAILING_PERIODS)[number]
+export const trailingReturn = z.object({
+  period: z.enum(TRAILING_PERIODS),
+  from: isoDate,
+  twror: nullableRate,
+  /** IZF p.a. over the period. */
+  xirr: nullableRate,
+  /** Average yearly inflation over the period. */
+  inflation: decimalString,
+  realReturn: nullableRate,
+})
+export type TrailingReturn = z.infer<typeof trailingReturn>
+
 export const returnsResponse = z.object({
   series: z.array(z.object({ date: isoDate, twror: decimalString })),
   months: z.array(
     z.object({ year: z.number().int(), month: z.number().int(), twror: nullableRate }),
   ),
   years: z.array(yearlyReturn),
+  trailing: z.array(trailingReturn),
 })
 export type ReturnsResponse = z.infer<typeof returnsResponse>
 

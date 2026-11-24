@@ -733,5 +733,13 @@
     "chartMenu": "Diagramm-Optionen",
     "latestUnreviewed": "Neueste ungeprüfte Buchungen",
     "showAll": "Alle anzeigen"
+  },
+  "trailing": {
+    "1M": "1 Monat",
+    "3M": "3 Monate",
+    "YTD": "Seit Jahresbeginn",
+    "1Y": "1 Jahr",
+    "3Y": "3 Jahre",
+    "5Y": "5 Jahre"
   }
 }
