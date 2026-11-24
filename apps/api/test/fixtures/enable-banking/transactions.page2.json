@@ -1,0 +1,24 @@
+{
+  "transactions": [
+    {
+      "entry_reference": null,
+      "transaction_amount": { "currency": "EUR", "amount": "4.95" },
+      "credit_debit_indicator": "DBIT",
+      "status": "BOOK",
+      "booking_date": "2026-11-05",
+      "value_date": "2026-11-05",
+      "creditor": { "name": "Sparkasse Musterstadt" },
+      "remittance_information": ["Entgelt Kontoführung"]
+    },
+    {
+      "entry_reference": "ref-005",
+      "transaction_amount": { "currency": "USD", "amount": "10.00" },
+      "credit_debit_indicator": "DBIT",
+      "status": "BOOK",
+      "booking_date": "2026-11-06",
+      "creditor": { "name": "US Shop" },
+      "remittance_information": ["Online"]
+    }
+  ],
+  "continuation_key": null
+}

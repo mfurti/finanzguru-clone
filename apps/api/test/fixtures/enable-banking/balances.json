@@ -1,0 +1,16 @@
+{
+  "balances": [
+    {
+      "name": "Verfügbar",
+      "balance_amount": { "currency": "EUR", "amount": "1350.00" },
+      "balance_type": "ITAV",
+      "reference_date": "2026-11-24"
+    },
+    {
+      "name": "Gebucht",
+      "balance_amount": { "currency": "EUR", "amount": "1234.56" },
+      "balance_type": "CLBD",
+      "reference_date": "2026-11-24"
+    }
+  ]
+}
