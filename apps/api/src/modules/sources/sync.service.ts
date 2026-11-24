@@ -9,7 +9,7 @@ import { AuthExpiredError } from './errors'
 import { SourcesRegistry } from './sources.registry'
 
 /** Pull sources that can sync themselves; CSV is imported by upload only. */
-const PULL_KINDS: ReadonlySet<SourceKind> = new Set(['scalable_mcp'])
+const PULL_KINDS: ReadonlySet<SourceKind> = new Set(['scalable_mcp', 'enable_banking'])
 const MAX_ERROR = 500
 
 export interface SyncOutcome {
@@ -24,7 +24,8 @@ export interface SyncOutcome {
  * Runs pull syncs (004 US1, research R2): one at a time per source, logged in
  * `sync_run`, imported through the shared pipeline (fingerprint dedupe and
  * deleted-import markers apply), with the data-source status transitions
- * active → needs_reauth / error → active.
+ * active → needs_reauth / error → active. The bank source (005) goes to consent_expired instead
+ * of needs_reauth when its consent ended.
  */
 @Injectable()
 export class SyncService {
@@ -86,6 +87,8 @@ export class SyncService {
         jobId: job.id,
         source: row.kind as TransactionSource,
         sourceId,
+        // Live bank bookings link to rows from earlier CSV imports (005 R2).
+        matchExisting: row.kind === 'enable_banking',
       })
       const status =
         result.status === 'failed'
@@ -122,8 +125,13 @@ export class SyncService {
       return { runId, status, imported: result.imported, skipped: result.skipped, error }
     } catch (cause) {
       const expired = cause instanceof AuthExpiredError
+      const bank = row.kind === 'enable_banking'
       const error = this.clip(
-        expired ? 'Anmeldung abgelaufen – bitte neu verbinden' : this.message(cause),
+        expired
+          ? bank
+            ? 'Bankzugang abgelaufen – bitte erneuern'
+            : 'Anmeldung abgelaufen – bitte neu verbinden'
+          : this.message(cause),
       )
       this.logger.warn(`Sync ${runId} for ${sourceId} failed: ${error}`)
       this.db.transaction((tx) => {
@@ -132,7 +140,10 @@ export class SyncService {
           .where(eq(syncRun.id, runId))
           .run()
         tx.update(dataSource)
-          .set({ status: expired ? 'needs_reauth' : 'error', lastError: error })
+          .set({
+            status: expired ? (bank ? 'consent_expired' : 'needs_reauth') : 'error',
+            lastError: error,
+          })
           .where(eq(dataSource.id, sourceId))
           .run()
       })

@@ -36,10 +36,27 @@ describe('seedDefaults', () => {
         .from(dataSource)
         .all()
         .map((row) => [row.id, row.status]),
-    ).toEqual([
-      ['csv', 'active'],
-      ['sparkasse_fints', 'planned'],
-    ])
+    ).toEqual([['csv', 'active']])
+  })
+
+  it('drops the unused FinTS placeholder from older databases (005 T012)', () => {
+    const db = createTestDb()
+    db.insert(dataSource)
+      .values({
+        id: 'sparkasse_fints',
+        kind: 'sparkasse_fints',
+        status: 'planned',
+        displayName: 'Sparkasse (Live-Abfrage)',
+      })
+      .run()
+    seedDefaults(db)
+    expect(
+      db
+        .select()
+        .from(dataSource)
+        .all()
+        .map((row) => row.id),
+    ).toEqual(['csv'])
   })
 
   it('is idempotent', () => {
@@ -48,6 +65,6 @@ describe('seedDefaults', () => {
     const before = db.select().from(category).all().length
     seedDefaults(db)
     expect(db.select().from(category).all()).toHaveLength(before)
-    expect(db.select().from(dataSource).all()).toHaveLength(2)
+    expect(db.select().from(dataSource).all()).toHaveLength(1)
   })
 })

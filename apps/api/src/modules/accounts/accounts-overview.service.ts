@@ -10,7 +10,7 @@ import { OverviewService } from '../overview/overview.service'
 import { SyncService } from '../sources/sync.service'
 
 /** Source kinds that can refresh themselves ("Aktualisieren"); CSV accounts only show the last import. */
-const SYNC_KINDS = new Set(['scalable_mcp', 'sparkasse_fints'])
+const SYNC_KINDS = new Set(['scalable_mcp', 'enable_banking'])
 
 /**
  * Übersicht › Portfolios & Konten (003 US2, research R6): one group per kind

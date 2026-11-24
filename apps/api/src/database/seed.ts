@@ -8,7 +8,7 @@ import type { AppDatabase } from './drizzle.module'
 import { WIDGET_KEYS } from '@finance/shared'
 import { category, dashboardLayout, dataSource, institution } from './schema'
 
-type Db = Pick<AppDatabase, 'select' | 'insert' | 'update'>
+type Db = Pick<AppDatabase, 'select' | 'insert' | 'update' | 'delete'>
 
 interface CategorySeed {
   name: string
@@ -142,16 +142,12 @@ export function seedDefaults(db: Db): void {
   db.insert(institution).values({ name: MANUAL_INSTITUTION }).onConflictDoNothing().run()
 
   db.insert(dataSource)
-    .values([
-      { id: 'csv', kind: 'csv', status: 'active', displayName: 'CSV-Import' },
-      {
-        id: 'sparkasse_fints',
-        kind: 'sparkasse_fints',
-        status: 'planned',
-        displayName: 'Sparkasse (Live-Abfrage)',
-      },
-    ])
+    .values([{ id: 'csv', kind: 'csv', status: 'active', displayName: 'CSV-Import' }])
     .onConflictDoNothing()
+    .run()
+  // The FinTS placeholder is replaced by the Enable Banking source (005); drop the unused row.
+  db.delete(dataSource)
+    .where(and(eq(dataSource.id, 'sparkasse_fints'), eq(dataSource.status, 'planned')))
     .run()
 
   db.insert(dashboardLayout)

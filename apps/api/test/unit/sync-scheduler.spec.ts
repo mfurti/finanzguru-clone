@@ -54,4 +54,27 @@ describe('daily sync scheduler (004 T009)', () => {
     expect(sync.run).not.toHaveBeenCalled()
     registry.deleteTimeout('scalable-daily-sync')
   })
+
+  it('runs the bank sync on its own flag and job (005 T012)', async () => {
+    const db: AppDatabase = createTestDb()
+    db.insert(dataSource)
+      .values({ id: 'enable_banking', kind: 'enable_banking', status: 'active', displayName: 'B' })
+      .run()
+    const sync = {
+      canSync: () => true,
+      isRunning: () => false,
+      run: vi.fn(async () => ({ status: 'succeeded' })),
+    } as unknown as SyncService
+    const registry = new SchedulerRegistry()
+    const flags = { get: (key: string) => key === 'BANK_DAILY_SYNC' } as never
+    const scheduler = new SyncScheduler(db, sync, flags, registry)
+    scheduler.onModuleInit()
+    expect(scheduler.isScheduled('enable_banking')).toBe(true)
+    expect(scheduler.scheduled).toBe(false)
+    expect(await scheduler.tick('enable_banking')).toBe('synced')
+    expect(sync.run).toHaveBeenCalledWith('enable_banking')
+    db.update(dataSource).set({ status: 'consent_expired' }).run()
+    expect(await scheduler.tick('enable_banking')).toBe('skipped')
+    registry.deleteTimeout('bank-daily-sync')
+  })
 })

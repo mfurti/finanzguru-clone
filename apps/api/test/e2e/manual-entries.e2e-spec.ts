@@ -130,10 +130,7 @@ describe('GET /api/sources', () => {
     const res = await app.inject({ method: 'GET', url: '/api/sources', headers: { cookie } })
     expect(res.statusCode).toBe(200)
     const body = res.json() as { kind: string; status: string }[]
-    expect(body.map((source) => [source.kind, source.status])).toEqual([
-      ['csv', 'active'],
-      ['sparkasse_fints', 'planned'],
-    ])
+    expect(body.map((source) => [source.kind, source.status])).toEqual([['csv', 'active']])
     expect(JSON.stringify(body)).not.toContain('encrypted')
     await app.close()
   })

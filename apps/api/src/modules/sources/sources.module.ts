@@ -7,22 +7,22 @@ import { CsvSource } from './csv/csv.source'
 import { DATA_SOURCES, type DataSource } from './data-source.interface'
 import { ENABLE_BANKING_HTTP, fetchHttp } from './enable-banking/client'
 import { EnableBankingConnectionService } from './enable-banking/enable-banking-connection.service'
-import { SparkasseFintsSource } from './sparkasse-fints/sparkasse-fints.source'
+import { EnableBankingSource } from './enable-banking/enable-banking.source'
 import { SourcesRegistry } from './sources.registry'
 
 @Module({
   imports: [CommonModule],
   providers: [
     CsvSource,
-    SparkasseFintsSource,
     ScalableCredentialStore,
     { provide: SCALABLE_TRANSPORT, useValue: httpTransport },
     ScalableMcpSource,
     { provide: ENABLE_BANKING_HTTP, useValue: fetchHttp },
     EnableBankingConnectionService,
+    EnableBankingSource,
     {
       provide: DATA_SOURCES,
-      inject: [CsvSource, SparkasseFintsSource, ScalableMcpSource],
+      inject: [CsvSource, ScalableMcpSource, EnableBankingSource],
       useFactory: (...sources: DataSource[]) => sources,
     },
     SourcesRegistry,

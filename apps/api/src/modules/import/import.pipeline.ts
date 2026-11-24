@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 import type { ImportJobDto, RowError, TransactionSource } from '@finance/shared'
-import { and, asc, eq, gte, inArray, isNotNull, lte, ne, or } from 'drizzle-orm'
+import { and, asc, eq, gte, inArray, isNotNull, isNull, lte, ne, or } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import {
@@ -355,6 +355,18 @@ export class ImportPipeline {
       const existing = this.findAccount(tx, normalized)
       if (existing) {
         byRef.set(normalized.externalRef, existing)
+        // A live bank connection takes over an account so far filled by CSV (005 T012).
+        if (options.matchExisting) {
+          tx.update(account)
+            .set({ sourceId: options.sourceId })
+            .where(
+              and(
+                eq(account.id, existing),
+                or(isNull(account.sourceId), eq(account.sourceId, 'csv')),
+              ),
+            )
+            .run()
+        }
         continue
       }
       const institutionId = this.institutionId(tx, normalized.institutionName)
