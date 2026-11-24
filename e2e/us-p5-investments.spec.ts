@@ -21,10 +21,23 @@ test.describe('003 US5 investments', () => {
     const copied = await page.evaluate(() => navigator.clipboard.readText())
     expect(copied).toMatch(/^[A-Z]{2}[A-Z0-9]{9}\d$/)
 
+    const totalAll = await page.getByTestId('investments-total').textContent()
     await page.getByTestId('asset-chip-etf').click()
     await expect(table).not.toContainText('Apple Inc.')
+    // 004 US2: the chart follows the chips; its total equals the ETF positions.
+    await expect(page.getByTestId('performance-asset-class')).toHaveText('ETF')
+    const etf = (await (
+      await page.request.get('/api/investments/positions?assetClass=etf')
+    ).json()) as {
+      valueCents: number
+    }[]
+    const euro = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' })
+    await expect(page.getByTestId('investments-total')).toHaveText(
+      euro.format(etf.reduce((sum, row) => sum + row.valueCents, 0) / 100),
+    )
     await page.getByTestId('asset-chip-all').click()
     await expect(table).toContainText('Apple Inc.')
+    await expect(page.getByTestId('investments-total')).toHaveText(totalAll!)
   })
 
   test('W10: Wertentwicklung by Zeiträume', async ({ page }) => {

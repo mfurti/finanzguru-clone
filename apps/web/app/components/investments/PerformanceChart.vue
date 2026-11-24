@@ -4,19 +4,28 @@ import {
   formatEur,
   formatEurCompact,
   formatPctSigned,
+  type AssetClass,
   type Period,
   type PerformanceResponse,
 } from '@finance/shared'
 import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
 
-/** Investment value vs. invested capital (US4). */
+/**
+ * Investment value vs. invested capital (US4). Follows the asset-class chips
+ * of the positions card (004 US2) through the shared state.
+ */
 const { t } = useI18n()
 const { accountsParam } = useAccountFilter()
 const period = ref<Period>('1Y')
 const unit = ref<'eur' | 'pct'>('eur')
+const assetClass = useState<AssetClass | 'all'>('positions-asset-class', () => 'all')
 
 const { data } = await useApi<PerformanceResponse>('/api/investments/performance', {
-  query: { period, accounts: accountsParam },
+  query: computed(() => ({
+    period: period.value,
+    accounts: accountsParam.value,
+    assetClass: assetClass.value === 'all' ? undefined : assetClass.value,
+  })),
   default: () => ({ valueCents: 0, gainCents: 0, gainPct: null, series: [] }),
 })
 
@@ -69,6 +78,15 @@ const tooltip = (point: Point) =>
   <UCard data-testid="performance-card">
     <div class="mb-3 flex flex-wrap items-end justify-between gap-3">
       <div>
+        <UBadge
+          v-if="assetClass !== 'all'"
+          variant="soft"
+          color="neutral"
+          class="mb-1"
+          data-testid="performance-asset-class"
+        >
+          {{ t(`assetClasses.${assetClass}`) }}
+        </UBadge>
         <div class="text-3xl font-semibold" data-testid="investments-total">
           <Money :cents="hasData ? data!.valueCents : null" />
         </div>
