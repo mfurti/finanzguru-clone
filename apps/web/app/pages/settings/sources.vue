@@ -17,7 +17,18 @@ onMounted(() => {
   if (route.query.connected === 'scalable') {
     toast.add({ title: t('scalable.connected'), color: 'success' })
   } else if (route.query.error === 'scalable') {
-    toast.add({ title: t('common.error'), color: 'error' })
+    const reason = route.query.reason
+    toast.add({
+      title: t('scalable.refused'),
+      description:
+        reason === 'agentic'
+          ? t('scalable.refusedAgentic')
+          : reason === 'denied'
+            ? t('scalable.refusedDenied')
+            : t('common.error'),
+      color: 'error',
+      duration: 0,
+    })
   }
 })
 

@@ -69,8 +69,16 @@ export class SyncController {
   async callback(
     @Query('code') code: string | undefined,
     @Query('state') state: string | undefined,
+    @Query('error') error: string | undefined,
+    @Query('error_description') description: string | undefined,
     @Res() reply: FastifyReply,
   ): Promise<void> {
+    // Scalable refused (e.g. "Agentic Investing" not enabled): say why, no exchange attempt.
+    if (error) {
+      const reason = /agentic investing/i.test(description ?? '') ? 'agentic' : 'denied'
+      await reply.redirect(`/settings/sources?error=scalable&reason=${reason}`, 302)
+      return
+    }
     try {
       await this.scalable.callback(code, state)
       await reply.redirect('/settings/sources?connected=scalable', 302)

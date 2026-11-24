@@ -8,5 +8,6 @@ import { joinURL } from 'ufo'
 export default defineEventHandler((event) => {
   const { apiBaseUrl } = useRuntimeConfig(event)
   const target = joinURL(apiBaseUrl, event.path)
-  return proxyRequest(event, target)
+  // Pass redirects (e.g. the Scalable OAuth callback) to the browser instead of following them.
+  return proxyRequest(event, target, { fetchOptions: { redirect: 'manual' } })
 })

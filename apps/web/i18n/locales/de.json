@@ -762,6 +762,9 @@
     "lastSync": "Zuletzt synchronisiert {date}",
     "lastRun": "{imported} neu, {skipped} übersprungen",
     "never": "Noch nie synchronisiert",
-    "info": "Du meldest dich direkt bei Scalable Capital an. Vermögenskompass speichert nur den verschlüsselten Zugriffsschlüssel und nutzt ausschließlich lesende Funktionen."
+    "info": "Du meldest dich direkt bei Scalable Capital an. Vermögenskompass speichert nur den verschlüsselten Zugriffsschlüssel und nutzt ausschließlich lesende Funktionen.",
+    "refused": "Verbindung zu Scalable nicht hergestellt",
+    "refusedAgentic": "Aktiviere „Agentic Investing“ in den Sicherheitseinstellungen von Scalable Capital (im Web) und verbinde dann erneut.",
+    "refusedDenied": "Scalable hat den Zugriff abgelehnt oder die Anmeldung wurde abgebrochen."
   }
 }

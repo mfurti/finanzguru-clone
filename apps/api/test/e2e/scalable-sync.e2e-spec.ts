@@ -105,6 +105,20 @@ describe('Scalable connection and source endpoints (004 US1)', () => {
     expect(res.headers.location).toBe('/settings/sources?error=scalable')
   })
 
+  it('explains a refusal from Scalable (Agentic Investing not enabled)', async () => {
+    const description = encodeURIComponent(
+      'To connect Scalable MCP, enable Agentic Investing in your Scalable Capital security settings on the web, then try again.',
+    )
+    const res = await call(
+      'GET',
+      `/api/sources/scalable/callback?error=access_denied&error_description=${description}&state=x`,
+    )
+    expect(res.statusCode).toBe(302)
+    expect(res.headers.location).toBe('/settings/sources?error=scalable&reason=agentic')
+    const other = await call('GET', '/api/sources/scalable/callback?error=access_denied&state=x')
+    expect(other.headers.location).toBe('/settings/sources?error=scalable&reason=denied')
+  })
+
   it('refuses a sync for CSV sources and unknown ids', async () => {
     expect((await call('POST', '/api/sources/csv/sync')).statusCode).toBe(409)
     expect((await call('POST', '/api/sources/missing/sync')).statusCode).toBe(404)
