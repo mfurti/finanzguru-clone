@@ -92,15 +92,33 @@ export const instrumentDetailQuery = z.object({
   period: period.default('1Y'),
 })
 
+/** Sortable columns of the bookings table (003 FR-014: every column). */
+export const INVESTMENT_TX_SORTS = [
+  'date',
+  'amount',
+  'type',
+  'name',
+  'account',
+  'unitPrice',
+  'quantity',
+  'tax',
+  'fee',
+] as const
+export type InvestmentTxSort = (typeof INVESTMENT_TX_SORTS)[number]
+
 export const investmentTransactionsQuery = z.object({
   accounts: accountsParam,
   type: z
     .enum(['buy', 'sell', 'dividend', 'interest', 'tax', 'fee', 'split', 'deposit', 'withdrawal'])
     .optional(),
+  /** Comma-separated types (filter panel, 003 FR-014); `type` stays for old links. */
+  types: accountsParam,
   instrumentId: z.string().optional(),
   from: isoDate.optional(),
   to: isoDate.optional(),
-  sort: z.enum(['date', 'amount']).default('date'),
+  minCents: z.coerce.number().int().safe().optional(),
+  maxCents: z.coerce.number().int().safe().optional(),
+  sort: z.enum(INVESTMENT_TX_SORTS).default('date'),
   dir: z.enum(['asc', 'desc']).default('desc'),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(200).default(50),

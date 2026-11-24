@@ -222,6 +222,11 @@ export class InvestmentsDetailService {
     const where = and(
       inArray(transaction.accountId, depots),
       query.type ? eq(transaction.type, query.type) : undefined,
+      query.types && query.types.length > 0
+        ? inArray(transaction.type, query.types as (typeof transaction.type._.data)[])
+        : undefined,
+      query.minCents !== undefined ? gte(transaction.amountCents, query.minCents) : undefined,
+      query.maxCents !== undefined ? lte(transaction.amountCents, query.maxCents) : undefined,
       query.instrumentId ? eq(transaction.instrumentId, query.instrumentId) : undefined,
       query.from ? gte(transaction.bookingDate, query.from) : undefined,
       query.to ? lte(transaction.bookingDate, query.to) : undefined,
@@ -232,8 +237,18 @@ export class InvestmentsDetailService {
       .where(where)
       .get()
     const order = query.dir === 'asc' ? asc : desc
-    const primary =
-      query.sort === 'amount' ? order(transaction.amountCents) : order(transaction.bookingDate)
+    const column = {
+      date: transaction.bookingDate,
+      amount: transaction.amountCents,
+      type: transaction.type,
+      name: sql`lower(coalesce(${instrument.name}, ''))`,
+      account: sql`lower(${account.name})`,
+      unitPrice: sql`cast(${transaction.unitPrice} as real)`,
+      quantity: sql`cast(${transaction.quantity} as real)`,
+      tax: transaction.taxCents,
+      fee: transaction.feeCents,
+    }[query.sort]
+    const primary = order(column)
     let rows = this.db
       .select({
         id: transaction.id,

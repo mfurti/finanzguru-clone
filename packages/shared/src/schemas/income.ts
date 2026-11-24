@@ -5,6 +5,8 @@ import { accountsParam, cents, decimalString, isoDate, nullableRate, period } fr
 
 // Dividenden (US2)
 
+const dividendBucket = z.object({ key: z.string(), label: z.string(), cents, pct: nullableRate })
+
 export const dividendSummary = z.object({
   last12Cents: cents,
   avgPerMonthCents: cents,
@@ -15,6 +17,9 @@ export const dividendSummary = z.object({
   bySecurity: z.array(
     z.object({ instrumentId: z.string(), name: z.string(), cents, pct: nullableRate }),
   ),
+  /** Split by the instruments' region/sector weights (003 US5, FR-016); sums to the total. */
+  byRegion: z.array(dividendBucket),
+  bySector: z.array(dividendBucket),
 })
 export type DividendSummary = z.infer<typeof dividendSummary>
 
@@ -95,6 +100,9 @@ export type TaxYearDto = z.infer<typeof taxYearDto>
 
 export const vorabpauschaleRow = z.object({
   instrumentId: z.string(),
+  /** Depot and its institution (broker) holding the fund (003 FR-017). */
+  accountId: z.string(),
+  broker: z.string(),
   name: z.string(),
   fundType: z.enum(FUND_TYPES),
   basisertragCents: cents,
@@ -108,6 +116,10 @@ export const vorabpauschaleResponse = z.object({
   year: z.number().int(),
   baseRate: decimalString.nullable(),
   rows: z.array(vorabpauschaleRow),
+  /** Rows grouped per broker with a subtotal, brokers sorted by name. */
+  brokers: z.array(
+    z.object({ broker: z.string(), rows: z.array(vorabpauschaleRow), subtotalCents: cents }),
+  ),
   totalTaxableCents: cents,
   estimate: z.literal(true),
 })

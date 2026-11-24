@@ -1,16 +1,24 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common'
-import type { DividendCalendarEntry, DividendSummary, ExpectedDividendInput } from '@finance/shared'
+import {
+  DIMENSION_LABELS,
+  type DividendCalendarEntry,
+  type DividendSummary,
+  type ExpectedDividendInput,
+  UNASSIGNED_KEY,
+  UNASSIGNED_LABEL,
+} from '@finance/shared'
 import { and, asc, eq, gte, inArray, lte } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
-import { expectedDividend, instrument, transaction } from '../../database/schema'
+import { expectedDividend, instrument, instrumentWeight, transaction } from '../../database/schema'
+import { weightedBreakdown } from '../../domain/breakdown'
 import {
   type DividendBooking,
   dividendFigures,
   dividendsBySecurity,
   isReceived,
 } from '../../domain/dividends'
-import { valueCents } from '../../domain/money'
+import { ratio, valueCents } from '../../domain/money'
 import { addMonths, todayIso } from '../../domain/period'
 import { computePositions, quantityOf } from '../../domain/positions'
 import { OverviewService } from '../overview/overview.service'
@@ -70,10 +78,50 @@ export class DividendsService {
       : bookings.filter((b) => b.date > addMonths(today, -12) && b.date <= today)
     const bySecurity = dividendsBySecurity(window)
     const names = this.names(bySecurity.map((row) => row.instrumentId))
+    const total = bySecurity.reduce((sum, row) => sum + row.cents, 0)
     return {
       ...figures,
       bySecurity: bySecurity.map((row) => ({ ...row, name: names.get(row.instrumentId) ?? '' })),
+      byRegion: this.split(bySecurity, 'region', total),
+      bySector: this.split(bySecurity, 'sector', total),
     }
+  }
+
+  /** Dividends split by instrument weights (003 FR-016); remainder is "Nicht zugeordnet". */
+  private split(
+    rows: readonly { instrumentId: string; cents: number }[],
+    dimension: 'region' | 'sector',
+    total: number,
+  ) {
+    const ids = rows.map((row) => row.instrumentId)
+    const weights =
+      ids.length === 0
+        ? []
+        : this.db
+            .select()
+            .from(instrumentWeight)
+            .where(
+              and(
+                inArray(instrumentWeight.instrumentId, ids),
+                eq(instrumentWeight.dimension, dimension),
+              ),
+            )
+            .all()
+    const labels = DIMENSION_LABELS[dimension]
+    return weightedBreakdown(
+      rows.map((row) => ({
+        instrumentId: row.instrumentId,
+        valueCents: row.cents,
+        weights: weights
+          .filter((w) => w.instrumentId === row.instrumentId)
+          .map((w) => ({ key: w.key, weight: w.weight })),
+      })),
+    ).map((bucket) => ({
+      key: bucket.key,
+      label: bucket.key === UNASSIGNED_KEY ? UNASSIGNED_LABEL : (labels[bucket.key] ?? bucket.key),
+      cents: bucket.valueCents,
+      pct: ratio(bucket.valueCents, total, 6),
+    }))
   }
 
   /** Received dividends plus expected payments not yet received, sorted by date. */

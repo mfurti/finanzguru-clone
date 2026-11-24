@@ -64,7 +64,7 @@ describe('Buchungen table (US3)', () => {
       await get('/api/investments/transactions?sort=amount&dir=asc&pageSize=3')
     ).json().items as { amountCents: number }[]
     expect(byAmount[0]!.amountCents).toBeLessThanOrEqual(byAmount[1]!.amountCents)
-    expect((await get('/api/investments/transactions?sort=name')).statusCode).toBe(400)
+    expect((await get('/api/investments/transactions?sort=secret')).statusCode).toBe(400)
   })
 
   it('exports the filtered rows with the requested columns only', async () => {

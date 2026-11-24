@@ -275,7 +275,7 @@
 - [X] T052 [P] [US5] Write the domain unit test `apps/api/test/unit/trailing-returns.spec.ts`:
   - 1M, 3M, YTD, 1J, 3J, 5J and Gesamt against known cash flows.
   - Periods longer than the history start at the first data point.
-- [ ] T053 [P] [US5] Write the API e2e test `apps/api/test/e2e/investments-refinements.e2e-spec.ts`:
+- [X] T053 [P] [US5] Write the API e2e test `apps/api/test/e2e/investments-refinements.e2e-spec.ts`:
   - `/investments/transactions` sort and filter.
   - `trailing` in `/analysis/returns`.
   - `/dividends/split?by=region` sums to the total.

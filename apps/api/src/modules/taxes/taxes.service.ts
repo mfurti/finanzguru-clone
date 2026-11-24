@@ -173,10 +173,6 @@ export class TaxesService {
     const depots = this.overview.resolveAccounts(accounts).filter((a) => a.type === 'depot')
     const end = `${year}-12-31` < today ? `${year}-12-31` : today
     const start = `${year}-01-01`
-    const txs = this.transactionsUntil(
-      depots.map((d) => d.id),
-      end,
-    )
     const funds = new Map(
       this.db
         .select()
@@ -186,9 +182,30 @@ export class TaxesService {
         .map((row) => [row.id, row]),
     )
 
-    const rows = [...computePositions(txs).values()]
-      .filter((state) => funds.has(state.instrumentId) && state.lots.length > 0)
-      .map((state) => {
+    const brokers = new Map(
+      depots.length === 0
+        ? []
+        : this.db
+            .select({ id: account.id, broker: institution.name })
+            .from(account)
+            .innerJoin(institution, eq(institution.id, account.institutionId))
+            .where(
+              inArray(
+                account.id,
+                depots.map((d) => d.id),
+              ),
+            )
+            .all()
+            .map((row) => [row.id, row.broker]),
+    )
+    // Per depot, so a fund held at two brokers shows up under each (FR-017).
+    const rows = depots
+      .flatMap((depot) => {
+        const txs = this.transactionsUntil([depot.id], end)
+        return [...computePositions(txs).values()].map((state) => ({ state, txs, depot }))
+      })
+      .filter(({ state }) => funds.has(state.instrumentId) && state.lots.length > 0)
+      .map(({ state, txs, depot }) => {
         const fund = funds.get(state.instrumentId)!
         const before = this.db
           .select({ close: price.close })
@@ -230,14 +247,30 @@ export class TaxesService {
           })),
           distributionsCents,
         })
-        return { instrumentId: fund.id, name: fund.name, fundType, ...result }
+        return {
+          instrumentId: fund.id,
+          accountId: depot.id,
+          broker: brokers.get(depot.id) ?? '',
+          name: fund.name,
+          fundType,
+          ...result,
+        }
       })
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort((a, b) => a.broker.localeCompare(b.broker) || a.name.localeCompare(b.name))
+    const groups = [...new Set(rows.map((row) => row.broker))].map((broker) => {
+      const own = rows.filter((row) => row.broker === broker)
+      return {
+        broker,
+        rows: own,
+        subtotalCents: own.reduce((sum, row) => sum + row.taxableCents, 0),
+      }
+    })
 
     return {
       year,
       baseRate,
       rows,
+      brokers: groups,
       totalTaxableCents: rows.reduce((sum, row) => sum + row.taxableCents, 0),
       estimate: true,
     }
