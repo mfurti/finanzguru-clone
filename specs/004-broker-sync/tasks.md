@@ -106,7 +106,7 @@
 
 ## Phase 5: Polish
 
-- [ ] T017 [P] Update `README.md`: the Scalable sync, with no private values.
+- [X] T017 [P] Update `README.md`: the Scalable sync, with no private values.
 - [ ] T018 Run the full gates (`pnpm lint; pnpm format:check; pnpm typecheck; pnpm test; pnpm test:e2e`) and the responsive check, test W1–W6 on the local dev server, then mark the spec "Implemented".
 
 ---

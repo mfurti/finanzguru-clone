@@ -36,12 +36,12 @@ Browser ──> web (Nuxt, :3000) ──/api/**──> api (Nest, :3001) ──>
 
 ## Data sources
 
-| Source               | Status      | How                                                                                                                                     |
-| -------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Kursliste (CSV)      | available   | Daily closes (`Datum;Schlusskurs`, optional `ISIN`) for benchmarks, watchlists or missing prices.                                       |
-| CSV import           | available   | Sparkasse (CSV-CAMT) and Scalable Capital exports are detected automatically; any other CSV via column mapping. Duplicates are skipped. |
-| Scalable Capital MCP | in progress | Official MCP server, OAuth login on Scalable's own page, **read-only**: trading tools are blocked by an allowlist.                      |
-| Sparkasse live query | planned     | Shown as "geplant" under Datenquellen.                                                                                                  |
+| Source               | Status      | How                                                                                                                                                                                                                                                                                                                                                                         |
+| -------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Kursliste (CSV)      | available   | Daily closes (`Datum;Schlusskurs`, optional `ISIN`) for benchmarks, watchlists or missing prices.                                                                                                                                                                                                                                                                           |
+| CSV import           | available   | Sparkasse (CSV-CAMT) and Scalable Capital exports are detected automatically; any other CSV via column mapping. Duplicates are skipped.                                                                                                                                                                                                                                     |
+| Scalable Capital MCP | in progress | Official MCP server, OAuth login on Scalable's own page, **read-only**: trading tools are blocked by an allowlist. Card under Einstellungen › Datenquellen (verbinden, synchronisieren, trennen), "Aktualisieren" in Portfolios & Konten, optional daily sync at 06:00 with `SCALABLE_DAILY_SYNC=true`. Mapping of Scalable's data follows after the first real connection. |
+| Sparkasse live query | planned     | Shown as "geplant" under Datenquellen.                                                                                                                                                                                                                                                                                                                                      |
 
 ## Setup
 
