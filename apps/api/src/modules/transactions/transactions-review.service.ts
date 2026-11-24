@@ -59,6 +59,8 @@ export class TransactionsReviewService {
         purpose: transaction.purpose,
         categoryId: transaction.categoryId,
         categoryName: category.name,
+        categoryIcon: category.icon,
+        categoryColor: category.color,
         categorySource: transaction.categorySource,
         reviewStatus: transaction.reviewStatus,
       })
@@ -70,6 +72,7 @@ export class TransactionsReviewService {
       .limit(query.pageSize)
       .offset((query.page - 1) * query.pageSize)
       .all()
+      .map((row) => ({ ...row, tags: [] }))
     return { items, total }
   }
 

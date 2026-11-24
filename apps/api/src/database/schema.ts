@@ -178,6 +178,8 @@ export const category = sqliteTable(
     name: text('name').notNull(),
     kind: text('kind', { enum: CATEGORY_KINDS }).notNull(),
     color: text('color').notNull().default('neutral'),
+    /** Key from CATEGORY_ICONS (validated in the API, no CHECK so the list can grow). */
+    icon: text('icon').notNull().default('tag'),
     isDefault: integer('is_default', { mode: 'boolean' }).notNull().default(false),
     /** Parent id or '' so top-level names are unique too (SQLite treats NULLs as distinct). */
     parentKey: text('parent_key').generatedAlwaysAs(sql`coalesce(parent_id, '')`, {
@@ -219,9 +221,12 @@ export const transaction = sqliteTable(
     /** Set by the import pipeline; the import_job table arrives with US2. */
     importJobId: text('import_job_id'),
     createdAt: text('created_at').notNull().default(nowIso),
+    /** Soft delete for undo (003 R2); purged after 10 s. Every read filters `deleted_at IS NULL`. */
+    deletedAt: text('deleted_at'),
   },
   (t) => [
     index('transactions_account_booking_idx').on(t.accountId, t.bookingDate),
+    index('transactions_booking_id_idx').on(t.bookingDate, t.id),
     index('transactions_category_idx').on(t.categoryId),
     uniqueIndex('transactions_source_ref_unique').on(t.source, t.sourceRef),
     check('transactions_type', inList('type', TRANSACTION_TYPES)),
@@ -588,6 +593,50 @@ export const userSetting = sqliteTable('user_setting', {
   value: text('value'),
 })
 
+/** Free-text label on bookings (003 US1); name unique case-insensitively. */
+export const tag = sqliteTable(
+  'tag',
+  {
+    id: id(),
+    name: text('name').notNull(),
+    color: text('color').notNull().default('neutral'),
+    createdAt: text('created_at').notNull().default(nowIso),
+  },
+  (t) => [
+    uniqueIndex('tag_name_lower_unique').on(sql`lower(${t.name})`),
+    check('tag_name_len', sql`length(${t.name}) BETWEEN 1 AND 40`),
+  ],
+)
+
+export const transactionTag = sqliteTable(
+  'transaction_tag',
+  {
+    transactionId: text('transaction_id')
+      .notNull()
+      .references(() => transaction.id, { onDelete: 'cascade' }),
+    tagId: text('tag_id')
+      .notNull()
+      .references(() => tag.id, { onDelete: 'cascade' }),
+  },
+  (t) => [
+    primaryKey({ columns: [t.transactionId, t.tagId] }),
+    index('transaction_tag_tag_idx').on(t.tagId),
+  ],
+)
+
+/** Remembers purged imported bookings so a re-import skips them (FR-007). */
+export const deletedImportMarker = sqliteTable(
+  'deleted_import_marker',
+  {
+    id: id(),
+    source: text('source').notNull(),
+    fingerprint: text('fingerprint').notNull(),
+    sourceRef: text('source_ref'),
+    deletedAt: text('deleted_at').notNull().default(nowIso),
+  },
+  (t) => [uniqueIndex('deleted_import_marker_unique').on(t.source, t.fingerprint)],
+)
+
 export const schema = {
   owner,
   institution,
@@ -616,4 +665,7 @@ export const schema = {
   watchlist,
   watchlistEntry,
   userSetting,
+  tag,
+  transactionTag,
+  deletedImportMarker,
 }

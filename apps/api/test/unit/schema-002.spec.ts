@@ -89,7 +89,7 @@ describe('feature 002 schema (migration 0005)', () => {
     cpSync(MIGRATIONS_FOLDER, partial, { recursive: true })
     const journalPath = join(partial, 'meta', '_journal.json')
     const journal = JSON.parse(readFileSync(journalPath, 'utf8')) as { entries: { tag: string }[] }
-    journal.entries = journal.entries.filter((entry) => !entry.tag.startsWith('0005'))
+    journal.entries = journal.entries.filter((entry) => entry.tag < '0005')
     writeFileSync(journalPath, JSON.stringify(journal))
     expect(readdirSync(partial)).toContain('0005_investment_analysis.sql')
 

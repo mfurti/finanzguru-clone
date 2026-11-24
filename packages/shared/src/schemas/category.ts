@@ -1,5 +1,7 @@
 import { z } from 'zod'
+import { CATEGORY_ICON_KEYS } from '../category-icons.js'
 import { CATEGORY_KINDS } from '../enums.js'
+import { cents } from './common.js'
 
 export const categoryKind = z.enum(CATEGORY_KINDS)
 
@@ -9,6 +11,7 @@ export interface CategoryNode {
   name: string
   kind: z.infer<typeof categoryKind>
   color: string
+  icon: string
   isDefault: boolean
   children: CategoryNode[]
 }
@@ -20,6 +23,7 @@ export const categoryNode: z.ZodType<CategoryNode> = z.lazy(() =>
     name: z.string(),
     kind: categoryKind,
     color: z.string(),
+    icon: z.string(),
     isDefault: z.boolean(),
     children: z.array(categoryNode),
   }),
@@ -30,6 +34,7 @@ export const createCategoryInput = z.object({
   name: z.string().trim().min(1).max(60),
   kind: categoryKind,
   color: z.string().trim().min(1).max(30).default('neutral'),
+  icon: z.enum(CATEGORY_ICON_KEYS as [string, ...string[]]).default('tag'),
 })
 export type CreateCategoryInput = z.infer<typeof createCategoryInput>
 
@@ -50,3 +55,48 @@ export const budgetDto = budgetInput.extend({
   remainingCents: z.number().int(),
 })
 export type BudgetDto = z.infer<typeof budgetDto>
+
+/** `GET /api/categories/:id/detail` (US3). */
+export const categoryDetail = z.object({
+  id: z.string(),
+  name: z.string(),
+  kind: categoryKind,
+  color: z.string(),
+  icon: z.string(),
+  parentId: z.string().nullable(),
+  totalCents: cents,
+  history: z.array(z.object({ month: z.string(), cents })),
+})
+export type CategoryDetail = z.infer<typeof categoryDetail>
+
+const budgetFigures = z.object({
+  limitCents: cents,
+  spentCents: cents,
+  /** spent / limit as decimal string (e.g. "0.82"). */
+  ratio: z.string(),
+  diffCents: cents,
+})
+const budgetPoint = z.object({ budgetCents: cents.nullable(), spentCents: cents })
+
+/** `GET /api/budgets/overview` (US4). */
+export const budgetsOverview = z.object({
+  period: z.string(),
+  rows: z.array(
+    budgetFigures.extend({
+      id: z.string(),
+      categoryId: z.string(),
+      name: z.string(),
+      icon: z.string(),
+      color: z.string(),
+    }),
+  ),
+  total: budgetFigures,
+  series: z.array(
+    z.object({
+      month: z.string(),
+      total: budgetPoint,
+      byBudget: z.record(z.string(), budgetPoint),
+    }),
+  ),
+})
+export type BudgetsOverview = z.infer<typeof budgetsOverview>

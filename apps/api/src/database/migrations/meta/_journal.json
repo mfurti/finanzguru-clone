@@ -43,6 +43,13 @@
       "when": 1795450128748,
       "tag": "0005_investment_analysis",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1795513612318,
+      "tag": "0006_reference_parity",
+      "breakpoints": true
     }
   ]
 }

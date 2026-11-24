@@ -73,7 +73,20 @@ export const transactionListItem = z.object({
   purpose: z.string().nullable(),
   categoryId: z.string().nullable(),
   categoryName: z.string().nullable(),
+  categoryIcon: z.string().nullable(),
+  categoryColor: z.string().nullable(),
   categorySource: z.string().nullable(),
   reviewStatus: z.enum(['unreviewed', 'reviewed']),
+  tags: z.array(z.object({ id: z.string(), name: z.string(), color: z.string() })),
 })
 export type TransactionListItem = z.infer<typeof transactionListItem>
+
+/** `GET /api/transactions` response: page plus the sum of all matching rows. */
+export const transactionPage = z.object({
+  items: z.array(transactionListItem),
+  total: z.number().int().min(0),
+  page: z.number().int().min(1),
+  pageSize: z.number().int().min(1),
+  sumCents: cents,
+})
+export type TransactionPage = z.infer<typeof transactionPage>

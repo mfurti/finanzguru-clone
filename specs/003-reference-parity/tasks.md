@@ -17,11 +17,11 @@
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-- [ ] T001 [P] Add `CATEGORY_ICONS` to `packages/shared/src/category-icons.ts` and export it from `packages/shared/src/index.ts`.
+- [X] T001 [P] Add `CATEGORY_ICONS` to `packages/shared/src/category-icons.ts` and export it from `packages/shared/src/index.ts`.
   - About 40 Lucide keys, each with a German label. Include `tag` (default), `house`, `shopping-cart`, `utensils`, `car`, `bus`, `plane`, `heart-pulse`, `shield`, `piggy-bank`, `gift`, `shirt`, `graduation-cap`, `baby`, `dog`, `dumbbell`, `film`, `music`, `phone`, `wifi`, `zap`, `droplet`, `flame`, `briefcase`, `banknote`, `landmark`, `receipt`, `coffee`, `beer`, `book`, `gamepad-2`, `wrench`, `sofa`, `scissors`, `pill`, `train-front`, `fuel`, `hand-coins` and `trending-up`.
   - Add `isCategoryIcon(key)`.
-- [ ] T002 [P] Add zod DTOs exactly as in `specs/003-reference-parity/contracts/http-api.md` to `packages/shared/src/dto/`, one file per area, and export them all:
-  - `transactions-query.ts`: query with `pageSize` ∈ {25, 50, 100}, `sort` whitelist `date|amount|counterparty|category|account`, `dir` ∈ {asc, desc}, `review` ∈ {all, unreviewed, reviewed}.
+- [X] T002 [P] Add zod DTOs exactly as in `specs/003-reference-parity/contracts/http-api.md` to `packages/shared/src/schemas/` (the repo keeps DTOs there), new files per area or extending the existing ones, and export them all:
+  - `transaction.ts`: filter and list query (`pageSize` 1–200, UI offers 25/50/100), `sort` whitelist `date|amount|counterparty|category|account`, `dir` ∈ {asc, desc}, `review` ∈ {all, unreviewed, reviewed}.
   - `transactions-bulk.ts`: `ids` (1–1000) XOR `filter`.
   - `tags.ts`: name 1–40, trimmed.
   - `search.ts`: `q` 2–100, trimmed.
@@ -41,14 +41,14 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T005 Extend `apps/api/src/database/schema.ts` as specified in data-model.md:
+- [X] T005 Extend `apps/api/src/database/schema.ts` as specified in data-model.md:
   - `transactions.deleted_at` (text, nullable).
   - Index `transactions_booking_id_idx` on `(booking_date, id)`.
   - `category.icon` (text, not null, default `'tag'`).
   - New table `tag`: `name` 1–40 chars, unique via a `lower(name)` unique index; `color` default `neutral`; `created_at`.
   - New table `transaction_tag`: PK `(transaction_id, tag_id)`, both FKs on delete cascade, index on `tag_id`.
   - New table `deleted_import_marker`: `source`, `fingerprint` not null, `source_ref` nullable, `deleted_at`; unique `(source, fingerprint)`.
-- [ ] T006 Generate `apps/api/src/database/migrations/0006_reference_parity.sql` with `pnpm --filter api db:generate`.
+- [X] T006 Generate `apps/api/src/database/migrations/0006_reference_parity.sql` with `pnpm --filter api db:generate`.
   - Hand-check that it uses only `CREATE TABLE`, `CREATE INDEX` and `ALTER TABLE ADD`, with no table rebuild.
   - Run it against a copy of the dev DB.
   - Extend the migration smoke check in `apps/api/test/e2e/`.
@@ -86,7 +86,7 @@
 - [ ] T011 [P] [US1] Write the API e2e test `apps/api/test/e2e/transactions-query.e2e-spec.ts`. It covers:
   - Each filter (`q`, accounts, types, categories, tags, from/to, min/max, review).
   - Each sort column in both directions.
-  - Page sizes 25/50/100; `pageSize=30` gives 400.
+  - Page sizes 25/50/100 (any size 1–200 is accepted for scripts); `pageSize=500` gives 400.
   - `total` and `sumCents` match the filter.
 - [ ] T012 [P] [US1] Write the API e2e test `apps/api/test/e2e/transactions-bulk.e2e-spec.ts`. It covers:
   - Bulk actions `setCategory` (sets reviewed), `addTags`, `removeTags`, `markReviewed` with a filter, and `delete`.

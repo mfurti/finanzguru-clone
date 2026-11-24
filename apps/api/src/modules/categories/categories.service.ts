@@ -32,6 +32,7 @@ export class CategoriesService {
       name: row.name,
       kind: row.kind,
       color: row.color,
+      icon: row.icon,
       isDefault: row.isDefault,
       children: rows.filter((child) => child.parentId === row.id).map(node),
     })
