@@ -21,7 +21,7 @@ Everything extends the 001/002 code:
 
 - Same Nest module pattern, shared zod DTOs and Nuxt components.
 - One migration (`0006_reference_parity`).
-- No new runtime dependencies except the self-hosted Outfit font files.
+- One new runtime dependency: the Outfit font package (served by the app itself).
 
 ## Technical Context
 
@@ -32,9 +32,9 @@ Everything extends the 001/002 code:
 - Web: Nuxt 4, Nuxt UI 4, @nuxtjs/i18n, @unovis/vue, d3-shape, d3-sankey.
 - API: NestJS 11 on Fastify, nestjs-zod, Drizzle ORM 0.45 with better-sqlite3, decimal.js.
 - Shared: zod 4 in `packages/shared`.
-- New: Outfit font files (OFL) in `apps/web/public/fonts`, see research R11.
+- New: `@fontsource-variable/outfit` (OFL font files bundled by Vite), see research R11.
 
-**Storage**: SQLite (WAL); migration `0006_reference_parity` (see [data-model.md](./data-model.md))
+**Storage**: SQLite (WAL); migration `0006_reference_parity` (see [data-model.md](./data-model.md)); undo copies of deleted bookings in memory for 10 s
 
 **Testing**: Vitest (domain unit, Nest e2e via `inject()`, Nuxt components), Playwright journeys plus a responsive check
 
@@ -63,7 +63,7 @@ Everything extends the 001/002 code:
 - ~4 new pages: Sankey, account detail, depot detail, category detail.
 - ~6 reworked pages.
 - ~15 new or changed endpoints.
-- 3 new tables, 1 new column.
+- 3 new tables, 1 new column (`category.icon`).
 
 ## Constitution Check
 
@@ -116,7 +116,7 @@ apps/api/src/
 │   ├── budget-history.ts       # budget vs. spending per month
 │   └── sparkline.ts            # 30-day balance series per account
 └── modules/
-    ├── transactions/           # query (filter/sort/page), bulk, delete + restore, export
+    ├── transactions/           # query (filter/sort/page), bulk, delete + undo store + restore, export
     ├── tags/                   # CRUD
     ├── search/                 # GET /search
     ├── accounts/               # + /accounts/overview (sparklines, last sync), /accounts/:id/detail

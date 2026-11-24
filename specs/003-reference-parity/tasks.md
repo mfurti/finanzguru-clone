@@ -41,7 +41,6 @@
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
 - [X] T005 Extend `apps/api/src/database/schema.ts` as specified in data-model.md:
-  - `transactions.deleted_at` (text, nullable).
   - Index `transactions_booking_id_idx` on `(booking_date, id)`.
   - `category.icon` (text, not null, default `'tag'`).
   - New table `tag`: `name` 1–40 chars, unique via a `lower(name)` unique index; `color` default `neutral`; `created_at`.
@@ -51,10 +50,10 @@
   - Hand-check that it uses only `CREATE TABLE`, `CREATE INDEX` and `ALTER TABLE ADD`, with no table rebuild.
   - Run it against a copy of the dev DB.
   - Extend the migration smoke check in `apps/api/test/e2e/`.
-- [ ] T007 Add a `deleted_at IS NULL` filter to every transactions read path:
-  - Services in `apps/api/src/modules/{transactions,cashflow,overview,investments,analysis,dividends,taxes,budgets}`.
-  - Snapshot rebuild in `apps/api/src/domain/`.
-  - Add one e2e test in `apps/api/test/e2e/soft-delete.e2e-spec.ts` proving that a soft-deleted booking drops out of balance, cashflow and budget.
+- [X] T007 Add the undo store `apps/api/src/modules/transactions/transactions-trash.service.ts` (research R2):
+  - `remove(ids)` copies the rows and their tag links, deletes them, writes a `deleted_import_marker` for imported rows (`source` ≠ `manual`), recomputes snapshots of the affected accounts, and returns an `undoToken`.
+  - `restore(token)` re-inserts rows and links, removes their markers, recomputes snapshots; unknown or expired tokens (older than 10 s) throw 410.
+  - Unit/e2e test in `apps/api/test/e2e/transactions-trash.e2e-spec.ts`: a deleted booking drops out of balance, cashflow and budget and comes back on restore; the token expires after 10 s (fake timers).
 - [ ] T008 [P] Create `apps/web/app/composables/useCategoryAppearance.ts` (research R9):
   - One 12-color pastel palette, extending the Sankey set, mapped from `category.color` keys.
   - Sub categories inherit the main category's color.
@@ -90,7 +89,7 @@
 - [ ] T012 [P] [US1] Write the API e2e test `apps/api/test/e2e/transactions-bulk.e2e-spec.ts`. It covers:
   - Bulk actions `setCategory` (sets reviewed), `addTags`, `removeTags`, `markReviewed` with a filter, and `delete`.
   - `ids` and `filter` together gives 400; an empty match gives `affected: 0`.
-  - `restore` within 10 s; 410 after the purge.
+  - `restore` within 10 s; 410 after expiry.
   - A re-import of the same CSV skips the deleted rows and reports "skipped (deleted)".
 - [ ] T013 [P] [US1] Write the API e2e test `apps/api/test/e2e/tags.e2e-spec.ts`: CRUD; a case-insensitive duplicate gives 409; deleting a tag removes its links only.
 - [ ] T014 [P] [US1] Write the Playwright journey `e2e/us-p1-transactions.spec.ts`, covering quickstart W1–W5: unreviewed filter, bulk category, chip edit, delete plus undo, export of visible columns, `/budget/review` redirect.
@@ -103,11 +102,9 @@
   - Return `{ items, total, page, pageSize, sumCents }`.
   - Stable order by `(sort, id)`.
 - [ ] T016 [US1] Implement `POST /transactions/bulk`, `DELETE /transactions/:id` and `POST /transactions/restore` in `apps/api/src/modules/transactions/transactions-write.service.ts`:
-  - Soft delete returns an `undoToken`, an id list kept in memory with its timestamp.
-  - Purge after 10 s on the next write request and at startup.
-  - Imported rows get a `deleted_import_marker` on purge.
-  - Recompute snapshots for the affected accounts.
-  - "Set category" uses the review logic in `transactions-review.service.ts`.
+  - Delete goes through the undo store from T007 and returns its `undoToken`.
+  - A `filter` is resolved with the same query builder as the list (T015).
+  - "Set category" uses the review logic in `transactions-review.service.ts` (sets reviewed, manual source).
 - [ ] T017 [US1] Make `apps/api/src/modules/import/import.service.ts` skip rows whose `(source, fingerprint)` or `(source, source_ref)` is in `deleted_import_marker`, and count them as `skippedDeleted` in the job result.
 - [ ] T018 [P] [US1] Create the `apps/api/src/modules/tags/` module (CRUD under `/tags` with `usage` count) and register it in `apps/api/src/app.module.ts`.
 - [ ] T019 [US1] Add `GET /transactions/export.csv` in `apps/api/src/modules/transactions/transactions.controller.ts`:

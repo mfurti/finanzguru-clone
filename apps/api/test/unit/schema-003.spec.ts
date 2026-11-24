@@ -44,9 +44,7 @@ describe('feature 003 schema (migration 0006)', () => {
     `)
 
     migrate(old, { migrationsFolder: MIGRATIONS_FOLDER })
-    expect(sqlite.prepare('SELECT id, deleted_at FROM transactions').all()).toEqual([
-      { id: 't1', deleted_at: null },
-    ])
+    expect(sqlite.prepare('SELECT id FROM transactions').all()).toEqual([{ id: 't1' }])
     expect(sqlite.prepare('SELECT icon FROM category').get()).toEqual({ icon: 'tag' })
   })
 })

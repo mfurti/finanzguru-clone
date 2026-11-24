@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "9b8dead0-43f3-4913-967b-9d8c14f94ebc",
+  "id": "b6c7e8f6-c1da-450a-b7b3-fa7add1eeaea",
   "prevId": "77f591f7-04e6-4748-8968-0c746334d0e2",
   "tables": {
     "account": {
@@ -2119,13 +2119,6 @@
           "notNull": true,
           "autoincrement": false,
           "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
         }
       },
       "indexes": {

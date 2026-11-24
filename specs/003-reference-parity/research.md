@@ -13,11 +13,11 @@ All decisions for feature 003. No open NEEDS CLARIFICATION.
 ## R2 Bulk actions and delete with undo
 
 - **Decision**: `POST /transactions/bulk` with `{ ids | filter, action: setCategory|addTags|removeTags|markReviewed|delete, value? }`.
-  - Delete is a soft delete. The rows move into a `deletedAt` state. `POST /transactions/restore` undoes it.
-  - A purge removes soft-deleted rows older than 10 s on the next write and at startup.
-  - Imported rows also get a `deleted_import_marker` (source plus fingerprint/sourceRef) so a re-import skips them (FR-007).
-- **Rationale**: Undo needs the data on the server. A browser-only delay would lose the delete if the tab closes.
-- **Alternatives**: Delay the DELETE in the browser for 10 s (rejected because a reload loses the action silently).
+  - Delete removes the rows at once and keeps a copy (rows plus their tag links) for 10 s in an in-memory undo store under an `undoToken`. `POST /transactions/restore` re-inserts the copy; after 10 s the token expires (410).
+  - Imported rows (`source` ≠ `manual`) get a `deleted_import_marker` (source, fingerprint, sourceRef) at delete time, so a re-import skips them (FR-007). Restore removes the marker again.
+  - Snapshots of the affected accounts are recomputed after delete and after restore.
+- **Rationale**: Every existing read path (about 25 queries over balances, cashflow, budgets, investments, taxes) stays unchanged, because deleted rows are really gone. A server restart within the 10 s only loses the undo, never data that should stay.
+- **Alternatives**: Soft delete with a `deleted_at` column (rejected: every read path would need a filter, and one missed filter shows deleted money). Delaying the DELETE in the browser (rejected: a reload loses the action silently).
 
 ## R3 Global search
 

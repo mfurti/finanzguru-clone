@@ -26,5 +26,4 @@ CREATE TABLE `transaction_tag` (
 --> statement-breakpoint
 CREATE INDEX `transaction_tag_tag_idx` ON `transaction_tag` (`tag_id`);--> statement-breakpoint
 ALTER TABLE `category` ADD `icon` text DEFAULT 'tag' NOT NULL;--> statement-breakpoint
-ALTER TABLE `transactions` ADD `deleted_at` text;--> statement-breakpoint
 CREATE INDEX `transactions_booking_id_idx` ON `transactions` (`booking_date`,`id`);

@@ -221,8 +221,6 @@ export const transaction = sqliteTable(
     /** Set by the import pipeline; the import_job table arrives with US2. */
     importJobId: text('import_job_id'),
     createdAt: text('created_at').notNull().default(nowIso),
-    /** Soft delete for undo (003 R2); purged after 10 s. Every read filters `deleted_at IS NULL`. */
-    deletedAt: text('deleted_at'),
   },
   (t) => [
     index('transactions_account_booking_idx').on(t.accountId, t.bookingDate),

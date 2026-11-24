@@ -40,10 +40,8 @@ Migration `0006_reference_parity`. Additive only: new tables plus `ALTER TABLE A
 
 ### transactions
 
-- `+ deleted_at text NULL` (soft delete for undo, R2).
-- All reads filter `deleted_at IS NULL`.
-- Purge: rows with `deleted_at < now − 10 s` are hard-deleted. The purge runs on the next write request and at startup.
 - New index `(booking_date, id)` for the default sort.
+- Deletes are real deletes; undo keeps a copy in memory for 10 s (R2), so no read path changes.
 
 ### category
 
@@ -64,16 +62,16 @@ Migration `0006_reference_parity`. Additive only: new tables plus `ALTER TABLE A
 ## State transitions
 
 ```text
-transaction: active ──delete──▶ soft-deleted ──(10 s)──▶ purged
-                 ▲                    │
-                 └──────restore───────┘
-imported + purged ⇒ deleted_import_marker (import skips)
+transaction: stored ──delete──▶ removed (copy in undo store, 10 s) ──(10 s)──▶ gone
+                  ▲                         │
+                  └─────────restore─────────┘
+imported + deleted ⇒ deleted_import_marker (import skips; restore removes it)
 review_status: unreviewed ──(set category | mark reviewed | bulk)──▶ reviewed
 ```
 
 ## Validation rules
 
 - Bulk requests: either `ids` (1–1000) or `filter`, never both. An empty match returns 200 with `affected: 0`.
-- `pageSize` ∈ {25, 50, 100}. `sort` comes from a whitelist. `dir` ∈ {asc, desc}.
+- `pageSize` 1–200 (the UI offers 25, 50, 100). `sort` comes from a whitelist. `dir` ∈ {asc, desc}.
 - Search `q`: 2–100 chars, trimmed.
 - Tag names are unique (case-insensitive). Deleting a tag removes its links only.
