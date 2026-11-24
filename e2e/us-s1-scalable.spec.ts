@@ -72,7 +72,7 @@ test.describe('004 US1 Scalable card', () => {
     await expect(card.getByTestId('scalable-last-sync')).toContainText('12 neu, 3 übersprungen')
     await expect(card.getByTestId('scalable-daily')).toContainText('aus')
     await card.getByTestId('scalable-sync').click()
-    await expect(page.getByText('Synchronisierung läuft bereits')).toBeVisible()
+    await expect(page.getByText('Synchronisierung läuft bereits', { exact: true })).toBeVisible()
   })
 
   test('expired grant: offers "Neu verbinden"; disconnect asks first', async ({ page }) => {
