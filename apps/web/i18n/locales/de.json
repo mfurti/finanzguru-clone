@@ -161,7 +161,8 @@
     "add": "Hinzufügen",
     "close": "Schließen",
     "estimate": "Schätzung",
-    "loading": "Lädt …"
+    "loading": "Lädt …",
+    "error": "Etwas ist schiefgelaufen"
   },
   "import": {
     "title": "CSV importieren",

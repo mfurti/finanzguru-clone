@@ -59,7 +59,7 @@
   - Sub categories inherit the main category's color.
   - Expose `colorOf(categoryId)`, `iconOf(categoryId)` and `shade(categoryId, depth)`.
   - Add a unit test in `apps/web/tests/category-appearance.spec.ts`.
-- [ ] T009 [P] Add shared UI parts in `apps/web/app/components/common/`, with component tests in `apps/web/tests/common-parts.spec.ts`:
+- [X] T009 [P] Add shared UI parts in `apps/web/app/components/common/`, with component tests in `apps/web/tests/common-parts.spec.ts`:
   - `Avatar.vue`: up to 2 initials, background from a stable name hash into the R9 palette.
   - `CopyButton.vue`: clipboard plus toast "Kopiert".
   - `Sparkline.vue`: SVG polyline; flat line if fewer than 2 points.
