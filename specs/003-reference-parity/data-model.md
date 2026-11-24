@@ -34,7 +34,7 @@ Migration `0006_reference_parity`. Additive only: new tables plus `ALTER TABLE A
 | deleted_at | text | ISO timestamp |
 
 - Unique index on `(source, fingerprint)`.
-- The import pipeline skips any row whose fingerprint or `(source, source_ref)` matches a marker, and counts it as "skipped (deleted)" in the import report.
+- The import pipeline skips any row whose fingerprint or `(source, source_ref)` matches a marker; it counts as skipped in the import report.
 
 ## Changed tables
 

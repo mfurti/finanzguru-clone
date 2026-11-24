@@ -227,6 +227,21 @@ export class TransactionsReviewService {
         .where(eq(transaction.id, id))
         .run()
 
+      if (input.tagIds) {
+        const known = input.tagIds.length
+          ? tx.select({ id: tag.id }).from(tag).where(inArray(tag.id, input.tagIds)).all()
+          : []
+        if (known.length !== new Set(input.tagIds).size) {
+          throw new BadRequestException('Tag nicht gefunden')
+        }
+        tx.delete(transactionTag).where(eq(transactionTag.transactionId, id)).run()
+        if (known.length > 0) {
+          tx.insert(transactionTag)
+            .values(known.map((item) => ({ transactionId: id, tagId: item.id })))
+            .run()
+        }
+      }
+
       let updated = 1
       if (input.createRule && input.categoryId) {
         const priority =

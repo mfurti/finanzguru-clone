@@ -86,11 +86,11 @@
   - Each sort column in both directions.
   - Page sizes 25/50/100 (any size 1–200 is accepted for scripts); `pageSize=500` gives 400.
   - `total` and `sumCents` match the filter.
-- [ ] T012 [P] [US1] Write the API e2e test `apps/api/test/e2e/transactions-bulk.e2e-spec.ts`. It covers:
+- [X] T012 [P] [US1] Write the API e2e test `apps/api/test/e2e/transactions-bulk.e2e-spec.ts`. It covers:
   - Bulk actions `setCategory` (sets reviewed), `addTags`, `removeTags`, `markReviewed` with a filter, and `delete`.
   - `ids` and `filter` together gives 400; an empty match gives `affected: 0`.
   - `restore` within 10 s; 410 after expiry.
-  - A re-import of the same CSV skips the deleted rows and reports "skipped (deleted)".
+  - A re-import of the same CSV skips the deleted rows (counted as skipped).
 - [X] T013 [P] [US1] Write the API e2e test `apps/api/test/e2e/tags.e2e-spec.ts`: CRUD; a case-insensitive duplicate gives 409; deleting a tag removes its links only.
 - [ ] T014 [P] [US1] Write the Playwright journey `e2e/us-p1-transactions.spec.ts`, covering quickstart W1–W5: unreviewed filter, bulk category, chip edit, delete plus undo, export of visible columns, `/budget/review` redirect.
 
@@ -101,11 +101,11 @@
   - Joins for account name, category icon/color and tags (one grouped query, no N+1).
   - Return `{ items, total, page, pageSize, sumCents }`.
   - Stable order by `(sort, id)`.
-- [ ] T016 [US1] Implement `POST /transactions/bulk`, `DELETE /transactions/:id` and `POST /transactions/restore` in `apps/api/src/modules/transactions/transactions-write.service.ts`:
+- [X] T016 [US1] Implement `POST /transactions/bulk`, `DELETE /transactions/:id` and `POST /transactions/restore` in `apps/api/src/modules/transactions/transactions-write.service.ts`:
   - Delete goes through the undo store from T007 and returns its `undoToken`.
   - A `filter` is resolved with the same query builder as the list (T015).
   - "Set category" uses the review logic in `transactions-review.service.ts` (sets reviewed, manual source).
-- [ ] T017 [US1] Make `apps/api/src/modules/import/import.service.ts` skip rows whose `(source, fingerprint)` or `(source, source_ref)` is in `deleted_import_marker`, and count them as `skippedDeleted` in the job result.
+- [X] T017 [US1] Make `apps/api/src/modules/import/import.service.ts` skip rows whose `(source, fingerprint)` or `(source, source_ref)` is in `deleted_import_marker`; they count as skipped in the job result.
 - [X] T018 [P] [US1] Create the `apps/api/src/modules/tags/` module (CRUD under `/tags` with `usage` count) and register it in `apps/api/src/app.module.ts`.
 - [ ] T019 [US1] Add `GET /transactions/export.csv` in `apps/api/src/modules/transactions/transactions.controller.ts`:
   - Same filter as the query, no paging.

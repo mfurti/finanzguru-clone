@@ -1,10 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 import type { ImportJobDto, RowError, TransactionSource } from '@finance/shared'
-import { and, asc, eq, inArray, isNotNull } from 'drizzle-orm'
+import { and, asc, eq, inArray, isNotNull, or } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import {
   account,
+  deletedImportMarker,
   categorizationRule,
   importJob,
   institution,
@@ -172,6 +173,22 @@ export class ImportPipeline {
             .select({ id: transaction.id })
             .from(transaction)
             .where(eq(transaction.fingerprint, fingerprint))
+            .get() ||
+          // Deleted by the owner earlier: never bring it back (003 FR-007).
+          tx
+            .select({ id: deletedImportMarker.id })
+            .from(deletedImportMarker)
+            .where(
+              and(
+                eq(deletedImportMarker.source, options.source),
+                item.sourceRef
+                  ? or(
+                      eq(deletedImportMarker.fingerprint, fingerprint),
+                      eq(deletedImportMarker.sourceRef, item.sourceRef),
+                    )
+                  : eq(deletedImportMarker.fingerprint, fingerprint),
+              ),
+            )
             .get()
         if (duplicate) {
           skipped++
