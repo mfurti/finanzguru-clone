@@ -1,6 +1,7 @@
 /** DTOs for dividends, taxes, benchmarks and watchlists (feature 002). */
 import { z } from 'zod'
 import { ASSESSMENTS, FUND_TYPES } from '../classification.js'
+import { ASSET_CLASSES } from '../enums.js'
 import { accountsParam, cents, decimalString, isoDate, nullableRate, period } from './common.js'
 
 // Dividenden (US2)
@@ -168,9 +169,11 @@ export const watchlistSummary = z.object({
 })
 export type WatchlistSummary = z.infer<typeof watchlistSummary>
 
+/** Add by ISIN; `assetClass` comes from the security search (005 US4). */
 export const watchlistEntryInput = z.object({
   isin: z.string().trim().toUpperCase().length(12),
   name: z.string().trim().min(1).max(200),
+  assetClass: z.enum(ASSET_CLASSES).optional(),
 })
 export type WatchlistEntryInput = z.infer<typeof watchlistEntryInput>
 
@@ -184,6 +187,8 @@ export const watchlistEntryDto = z.object({
   changePct: nullableRate,
   stale: z.boolean(),
   hasPrices: z.boolean(),
+  /** Time of the latest broker quote (005 US4); null when only daily closes exist. */
+  quotedAt: z.string().nullable().optional(),
 })
 export type WatchlistEntryDto = z.infer<typeof watchlistEntryDto>
 

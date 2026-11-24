@@ -21,6 +21,16 @@ export const dataSourceDto = z.object({
     .optional(),
   /** Daily sync switched on in the server configuration (read-only in the UI). */
   dailySync: z.boolean().optional(),
+  /** Bank consent end (005 US1); null when no consent is stored. */
+  consentEndsAt: z.string().nullable().optional(),
+  /** True from 14 days before the consent ends. */
+  consentWarning: z.boolean().optional(),
+  /** Bank name the consent was given at. */
+  institution: z.string().nullable().optional(),
+  /** Accounts approved in the bank consent. */
+  accounts: z
+    .array(z.object({ id: z.string(), name: z.string(), maskedIban: z.string().nullable() }))
+    .optional(),
 })
 export type DataSourceDto = z.infer<typeof dataSourceDto>
 
@@ -34,3 +44,22 @@ export const connectResponse = z.object({
   connected: z.boolean(),
 })
 export type ConnectResponse = z.infer<typeof connectResponse>
+
+/** `GET /api/sources/bank/institutions`: banks offered by Enable Banking (005 US1). */
+export const bankInstitution = z.object({
+  name: z.string(),
+  country: z.string().length(2),
+  logo: z.string().nullable(),
+})
+export type BankInstitution = z.infer<typeof bankInstitution>
+
+/** `POST /api/sources/bank/connect` body. */
+export const bankConnectRequest = z.object({
+  aspspName: z.string().trim().min(1).max(200),
+  aspspCountry: z.string().trim().toUpperCase().length(2),
+})
+export type BankConnectRequest = z.infer<typeof bankConnectRequest>
+
+/** `POST /api/sources/bank/connect` → the bank's login page. */
+export const bankConnectResponse = z.object({ authorizationUrl: z.string() })
+export type BankConnectResponse = z.infer<typeof bankConnectResponse>

@@ -19,6 +19,44 @@ export const performanceResponse = z.object({
 })
 export type PerformanceResponse = z.infer<typeof performanceResponse>
 
+/** `GET /api/investments/performance/classes` query (005 US2). */
+export const classPerformanceQuery = z.object({
+  accounts: accountsParam,
+  period: period.default('1Y'),
+  from: isoDate.optional(),
+  to: isoDate.optional(),
+})
+
+/** Value and time-weighted return of one line; `twrorPct` is null before the first holding. */
+const classPoint = z.object({
+  valueCents: cents,
+  twrorPct: decimalString.nullable(),
+})
+
+/**
+ * Per-class lines for the performance chart (005 R5). `total` is the "Alle" line;
+ * `byClass` holds only the classes listed in `classes`.
+ */
+export const classPerformanceResponse = z.object({
+  classes: z.array(z.enum(ASSET_CLASSES)),
+  series: z.array(
+    z.object({
+      date: isoDate,
+      total: classPoint,
+      byClass: z.partialRecord(z.enum(ASSET_CLASSES), classPoint),
+    }),
+  ),
+})
+export type ClassPerformanceResponse = z.infer<typeof classPerformanceResponse>
+
+/** Gain of one security: realized (sales, FIFO, after fees) + price gain = total (005 R7). */
+export const gainSplit = z.object({
+  totalGainCents: cents,
+  realizedCents: cents,
+  priceGainCents: cents,
+})
+export type GainSplit = z.infer<typeof gainSplit>
+
 export const positionsQuery = z.object({
   accounts: accountsParam,
   assetClass: z.enum(ASSET_CLASSES).optional(),
