@@ -41,12 +41,13 @@
     - index `(instrument_id, date)`;
     - FKs on delete cascade.
   - Write an upgrade test in `apps/api/test/unit/schema-004.spec.ts`. Its journal filter is `entry.tag < '0007'`; do the same in `schema-003.spec.ts`.
-- [ ] T005 Add `apps/api/src/modules/sources/sync.service.ts`:
+- [X] T005 Add `apps/api/src/modules/sources/sync.service.ts`:
   - an in-process lock per source (a second start throws 409);
   - writes `sync_run` rows;
   - runs the source's `SyncBatch` through the existing import pipeline (fingerprints, deleted-import markers);
   - sets `account.last_synced_at`;
   - applies the status transitions from `data-model.md`.
+  - Lives in its own `SyncModule` (`apps/api/src/modules/sources/sync.module.ts`), because `ImportModule` already depends on `SourcesModule`.
   - Unit test in `apps/api/test/unit/sync-service.spec.ts` with a fake source: lock, success, partial, upstream error → `error`, expired grant → `needs_reauth`.
 
 ---
