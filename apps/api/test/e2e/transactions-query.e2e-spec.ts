@@ -120,4 +120,26 @@ describe('transactions query (003 R1)', () => {
     const ids = new Set(a.items.map((row) => row.id))
     expect(b.items.some((row) => ids.has(row.id))).toBe(false)
   })
+
+  it('exports the visible columns of all filtered rows as German CSV', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/transactions/export.csv?types=expense&from=2026-10-01&to=2026-10-31&columns=date,counterparty,amount',
+      headers: { cookie },
+    })
+    expect(res.statusCode).toBe(200)
+    expect(res.headers['content-type']).toContain('text/csv')
+    expect(res.body.charCodeAt(0)).toBe(0xfeff)
+    const lines = res.body.slice(1).trim().split('\r\n')
+    expect(lines[0]).toBe('Datum;Name;Betrag')
+    const expected = await all('types=expense&from=2026-10-01&to=2026-10-31')
+    expect(lines).toHaveLength(expected.length + 1)
+    expect(lines[1]).toMatch(/^\d{2}\.10\.2026;.*;-\d+,\d{2}$/)
+    const bad = await app.inject({
+      method: 'GET',
+      url: '/api/transactions/export.csv?columns=secret',
+      headers: { cookie },
+    })
+    expect(bad.statusCode).toBe(400)
+  })
 })

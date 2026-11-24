@@ -11,6 +11,7 @@ import {
   Patch,
   Post,
   Query,
+  Res,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import {
@@ -19,6 +20,7 @@ import {
   transactionBulkInput,
   type TransactionBulkResult,
   type TransactionDto,
+  transactionExportQuery,
   transactionFilter,
   transactionListQuery,
   type TransactionPage,
@@ -30,12 +32,15 @@ import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { category, transaction } from '../../database/schema'
 import { OverviewService } from '../overview/overview.service'
+import type { FastifyReply } from 'fastify'
 import { TransactionsBulkService } from './transactions-bulk.service'
+import { transactionsListToCsv } from './transactions-csv'
 import { TransactionsReviewService } from './transactions-review.service'
 import { TransactionsTrashService } from './transactions-trash.service'
 import { TransactionsWriteService } from './transactions-write.service'
 
 class FilterQueryDto extends createZodDto(transactionFilter) {}
+class ExportQueryDto extends createZodDto(transactionExportQuery) {}
 class BulkDto extends createZodDto(transactionBulkInput) {}
 class RestoreDto extends createZodDto(restoreInput) {}
 class CreateTransactionDto extends createZodDto(createTransactionInput) {}
@@ -78,6 +83,19 @@ export class TransactionsController {
   @Get()
   list(@Query() query: TransactionListQueryDto): TransactionPage {
     return this.review.list(query)
+  }
+
+  /** Filtered rows with the visible columns as CSV, no paging (FR-004). */
+  @Get('export.csv')
+  exportCsv(
+    @Query() query: ExportQueryDto,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ): string {
+    const { items } = this.review.list({ ...query, page: 1, pageSize: Number.MAX_SAFE_INTEGER })
+    void reply
+      .header('content-type', 'text/csv; charset=utf-8')
+      .header('content-disposition', 'attachment; filename="transaktionen.csv"')
+    return transactionsListToCsv(items, query.columns)
   }
 
   /** Categorize / review; optional rule creation (US5). */

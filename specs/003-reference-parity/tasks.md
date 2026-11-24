@@ -107,7 +107,7 @@
   - "Set category" uses the review logic in `transactions-review.service.ts` (sets reviewed, manual source).
 - [X] T017 [US1] Make `apps/api/src/modules/import/import.service.ts` skip rows whose `(source, fingerprint)` or `(source, source_ref)` is in `deleted_import_marker`; they count as skipped in the job result.
 - [X] T018 [P] [US1] Create the `apps/api/src/modules/tags/` module (CRUD under `/tags` with `usage` count) and register it in `apps/api/src/app.module.ts`.
-- [ ] T019 [US1] Add `GET /transactions/export.csv` in `apps/api/src/modules/transactions/transactions.controller.ts`:
+- [X] T019 [US1] Add `GET /transactions/export.csv` in `apps/api/src/modules/transactions/transactions.controller.ts`:
   - Same filter as the query, no paging.
   - `columns[]` picks and orders the columns.
   - `;` separator, UTF-8 BOM, German decimals.
