@@ -44,9 +44,15 @@ const groups = computed<{ key: 'top' | 'flop'; items: Holding[] }[]>(() => [
             :key="item.instrumentId"
             class="row-hover flex items-center justify-between gap-3 py-2 text-sm"
           >
-            <NuxtLink :to="`/investments/${item.instrumentId}`" class="min-w-0 link-hover">
-              <span class="block truncate font-medium">{{ item.name }}</span>
-              <span class="text-xs text-muted"><Money :cents="item.priceCents" /></span>
+            <NuxtLink
+              :to="`/investments/${item.instrumentId}`"
+              class="flex min-w-0 items-center gap-2 link-hover"
+            >
+              <Avatar :name="item.name" size="sm" />
+              <span class="min-w-0">
+                <span class="block truncate font-medium">{{ item.name }}</span>
+                <span class="text-xs text-muted"><Money :cents="item.priceCents" /></span>
+              </span>
             </NuxtLink>
             <span class="text-right">
               <Percent :value="item.changePct" signed class="block" />

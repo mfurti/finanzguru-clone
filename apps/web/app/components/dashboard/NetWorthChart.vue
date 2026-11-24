@@ -6,6 +6,7 @@ import {
   formatPctSigned,
   type NetWorthPoint,
   type NetWorthResponse,
+  type ChartSettings,
   type Period,
 } from '@finance/shared'
 import { VisArea, VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
@@ -17,12 +18,46 @@ const { accountsParam } = useAccountFilter()
 const period = ref<Period>('1Y')
 const mode = ref<'value' | 'return'>('value')
 
+/** Custom range from the calendar (003 US6); overrides the period tabs while set. */
+const range = ref<{ from: string; to: string } | null>(null)
+const query = computed(() => ({
+  period: period.value,
+  mode: mode.value,
+  accounts: accountsParam.value,
+  ...(range.value ?? {}),
+}))
 const { data, status } = await useApi<NetWorthResponse>('/api/overview/net-worth', {
-  query: { period, mode, accounts: accountsParam },
+  query,
   default: () => ({ totalCents: 0, gainCents: 0, gainPct: null, series: [] }),
 })
 
 const series = computed(() => data.value?.series ?? [])
+
+/** ⋮ menu: "Investiertes Kapital" line, remembered in the chart settings (FR-010). */
+const { data: chartSettings } = useApi<ChartSettings>('/api/settings/charts', {
+  key: 'chart-settings',
+})
+const showInvested = computed(() => chartSettings.value?.networthShowInvested !== false)
+function toggleInvested(on: boolean): void {
+  const next = {
+    networthBenchmark: chartSettings.value?.networthBenchmark ?? null,
+    investmentsBenchmark: chartSettings.value?.investmentsBenchmark ?? null,
+    networthShowInvested: on,
+  }
+  chartSettings.value = next
+  void apiFetch('/api/settings/charts', { method: 'PUT', body: next })
+}
+const menuItems = computed(() => [
+  [
+    {
+      label: t('refine.investedCapital'),
+      type: 'checkbox' as const,
+      checked: showInvested.value,
+      onUpdateChecked: toggleInvested,
+      onSelect: (event: Event) => event.preventDefault(),
+    },
+  ],
+])
 const hasData = computed(() => series.value.length > 0)
 
 type Point = NetWorthPoint & { index: number }
@@ -95,7 +130,20 @@ const tooltip = (point: Point) => {
       />
     </div>
     <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
-      <PeriodTabs v-model="period" />
+      <div class="flex flex-wrap items-center gap-1">
+        <PeriodTabs v-model="period" :inactive="!!range" @pick="range = null" />
+        <DateRangePicker v-model="range" />
+        <UDropdownMenu :items="menuItems" :content="{ align: 'end' }">
+          <UButton
+            icon="i-lucide-ellipsis-vertical"
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            :aria-label="t('refine.chartMenu')"
+            data-testid="networth-menu"
+          />
+        </UDropdownMenu>
+      </div>
       <BenchmarkSelect
         v-if="mode === 'return'"
         v-model="benchmark.selected.value"
@@ -148,7 +196,14 @@ const tooltip = (point: Point) => {
         <template v-if="mode === 'value'">
           <VisArea :x="x" :y="yValue" color="var(--ui-primary)" :opacity="0.15" />
           <VisLine :x="x" :y="yValue" color="var(--ui-primary)" :line-width="2" />
-          <VisLine :x="x" :y="yInvested" color="var(--ui-text-muted)" :line-width="1.5" />
+          <VisLine
+            v-if="showInvested"
+            :x="x"
+            :y="yInvested"
+            color="var(--ui-text-muted)"
+            :line-width="1.5"
+            data-testid="invested-line"
+          />
         </template>
         <template v-else>
           <VisLine :x="x" :y="yReturn" color="var(--ui-primary)" :line-width="2" />

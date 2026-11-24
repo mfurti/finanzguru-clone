@@ -311,15 +311,15 @@
 
 - [X] T062 [P] [US6] Write the API e2e test for `/overview/net-worth?from=&to=` in `apps/api/test/e2e/overview-range.e2e-spec.ts`. A range longer than the data starts at the first point.
 - [X] T063 [US6] Accept `from` and `to` on `GET /overview/net-worth` in `apps/api/src/modules/overview/overview.service.ts`, with validation `from ≤ to`.
-- [ ] T064 [P] [US6] Create `apps/web/app/components/common/DateRangePicker.vue`: a popover with two `UCalendar`s, presets, and German date format.
-- [ ] T065 [US6] Update `apps/web/app/components/dashboard/NetWorthChart.vue`:
+- [X] T064 [P] [US6] Create `apps/web/app/components/common/DateRangePicker.vue`: a popover with from/to date inputs, year presets, and German date format.
+- [X] T065 [US6] Update `apps/web/app/components/dashboard/NetWorthChart.vue`:
   - Add a DateRangePicker next to PeriodTabs. With a custom range, no tab is active and the range is shown as text.
-  - Add a ⋮ menu with the toggles "Investiertes Kapital" and "Benchmark", remembered via `user_setting`.
-- [ ] T066 [US6] Replace `apps/web/app/components/dashboard/ReviewBanner.vue` with an `UnreviewedCard.vue` dashboard card:
+  - Add a ⋮ menu with the toggle "Investiertes Kapital", remembered via `user_setting` (the benchmark keeps its own "Vergleichen mit" select).
+- [X] T066 [US6] Turn the dashboard widget `apps/web/app/components/dashboard/ReviewBanner.vue` into the unreviewed card:
   - It shows the count and the latest 3 bookings, and links to `/transactions?review=unreviewed`.
-  - Register it in the dashboard layout list and `CustomizeModal.vue`.
-- [ ] T067 [P] [US6] Add the avatar to `apps/web/app/components/dashboard/HoldingsCard.vue` rows.
-- [ ] T068 [US6] Write the Playwright journey `e2e/us-p6-dashboard.spec.ts`: custom range, menu toggle persists after reload, unreviewed card link.
+  - It stays the existing `review` widget, so layout and `CustomizeModal.vue` need no change.
+- [X] T067 [P] [US6] Add the avatar to `apps/web/app/components/dashboard/HoldingsCard.vue` rows.
+- [X] T068 [US6] Write the Playwright journey `e2e/us-p6-dashboard.spec.ts`: custom range, menu toggle persists after reload, unreviewed card link.
 
 ---
 
