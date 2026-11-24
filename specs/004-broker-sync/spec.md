@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-24
 
-**Status**: Draft
+**Status**: Implemented
 
 **Input**: User description: "Offene Arbeit aus Features 001–003 bündeln (Stand 2026-11-24): (1) Scalable Capital Sync aus 001 US3 (T054–T058) … (2) Folgearbeit aus 003: Wertentwicklungs-Chart nach Assetklasse filtern … Nicht im Umfang: Deployment (eigener Plan, erst alles lokal testen) und Live-Bankabruf für Girokonten."
 
