@@ -1,7 +1,8 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import { Controller, Get, Param, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import {
   type CashflowCategories,
+  type CategoryDetail,
   cashflowCategoriesQuery,
   cashflowQuery,
   type CashflowSummary,
@@ -31,5 +32,11 @@ export class CashflowController {
   @Get('categories')
   categories(@Query() query: CashflowCategoriesQueryDto): CashflowCategories {
     return this.cashflow.categoryList(query)
+  }
+
+  /** Category detail: total in the period and 12-month history (003 US3). */
+  @Get('categories/:id')
+  categoryDetail(@Param('id') id: string, @Query() query: CashflowQueryDto): CategoryDetail {
+    return this.cashflow.categoryDetail(id, query)
   }
 }

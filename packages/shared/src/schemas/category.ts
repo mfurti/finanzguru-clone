@@ -29,16 +29,23 @@ export const categoryNode: z.ZodType<CategoryNode> = z.lazy(() =>
   }),
 )
 
-export const createCategoryInput = z.object({
+const categoryFields = {
   parentId: z.string().optional(),
   name: z.string().trim().min(1).max(60),
   kind: categoryKind,
-  color: z.string().trim().min(1).max(30).default('neutral'),
-  icon: z.enum(CATEGORY_ICON_KEYS as [string, ...string[]]).default('tag'),
+  color: z.string().trim().min(1).max(30),
+  icon: z.enum(CATEGORY_ICON_KEYS as [string, ...string[]]),
+}
+
+export const createCategoryInput = z.object({
+  ...categoryFields,
+  color: categoryFields.color.default('neutral'),
+  icon: categoryFields.icon.default('tag'),
 })
 export type CreateCategoryInput = z.infer<typeof createCategoryInput>
 
-export const updateCategoryInput = createCategoryInput.partial()
+/** No defaults here: a PATCH must not reset color or icon it did not send. */
+export const updateCategoryInput = z.object(categoryFields).partial()
 export type UpdateCategoryInput = z.infer<typeof updateCategoryInput>
 
 export const budgetInput = z.object({

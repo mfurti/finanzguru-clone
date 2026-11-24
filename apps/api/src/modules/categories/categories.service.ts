@@ -71,6 +71,7 @@ export class CategoriesService {
         ...(input.name !== undefined && { name: input.name }),
         ...(input.kind !== undefined && { kind: input.kind }),
         ...(input.color !== undefined && { color: input.color }),
+        ...(input.icon !== undefined && { icon: input.icon }),
         ...(input.parentId !== undefined && { parentId: input.parentId ?? null }),
       })
       .where(eq(category.id, id))

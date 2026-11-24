@@ -197,7 +197,7 @@
   - "Aktueller Monat" is disabled while active.
   - The month dropdown sets `?period=`.
   - Range label "01.09. – 30.09.".
-- [ ] T038 [P] [US3] Write the API e2e test `apps/api/test/e2e/category-detail.e2e-spec.ts`:
+- [X] T038 [P] [US3] Write the API e2e test `apps/api/test/e2e/category-detail.e2e-spec.ts`:
   - `icon` is validated against `CATEGORY_ICONS` (an unknown key gives 400).
   - The detail returns a 12-month history and the total for the period.
 - [ ] T039 [P] [US3] Write the Playwright journey `e2e/us-p3-budget.spec.ts` (quickstart W7–W8): picker, Sankey click filters the table, icon and color consistent across list, donut and Sankey.
@@ -208,8 +208,8 @@
   - Arrows, "Aktueller Monat", and a popover with month/quarter/year selection for the last 5 years.
   - Range label.
   - State stays in the shared `useBudgetPeriod` state, so all budget pages show the same period.
-- [ ] T041 [US3] Accept and validate `icon` in `apps/api/src/modules/categories/` (create and update).
-  - Add `GET /categories/:id/detail?period=` that returns the total and a 12-month history, sub categories included.
+- [X] T041 [US3] Accept and validate `icon` in `apps/api/src/modules/categories/` (create and update).
+  - Add `GET /cashflow/categories/:id` (same period query as the other cashflow routes) that returns the total and a 12-month history, sub categories included.
   - Set default icons for the default and demo categories in `apps/api/src/database/demo.ts` and the default category seed.
 - [ ] T042 [P] [US3] Add an icon and color chooser to `apps/web/app/pages/settings/categories.vue`: an icon grid from `CATEGORY_ICONS` and color swatches from the R9 palette.
 - [ ] T043 [US3] Use `useCategoryAppearance` and `CategoryIcon` everywhere:

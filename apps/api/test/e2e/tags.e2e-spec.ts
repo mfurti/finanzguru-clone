@@ -34,6 +34,12 @@ describe('tags API (003 US1)', () => {
 
     const patched = await call('PATCH', `/api/tags/${urlaub.id}`, { name: 'Reise', color: 'sky' })
     expect(patched.json()).toMatchObject({ name: 'Reise', color: 'sky', usage: 1 })
+    // Renaming alone keeps the color.
+    expect((await call('PATCH', `/api/tags/${urlaub.id}`, { name: 'Reise' })).json()).toMatchObject(
+      {
+        color: 'sky',
+      },
+    )
     expect((await call('GET', '/api/tags')).json()).toEqual([
       { id: urlaub.id, name: 'Reise', color: 'sky', usage: 1 },
     ])

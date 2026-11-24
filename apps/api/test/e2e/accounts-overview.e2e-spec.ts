@@ -96,4 +96,22 @@ describe('accounts overview and detail (003 US2)', () => {
         .statusCode,
     ).toBe(400)
   })
+
+  it('renaming an account keeps its balance (PATCH applies no defaults)', async () => {
+    const created = (
+      await app.inject({
+        method: 'POST',
+        url: '/api/accounts',
+        headers: { cookie },
+        payload: { name: 'Tagesgeld', type: 'savings', balanceCents: 123456 },
+      })
+    ).json() as { id: string }
+    const patched = await app.inject({
+      method: 'PATCH',
+      url: `/api/accounts/${created.id}`,
+      headers: { cookie },
+      payload: { name: 'Tagesgeld neu' },
+    })
+    expect(patched.json()).toMatchObject({ name: 'Tagesgeld neu', balanceCents: 123456 })
+  })
 })

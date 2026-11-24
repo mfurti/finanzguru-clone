@@ -8,7 +8,7 @@ import type { AppDatabase } from './drizzle.module'
 import { WIDGET_KEYS } from '@finance/shared'
 import { category, dashboardLayout, dataSource, institution } from './schema'
 
-type Db = Pick<AppDatabase, 'select' | 'insert'>
+type Db = Pick<AppDatabase, 'select' | 'insert' | 'update'>
 
 interface CategorySeed {
   name: string
@@ -66,6 +66,37 @@ export const DEFAULT_CATEGORIES: readonly CategorySeed[] = [
   { name: 'Umbuchung', kind: 'transfer', color: 'neutral' },
 ]
 
+/** Default icons (003 US3); keys from CATEGORY_ICONS. Unlisted names keep `tag`. */
+export const DEFAULT_CATEGORY_ICONS: Readonly<Record<string, string>> = {
+  Wohnen: 'house',
+  'Miete / Wohngeld': 'house',
+  Strom: 'zap',
+  Wohnnebenkosten: 'flame',
+  Lebenshaltung: 'shopping-cart',
+  'Lebensmittel und Getränke': 'shopping-cart',
+  Handy: 'phone',
+  'Festnetz und Internet': 'wifi',
+  'Shopping und Unterhaltung': 'gift',
+  Büromaterial: 'briefcase',
+  Kleidung: 'shirt',
+  Elektronik: 'gamepad-2',
+  Streaming: 'film',
+  'Sparen und Anlegen': 'piggy-bank',
+  Wertpapieranlage: 'trending-up',
+  Versicherung: 'shield',
+  'Risiko-Lebensversicherung': 'shield',
+  'Bank und Kredit': 'landmark',
+  Kontoführung: 'receipt',
+  'Gesundheit und Wellness': 'heart-pulse',
+  'Arznei- und Heilmittel': 'pill',
+  'Freizeit, Hobbies und Soziales': 'dumbbell',
+  Freizeitaktivitäten: 'dumbbell',
+  Einnahmen: 'hand-coins',
+  Gehalt: 'briefcase',
+  'Sonstige Einnahmen': 'banknote',
+  Umbuchung: 'arrow-left-right',
+}
+
 export const MANUAL_INSTITUTION = 'Manuell'
 
 function ensureCategory(
@@ -75,8 +106,9 @@ function ensureCategory(
   color: string,
   parentId: string | null,
 ): string {
+  const icon = DEFAULT_CATEGORY_ICONS[name] ?? 'tag'
   const existing = db
-    .select({ id: category.id })
+    .select({ id: category.id, icon: category.icon })
     .from(category)
     .where(
       and(
@@ -85,10 +117,16 @@ function ensureCategory(
       ),
     )
     .get()
-  if (existing) return existing.id
+  if (existing) {
+    // Databases from before 003 have no icons yet; owner choices (≠ 'tag') stay.
+    if (existing.icon === 'tag' && icon !== 'tag') {
+      db.update(category).set({ icon }).where(eq(category.id, existing.id)).run()
+    }
+    return existing.id
+  }
   return db
     .insert(category)
-    .values({ name, kind, color, parentId, isDefault: true })
+    .values({ name, kind, color, icon, parentId, isDefault: true })
     .returning()
     .get().id
 }

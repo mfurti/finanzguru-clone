@@ -52,7 +52,7 @@
 | Method | Path | Change |
 |---|---|---|
 | GET/POST/PATCH | `/categories` | `icon` field (key from `CATEGORY_ICONS`) |
-| GET | `/categories/:id/detail` | `period` → `{ category, totalCents, history: { month, cents }[12] }`; bookings via `/transactions?categoryIds=` |
+| GET | `/cashflow/categories/:id` | `granularity, anchor, accounts` (same as the other cashflow routes) → `{ id, name, kind, color, icon, parentId, totalCents, history: { month, cents }[12] }`; bookings via `/transactions?categoryIds=` |
 
 ## Budgets
 

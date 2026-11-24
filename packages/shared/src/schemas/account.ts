@@ -19,22 +19,30 @@ export const accountDto = z.object({
 })
 export type AccountDto = z.infer<typeof accountDto>
 
-/** Manual account creation (FR-056); IBAN checksum is validated in the API. */
-export const createAccountInput = z.object({
+const accountFields = {
   name: z.string().trim().min(1).max(80),
   type: accountType,
-  institutionName: z.string().trim().min(1).max(80).default('Manuell'),
+  institutionName: z.string().trim().min(1).max(80),
   iban: z
     .string()
     .trim()
     .transform((value) => value.replace(/\s+/g, '').toUpperCase())
     .optional(),
-  balanceCents: cents.default(0),
+  balanceCents: cents,
   parentAccountId: z.string().optional(),
+}
+
+/** Manual account creation (FR-056); IBAN checksum is validated in the API. */
+export const createAccountInput = z.object({
+  ...accountFields,
+  institutionName: accountFields.institutionName.default('Manuell'),
+  balanceCents: accountFields.balanceCents.default(0),
 })
 export type CreateAccountInput = z.infer<typeof createAccountInput>
 
-export const updateAccountInput = createAccountInput
+/** No defaults: a PATCH must not reset fields it did not send (e.g. the balance). */
+export const updateAccountInput = z
+  .object(accountFields)
   .omit({ institutionName: true })
   .partial()
   .extend({ isHidden: z.boolean().optional(), sortOrder: z.number().int().optional() })
