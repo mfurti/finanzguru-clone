@@ -53,12 +53,7 @@ const tabs = computed<NavigationMenuItem[]>(() => [
           <BrandLogo />
         </NuxtLink>
         <slot name="header-actions" />
-        <UButton
-          icon="i-lucide-search"
-          color="neutral"
-          variant="ghost"
-          :aria-label="t('header.search')"
-        />
+        <GlobalSearch />
         <UColorModeButton />
         <UButton
           icon="i-lucide-settings"

@@ -335,13 +335,13 @@
   - IBAN and ISIN match.
   - Soft-deleted bookings are excluded.
 - [X] T070 [US7] Create the `apps/api/src/modules/search/` module with `GET /search?q=`, using `LIKE` queries per group as in research R3, and register it in `app.module.ts`.
-- [ ] T071 [US7] Create `apps/web/app/components/common/GlobalSearch.vue`:
+- [X] T071 [US7] Create `apps/web/app/components/common/GlobalSearch.vue`:
   - A `UCommandPalette` in a `UModal` with a 200 ms debounce.
   - Groups: Seiten, Wertpapiere, Konten, Transaktionen.
   - "Keine Treffer" when empty.
   - Enter navigates; a transaction hit goes to `/transactions?q=`.
-  - Wire it to the header magnifier and to `defineShortcuts({ meta_k })` in `apps/web/app/layouts/default.vue`.
-- [ ] T072 [US7] Write the Playwright journey `e2e/us-p7-search.spec.ts`: Ctrl+K, type "Giro", Enter opens the account; "Vermieter" opens the filtered table.
+  - Wire it into the header in `apps/web/app/layouts/default.vue` (the component holds the magnifier button and `defineShortcuts({ meta_k })`).
+- [X] T072 [US7] Write the Playwright journey `e2e/us-p7-search.spec.ts`: Ctrl+K, type "Giro", Enter opens the account; a booking hit ("Hausverwaltung" in the demo data) opens the filtered table.
 
 ---
 
