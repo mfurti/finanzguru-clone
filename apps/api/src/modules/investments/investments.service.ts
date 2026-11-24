@@ -7,10 +7,11 @@ import type {
   PositionDto,
   PositionsQuery,
 } from '@finance/shared'
-import { and, desc, eq, inArray, lt } from 'drizzle-orm'
+import { and, desc, eq, gte, inArray, lt, lte, sql } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
-import { instrument, price, transaction } from '../../database/schema'
+import { instrument, instrumentValueSnapshot, price, transaction } from '../../database/schema'
+import { eachDay } from '../../domain/period'
 import { D, eurosToCents, ratio } from '../../domain/money'
 import { computePositions, summarize } from '../../domain/positions'
 import { downsample, OverviewService } from '../overview/overview.service'
@@ -36,12 +37,14 @@ export class InvestmentsService {
     period: Period
     from?: string
     to?: string
+    assetClass?: AssetClass
   }): PerformanceResponse {
     const depots = this.overview
       .resolveAccounts(query.accounts)
       .filter((acc) => acc.type === 'depot')
     if (depots.length === 0) return { valueCents: 0, gainCents: 0, gainPct: null, series: [] }
     const range = this.overview.range(depots, query)
+    if (query.assetClass) return this.assetClassPerformance(depots, range, query.assetClass)
     const totals = this.overview.dailyTotals(depots, range)
     if (totals.length === 0) return { valueCents: 0, gainCents: 0, gainPct: null, series: [] }
     const first = totals[0]!
@@ -59,6 +62,56 @@ export class InvestmentsService {
           investedCents: point.investedCents,
         })),
       ),
+    }
+  }
+
+  /**
+   * Performance of one asset class (004 US2) from the per-instrument values.
+   * Days without a holding count as 0. Gain = change of (value − invested),
+   * i.e. the unrealized gain over the period; % relative to the invested amount.
+   */
+  private assetClassPerformance(
+    depots: readonly { id: string }[],
+    range: { from: string; to: string },
+    assetClass: AssetClass,
+  ): PerformanceResponse {
+    const rows = this.db
+      .select({
+        date: instrumentValueSnapshot.date,
+        valueCents: sql<number>`sum(${instrumentValueSnapshot.valueCents})`,
+        investedCents: sql<number>`sum(${instrumentValueSnapshot.investedCents})`,
+      })
+      .from(instrumentValueSnapshot)
+      .innerJoin(instrument, eq(instrument.id, instrumentValueSnapshot.instrumentId))
+      .where(
+        and(
+          inArray(
+            instrumentValueSnapshot.accountId,
+            depots.map((d) => d.id),
+          ),
+          eq(instrument.assetClass, assetClass),
+          gte(instrumentValueSnapshot.date, range.from),
+          lte(instrumentValueSnapshot.date, range.to),
+        ),
+      )
+      .groupBy(instrumentValueSnapshot.date)
+      .all()
+    const byDate = new Map(rows.map((row) => [row.date, row]))
+    const series = eachDay(range.from, range.to).map((date) => ({
+      date,
+      valueCents: Number(byDate.get(date)?.valueCents ?? 0),
+      investedCents: Number(byDate.get(date)?.investedCents ?? 0),
+    }))
+    if (series.length === 0) return { valueCents: 0, gainCents: 0, gainPct: null, series: [] }
+    const first = series[0]!
+    const last = series.at(-1)!
+    const gainCents =
+      last.valueCents - last.investedCents - (first.valueCents - first.investedCents)
+    return {
+      valueCents: last.valueCents,
+      gainCents,
+      gainPct: last.investedCents > 0 ? ratio(gainCents, last.investedCents, 6) : null,
+      series: downsample(series),
     }
   }
 
