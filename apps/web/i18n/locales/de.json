@@ -237,7 +237,8 @@
       "needs_reauth": "Verbindung erneuern",
       "error": "Fehler",
       "planned": "geplant",
-      "disabled": "deaktiviert"
+      "disabled": "deaktiviert",
+      "consent_expired": "Zugang abgelaufen"
     },
     "plannedHint": "Kommt in einer späteren Version. Bis dahin Sparkasse-Umsätze als CSV importieren."
   },
@@ -338,7 +339,16 @@
       "allDepots": "Alle Depots",
       "allSecurities": "Alle Wertpapiere"
     },
-    "allAssetClasses": "Alle Assetklassen"
+    "allAssetClasses": "Alle Assetklassen",
+    "gainSplit": {
+      "total": "GuV",
+      "realized": "Realisiert",
+      "priceGain": "Kursgewinn"
+    },
+    "classChips": {
+      "all": "Alle",
+      "noHoldings": "Keine Bestände im Zeitraum"
+    }
   },
   "assetClasses": {
     "stock": "Aktien",
@@ -766,5 +776,50 @@
     "refused": "Verbindung zu Scalable nicht hergestellt",
     "refusedAgentic": "Aktiviere „Agentic Investing“ in den Sicherheitseinstellungen von Scalable Capital (im Web) und verbinde dann erneut.",
     "refusedDenied": "Scalable hat den Zugriff abgelehnt oder die Anmeldung wurde abgebrochen."
+  },
+  "bank": {
+    "title": "Bankkonto (Enable Banking)",
+    "hint": "Du meldest dich auf der Seite deiner Bank an und gibst dort den Lesezugriff frei. Die App sieht dein Bankpasswort nie.",
+    "connect": "Bank verbinden",
+    "choose": "Bank auswählen",
+    "searchBank": "Bank suchen",
+    "notConfigured": "Für die Bankverbindung fehlt die Enable-Banking-App in der Server-Konfiguration.",
+    "validUntil": "Zugang gültig bis {date}",
+    "endsIn": "Zugang läuft in {days} Tagen ab",
+    "renew": "Zugang erneuern",
+    "expired": "Zugang abgelaufen",
+    "expiredHint": "Der Bankzugang ist abgelaufen. Erneuere ihn, damit Umsätze wieder abgerufen werden.",
+    "disconnect": "Trennen",
+    "disconnectConfirm": "Bankverbindung trennen? Konten und Umsätze bleiben erhalten.",
+    "disconnected": "Bankverbindung getrennt",
+    "connected": "Bank verbunden",
+    "refresh": "Aktualisieren",
+    "accounts": "Freigegebene Konten",
+    "errors": {
+      "denied": "Die Freigabe bei der Bank wurde abgebrochen.",
+      "state": "Die Anmeldung konnte nicht zugeordnet werden. Bitte erneut verbinden.",
+      "expired": "Die Anmeldung bei der Bank ist abgelaufen. Bitte erneut verbinden.",
+      "generic": "Die Bankverbindung ist fehlgeschlagen."
+    }
+  },
+  "marketData": {
+    "search": "Asset suchen",
+    "placeholder": "Name, ISIN oder WKN",
+    "minChars": "Mindestens 2 Zeichen eingeben",
+    "noResults": "Keine Treffer",
+    "more": "Mehr anzeigen",
+    "add": "Hinzufügen",
+    "added": "Zur Watchlist hinzugefügt",
+    "duplicate": "Schon auf der Watchlist",
+    "unavailable": "Suche und Kurse brauchen die Scalable-Verbindung.",
+    "toSources": "Zu den Datenquellen",
+    "quotedAt": "Kurs vom {time}",
+    "refresh": "Kurse aktualisieren",
+    "refreshing": "Kurse werden aktualisiert",
+    "columns": {
+      "isin": "ISIN",
+      "class": "Klasse",
+      "name": "Name"
+    }
   }
 }

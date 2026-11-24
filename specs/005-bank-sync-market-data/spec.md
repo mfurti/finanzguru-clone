@@ -127,7 +127,7 @@ As the owner, I open "Asset suchen" in the watchlist, search by name, ISIN or WK
 
 **Watchlist search and quotes (US4)**
 
-- **FR-013**: The watchlist MUST offer an "Asset suchen" dialog searching by name, ISIN or WKN with class chips (Alle, Aktien, ETF, Fonds, Anleihen, Zertifikate/OS, Rohstoffe, Krypto) and results grouped by class.
+- **FR-013**: The watchlist MUST offer an "Asset suchen" dialog searching by name, ISIN or WKN with class chips (Alle plus the app's asset classes: Aktien, ETF, Fonds, Anleihen, Krypto, Rohstoffe, Sonstige) and results grouped by class.
 - **FR-014**: Search, quotes and price history MUST come only from read-only functions of the existing broker connection, each on the explicit allowlist.
 - **FR-015**: Quotes for watchlist and held securities MUST refresh in the background during market hours at most every 15 minutes, and on demand.
 - **FR-016**: Each quote MUST show its time; prices are stored as decimal strings and amounts in cents.
