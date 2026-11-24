@@ -27,6 +27,23 @@ export const envSchema = z.object({
     .enum(['true', 'false'])
     .default('false')
     .transform((value) => value === 'true'),
+  /**
+   * Enable Banking application of the owner (005 R1, restricted production mode).
+   * The private key stays in a local file outside the repository.
+   */
+  ENABLE_BANKING_APP_ID: z.string().uuid().optional(),
+  ENABLE_BANKING_KEY_FILE: z.string().min(1).optional(),
+  ENABLE_BANKING_API_URL: z.string().url().default('https://api.enablebanking.com'),
+  /** Must be reachable by the browser and registered at Enable Banking. */
+  ENABLE_BANKING_REDIRECT_URL: z
+    .string()
+    .url()
+    .default('http://localhost:3000/api/sources/bank/callback'),
+  /** Daily bank sync (005 T012); off unless set to "true". */
+  BANK_DAILY_SYNC: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((value) => value === 'true'),
   /** Login attempts per minute and client IP. */
   LOGIN_RATE_LIMIT: z.coerce.number().int().min(1).max(1000).default(5),
 })

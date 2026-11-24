@@ -34,3 +34,6 @@ Thumbs.db
 # Claude Code local settings
 .claude/settings.local.json
 e2e/.auth/
+
+# Private keys (e.g. Enable Banking application key, 005)
+*.pem

@@ -22,6 +22,20 @@ describe('validateEnv', () => {
     expect(validateEnv({ ...valid, COOKIE_SECURE: 'false' }).COOKIE_SECURE).toBe(false)
   })
 
+  it('keeps Enable Banking optional and the bank daily sync off (005 T001)', () => {
+    const env = validateEnv(valid)
+    expect(env.ENABLE_BANKING_APP_ID).toBeUndefined()
+    expect(env.ENABLE_BANKING_KEY_FILE).toBeUndefined()
+    expect(env.BANK_DAILY_SYNC).toBe(false)
+    expect(validateEnv({ ...valid, BANK_DAILY_SYNC: 'true' }).BANK_DAILY_SYNC).toBe(true)
+  })
+
+  it('rejects an Enable Banking app id that is not a UUID', () => {
+    expect(() => validateEnv({ ...valid, ENABLE_BANKING_APP_ID: 'abc' })).toThrow(
+      /ENABLE_BANKING_APP_ID/,
+    )
+  })
+
   it('rejects a short session secret', () => {
     expect(() => validateEnv({ ...valid, API_SESSION_SECRET: 'short' })).toThrow(
       /API_SESSION_SECRET/,
