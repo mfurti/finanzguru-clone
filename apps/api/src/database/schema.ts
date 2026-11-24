@@ -671,11 +671,48 @@ export const instrumentValueSnapshot = sqliteTable(
     date: text('date').notNull(),
     valueCents: integer('value_cents').notNull(),
     investedCents: integer('invested_cents').notNull(),
+    /** Net buys (+) minus sells (−) on that day, in cents (005 R5). */
+    flowCents: integer('flow_cents').notNull().default(0),
   },
   (t) => [
     primaryKey({ columns: [t.accountId, t.instrumentId, t.date] }),
     index('instrument_value_snapshot_instrument_date_idx').on(t.instrumentId, t.date),
   ],
+)
+
+/**
+ * Bank consent at Enable Banking (005 US1). The session id lives encrypted in
+ * `data_source.encrypted_credentials`, never here.
+ */
+export const bankConsent = sqliteTable(
+  'bank_consent',
+  {
+    sourceId: text('source_id')
+      .primaryKey()
+      .references(() => dataSource.id, { onDelete: 'cascade' }),
+    aspspName: text('aspsp_name').notNull(),
+    aspspCountry: text('aspsp_country').notNull(),
+    /** ISO date-time from the session. */
+    validUntil: text('valid_until').notNull(),
+    createdAt: text('created_at').notNull().default(nowIso),
+  },
+  (t) => [check('bank_consent_country', sql`length(${t.aspspCountry}) = 2`)],
+)
+
+/** Latest broker quote per instrument (005 US4); prices are EUR decimal strings. */
+export const quote = sqliteTable(
+  'quote',
+  {
+    instrumentId: text('instrument_id')
+      .primaryKey()
+      .references(() => instrument.id, { onDelete: 'cascade' }),
+    price: text('price').notNull(),
+    changeAbs: text('change_abs'),
+    changePct: text('change_pct'),
+    quotedAt: text('quoted_at').notNull(),
+    fetchedAt: text('fetched_at').notNull().default(nowIso),
+  },
+  (t) => [check('quote_price_positive', sql`CAST(${t.price} AS REAL) > 0`)],
 )
 
 export const schema = {
@@ -711,4 +748,6 @@ export const schema = {
   deletedImportMarker,
   syncRun,
   instrumentValueSnapshot,
+  bankConsent,
+  quote,
 }

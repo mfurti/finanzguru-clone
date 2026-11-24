@@ -57,6 +57,13 @@
       "when": 1795533142100,
       "tag": "0007_sync_and_history",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1795560549194,
+      "tag": "0008_bank_sync_market_data",
+      "breakpoints": true
     }
   ]
 }

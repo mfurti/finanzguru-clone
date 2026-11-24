@@ -28,12 +28,13 @@
 
 ## Phase 2: Foundational
 
-- [ ] T005 Migration `apps/api/src/database/migrations/0008_bank_sync_market_data.sql` and `apps/api/src/database/schema.ts`:
+- [X] T005 Migration `apps/api/src/database/migrations/0008_bank_sync_market_data.sql` and `apps/api/src/database/schema.ts`:
   - table `bank_consent` (`source_id` text PK → `data_source.id`, `aspsp_name` text not null, `aspsp_country` text not null, `valid_until` text not null ISO date-time, `created_at` default now);
   - table `quote` (`instrument_id` PK → `instrument.id` on delete cascade, `price` text "decimal string, > 0, EUR" with check, `change_abs` text, `change_pct` text, `quoted_at` text not null, `fetched_at` text not null);
   - column `instrument_value_snapshot.flow_cents` integer not null default 0;
   - update the kind/status/source CHECK lists for the new enum values.
   - Test in `apps/api/test/unit/schema-005.spec.ts` (tables, checks, cascade).
+  - Deviation: the CHECK changes make drizzle rebuild `data_source` and `transactions`. With foreign keys on, the old-table drop fails or cascades into `sync_run`/`transaction_tag`, so `runMigrations` in `apps/api/src/database/migrate.ts` now switches foreign keys off around the migrator and fails on a non-empty `foreign_key_check`. The test upgrades a 0007 database with child rows.
 - [ ] T006 [P] Write `flow_cents` (net buy + / sell − in cents per instrument and day) in `apps/api/src/domain/instrument-values.ts` and the `perHolding` callback of `domain/snapshots.ts`; `RecomputeService` refills it. Extend `apps/api/test/unit/instrument-values.spec.ts`: buy day +, sell day −, other days 0.
 
 **Checkpoint**: schema and enums ready; stories can start in parallel.
