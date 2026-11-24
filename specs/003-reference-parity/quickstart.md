@@ -47,3 +47,7 @@ Perf script (`pnpm --filter api perf`, ~10,000 bookings, 20 runs each):
 |---|---|
 | `/api/transactions` page, sort, search, filter (5 variants) | 3–13 ms (target < 1 s) |
 | `/api/search` (3 terms) | 7 ms (target < 300 ms) |
+
+Walkthroughs W1–W12 (2026-11-24): covered by the Playwright journeys `e2e/us-p1-…us-p8-*.spec.ts` against a fresh demo database, plus a manual check on the local dev server (Transaktionen, Portfolios & Konten, Budget, Dividenden). Full gates: lint, format, typecheck, unit/e2e (shared 12, web 50, api 329) and Playwright (83 passed, 50 skipped for project/viewport reasons) green.
+
+Known deviations: the asset-class chips filter the positions table but not the performance chart (follow-up in feature 004); the dividend calendar grid is a second view next to the list.

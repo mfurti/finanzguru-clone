@@ -43,6 +43,6 @@ test.describe('section navigation', () => {
     await page.getByTestId('section-nav-menu').click()
     await page.getByRole('menuitem', { name: 'Portfolios & Konten' }).click()
     await expect(page).toHaveURL(/\/accounts$/)
-    await expect(page.getByTestId('accounts-card')).toBeVisible()
+    await expect(page.getByTestId('account-group-account')).toBeVisible()
   })
 })

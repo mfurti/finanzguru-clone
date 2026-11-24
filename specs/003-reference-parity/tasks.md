@@ -368,8 +368,8 @@
   - Write the results into `specs/003-reference-parity/quickstart.md`.
 - [X] T077 [P] Accessibility pass: `aria-sort`, `aria-selected` and labels for the selection checkboxes, CopyButton, Sparkline (`aria-hidden`) and the search dialog. Check keyboard-only use of the table and the picker.
 - [X] T078 Update `README.md` (feature list: Transaktionen, Tags, Konten, Budgets, Suche; the repo has no `docs/` user guide). No private infrastructure details.
-- [ ] T079 Run the quickstart walkthroughs W1–W12 against the local dev server, and record the results in `specs/003-reference-parity/quickstart.md`.
-- [ ] T080 Run the full gates (`pnpm lint; pnpm format:check; pnpm typecheck; pnpm test; pnpm e2e`), fix the regressions, and mark the spec status "Implemented".
+- [X] T079 Run the quickstart walkthroughs W1–W12 against the local dev server, and record the results in `specs/003-reference-parity/quickstart.md`.
+- [X] T080 Run the full gates (`pnpm lint; pnpm format:check; pnpm typecheck; pnpm test; pnpm e2e`), fix the regressions, and mark the spec status "Implemented".
 
 ---
 

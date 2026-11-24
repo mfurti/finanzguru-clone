@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-24
 
-**Status**: Draft
+**Status**: Implemented
 
 **Input**: User description: "Referenz-Parität Vermögenskompass ↔ Finanzfluss Copilot (Vergleich 2026-11-24): Navigation (Budget: Analyse | Sankey | Budgets, Prüfen nach Übersicht › Transaktionen, Hauptreiter mit Unterstrich, globale Suche), Übersicht (Portfolios & Konten mit Detailseiten, Transaktionen als volle Tabelle mit Prüf-Workflow, Dashboard mit freiem Zeitraum und Wertpapier-Avataren), Investments (Sortierung, Kopieren, Avatare, Asset-Legende, Filter-Panel, Zeiträume, Dividenden nach Regionen/Branchen und Kalender, Vorabpauschale pro Broker), Budget (Zeitraumwähler, Kategorien-Icons und -Details, Budgets-Seite mit Chart und Tabelle, einheitliche Farben), Optik (Schrift Outfit). Nicht im Umfang: Teilen, Reverse Breakdown, Werbung, Sankey-Editor, Bank-Live-Sync."
 
