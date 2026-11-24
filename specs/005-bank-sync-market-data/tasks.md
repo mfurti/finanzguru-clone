@@ -17,7 +17,7 @@
 ## Phase 1: Setup
 
 - [X] T001 [P] Add `jose` to `apps/api/package.json`. Add `ENABLE_BANKING_APP_ID`, `ENABLE_BANKING_KEY_FILE`, `ENABLE_BANKING_REDIRECT_URL` (all optional) and `BANK_DAILY_SYNC` (boolean, default false) to `apps/api/src/config/env.schema.ts` (with tests in `apps/api/test/unit/env.schema.spec.ts`), plus `ENABLE_BANKING_API_URL` (default `https://api.enablebanking.com`); document names only, never values (T033). `apps/api/data/` is already ignored. Add `*.pem` to `.gitignore`.
-- [ ] T002 [P] Extend `packages/shared/src/enums.ts`: `SOURCE_KINDS` + `'enable_banking'`, `SOURCE_STATUSES` + `'consent_expired'`, `TRANSACTION_SOURCES` + `'enable_banking'`. Keep `sparkasse_fints` in the enum.
+- [X] T002 [P] Extend `packages/shared/src/enums.ts`: `SOURCE_KINDS` + `'enable_banking'`, `SOURCE_STATUSES` + `'consent_expired'`, `TRANSACTION_SOURCES` + `'enable_banking'`. Keep `sparkasse_fints` in the enum.
 - [ ] T003 [P] Add zod DTOs from `contracts/http-api.md`:
   - `packages/shared/src/schemas/source.ts`: `bankInstitution`, `bankConnectRequest { aspspName, aspspCountry }`, and on `sourceDto` the optional `consentEndsAt`, `consentWarning`, `institution`, `accounts[{ id, name, maskedIban }]`;
   - `packages/shared/src/schemas/investments.ts`: `classSeriesResponse` (`twrorPct` decimal string with 4 places or `null`) and `gainSplit { totalGainCents, realizedCents, priceGainCents }`;

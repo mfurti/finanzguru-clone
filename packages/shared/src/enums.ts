@@ -46,16 +46,24 @@ export type CategorySource = (typeof CATEGORY_SOURCES)[number]
 export const REVIEW_STATUSES = ['unreviewed', 'reviewed'] as const
 export type ReviewStatus = (typeof REVIEW_STATUSES)[number]
 
-export const TRANSACTION_SOURCES = ['csv', 'scalable_mcp', 'manual'] as const
+export const TRANSACTION_SOURCES = ['csv', 'scalable_mcp', 'manual', 'enable_banking'] as const
 export type TransactionSource = (typeof TRANSACTION_SOURCES)[number]
 
 export const CATEGORY_KINDS = ['income', 'expense', 'savings', 'transfer'] as const
 export type CategoryKind = (typeof CATEGORY_KINDS)[number]
 
-export const SOURCE_KINDS = ['csv', 'scalable_mcp', 'sparkasse_fints'] as const
+/** `sparkasse_fints` stays for existing rows; live bank access is `enable_banking` (005). */
+export const SOURCE_KINDS = ['csv', 'scalable_mcp', 'sparkasse_fints', 'enable_banking'] as const
 export type SourceKind = (typeof SOURCE_KINDS)[number]
 
-export const SOURCE_STATUSES = ['active', 'needs_reauth', 'error', 'planned', 'disabled'] as const
+export const SOURCE_STATUSES = [
+  'active',
+  'needs_reauth',
+  'error',
+  'planned',
+  'disabled',
+  'consent_expired',
+] as const
 export type SourceStatus = (typeof SOURCE_STATUSES)[number]
 
 export const IMPORT_JOB_KINDS = ['csv_upload', 'sync'] as const
