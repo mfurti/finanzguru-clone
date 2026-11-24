@@ -309,8 +309,8 @@
 
 **Independent Test**: Range 01.03.–30.06.2026: the chart and the gain cover exactly that range (quickstart W11).
 
-- [ ] T062 [P] [US6] Write the API e2e test for `/overview/net-worth?from=&to=` in `apps/api/test/e2e/overview-range.e2e-spec.ts`. A range longer than the data starts at the first point.
-- [ ] T063 [US6] Accept `from` and `to` on `GET /overview/net-worth` in `apps/api/src/modules/overview/overview.service.ts`, with validation `from ≤ to`.
+- [X] T062 [P] [US6] Write the API e2e test for `/overview/net-worth?from=&to=` in `apps/api/test/e2e/overview-range.e2e-spec.ts`. A range longer than the data starts at the first point.
+- [X] T063 [US6] Accept `from` and `to` on `GET /overview/net-worth` in `apps/api/src/modules/overview/overview.service.ts`, with validation `from ≤ to`.
 - [ ] T064 [P] [US6] Create `apps/web/app/components/common/DateRangePicker.vue`: a popover with two `UCalendar`s, presets, and German date format.
 - [ ] T065 [US6] Update `apps/web/app/components/dashboard/NetWorthChart.vue`:
   - Add a DateRangePicker next to PeriodTabs. With a custom range, no tab is active and the range is shown as text.

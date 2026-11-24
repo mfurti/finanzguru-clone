@@ -20,6 +20,7 @@ export function useBenchmark(
     get: () => settings.value?.[chart] ?? null,
     set: (value) => {
       const next = {
+        ...settings.value,
         networthBenchmark: settings.value?.networthBenchmark ?? null,
         investmentsBenchmark: settings.value?.investmentsBenchmark ?? null,
         [chart]: value,

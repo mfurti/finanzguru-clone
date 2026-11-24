@@ -11,6 +11,7 @@ const KEYS = {
   networthBenchmark: 'chart.networth.benchmark',
   investmentsBenchmark: 'chart.investments.benchmark',
 } as const
+const SHOW_INVESTED = 'chart.networth.showInvested'
 
 /** "Vergleichen mit" (US5): benchmark instruments, their return series and chart choices. */
 @Injectable()
@@ -56,13 +57,14 @@ export class BenchmarksService {
       this.db
         .select()
         .from(userSetting)
-        .where(inArray(userSetting.key, Object.values(KEYS)))
+        .where(inArray(userSetting.key, [...Object.values(KEYS), SHOW_INVESTED]))
         .all()
         .map((r) => [r.key, r.value]),
     )
     return {
       networthBenchmark: rows.get(KEYS.networthBenchmark) ?? null,
       investmentsBenchmark: rows.get(KEYS.investmentsBenchmark) ?? null,
+      networthShowInvested: rows.get(SHOW_INVESTED) !== 'false',
     }
   }
 
@@ -79,10 +81,17 @@ export class BenchmarksService {
       if (found !== new Set(ids).size) throw new BadRequestException('Benchmark nicht gefunden')
     }
     this.db.transaction((tx) => {
-      for (const [field, key] of Object.entries(KEYS) as [keyof ChartSettings, string][]) {
+      for (const [field, key] of Object.entries(KEYS) as [keyof typeof KEYS, string][]) {
         tx.insert(userSetting)
           .values({ key, value: input[field] })
           .onConflictDoUpdate({ target: userSetting.key, set: { value: input[field] } })
+          .run()
+      }
+      if (input.networthShowInvested !== undefined) {
+        const value = String(input.networthShowInvested)
+        tx.insert(userSetting)
+          .values({ key: SHOW_INVESTED, value })
+          .onConflictDoUpdate({ target: userSetting.key, set: { value } })
           .run()
       }
     })

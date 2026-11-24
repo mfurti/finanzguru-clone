@@ -151,6 +151,8 @@ export type BenchmarkSeries = z.infer<typeof benchmarkSeries>
 export const chartSettings = z.object({
   networthBenchmark: z.string().nullable(),
   investmentsBenchmark: z.string().nullable(),
+  /** "Investiertes Kapital" line in the net-worth chart (003 US6, FR-010); omitted = unchanged. */
+  networthShowInvested: z.boolean().optional(),
 })
 export type ChartSettings = z.infer<typeof chartSettings>
 

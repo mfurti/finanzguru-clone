@@ -111,7 +111,12 @@ export function resolveRange(
 ): DateRange {
   if (query.from || query.to) {
     const to = query.to ?? today
-    return { from: query.from ?? resolvePeriod(query.period, to, firstDataDate).from, to }
+    const from = query.from ?? resolvePeriod(query.period, to, firstDataDate).from
+    // A custom range that starts before the data begins at the first data point (003 US6).
+    return {
+      from: firstDataDate && from < firstDataDate && firstDataDate <= to ? firstDataDate : from,
+      to,
+    }
   }
   return resolvePeriod(query.period, today, firstDataDate)
 }

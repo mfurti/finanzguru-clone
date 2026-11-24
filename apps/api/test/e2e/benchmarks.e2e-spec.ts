@@ -67,12 +67,17 @@ describe('Vergleichen mit (US5)', () => {
     expect((await call('GET', '/api/settings/charts')).json()).toEqual({
       networthBenchmark: null,
       investmentsBenchmark: null,
+      networthShowInvested: true,
     })
     const saved = await call('PUT', '/api/settings/charts', {
       networthBenchmark: benchmarkId,
       investmentsBenchmark: null,
     })
-    expect(saved.json()).toEqual({ networthBenchmark: benchmarkId, investmentsBenchmark: null })
+    expect(saved.json()).toEqual({
+      networthBenchmark: benchmarkId,
+      investmentsBenchmark: null,
+      networthShowInvested: true,
+    })
     expect((await call('GET', '/api/settings/charts')).json().networthBenchmark).toBe(benchmarkId)
     expect(
       (

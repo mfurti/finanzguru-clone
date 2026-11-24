@@ -18,13 +18,18 @@ export const dashboardLayoutInput = z
   })
 export type DashboardLayoutInput = z.infer<typeof dashboardLayoutInput>
 
-export const netWorthQuery = z.object({
-  accounts: accountsParam,
-  period: period.default('1Y'),
-  from: isoDate.optional(),
-  to: isoDate.optional(),
-  mode: z.enum(['value', 'return']).default('value'),
-})
+export const netWorthQuery = z
+  .object({
+    accounts: accountsParam,
+    period: period.default('1Y'),
+    from: isoDate.optional(),
+    to: isoDate.optional(),
+    mode: z.enum(['value', 'return']).default('value'),
+  })
+  .refine((q) => !q.from || !q.to || q.from <= q.to, {
+    message: '`from` must not be after `to`',
+    path: ['from'],
+  })
 export type NetWorthQuery = z.infer<typeof netWorthQuery>
 
 export const netWorthPoint = z.object({
