@@ -1,13 +1,41 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import type {
-  TransactionListItem,
+  TransactionFilter,
   TransactionListQuery,
+  TransactionPage,
+  TransactionSort,
+  TransactionType,
   UpdateTransactionInput,
 } from '@finance/shared'
-import { and, count, desc, eq, gte, inArray, isNull, like, lte, max, or } from 'drizzle-orm'
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  exists,
+  gte,
+  inArray,
+  isNull,
+  like,
+  lte,
+  max,
+  not,
+  or,
+  type SQL,
+  sql,
+  sum,
+} from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
-import { account, categorizationRule, category, transaction } from '../../database/schema'
+import {
+  account,
+  categorizationRule,
+  category,
+  tag,
+  transaction,
+  transactionTag,
+} from '../../database/schema'
 import { assertValidPattern, matchesRule, type Rule } from '../../domain/categorize'
 import { OverviewService } from '../overview/overview.service'
 
@@ -18,36 +46,89 @@ export class TransactionsReviewService {
     private readonly overview: OverviewService,
   ) {}
 
-  list(query: TransactionListQuery): { items: TransactionListItem[]; total: number } {
-    const ids = this.overview.resolveAccounts(query.accounts).map((acc) => acc.id)
-    if (ids.length === 0) return { items: [], total: 0 }
-    const search = query.q ? `%${query.q.replace(/[%_]/g, '')}%` : undefined
-    const where = and(
+  /**
+   * WHERE clause for the transactions table (R1). Shared by list, export and
+   * bulk actions so a bulk "filter" hits exactly the rows the table shows.
+   * Needs a LEFT JOIN on `category` (parent match for category filters).
+   * Returns undefined when no visible account matches (empty result).
+   */
+  whereFor(filter: TransactionFilter): SQL | undefined | null {
+    const ids = this.overview.resolveAccounts(filter.accounts).map((acc) => acc.id)
+    if (ids.length === 0) return null
+    const search = filter.q ? `%${filter.q.replace(/[%_]/g, '')}%` : undefined
+    const categoryIds = [
+      ...(filter.categoryIds ?? []),
+      ...(filter.categoryId ? [filter.categoryId] : []),
+    ]
+    const realCategoryIds = categoryIds.filter((id) => id !== 'uncategorized')
+    // "Ungeprüft" as in 001: not reviewed and without category; rule-categorized rows count as done.
+    const open = and(eq(transaction.reviewStatus, 'unreviewed'), isNull(transaction.categoryId))
+    const review =
+      filter.review === 'unreviewed' ? open : filter.review === 'reviewed' ? not(open!) : undefined
+    const types = [...(filter.types ?? []), ...(filter.type ? [filter.type] : [])]
+    return and(
       inArray(transaction.accountId, ids),
-      query.categoryId === 'uncategorized'
-        ? isNull(transaction.categoryId)
-        : query.categoryId
-          ? or(
-              eq(transaction.categoryId, query.categoryId),
-              eq(category.parentId, query.categoryId),
-            )
-          : undefined,
-      query.status ? eq(transaction.reviewStatus, query.status) : undefined,
-      query.type ? eq(transaction.type, query.type) : undefined,
-      query.from ? gte(transaction.bookingDate, query.from) : undefined,
-      query.to ? lte(transaction.bookingDate, query.to) : undefined,
+      categoryIds.length > 0
+        ? or(
+            categoryIds.includes('uncategorized') ? isNull(transaction.categoryId) : undefined,
+            realCategoryIds.length > 0
+              ? or(
+                  inArray(transaction.categoryId, realCategoryIds),
+                  inArray(category.parentId, realCategoryIds),
+                )
+              : undefined,
+          )
+        : undefined,
+      filter.tagIds && filter.tagIds.length > 0
+        ? exists(
+            this.db
+              .select({ one: sql`1` })
+              .from(transactionTag)
+              .where(
+                and(
+                  eq(transactionTag.transactionId, transaction.id),
+                  inArray(transactionTag.tagId, filter.tagIds),
+                ),
+              ),
+          )
+        : undefined,
+      review,
+      filter.status ? eq(transaction.reviewStatus, filter.status) : undefined,
+      types.length > 0 ? inArray(transaction.type, types as TransactionType[]) : undefined,
+      filter.from ? gte(transaction.bookingDate, filter.from) : undefined,
+      filter.to ? lte(transaction.bookingDate, filter.to) : undefined,
+      filter.minCents !== undefined ? gte(transaction.amountCents, filter.minCents) : undefined,
+      filter.maxCents !== undefined ? lte(transaction.amountCents, filter.maxCents) : undefined,
       search
         ? or(like(transaction.counterparty, search), like(transaction.purpose, search))
         : undefined,
     )
-    const total =
-      this.db
-        .select({ n: count() })
-        .from(transaction)
-        .leftJoin(category, eq(category.id, transaction.categoryId))
-        .where(where)
-        .get()?.n ?? 0
-    const items = this.db
+  }
+
+  /** ORDER BY for a sort key; ties broken by id so paging is stable. */
+  orderFor(sort: TransactionSort, dir: 'asc' | 'desc'): SQL[] {
+    const by = dir === 'asc' ? asc : desc
+    const column = {
+      date: transaction.bookingDate,
+      amount: transaction.amountCents,
+      counterparty: sql`lower(coalesce(${transaction.counterparty}, ''))`,
+      category: sql`lower(coalesce(${category.name}, ''))`,
+      account: sql`lower(${account.name})`,
+    }[sort]
+    return [by(column), by(transaction.createdAt), by(transaction.id)]
+  }
+
+  list(query: TransactionListQuery): TransactionPage {
+    const empty = { items: [], total: 0, page: query.page, pageSize: query.pageSize, sumCents: 0 }
+    const where = this.whereFor(query)
+    if (where === null) return empty
+    const totals = this.db
+      .select({ n: count(), sum: sum(transaction.amountCents) })
+      .from(transaction)
+      .leftJoin(category, eq(category.id, transaction.categoryId))
+      .where(where)
+      .get()
+    const rows = this.db
       .select({
         id: transaction.id,
         accountId: transaction.accountId,
@@ -68,12 +149,40 @@ export class TransactionsReviewService {
       .innerJoin(account, eq(account.id, transaction.accountId))
       .leftJoin(category, eq(category.id, transaction.categoryId))
       .where(where)
-      .orderBy(desc(transaction.bookingDate), desc(transaction.createdAt))
+      .orderBy(...this.orderFor(query.sort, query.dir))
       .limit(query.pageSize)
       .offset((query.page - 1) * query.pageSize)
       .all()
-      .map((row) => ({ ...row, tags: [] }))
-    return { items, total }
+    const tags = this.tagsOf(rows.map((row) => row.id))
+    return {
+      items: rows.map((row) => ({ ...row, tags: tags.get(row.id) ?? [] })),
+      total: totals?.n ?? 0,
+      page: query.page,
+      pageSize: query.pageSize,
+      sumCents: Number(totals?.sum ?? 0),
+    }
+  }
+
+  /** Tags per transaction id, one query for the whole page (no N+1). */
+  tagsOf(ids: readonly string[]): Map<string, { id: string; name: string; color: string }[]> {
+    const result = new Map<string, { id: string; name: string; color: string }[]>()
+    if (ids.length === 0) return result
+    const rows = this.db
+      .select({
+        transactionId: transactionTag.transactionId,
+        id: tag.id,
+        name: tag.name,
+        color: tag.color,
+      })
+      .from(transactionTag)
+      .innerJoin(tag, eq(tag.id, transactionTag.tagId))
+      .where(inArray(transactionTag.transactionId, [...ids]))
+      .orderBy(asc(tag.name))
+      .all()
+    for (const { transactionId, ...item } of rows) {
+      result.set(transactionId, [...(result.get(transactionId) ?? []), item])
+    }
+    return result
   }
 
   /**

@@ -109,7 +109,14 @@ const sorting = z.object({
   dir: z.enum(['asc', 'desc']).default('desc'),
 })
 
-export const transactionListQuery = transactionFilter.extend(pagination.shape).extend(sorting.shape)
+const rangeOrder = <T extends { from?: string; to?: string }>(q: T) =>
+  !q.from || !q.to || q.from <= q.to
+const rangeIssue = { message: '`from` must not be after `to`', path: ['from'] }
+
+export const transactionListQuery = transactionFilter
+  .extend(pagination.shape)
+  .extend(sorting.shape)
+  .refine(rangeOrder, rangeIssue)
 export type TransactionListQuery = z.infer<typeof transactionListQuery>
 
 /** CSV export: same filter and sort, optional column choice and order. */
@@ -123,9 +130,12 @@ export const TRANSACTION_EXPORT_COLUMNS = [
   'amount',
 ] as const
 export type TransactionExportColumn = (typeof TRANSACTION_EXPORT_COLUMNS)[number]
-export const transactionExportQuery = transactionFilter.extend(sorting.shape).extend({
-  columns: accountsParam.pipe(z.array(z.enum(TRANSACTION_EXPORT_COLUMNS)).optional()),
-})
+export const transactionExportQuery = transactionFilter
+  .extend(sorting.shape)
+  .extend({
+    columns: accountsParam.pipe(z.array(z.enum(TRANSACTION_EXPORT_COLUMNS)).optional()),
+  })
+  .refine(rangeOrder, rangeIssue)
 export type TransactionExportQuery = z.infer<typeof transactionExportQuery>
 
 /** Bulk action on selected ids or on everything matching a filter (R2). */

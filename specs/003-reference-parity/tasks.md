@@ -81,7 +81,7 @@
 
 ### Tests for User Story 1
 
-- [ ] T011 [P] [US1] Write the API e2e test `apps/api/test/e2e/transactions-query.e2e-spec.ts`. It covers:
+- [X] T011 [P] [US1] Write the API e2e test `apps/api/test/e2e/transactions-query.e2e-spec.ts`. It covers:
   - Each filter (`q`, accounts, types, categories, tags, from/to, min/max, review).
   - Each sort column in both directions.
   - Page sizes 25/50/100 (any size 1–200 is accepted for scripts); `pageSize=500` gives 400.
@@ -96,7 +96,7 @@
 
 ### Implementation for User Story 1
 
-- [ ] T015 [US1] Implement the query in `apps/api/src/modules/transactions/transactions.service.ts` and `transactions.controller.ts`:
+- [X] T015 [US1] Implement the query in `apps/api/src/modules/transactions/transactions.service.ts` and `transactions.controller.ts`:
   - Use the DTO from T002.
   - Joins for account name, category icon/color and tags (one grouped query, no N+1).
   - Return `{ items, total, page, pageSize, sumCents }`.

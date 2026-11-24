@@ -1,24 +1,23 @@
 import { Body, Controller, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import {
-  accountsParam,
   createTransactionInput,
   type TransactionDto,
-  type TransactionListItem,
+  transactionFilter,
   transactionListQuery,
+  type TransactionPage,
   updateTransactionInput,
 } from '@finance/shared'
-import { and, count, eq, inArray, isNull } from 'drizzle-orm'
+import { count, eq } from 'drizzle-orm'
 import { createZodDto } from 'nestjs-zod'
-import { z } from 'zod'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
-import { transaction } from '../../database/schema'
+import { category, transaction } from '../../database/schema'
 import { OverviewService } from '../overview/overview.service'
 import { TransactionsReviewService } from './transactions-review.service'
 import { TransactionsWriteService } from './transactions-write.service'
 
-class AccountsQueryDto extends createZodDto(z.object({ accounts: accountsParam })) {}
+class FilterQueryDto extends createZodDto(transactionFilter) {}
 class CreateTransactionDto extends createZodDto(createTransactionInput) {}
 class TransactionListQueryDto extends createZodDto(transactionListQuery) {}
 class UpdateTransactionDto extends createZodDto(updateTransactionInput) {}
@@ -34,7 +33,7 @@ export class TransactionsController {
   ) {}
 
   @Get()
-  list(@Query() query: TransactionListQueryDto): { items: TransactionListItem[]; total: number } {
+  list(@Query() query: TransactionListQueryDto): TransactionPage {
     return this.review.list(query)
   }
 
@@ -50,21 +49,16 @@ export class TransactionsController {
     return this.writer.create(body)
   }
 
-  /** "Ungeprüfte Transaktionen": unreviewed and without category. */
+  /** "Ungeprüfte Transaktionen": unreviewed bookings matching the filter (review is forced). */
   @Get('unreviewed/count')
-  unreviewedCount(@Query() query: AccountsQueryDto): { count: number } {
-    const ids = this.overview.resolveAccounts(query.accounts).map((acc) => acc.id)
-    if (ids.length === 0) return { count: 0 }
+  unreviewedCount(@Query() query: FilterQueryDto): { count: number } {
+    const where = this.review.whereFor({ ...query, review: 'unreviewed', status: undefined })
+    if (where === null) return { count: 0 }
     const row = this.db
       .select({ count: count() })
       .from(transaction)
-      .where(
-        and(
-          inArray(transaction.accountId, ids),
-          eq(transaction.reviewStatus, 'unreviewed'),
-          isNull(transaction.categoryId),
-        ),
-      )
+      .leftJoin(category, eq(category.id, transaction.categoryId))
+      .where(where)
       .get()
     return { count: row?.count ?? 0 }
   }

@@ -36,6 +36,7 @@ All decisions for feature 003. No open NEEDS CLARIFICATION.
 - **Decision**: `pages/budget/review.vue` becomes a redirect to `/transactions?review=unreviewed`.
   - "Alle als geprüft markieren" uses the bulk endpoint with the current filter, after a confirmation that shows the count.
   - Review logic from `transactions-review.service.ts` is reused.
+  - "Ungeprüft" keeps the 001 meaning: `review_status = 'unreviewed'` and no category. Rule-categorized rows count as done. `review=unreviewed` in the table and the tile count use the same condition.
 
 ## R6 Accounts overview and detail
 
