@@ -193,7 +193,7 @@
 
 ### Tests for User Story 3
 
-- [ ] T037 [P] [US3] Write the component test `apps/web/tests/period-picker.spec.ts`:
+- [X] T037 [P] [US3] Write the component test `apps/web/tests/period-picker.spec.ts`:
   - "Aktueller Monat" is disabled while active.
   - The month dropdown sets `?period=`.
   - Range label "01.09. – 30.09.".
@@ -204,10 +204,10 @@
 
 ### Implementation for User Story 3
 
-- [ ] T040 [US3] Create `apps/web/app/components/budget/PeriodPicker.vue`, replacing `PeriodSwitcher.vue` in all budget pages:
+- [X] T040 [US3] Extend `apps/web/app/components/budget/PeriodSwitcher.vue` into the period picker used by all budget pages:
   - Arrows, "Aktueller Monat", and a popover with month/quarter/year selection for the last 5 years.
   - Range label.
-  - State in `?period=`, shared by all budget pages.
+  - State stays in the shared `useBudgetPeriod` state, so all budget pages show the same period.
 - [ ] T041 [US3] Accept and validate `icon` in `apps/api/src/modules/categories/` (create and update).
   - Add `GET /categories/:id/detail?period=` that returns the total and a 12-month history, sub categories included.
   - Set default icons for the default and demo categories in `apps/api/src/database/demo.ts` and the default category seed.
