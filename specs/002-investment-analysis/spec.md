@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-23
 
-**Status**: Draft
+**Status**: Implemented
 
 **Input**: User description: "Investment-Analyse und Erweiterungen für Vermögenskompass (Lücken-Analyse Referenz-Tool vs. Dev-Seite, 2026-11-23). Analyse-Seite (Aufteilungen nach Assetklassen, Regionen, Branchen, Währungen, Volatilität, Rendite, eigene Aufteilung; Rendite als Linie/Heatmap/Balken; Wertentwicklung pro Jahr mit IZF, Inflation, Realrendite; Portfoliovergleich), Dividenden, Steuern (Freistellungsaufträge, Vorabpauschale), Benchmark-Vergleich, Watchlists, Buchungen als Tabelle, Budget-Kreisdiagramm. Nicht im Umfang: Teilen, Reverse Breakdown, Werbung/PLUS. Feature 001 hat noch offene Arbeit (US3 Scalable, Deploy), die erhalten bleibt."
 
