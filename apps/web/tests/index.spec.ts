@@ -25,11 +25,13 @@ registerEndpoint('/api/overview/net-worth', () => ({
 
 describe('overview page', () => {
   it('renders only visible widgets in layout order with empty states', async () => {
-    const wrapper = await mountSuspended(IndexPage)
+    // UTooltip needs UApp's TooltipProvider, which a single-component mount lacks.
+    const wrapper = await mountSuspended(IndexPage, { global: { stubs: { InfoTooltip: true } } })
     const order = wrapper
       .findAll('[data-testid$="-card"]')
       .map((element) => element.attributes('data-testid'))
-    expect(order).toEqual(['accounts-card', 'networth-card', 'budgets-card'])
+    // 007 R5: the chart on top, then the fixed columns (accounts and budgets on the right).
+    expect(order).toEqual(['networth-card', 'accounts-card', 'budgets-card'])
     expect(wrapper.text()).toContain('Noch keine Daten')
     expect(wrapper.text()).toContain('Jetzt Budgets erstellen')
     expect(wrapper.text()).not.toContain('NaN')

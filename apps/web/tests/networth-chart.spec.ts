@@ -26,7 +26,9 @@ registerEndpoint('/api/overview/net-worth', () => ({
   series,
 }))
 
+// UTooltip needs UApp's TooltipProvider, which a single-component mount lacks.
 const stubs = {
+  InfoTooltip: true,
   VisXYContainer: true,
   VisArea: true,
   VisLine: true,

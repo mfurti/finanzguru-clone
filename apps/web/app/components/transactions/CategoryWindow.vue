@@ -20,6 +20,7 @@ const emit = defineEmits<{ done: [suggestion: CategorizeResult['suggestion']] }>
 const { t } = useI18n()
 const toast = useToast()
 const { tree, refresh: refreshTree } = await useCategoryOptions()
+const { colorOf, iconOf } = await useCategoryAppearance()
 
 /** Same normalization as the API's recipient key (NFKC, lower case, single spaces). */
 const keyOf = (value: string | null | undefined) =>
@@ -275,7 +276,11 @@ async function save(): Promise<void> {
                 group.main.children.length > 0 ? toggleGroup(group.main.id) : choose(group.main)
               "
             >
-              <CategoryIcon :icon="group.main.icon" :color="group.main.color" size="sm" />
+              <CategoryIcon
+                :icon="iconOf(group.main.id)"
+                :color="colorOf(group.main.id)"
+                size="sm"
+              />
               <span class="flex-1">{{ group.main.name }}</span>
               <UIcon
                 v-if="group.main.children.length > 0"
@@ -301,7 +306,7 @@ async function save(): Promise<void> {
                 >
                   <span
                     class="size-2 shrink-0 rounded-full"
-                    :style="{ background: categoryHex(child.color) }"
+                    :style="{ background: colorOf(child.id) }"
                   />
                   <span class="flex-1">{{ child.name }}</span>
                   <UIcon
