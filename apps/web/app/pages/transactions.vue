@@ -23,6 +23,7 @@ const table = useTemplateRef<{ refresh: () => Promise<void> }>('table')
           @done="table?.refresh()"
         />
       </div>
+      <RuleSuggestions @changed="table?.refresh()" />
       <BookingsTable ref="table" route-sync />
     </section>
   </OverviewSection>

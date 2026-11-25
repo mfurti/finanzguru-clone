@@ -321,7 +321,29 @@ function setCategory(ids: string[], categoryId: string | null): void {
 async function categoryChanged(suggestion: CategorizeResult['suggestion']): Promise<void> {
   rowSelection.value = {}
   await changed()
-  if (suggestion) suggestionsRefresh.value++
+  if (!suggestion) return
+  suggestionsRefresh.value++
+  // Offer the rule right where the owner just categorized (006 US2).
+  toast.add({
+    title: t('rules.suggest'),
+    description: suggestion.counterparty,
+    icon: 'i-lucide-lightbulb',
+    duration: 10_000,
+    actions: [
+      {
+        label: t('rules.accept'),
+        onClick: async () => {
+          const result = await apiFetch<{ applied: number }>(
+            `/api/rules/suggestions/${suggestion.id}/accept`,
+            { method: 'POST' },
+          )
+          toast.add({ title: t('rules.applied', { n: result.applied }), color: 'success' })
+          suggestionsRefresh.value++
+          await changed()
+        },
+      },
+    ],
+  })
 }
 /** Bumped when a category change produced a rule suggestion (006 US2). */
 const suggestionsRefresh = useState('rule-suggestions-refresh', () => 0)
