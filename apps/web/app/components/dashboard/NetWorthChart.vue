@@ -2,16 +2,18 @@
 import {
   formatDate,
   formatEur,
-  formatEurCompact,
   formatPctSigned,
   type NetWorthPoint,
   type NetWorthResponse,
   type ChartSettings,
   type Period,
 } from '@finance/shared'
-import { VisArea, VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
+import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
 
-/** Net-worth chart with total, gain, Vermögen/Rendite switch and period tabs (US1). */
+/**
+ * Net-worth chart with total, gain, Vermögen/Rendite switch and period tabs (US1); header row,
+ * ⓘ texts, line without area and compact axis like the reference (007 R6).
+ */
 const { t } = useI18n()
 const { accountsParam } = useAccountFilter()
 
@@ -88,7 +90,7 @@ const tickDate = (index: number) => {
   }).format(new Date(`${point.date}T00:00:00Z`))
 }
 const tickY = (value: number) =>
-  mode.value === 'value' ? formatEurCompact(Math.round(value * 100)) : `${value.toFixed(0)} %`
+  mode.value === 'value' ? compactEur(Math.round(value * 100)) : `${value.toFixed(0)} %`
 
 const tooltip = (point: Point) => {
   const rows =
@@ -118,7 +120,10 @@ const tooltip = (point: Point) => {
 
 <template>
   <UCard data-testid="networth-card">
-    <div class="mb-3 flex flex-wrap items-center gap-2">
+    <div
+      class="mb-4 flex flex-wrap items-center justify-between gap-2"
+      data-testid="networth-header"
+    >
       <UTabs
         v-model="mode"
         :items="[
@@ -128,8 +133,6 @@ const tooltip = (point: Point) => {
         :content="false"
         size="sm"
       />
-    </div>
-    <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
       <div class="flex flex-wrap items-center gap-1">
         <PeriodTabs v-model="period" :inactive="!!range" @pick="range = null" />
         <DateRangePicker v-model="range" />
@@ -144,27 +147,35 @@ const tooltip = (point: Point) => {
           />
         </UDropdownMenu>
       </div>
+    </div>
+
+    <div class="mb-4 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+      <div class="flex flex-wrap items-end gap-x-6 gap-y-1">
+        <div>
+          <div class="text-3xl font-semibold" data-testid="networth-total">
+            <Money :cents="hasData ? data!.totalCents : null" animate />
+          </div>
+          <div class="flex items-center gap-1 text-xs text-muted">
+            {{ t('overview.netWorth.total') }}
+            <InfoTooltip :text="t('info.netWorth')" />
+          </div>
+        </div>
+        <div>
+          <div class="text-lg font-medium">
+            <Money :cents="hasData ? data!.gainCents : null" signed animate />
+          </div>
+          <div class="flex items-center gap-1 text-xs text-muted">
+            {{ t('overview.netWorth.gain') }}
+            <InfoTooltip :text="t('info.gain')" />
+          </div>
+        </div>
+      </div>
       <BenchmarkSelect
         v-if="mode === 'return'"
         v-model="benchmark.selected.value"
         :benchmarks="benchmark.benchmarks.value ?? []"
         :stale="benchmark.series.value?.stale"
       />
-    </div>
-
-    <div class="mb-4 flex flex-wrap items-end gap-x-6 gap-y-1">
-      <div>
-        <div class="text-3xl font-semibold" data-testid="networth-total">
-          <Money :cents="hasData ? data!.totalCents : null" animate />
-        </div>
-        <div class="text-xs text-muted">{{ t('overview.netWorth.total') }}</div>
-      </div>
-      <div>
-        <div class="text-lg font-medium">
-          <Money :cents="hasData ? data!.gainCents : null" signed animate />
-        </div>
-        <div class="text-xs text-muted">{{ t('overview.netWorth.gain') }}</div>
-      </div>
     </div>
 
     <EmptyState
@@ -194,7 +205,6 @@ const tooltip = (point: Point) => {
     <ClientOnly v-else>
       <VisXYContainer :data="points" :height="260" class="networth-chart">
         <template v-if="mode === 'value'">
-          <VisArea :x="x" :y="yValue" color="var(--ui-primary)" :opacity="0.15" />
           <VisLine :x="x" :y="yValue" color="var(--ui-primary)" :line-width="2" />
           <VisLine
             v-if="showInvested"
