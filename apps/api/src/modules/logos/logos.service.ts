@@ -1,5 +1,8 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import type { BrandSearchResult, LogoRef, LogoSource } from '@finance/shared'
+import { DB } from '../../database/database.constants'
+import type { AppDatabase } from '../../database/drizzle.module'
+import { recipientLogo } from '../../database/schema'
 import { BRAND_ALIASES, CURATED_SLUGS } from '../../domain/brands'
 import { logoFor, recipientKey, type LogoChoice, type LogoTx } from '../../domain/logo'
 import { normalizeText } from '../../domain/dedupe'
@@ -19,6 +22,22 @@ export interface BookingLogo {
 
 @Injectable()
 export class LogosService {
+  constructor(@Inject(DB) private readonly db: AppDatabase) {}
+
+  /** All stored choices by recipient key (a few hundred rows at most), one query per list. */
+  choices(): Map<string, LogoChoice> {
+    return new Map(
+      this.db
+        .select()
+        .from(recipientLogo)
+        .all()
+        .map((row) => [
+          row.recipientKey,
+          { mode: row.mode, brandSlug: row.brandSlug, fileName: row.fileName },
+        ]),
+    )
+  }
+
   brandUrl(slug: string): string {
     return `/api/logos/brands/${slug}.svg?v=${catalogVersion}`
   }

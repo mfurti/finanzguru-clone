@@ -42,6 +42,7 @@ import {
 import { assertValidPattern, counterpartyKey, wouldChange } from '../../domain/categorize'
 import { appendRule, applyRule } from './rule-apply'
 import { recordManualCategorization } from './rule-suggestion-store'
+import { LogosService } from '../logos/logos.service'
 import { OverviewService } from '../overview/overview.service'
 
 @Injectable()
@@ -49,6 +50,7 @@ export class TransactionsReviewService {
   constructor(
     @Inject(DB) private readonly db: AppDatabase,
     private readonly overview: OverviewService,
+    private readonly logos: LogosService,
   ) {}
 
   /**
@@ -166,14 +168,12 @@ export class TransactionsReviewService {
       .offset((query.page - 1) * query.pageSize)
       .all()
     const tags = this.tagsOf(rows.map((row) => row.id))
+    const choices = this.logos.choices()
     return {
       items: rows.map((row) => ({
         ...row,
         tags: tags.get(row.id) ?? [],
-        // Logos follow in 008 T007.
-        logo: null,
-        logoSource: null,
-        recipientKey: null,
+        ...this.logos.forBooking(row, choices),
       })),
       total: totals?.n ?? 0,
       page: query.page,
