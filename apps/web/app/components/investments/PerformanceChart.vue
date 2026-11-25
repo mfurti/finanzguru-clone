@@ -5,29 +5,67 @@ import {
   formatEurCompact,
   formatPctSigned,
   type AssetClass,
+  type ClassPerformanceResponse,
   type Period,
   type PerformanceResponse,
 } from '@finance/shared'
 import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
 
 /**
- * Investment value vs. invested capital (US4). Follows the asset-class chips
- * of the positions card (004 US2) through the shared state.
+ * Investment value vs. invested capital (US4). Asset-class chips add one line per selected
+ * class (005 US2, like the reference app): € view shows the class value, % view its
+ * time-weighted return, which stays flat after a sale. Headline and table always show "Alle".
  */
 const { t } = useI18n()
 const { accountsParam } = useAccountFilter()
 const period = ref<Period>('1Y')
 const unit = ref<'eur' | 'pct'>('eur')
-const assetClass = useState<AssetClass | 'all'>('positions-asset-class', () => 'all')
+const query = computed(() => ({ period: period.value, accounts: accountsParam.value }))
 
 const { data } = await useApi<PerformanceResponse>('/api/investments/performance', {
-  query: computed(() => ({
-    period: period.value,
-    accounts: accountsParam.value,
-    assetClass: assetClass.value === 'all' ? undefined : assetClass.value,
-  })),
+  query,
   default: () => ({ valueCents: 0, gainCents: 0, gainPct: null, series: [] }),
 })
+const { data: classData } = await useApi<ClassPerformanceResponse>(
+  '/api/investments/performance/classes',
+  { query, default: () => ({ classes: [], series: [] }) },
+)
+
+/** Fixed color per class so a line keeps its color when chips change. */
+const CLASS_COLORS: Record<AssetClass, string> = {
+  stock: 'var(--color-sky-500)',
+  etf: 'var(--color-violet-500)',
+  fund: 'var(--color-amber-500)',
+  bond: 'var(--color-teal-500)',
+  crypto: 'var(--color-orange-500)',
+  commodity: 'var(--color-yellow-600)',
+  other: 'var(--color-slate-400)',
+  cash: 'var(--color-lime-500)',
+}
+const CHIPS: AssetClass[] = ['stock', 'etf', 'fund', 'bond', 'crypto', 'commodity', 'other']
+const held = computed(() => new Set(classData.value?.classes ?? []))
+const selected = ref<AssetClass[]>([])
+// Classes without holdings in the new range drop out of the selection.
+watch(held, (classes) => {
+  selected.value = selected.value.filter((assetClass) => classes.has(assetClass))
+})
+function toggle(assetClass: AssetClass): void {
+  selected.value = selected.value.includes(assetClass)
+    ? selected.value.filter((item) => item !== assetClass)
+    : [...selected.value, assetClass]
+}
+const byDate = computed(
+  () => new Map((classData.value?.series ?? []).map((day) => [day.date, day.byClass])),
+)
+/** Value (€) or return (%) of `assetClass` on the point's date; undefined leaves a gap. */
+function classY(assetClass: AssetClass) {
+  return (point: Point) => {
+    const value = byDate.value.get(point.date)?.[assetClass]
+    if (!value) return undefined
+    if (unit.value === 'eur') return value.valueCents / 100
+    return value.twrorPct === null ? undefined : Number(value.twrorPct) * 100
+  }
+}
 
 type Point = PerformanceResponse['series'][number] & { index: number }
 const points = computed<Point[]>(() =>
@@ -71,6 +109,14 @@ const tooltip = (point: Point) =>
       (showBenchmark.value && yBenchmark(point) !== undefined
         ? `<div>${benchmark.name.value}: ${formatPctSigned(yBenchmark(point)! / 100)}</div>`
         : '')) +
+  selected.value
+    .map((assetClass) => {
+      const y = classY(assetClass)(point)
+      if (y === undefined) return ''
+      const text = unit.value === 'eur' ? formatEur(Math.round(y * 100)) : formatPctSigned(y / 100)
+      return `<div>${t(`assetClasses.${assetClass}`)}: ${text}</div>`
+    })
+    .join('') +
   '</div>'
 </script>
 
@@ -78,15 +124,6 @@ const tooltip = (point: Point) =>
   <UCard data-testid="performance-card">
     <div class="mb-3 flex flex-wrap items-end justify-between gap-3">
       <div>
-        <UBadge
-          v-if="assetClass !== 'all'"
-          variant="soft"
-          color="neutral"
-          class="mb-1"
-          data-testid="performance-asset-class"
-        >
-          {{ t(`assetClasses.${assetClass}`) }}
-        </UBadge>
         <div class="text-3xl font-semibold" data-testid="investments-total">
           <Money :cents="hasData ? data!.valueCents : null" />
         </div>
@@ -119,6 +156,54 @@ const tooltip = (point: Point) =>
         :stale="benchmark.series.value?.stale"
       />
     </div>
+    <div v-if="hasData" class="mb-3 flex flex-wrap gap-1.5" data-testid="class-chips">
+      <UButton
+        size="xs"
+        :variant="selected.length === 0 ? 'soft' : 'ghost'"
+        color="neutral"
+        :label="t('investments.classChips.all')"
+        data-testid="class-chip-all"
+        @click="selected = []"
+      />
+      <UButton
+        v-for="assetClass in CHIPS"
+        :key="assetClass"
+        size="xs"
+        :variant="selected.includes(assetClass) ? 'soft' : 'ghost'"
+        color="neutral"
+        :disabled="!held.has(assetClass)"
+        :title="held.has(assetClass) ? undefined : t('investments.classChips.noHoldings')"
+        :aria-pressed="selected.includes(assetClass)"
+        :data-testid="`class-chip-${assetClass}`"
+        @click="toggle(assetClass)"
+      >
+        <span
+          class="size-2 rounded-full"
+          :style="{ background: CLASS_COLORS[assetClass] }"
+          aria-hidden="true"
+        />
+        {{ t(`assetClasses.${assetClass}`) }}
+      </UButton>
+    </div>
+    <ul
+      v-if="selected.length > 0"
+      class="mb-2 flex flex-wrap gap-3 text-xs text-muted"
+      data-testid="class-legend"
+    >
+      <li class="flex items-center gap-1">
+        <span class="h-0.5 w-3 rounded" style="background: var(--color-emerald-500)" />
+        {{ t('investments.classChips.all') }}
+      </li>
+      <li
+        v-for="assetClass in selected"
+        :key="assetClass"
+        class="flex items-center gap-1"
+        :data-testid="`class-legend-${assetClass}`"
+      >
+        <span class="h-0.5 w-3 rounded" :style="{ background: CLASS_COLORS[assetClass] }" />
+        {{ t(`assetClasses.${assetClass}`) }}
+      </li>
+    </ul>
     <EmptyState v-if="!hasData" :title="t('investments.empty')" icon="i-lucide-chart-line" />
     <div
       v-if="showBenchmark"
@@ -153,6 +238,14 @@ const tooltip = (point: Point) =>
             data-testid="benchmark-line"
           />
         </template>
+        <VisLine
+          v-for="assetClass in selected"
+          :key="`${assetClass}-${unit}`"
+          :x="x"
+          :y="classY(assetClass)"
+          :color="CLASS_COLORS[assetClass]"
+          :line-width="1.5"
+        />
         <VisAxis type="x" :tick-format="tickDate" :num-ticks="4" :grid-line="false" />
         <VisAxis type="y" :tick-format="tickY" :num-ticks="4" />
         <VisCrosshair :template="tooltip" />

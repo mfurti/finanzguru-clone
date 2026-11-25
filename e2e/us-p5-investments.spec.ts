@@ -24,17 +24,8 @@ test.describe('003 US5 investments', () => {
     const totalAll = await page.getByTestId('investments-total').textContent()
     await page.getByTestId('asset-chip-etf').click()
     await expect(table).not.toContainText('Apple Inc.')
-    // 004 US2: the chart follows the chips; its total equals the ETF positions.
-    await expect(page.getByTestId('performance-asset-class')).toHaveText('ETF')
-    const etf = (await (
-      await page.request.get('/api/investments/positions?assetClass=etf')
-    ).json()) as {
-      valueCents: number
-    }[]
-    const euro = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' })
-    await expect(page.getByTestId('investments-total')).toHaveText(
-      euro.format(etf.reduce((sum, row) => sum + row.valueCents, 0) / 100),
-    )
+    // 005 US2: the headline stays on "Alle" whatever the table shows.
+    await expect(page.getByTestId('investments-total')).toHaveText(totalAll!)
     await page.getByTestId('asset-chip-all').click()
     await expect(table).toContainText('Apple Inc.')
     await expect(page.getByTestId('investments-total')).toHaveText(totalAll!)
