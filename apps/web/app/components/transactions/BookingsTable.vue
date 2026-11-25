@@ -59,7 +59,6 @@ const { data, refresh, status } = await useApi<TransactionPage>('/api/transactio
   query: listQuery,
   default: () => ({ items: [], total: 0, page: 1, pageSize: 50, sumCents: 0 }),
 })
-const { items: categoryItems } = await useCategoryOptions()
 const { colorOf, iconOf } = await useCategoryAppearance()
 const { data: tags, refresh: refreshTags } = await useApi<TagDto[]>('/api/tags', {
   key: 'tags',
@@ -124,7 +123,6 @@ const columnMenu = computed(() =>
 )
 
 const UCheckbox = resolveComponent('UCheckbox')
-const USelectMenu = resolveComponent('USelectMenu')
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 const Money = resolveComponent('Money')
@@ -219,41 +217,29 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
     header: sortable('category', t('txws.col.category')),
     cell: ({ row }) =>
       h(
-        USelectMenu,
+        'button',
         {
-          modelValue: row.original.categoryId ?? undefined,
-          items: categoryItems.value,
-          valueKey: 'value',
-          searchInput: { placeholder: t('txws.search') },
-          variant: 'none',
-          trailingIcon: '',
-          class: 'p-0',
-          ui: { base: 'p-0 cursor-pointer', content: 'min-w-64' },
-          'aria-label': t('txws.col.category'),
+          type: 'button',
+          class:
+            'inline-flex max-w-48 cursor-pointer items-center gap-1.5 rounded-full border border-default px-2 py-0.5 text-xs transition-colors hover:bg-elevated',
+          'aria-label': `${t('txws.col.category')}: ${row.original.categoryName ?? t('rules.category')}`,
           'data-testid': 'category-chip',
-          'onUpdate:modelValue': (value: string) => setCategory([row.original.id], value),
+          onClick: (event: MouseEvent) => {
+            event.stopPropagation()
+            openCategory([row.original.id])
+          },
         },
-        {
-          default: () =>
-            h(
-              'span',
-              {
-                class:
-                  'inline-flex max-w-48 items-center gap-1.5 rounded-full border border-default px-2 py-0.5 text-xs transition-colors hover:bg-elevated',
-              },
-              row.original.categoryId
-                ? [
-                    h(CategoryIcon, {
-                      icon: iconOf(row.original.categoryId),
-                      color: colorOf(row.original.categoryId),
-                      size: 'sm',
-                      class: 'size-4! rounded-full',
-                    }),
-                    h('span', { class: 'truncate' }, row.original.categoryName),
-                  ]
-                : [h('span', { class: 'text-muted' }, t('rules.category'))],
-            ),
-        },
+        row.original.categoryId
+          ? [
+              h(CategoryIcon, {
+                icon: iconOf(row.original.categoryId),
+                color: colorOf(row.original.categoryId),
+                size: 'sm',
+                class: 'size-4! rounded-full',
+              }),
+              h('span', { class: 'truncate' }, row.original.categoryName),
+            ]
+          : [h('span', { class: 'text-muted' }, t('rules.category'))],
       ),
   },
   {
@@ -324,18 +310,14 @@ async function bulk(payload: Record<string, unknown>) {
   })
 }
 
-/** Category change goes through the dialog: scope and "merken" (006 US1). */
-const pending = ref<{ items: TransactionListItem[]; categoryId: string } | null>(null)
-const dialogOpen = ref(false)
-const pendingName = computed(
-  () => categoryItems.value.find((item) => item.value === pending.value?.categoryId)?.label ?? '',
-)
-function setCategory(ids: string[], categoryId: string | null): void {
-  if (!categoryId) return
+/** Category change goes through the large window: list, scope and "merken" (007 US1). */
+const categoryTargets = ref<TransactionListItem[]>([])
+const categoryOpen = ref(false)
+function openCategory(ids: string[]): void {
   const items = (data.value?.items ?? []).filter((item) => ids.includes(item.id))
   if (items.length === 0) return
-  pending.value = { items, categoryId }
-  dialogOpen.value = true
+  categoryTargets.value = items
+  categoryOpen.value = true
 }
 async function categoryChanged(suggestion: CategorizeResult['suggestion']): Promise<void> {
   rowSelection.value = {}
@@ -489,12 +471,10 @@ const rangeLabel = computed(() => {
       </div>
     </template>
 
-    <CategoryChangeDialog
-      v-if="pending"
-      v-model:open="dialogOpen"
-      :items="pending.items"
-      :category-id="pending.categoryId"
-      :category-name="pendingName"
+    <CategoryWindow
+      v-if="categoryTargets.length > 0"
+      v-model:open="categoryOpen"
+      :items="categoryTargets"
       @done="categoryChanged"
     />
 
@@ -502,8 +482,7 @@ const rangeLabel = computed(() => {
       v-if="selectedIds.length > 0"
       :ids="selectedIds"
       :tags="tags ?? []"
-      :category-items="categoryItems"
-      @set-category="(id) => setCategory(selectedIds, id)"
+      @set-category="openCategory(selectedIds)"
       @delete="remove(selectedIds)"
       @done="changed"
     />

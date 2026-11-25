@@ -5,12 +5,9 @@ import type { TagDto } from '@finance/shared'
  * Actions for the selected bookings (FR-005): set category, add/remove tags,
  * mark reviewed, delete (undo lives in the table's toast).
  */
-const props = defineProps<{
-  ids: string[]
-  tags: TagDto[]
-  categoryItems: { label: string; value: string }[]
-}>()
-const emit = defineEmits<{ setCategory: [id: string]; delete: []; done: [] }>()
+const props = defineProps<{ ids: string[]; tags: TagDto[] }>()
+/** `setCategory` opens the category window for the selection (007 US1). */
+const emit = defineEmits<{ setCategory: []; delete: []; done: [] }>()
 const { t } = useI18n()
 
 async function run(action: string, value?: string | string[]): Promise<void> {
@@ -51,14 +48,14 @@ const tagMenu = computed(() => [
     data-testid="bulk-bar"
   >
     <span class="text-sm font-medium">{{ t('txws.selected', { n: ids.length }) }}</span>
-    <USelectMenu
-      :items="categoryItems"
-      value-key="value"
-      :placeholder="t('txws.setCategory')"
+    <UButton
+      icon="i-lucide-shapes"
       size="sm"
-      class="w-48"
+      variant="soft"
+      color="neutral"
+      :label="t('txws.setCategory')"
       data-testid="bulk-category"
-      @update:model-value="(value: string) => emit('setCategory', value)"
+      @click="emit('setCategory')"
     />
     <UDropdownMenu v-if="tags.length > 0" :items="tagMenu">
       <UButton
