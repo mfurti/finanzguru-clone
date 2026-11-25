@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { assertValidPattern, categorize, type Rule } from '../../src/domain/categorize'
+import {
+  assertValidPattern,
+  categorize,
+  counterpartyKey,
+  draftRuleFor,
+  type Rule,
+  wouldChange,
+} from '../../src/domain/categorize'
 import { fingerprint, fingerprintBatch } from '../../src/domain/dedupe'
 
 describe('fingerprints', () => {
@@ -113,5 +120,43 @@ describe('categorize', () => {
   it('rejects invalid regex patterns', () => {
     expect(() => assertValidPattern('regex', '(unclosed')).toThrow()
     expect(() => assertValidPattern('contains', '(unclosed')).not.toThrow()
+  })
+})
+
+describe('rule helpers for the category dialog (006 T004)', () => {
+  it('builds the recipient key from the normalized counterparty', () => {
+    expect(counterpartyKey({ counterparty: '  STADTWERKE   Konstanz GmbH ' })).toBe(
+      'stadtwerke konstanz gmbh',
+    )
+    expect(counterpartyKey({ counterparty: '   ' })).toBeNull()
+    expect(counterpartyKey({ counterparty: null })).toBeNull()
+  })
+
+  it('pre-fills the rule from counterparty, then IBAN, then purpose', () => {
+    expect(draftRuleFor({ counterparty: 'Vermieter', purpose: 'Miete' })).toEqual({
+      matchField: 'counterparty',
+      operator: 'contains',
+      pattern: 'vermieter',
+    })
+    expect(draftRuleFor({ counterpartyIban: 'DE02 1203 0000 0000 2020 51' })).toEqual({
+      matchField: 'counterparty_iban',
+      operator: 'equals',
+      pattern: 'DE02120300000000202051',
+    })
+    expect(draftRuleFor({ purpose: 'KARTENZAHLUNG · Bäckerei Müller Filiale 12' })).toEqual({
+      matchField: 'purpose',
+      operator: 'contains',
+      pattern: 'bäckerei müller filiale 12',
+    })
+    expect(draftRuleFor({})).toBeNull()
+  })
+
+  it('never lets rules change manual, imported, transfer or trade bookings', () => {
+    expect(wouldChange({ type: 'expense', categorySource: null })).toBe(true)
+    expect(wouldChange({ type: 'income', categorySource: 'rule' })).toBe(true)
+    expect(wouldChange({ type: 'expense', categorySource: 'manual' })).toBe(false)
+    expect(wouldChange({ type: 'expense', categorySource: 'import' })).toBe(false)
+    expect(wouldChange({ type: 'transfer', categorySource: null })).toBe(false)
+    expect(wouldChange({ type: 'buy', categorySource: null })).toBe(false)
   })
 })

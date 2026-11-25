@@ -104,3 +104,47 @@ export function categorize(
     categorySource: tx.categoryId ? (tx.categorySource ?? 'import') : null,
   }
 }
+
+/** Rule fields as edited in the category dialog (006). */
+export interface RuleDraftShape {
+  matchField: Rule['matchField']
+  operator: Rule['operator']
+  pattern: string
+  amountSign?: Rule['amountSign']
+}
+
+/** Longest recipient key and pre-filled purpose pattern (006 data model, research R2). */
+const MAX_KEY = 200
+const PURPOSE_PATTERN = 40
+
+/** Normalized counterparty that identifies a recipient, or null without counterparty. */
+export function counterpartyKey(tx: Pick<CategorizableTx, 'counterparty'>): string | null {
+  const key = normalizeText(tx.counterparty).slice(0, MAX_KEY)
+  return key || null
+}
+
+/**
+ * Pre-filled rule for "Für ähnliche Buchungen merken" (006 R2): the counterparty, else the
+ * IBAN, else the start of the purpose after the posting text ("KARTENZAHLUNG · …").
+ */
+export function draftRuleFor(
+  tx: Pick<CategorizableTx, 'counterparty' | 'counterpartyIban' | 'purpose'>,
+): RuleDraftShape | null {
+  const key = counterpartyKey(tx)
+  if (key) return { matchField: 'counterparty', operator: 'contains', pattern: key }
+  const iban = (tx.counterpartyIban ?? '').replace(/\s+/g, '').toUpperCase()
+  if (iban) return { matchField: 'counterparty_iban', operator: 'equals', pattern: iban }
+  const parts = (tx.purpose ?? '').split(' · ')
+  const text = normalizeText(parts.length > 1 ? parts.slice(1).join(' ') : parts[0])
+  const pattern = text.slice(0, PURPOSE_PATTERN).trim()
+  return pattern ? { matchField: 'purpose', operator: 'contains', pattern } : null
+}
+
+/**
+ * True when a scope change or a new rule may set this booking's category (006 R3, FR-008):
+ * never manual ones, never transfers or trades, only uncategorized or rule-categorized ones.
+ */
+export function wouldChange(tx: Pick<CategorizableTx, 'type' | 'categorySource'>): boolean {
+  if (tx.categorySource === 'manual' || tx.categorySource === 'import') return false
+  return tx.type !== 'transfer' && CATEGORIZABLE.has(tx.type)
+}
