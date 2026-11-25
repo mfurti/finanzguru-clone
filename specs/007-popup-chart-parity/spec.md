@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-25
 
-**Status**: Draft
+**Status**: Implemented (2026-11-25)
 
 **Input**: User description: "UI-Parität Popups, Tabellen, Legenden und Diagramme (Vermögenskompass ↔ Finanzfluss Copilot, Vergleich 2026-11-25 bei 1440 px) … A) Kategorie-Popup … B) Transaktionen-Tabelle: Betrag-Spalte rutscht aus dem Bild … C) Buchungs-Detail … D) Filter … E) Hinzufügen … F) Dashboard-Diagramm … G) Dashboard-Karten … H) Einnahmen & Ausgaben / Budget-Analyse … Nicht im Umfang: Werbung/PLUS, Teilen, Sankey-Editor, Transaktion aufteilen, Deployment, Bank-Anbieter-Suche über mehrere Banken."
 

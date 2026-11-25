@@ -74,7 +74,7 @@
 ## Phase 8: Polish
 
 - [X] T017 Side-by-side check W8 with the reference on the local dev server (8 places, 1440 px and 360 px, dark/light); record differences left (if any) in `quickstart.md`.
-- [ ] T018 Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`); mark spec Status "Implemented".
+- [X] T018 Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`); mark spec Status "Implemented".
 
 ---
 

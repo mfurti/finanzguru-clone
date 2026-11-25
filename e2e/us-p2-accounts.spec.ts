@@ -28,6 +28,10 @@ test.describe('003 US2 accounts', () => {
     await expect(page.getByTestId('account-figures')).not.toContainText('NaN')
     const accounts = page.getByTestId('transactions-table').locator('tbody tr td:nth-child(6)')
     if (test.info().project.name === 'desktop') {
+      // Since 007 Konto is an optional column, off by default.
+      await page.getByTestId('columns-menu').click()
+      await page.getByRole('menuitemcheckbox', { name: 'Konto' }).click()
+      await page.keyboard.press('Escape')
       await expect(accounts.first()).toHaveText('Demo Girokonto')
       const texts = await accounts.allTextContents()
       expect(new Set(texts)).toEqual(new Set(['Demo Girokonto']))
