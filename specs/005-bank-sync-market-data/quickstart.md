@@ -41,3 +41,10 @@ Consent-expiry notice (R4) and the revoked-consent path are covered by API e2e t
 - **W4 (GuV)**: for every checked security, Realisiert + Kursgewinn equals the GuV to the cent. Fully sold stocks show Kursgewinn 0,00 €; partly sold ETFs show both parts.
 - **W5**: "Apple" finds 3 stocks and 5 ETFs/ETPs, grouped by class with ISIN. Adding Apple to a test watchlist loads a month of closes (sparkline). "Kurse aktualisieren" stores the live quote and shows "Kurs vom 25.11.2026, 12:34". The test watchlist was deleted afterwards.
 - Only the read tools `search_securities`, `get_security_quote` and `get_security_chart` were called.
+
+## Results with the owner's bank (2026-11-25, Sparkasse via Enable Banking)
+
+- **Setup**: restricted-production application registered by the owner; account linked in the Enable Banking control panel. Production applications accept only `https` redirect URLs, so the local connection runs with `pnpm dev:local:https` (launch config `app-https`, self-signed certificate accepted in the browser) and `ENABLE_BANKING_REDIRECT_URL=https://localhost:3100/api/sources/bank/callback`.
+- **W1**: the bank list comes from Enable Banking; after the login at the bank the card shows the bank, consent end (90 days) and the account with masked IBAN.
+- **W2**: first sync 226 booked entries (90 days), second sync 0 new / 13 skipped (7-day overlap). The balance in the app matches online banking to the cent (confirmed by the owner). Bookings arrive as "ungeprüft"; the purpose starts with the posting text.
+- **W3**: not run against the real bank, to keep the access; covered by the API e2e test (session closed at Enable Banking, access deleted, data kept).

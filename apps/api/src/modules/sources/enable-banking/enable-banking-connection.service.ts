@@ -5,6 +5,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  Logger,
   ServiceUnavailableException,
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
@@ -47,6 +48,8 @@ export class BankCallbackError extends BadRequestException {
  */
 @Injectable()
 export class EnableBankingConnectionService {
+  private readonly logger = new Logger(EnableBankingConnectionService.name)
+
   constructor(
     @Inject(DB) private readonly db: AppDatabase,
     private readonly crypto: CryptoService,
@@ -236,6 +239,8 @@ export class EnableBankingConnectionService {
       if (error instanceof ServiceUnavailableException || error instanceof BadRequestException) {
         throw error
       }
+      // Messages are already sanitized by the client (no tokens or ids).
+      this.logger.warn(error instanceof Error ? error.message : String(error))
       if (error instanceof AuthExpiredError) throw new BankCallbackError('expired')
       throw new BadGatewayException(
         error instanceof UpstreamError

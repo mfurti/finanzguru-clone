@@ -46,7 +46,7 @@ Browser ──> web (Nuxt, :3000) ──/api/**──> api (Nest, :3001) ──>
 ### Bank connection (Enable Banking)
 
 1. Create an account at Enable Banking and register an application in **restricted production** mode. In this mode the application may read only accounts you link to it yourself, which fits a single-owner app.
-2. Add the redirect URL of your app (`…/api/sources/bank/callback`) to the application and download its private key.
+2. Add the redirect URL of your app (`https://…/api/sources/bank/callback`; production applications accept only `https`) and the public certificate of your key. Locally, run `pnpm dev:local:https` and use `https://localhost:3100/api/sources/bank/callback`.
 3. Set `ENABLE_BANKING_APP_ID`, `ENABLE_BANKING_KEY_FILE` (path to the key file, outside the repository) and, if needed, `ENABLE_BANKING_REDIRECT_URL` in `apps/api/.env`. Optional: `BANK_DAILY_SYNC=true`.
 4. In the app: Einstellungen › Datenquellen › "Bank verbinden", choose your bank, log in there.
 

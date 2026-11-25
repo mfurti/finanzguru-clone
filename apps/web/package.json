@@ -10,7 +10,8 @@
     "postinstall": "nuxt prepare",
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest run",
-    "dev:local": "nuxt dev --port 3100"
+    "dev:local": "nuxt dev --port 3100",
+    "dev:local:https": "nuxt dev --port 3100 --https"
   },
   "dependencies": {
     "@finance/shared": "workspace:*",

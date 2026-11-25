@@ -4,8 +4,19 @@
     {
       "name": "app",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["dev:local"],
+      "runtimeArgs": [
+        "dev:local"
+      ],
       "port": 3100
+    },
+    {
+      "name": "app-https",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "dev:local:https"
+      ],
+      "port": 3100,
+      "url": "https://localhost:3100"
     }
   ]
 }
