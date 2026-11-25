@@ -106,7 +106,7 @@
 
 ## Phase 7: Polish & Cross-Cutting
 
-- [ ] T032 [P] Research addendum: confirm in `research.md` R1/R6 the actual data sent to Enable Banking and Scalable as observed in T016/T031 (Security Requirements of the constitution).
+- [X] T032 [P] Research addendum: confirm in `research.md` R1/R6 the actual data sent to Enable Banking and Scalable as observed in T016/T031 (Security Requirements of the constitution).
 - [ ] T033 [P] README: short "Bankverbindung (Enable Banking)" section — owner registers a restricted-production app, links own accounts, sets the env values locally; key never in the repo.
 - [ ] T034 Full gates: `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e` (desktop and 360 px, dark and light); quickstart W6; mark spec Status "Implemented".
 

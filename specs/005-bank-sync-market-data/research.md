@@ -43,3 +43,8 @@
 ## R8 – Recording fixtures
 
 - **Decision**: `scripts/enable-banking-record.ts` writes raw responses to git-ignored `apps/api/data/enable-banking-raw/`. An anonymizer replaces IBANs, names, references, amounts (scaled) and shifts dates before files go to `test/fixtures/enable-banking/`.
+
+## Addendum (2026-11-25, observed)
+
+- **R6 confirmed** on the local dev server with the owner's Scalable grant: the market-data calls send only the search text, ISINs and the chart timeframe. `search_securities` and `get_security_quote` answer within the owner's portfolio context (Scalable returns the `portfolioId`, which the app neither stores nor shows; fixtures replace it). Responses are quotes in EUR with a UTC time stamp, intraday performance and hits typed `STOCK`/`ETF`; no WKN is returned, so hits carry `wkn: null`. The chart tool has no five-year timeframe; the app offers `1M`, `6M`, `1Y` and `MAX`.
+- **R1 (unchanged, not yet observed)**: what the client sends to Enable Banking is fixed by the endpoint allowlist and pinned by the API e2e test (signed JWT with the app id, bank name and country, redirect URL, session id and account uids). The observation against the real bank follows with T016 when the owner has registered the application.
