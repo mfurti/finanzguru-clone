@@ -83,7 +83,7 @@
 
 - [X] T021 [P] [US3] Domain: expose `gainSplit(state, valueCents)` in `apps/api/src/domain/positions.ts` (research R7): `realizedCents = realizedNetCents`, `priceGainCents = valueCents − remainingCostCents`, `totalGainCents = realized + price`; dividends excluded. Unit test in `apps/api/test/unit/positions.spec.ts`: never sold, fully sold (price gain 0), partly sold (sum exact).
 - [X] T022 [US3] `GET /api/investments/instruments/:id` adds `gain` in `investments-detail.service.ts` (FIFO per depot); API e2e in `apps/api/test/e2e/investments.e2e-spec.ts`. Web `apps/web/app/pages/investments/[instrumentId].vue`: GuV with "Realisiert" and "Kursgewinn" rows (`Money` signed), `data-testid` `gain-total|gain-realized|gain-price`.
-- [ ] T023 [US3] Playwright `e2e/us-b3-gain-split.spec.ts`: partly sold security shows both parts and the sum.
+- [X] T023 [US3] Playwright `e2e/us-b3-gain-split.spec.ts`: the demo depot has no partly sold security, so the journey checks the fully sold one (Kursgewinn 0, Realisiert = GuV) and an open one (parts add up); the partly sold case is pinned by the unit test (T021).
 
 ---
 
