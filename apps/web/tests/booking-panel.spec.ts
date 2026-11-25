@@ -30,6 +30,9 @@ const item: TransactionListItem = {
   categorySource: 'manual',
   reviewStatus: 'reviewed',
   tags: [],
+  logo: null,
+  logoSource: null,
+  recipientKey: 'laden am markt',
 }
 
 let unmount: (() => void) | undefined

@@ -17,7 +17,7 @@
 ## Phase 1: Setup
 
 - [X] T001 Add `simple-icons@16.38.1` (exact version, CC0) to `apps/api/package.json` and the lockfile; `apps/api/src/modules/logos/brand-catalog.ts` loads all icons once (slug, title, hex, path) into a map and exposes `catalogVersion`, `get(slug)`, `search(q, limit)`; unit test `apps/api/test/unit/brand-catalog.spec.ts` (lidl found, unknown slug → undefined, search limit).
-- [ ] T002 [P] Shared schemas in `packages/shared/src/schemas/logo.ts`: `logoRef` (`null` | `{ kind: 'brand', slug, title, hex, url }` | `{ kind: 'upload', url }`), `recipientLogoInput` (`{ mode: 'brand', brandSlug }` | `{ mode: 'none' }`), `brandSearchResult`; `TransactionListItem` in `cashflow.ts` gains `logo`, `logoSource` (`'auto' | 'manual' | null`), `recipientKey` (string, max 200, nullable). Export from the package index.
+- [X] T002 [P] Shared schemas in `packages/shared/src/schemas/logo.ts`: `logoRef` (`null` | `{ kind: 'brand', slug, title, hex, url }` | `{ kind: 'upload', url }`), `recipientLogoInput` (`{ mode: 'brand', brandSlug }` | `{ mode: 'none' }`), `brandSearchResult`; `TransactionListItem` in `cashflow.ts` gains `logo`, `logoSource` (`'auto' | 'manual' | null`), `recipientKey` (string, max 200, nullable). Export from the package index.
 - [ ] T003 [P] German texts in `apps/web/i18n/locales/de.json`: `logo.change` "Logo ändern", `logo.search` "Marke suchen", `logo.auto` "Automatisch", `logo.autoDetected` "Automatisch erkannt", `logo.none` "Kein Logo", `logo.upload` "Eigenes Logo hochladen", `logo.tooBig` "Bild zu groß (max. 256 KB)", `logo.wrongType` "Nur PNG, JPEG oder WebP", `logo.appliesAll` "Gilt für alle Buchungen von {name}", `logo.licence` "Markenlogos: Simple Icons (CC0). Marken sind Eigentum ihrer Inhaber."
 
 ---

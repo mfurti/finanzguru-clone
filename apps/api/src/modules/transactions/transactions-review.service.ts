@@ -167,7 +167,14 @@ export class TransactionsReviewService {
       .all()
     const tags = this.tagsOf(rows.map((row) => row.id))
     return {
-      items: rows.map((row) => ({ ...row, tags: tags.get(row.id) ?? [] })),
+      items: rows.map((row) => ({
+        ...row,
+        tags: tags.get(row.id) ?? [],
+        // Logos follow in 008 T007.
+        logo: null,
+        logoSource: null,
+        recipientKey: null,
+      })),
       total: totals?.n ?? 0,
       page: query.page,
       pageSize: query.pageSize,

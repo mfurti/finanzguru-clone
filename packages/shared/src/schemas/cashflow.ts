@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { accountsParam, cents, isoDate, nullableRate } from './common.js'
+import { logoRef, logoSource, recipientKey } from './logo.js'
 
 export const cashflowQuery = z.object({
   accounts: accountsParam,
@@ -83,6 +84,11 @@ export const transactionListItem = z.object({
   categorySource: z.string().nullable(),
   reviewStatus: z.enum(['unreviewed', 'reviewed']),
   tags: z.array(z.object({ id: z.string(), name: z.string(), color: z.string() })),
+  /** Merchant logo (008): brand or upload; null = initials. */
+  logo: logoRef,
+  logoSource,
+  /** Key the logo choice is stored under; null for transfers and trades. */
+  recipientKey: recipientKey.nullable(),
 })
 export type TransactionListItem = z.infer<typeof transactionListItem>
 
