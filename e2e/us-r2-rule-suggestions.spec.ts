@@ -1,4 +1,5 @@
 import { expect, test, type APIRequestContext, type Page } from '@playwright/test'
+import { chooseCategory } from './helpers'
 
 /**
  * 006 US2: two identical manual categorizations → "Regel anlegen?"; accept saves the rule,
@@ -31,8 +32,8 @@ async function bookings(request: APIRequestContext, recipient: string, n: number
 /** Categorizes row `index` of the filtered table with "Nur diese Buchung". */
 async function categorizeRow(page: Page, index: number) {
   await page.getByTestId('category-chip').nth(index).click()
-  await page.getByRole('option', { name: CATEGORY }).click()
-  await page.getByTestId('category-change-save').click()
+  const dialog = await chooseCategory(page, CATEGORY)
+  await dialog.getByTestId('category-change-save').click()
 }
 
 test.describe('006 US2 rule suggestions', () => {

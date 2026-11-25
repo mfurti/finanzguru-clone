@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { chooseCategory } from './helpers'
 
 /** 003 US1: Übersicht › Transaktionen as the bookings workspace (quickstart W1–W5). */
 test.describe('003 US1 transactions workspace', () => {
@@ -34,9 +35,9 @@ test.describe('003 US1 transactions workspace', () => {
     await rows.nth(1).click()
     await expect(page.getByTestId('bulk-bar')).toContainText('2 ausgewählt')
     await page.getByTestId('bulk-category').click()
-    await page.getByRole('option', { name: 'Lebenshaltung › Lebensmittel und Getränke' }).click()
-    // 006: the change goes through the dialog (scope, "merken"); default is this booking only.
-    await page.getByTestId('category-change-save').click()
+    // 007: one large window (list, scope, "merken"); default is these bookings only.
+    const dialog = await chooseCategory(page, 'Lebenshaltung › Lebensmittel und Getränke')
+    await dialog.getByTestId('category-change-save').click()
     await expect(page.getByTestId('unreviewed-count')).toHaveText(String(before - 2))
     expect(await unreviewed(request)).toBe(before - 2)
   })
@@ -45,9 +46,9 @@ test.describe('003 US1 transactions workspace', () => {
     await page.goto('/transactions?q=Demo%20Modehaus')
     const chip = page.getByTestId('category-chip').first()
     await chip.click()
-    await page.getByRole('option', { name: 'Gesundheit und Wellness', exact: true }).first().click()
-    await page.getByTestId('category-change-save').click()
-    await expect(chip).toContainText('Gesundheit und Wellness')
+    const dialog = await chooseCategory(page, 'Arznei- und Heilmittel')
+    await dialog.getByTestId('category-change-save').click()
+    await expect(chip).toContainText('Arznei- und Heilmittel')
   })
 
   test('W3: delete with undo brings the booking back', async ({ page }) => {
@@ -64,9 +65,7 @@ test.describe('003 US1 transactions workspace', () => {
 
   test('W4: export has the visible columns and filtered rows only', async ({ page }) => {
     await page.goto('/transactions?types=expense&from=2026-10-01&to=2026-10-31')
-    await page.getByTestId('columns-menu').click()
-    await page.getByRole('menuitemcheckbox', { name: 'Konto' }).click()
-    await page.keyboard.press('Escape')
+    // Since 007 Konto is an optional column and off by default.
     const href = await page.getByTestId('transactions-export').getAttribute('href')
     expect(href).toContain('types=expense')
     expect(href).not.toContain('account')

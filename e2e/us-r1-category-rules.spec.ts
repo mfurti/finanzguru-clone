@@ -1,4 +1,5 @@
 import { expect, test, type APIRequestContext } from '@playwright/test'
+import { chooseCategory } from './helpers'
 
 /**
  * 006 US1: category change for all bookings of a recipient plus a remembered rule
@@ -40,14 +41,13 @@ test.describe('006 US1 remember a category', () => {
     const chips = page.getByTestId('category-chip')
     await expect(chips).toHaveCount(3)
     await chips.first().click()
-    await page.getByRole('option', { name: CATEGORY }).click()
-    const dialog = page.getByRole('dialog', { name: 'Kategorie ändern' })
+    const dialog = await chooseCategory(page, CATEGORY)
     await dialog.getByText('Alle Buchungen dieses Empfängers').click()
     await dialog.getByTestId('category-remember').click()
     await expect(dialog.getByTestId('rule-pattern')).toHaveValue(recipient.toLowerCase())
     await expect(dialog.getByTestId('rule-preview')).toBeVisible()
     await dialog.getByTestId('category-change-save').click()
-    await expect(page.getByText('Regel gespeichert', { exact: false })).toBeVisible()
+    await expect(page.getByText(/^Regel gespeichert/).first()).toBeVisible()
     for (let i = 0; i < 3; i++) {
       await expect(chips.nth(i)).toContainText('Lebensmittel und Getränke')
     }
