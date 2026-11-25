@@ -37,6 +37,8 @@ test.describe('US5 budget', () => {
     await expect(page).toHaveURL(/\/transactions\?review=unreviewed/)
     await page.getByTestId('category-chip').first().click()
     await page.getByRole('option', { name: 'Lebenshaltung › Lebensmittel und Getränke' }).click()
+    // 006: the change goes through the dialog (scope, "merken"); default is this booking only.
+    await page.getByTestId('category-change-save').click()
     await expect(page.getByTestId('unreviewed-count')).toHaveText(String(before - 1))
     const after = (
       (await (await request.get('/api/transactions/unreviewed/count')).json()) as { count: number }

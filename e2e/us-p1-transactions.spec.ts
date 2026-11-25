@@ -35,6 +35,8 @@ test.describe('003 US1 transactions workspace', () => {
     await expect(page.getByTestId('bulk-bar')).toContainText('2 ausgewählt')
     await page.getByTestId('bulk-category').click()
     await page.getByRole('option', { name: 'Lebenshaltung › Lebensmittel und Getränke' }).click()
+    // 006: the change goes through the dialog (scope, "merken"); default is this booking only.
+    await page.getByTestId('category-change-save').click()
     await expect(page.getByTestId('unreviewed-count')).toHaveText(String(before - 2))
     expect(await unreviewed(request)).toBe(before - 2)
   })
@@ -44,6 +46,7 @@ test.describe('003 US1 transactions workspace', () => {
     const chip = page.getByTestId('category-chip').first()
     await chip.click()
     await page.getByRole('option', { name: 'Gesundheit und Wellness', exact: true }).first().click()
+    await page.getByTestId('category-change-save').click()
     await expect(chip).toContainText('Gesundheit und Wellness')
   })
 
