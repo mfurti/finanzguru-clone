@@ -34,3 +34,10 @@ pnpm test:e2e
 | W6 | all | Repeat W4–W5 at 360 px, dark and light | No horizontal scroll, no "NaN" |
 
 Consent-expiry notice (R4) and the revoked-consent path are covered by API e2e tests with a faked clock.
+
+## Results on the local dev server (2026-11-25, owner's Scalable connection)
+
+- **W4**: chips "Aktien" and "ETF" add two lines with their own colors and a legend; the headline value stays unchanged. In the % view the class lines show their time-weighted return and stay flat while the class is not held. Funds, bonds, crypto, commodities and "Sonstige" are disabled (no holdings). No "NaN".
+- **W4 (GuV)**: for every checked security, Realisiert + Kursgewinn equals the GuV to the cent. Fully sold stocks show Kursgewinn 0,00 €; partly sold ETFs show both parts.
+- **W5**: "Apple" finds 3 stocks and 5 ETFs/ETPs, grouped by class with ISIN. Adding Apple to a test watchlist loads a month of closes (sparkline). "Kurse aktualisieren" stores the live quote and shows "Kurs vom 25.11.2026, 12:34". The test watchlist was deleted afterwards.
+- Only the read tools `search_securities`, `get_security_quote` and `get_security_chart` were called.

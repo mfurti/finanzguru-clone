@@ -100,7 +100,7 @@
 - [X] T028 [P] [US4] Web `apps/web/app/components/watchlists/AssetSearchDialog.vue`: input "Name, ISIN oder WKN" (debounce 300 ms, min 2 chars), class chips, results grouped by class with name, ISIN and class, "Mehr anzeigen", add to the chosen watchlist, toast on 409, hint with link to Datenquellen when `available: false`. The panel is `AssetSearch.vue`, wrapped by `AssetSearchDialog.vue` (button + modal), on the watchlist page `apps/web/app/pages/investments/watchlists/[id].vue` next to `AddSecurityForm` (manual ISIN stays). "Mehr anzeigen" selects the class; with a class the API returns up to 50 hits. Component test `apps/web/tests/asset-search.spec.ts`.
 - [X] T029 [US4] Web `apps/web/app/components/watchlists/WatchlistTable.vue`: price, change, "Kurs vom {time}" when the latest price is today's quote (else the price date), and a 30-day sparkline from stored prices (`sparkline` and `quotedAt` added to the watchlist entry DTO); adding from the search loads one month of closes via `chart`; "Kurse aktualisieren" on the watchlist page calls refresh; "–" for missing quotes. The change column keeps the period change of 002 (the daily change stays in `quote`).
 - [X] T030 [US4] Playwright `e2e/us-b4-watchlist-search.spec.ts`: search, filter "Aktien", add, duplicate refused, quote shown; 360 px.
-- [ ] T031 [US4] Owner walkthrough W4–W5 on the local dev server with the real Scalable connection; note results (no personal data) in `quickstart.md`.
+- [X] T031 [US4] Owner walkthrough W4–W5 on the local dev server with the real Scalable connection; note results (no personal data) in `quickstart.md`.
 
 ---
 
