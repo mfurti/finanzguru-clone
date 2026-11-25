@@ -622,7 +622,8 @@
       "category": "Kategorie",
       "tags": "Eigenschaften",
       "account": "Konto",
-      "amount": "Betrag"
+      "amount": "Betrag",
+      "purpose": "Verwendungszweck"
     },
     "filters": {
       "title": "Filter",
