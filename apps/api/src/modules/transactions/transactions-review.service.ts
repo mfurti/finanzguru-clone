@@ -32,6 +32,7 @@ import type { AppDatabase } from '../../database/drizzle.module'
 import { account, category, tag, transaction, transactionTag } from '../../database/schema'
 import { assertValidPattern, counterpartyKey, wouldChange } from '../../domain/categorize'
 import { appendRule, applyRule } from './rule-apply'
+import { recordManualCategorization } from './rule-suggestion-store'
 import { OverviewService } from '../overview/overview.service'
 
 @Injectable()
@@ -269,7 +270,12 @@ export class TransactionsReviewService {
         ruleId = rule.id
         ruleApplied = applyRule(tx, rule)
       }
-      return { updated, ruleId, ruleApplied, suggestion: null }
+      // Count the manual choice for "Regel anlegen?" (006 US2); only for this booking alone.
+      const suggestion =
+        input.categoryId && recipient && input.scope !== 'recipient'
+          ? recordManualCategorization(tx, recipient, input.categoryId, !!ruleId)
+          : null
+      return { updated, ruleId, ruleApplied, suggestion }
     })
   }
 }

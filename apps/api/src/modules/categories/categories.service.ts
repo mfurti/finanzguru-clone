@@ -12,12 +12,18 @@ import type {
   CreateCategoryInput,
   RuleDraft,
   RulePreviewResult,
+  RuleSuggestionDto,
   UpdateCategoryInput,
 } from '@finance/shared'
 import { and, asc, count, eq, isNull, max, ne, or } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { categorizationRule, category, transaction } from '../../database/schema'
+import {
+  acceptSuggestion,
+  declineSuggestion,
+  openSuggestions,
+} from '../transactions/rule-suggestion-store'
 import {
   assertValidPattern,
   categorize,
@@ -194,6 +200,21 @@ export class CategoriesService {
       })
     })
     return this.rules()
+  }
+
+  /** Due "Regel anlegen?" suggestions (006 US2). */
+  suggestions(): RuleSuggestionDto[] {
+    return openSuggestions(this.db)
+  }
+
+  acceptSuggestion(id: string): { ruleId: string; applied: number } {
+    const result = acceptSuggestion(this.db, id)
+    if (!result) throw new NotFoundException('Vorschlag nicht gefunden')
+    return result
+  }
+
+  declineSuggestion(id: string): void {
+    if (!declineSuggestion(this.db, id)) throw new NotFoundException('Vorschlag nicht gefunden')
   }
 
   removeRule(id: string): void {

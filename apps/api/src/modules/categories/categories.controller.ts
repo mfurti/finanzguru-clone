@@ -18,6 +18,7 @@ import {
   ruleDraft,
   ruleReorderInput,
   type RulePreviewResult,
+  type RuleSuggestionDto,
   updateCategoryInput,
 } from '@finance/shared'
 import { createZodDto } from 'nestjs-zod'
@@ -83,6 +84,24 @@ export class CategoriesController {
   @HttpCode(HttpStatus.OK)
   reorder(@Body() body: RuleReorderDto): CategorizationRuleDto[] {
     return this.categories.reorderRules(body.ids)
+  }
+
+  /** Open "Regel anlegen?" suggestions (006 US2); before `rules/:id`. */
+  @Get('rules/suggestions')
+  suggestions(): RuleSuggestionDto[] {
+    return this.categories.suggestions()
+  }
+
+  @Post('rules/suggestions/:id/accept')
+  @HttpCode(HttpStatus.OK)
+  acceptSuggestion(@Param('id') id: string): { ruleId: string; applied: number } {
+    return this.categories.acceptSuggestion(id)
+  }
+
+  @Post('rules/suggestions/:id/decline')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  declineSuggestion(@Param('id') id: string): void {
+    this.categories.declineSuggestion(id)
   }
 
   /** Must be declared before `rules/:id`. */
