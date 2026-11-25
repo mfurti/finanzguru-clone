@@ -157,6 +157,20 @@ export function summarize(state: PositionState): PositionSummary {
 }
 
 /**
+ * GuV of one security split like the reference app (005 R7): realized gain from sales (FIFO,
+ * after fees and taxes) plus price gain on the shares still held. Dividends are not part of it.
+ * The two parts add up to the total to the cent by construction.
+ */
+export function gainSplit(
+  state: PositionState,
+  valueCents: number,
+): { totalGainCents: number; realizedCents: number; priceGainCents: number } {
+  const realizedCents = state.realizedNetCents
+  const priceGainCents = quantityOf(state).gt(EPSILON) ? valueCents - investedCentsOf(state) : 0
+  return { totalGainCents: realizedCents + priceGainCents, realizedCents, priceGainCents }
+}
+
+/**
  * Runs all depot transactions (any order; sorted by booking date, stable) and
  * returns one state per instrument.
  */

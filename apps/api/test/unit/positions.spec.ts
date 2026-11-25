@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { computePositions, type PositionTx, summarize } from '../../src/domain/positions'
+import { computePositions, gainSplit, type PositionTx, summarize } from '../../src/domain/positions'
 
 const tx = (
   overrides: Partial<PositionTx> & Pick<PositionTx, 'type' | 'bookingDate'>,
@@ -121,5 +121,45 @@ describe('FIFO positions', () => {
         tx({ type: 'sell', bookingDate: '2026-01-02', quantity: '2', unitPrice: '10' }),
       ]),
     ).toThrow(/exceeds open quantity/)
+  })
+})
+
+describe('gain split (005 T021)', () => {
+  const buy = (date: string, quantity: string, price: string) =>
+    tx({ type: 'buy', bookingDate: date, quantity, unitPrice: price, amountCents: 0 })
+  const sell = (date: string, quantity: string, price: string, feeCents = 0) =>
+    tx({ type: 'sell', bookingDate: date, quantity, unitPrice: price, amountCents: 0, feeCents })
+
+  it('never sold: realized 0, price gain = total', () => {
+    const state = computePositions([buy('2026-01-01', '10', '100')]).get('etf')!
+    expect(gainSplit(state, 110000)).toEqual({
+      totalGainCents: 10000,
+      realizedCents: 0,
+      priceGainCents: 10000,
+    })
+  })
+
+  it('fully sold: price gain 0, realized = total', () => {
+    const state = computePositions([
+      buy('2026-01-01', '10', '100'),
+      sell('2026-02-01', '10', '90', 100),
+    ]).get('etf')!
+    expect(gainSplit(state, 0)).toEqual({
+      totalGainCents: -10100,
+      realizedCents: -10100,
+      priceGainCents: 0,
+    })
+  })
+
+  it('partly sold (FIFO): both parts add up to the total exactly', () => {
+    const state = computePositions([
+      buy('2026-01-01', '3', '33.333'),
+      buy('2026-01-05', '4', '41.117'),
+      sell('2026-02-01', '5', '45.005', 99),
+    ]).get('etf')!
+    const split = gainSplit(state, 9001)
+    expect(split.realizedCents + split.priceGainCents).toBe(split.totalGainCents)
+    expect(split.realizedCents).toBe(state.realizedNetCents)
+    expect(split.priceGainCents).toBe(9001 - summarize(state).investedCents)
   })
 })
