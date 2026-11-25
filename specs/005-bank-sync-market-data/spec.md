@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-24
 
-**Status**: Draft
+**Status**: Implemented (bank walkthrough T008/T016 pending the owner's Enable Banking app)
 
 **Input**: User description: "Bank-Sync und Marktdaten (Vermögenskompass, nach Finanzfluss-Vorbild geprüft am 2026-11-24). A) Sparkasse live über Enable Banking (PSD2-Kontoinformationsdienst, Restricted Production für eigene Konten des Owners) … B) Anlageklassen-Chart wie Finanzfluss … Wertpapierseite zeigt GuV aufgeteilt in Realisiert + Kursgewinn. C) Watchlist „Asset suchen“ … Kurse und Kursverlauf über die bestehende Scalable-Verbindung … Nicht im Umfang: Deployment (eigener Plan), Trade Republic, Handel/Überweisungen, andere Banken als die des Owners."
 

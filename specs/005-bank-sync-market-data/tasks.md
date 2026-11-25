@@ -108,7 +108,7 @@
 
 - [X] T032 [P] Research addendum: confirm in `research.md` R1/R6 the actual data sent to Enable Banking and Scalable as observed in T016/T031 (Security Requirements of the constitution).
 - [X] T033 [P] README: short "Bank connection (Enable Banking)" section (README is English) — owner registers a restricted-production app, links own accounts, sets the env values locally; key never in the repo. Data-source table updated (Scalable available incl. market data, bank available); `apps/api/.env.example` lists the new variable names without values.
-- [ ] T034 Full gates: `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e` (desktop and 360 px, dark and light); quickstart W6; mark spec Status "Implemented".
+- [X] T034 Full gates: `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e` (desktop and 360 px, dark and light); quickstart W6; mark spec Status "Implemented". Result 2026-11-25: lint, format, typecheck green; unit/API 482 passed; Playwright 99 passed, 56 skipped (one-project tests), 0 failed; W6 at 360 px dark/light without scroll or "NaN". Status notes that T008/T016 wait for the owner.
 
 ---
 
