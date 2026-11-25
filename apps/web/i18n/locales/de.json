@@ -108,10 +108,6 @@
       "accounts": "Konten",
       "empty": "Noch keine Konten"
     },
-    "review": {
-      "label": "Ungeprüfte Transaktionen",
-      "action": "Alle anzeigen"
-    },
     "cashflow": {
       "title": "Einnahmen & Ausgaben",
       "empty": "Noch keine Kontobewegungen"
@@ -381,15 +377,6 @@
     "incomeTotal": "Einnahmen gesamt",
     "noData": "Keine Buchungen in diesem Zeitraum",
     "sankey": "Geldfluss",
-    "review": {
-      "title": "Ungeprüfte Transaktionen",
-      "empty": "Alles geprüft – keine offenen Buchungen.",
-      "category": "Kategorie",
-      "saveRule": "Regel speichern",
-      "ruleHint": "Künftige Buchungen von „{party}“ automatisch so kategorisieren",
-      "done": "Kategorisiert",
-      "applied": "{n} Buchungen kategorisiert"
-    },
     "budgets": {
       "title": "Budgets",
       "create": "Budget anlegen",
@@ -416,7 +403,7 @@
     "add": "Hinzufügen",
     "rules": "Regeln",
     "apply": "Regeln anwenden",
-    "noRules": "Noch keine Regeln. Lege sie beim Prüfen von Buchungen an.",
+    "noRules": "Noch keine Regeln. Lege sie beim Kategorisieren mit „Für ähnliche Buchungen merken“ oder hier an.",
     "fields": {
       "counterparty": "Empfänger",
       "purpose": "Verwendungszweck",
@@ -823,5 +810,50 @@
       "class": "Klasse",
       "name": "Name"
     }
+  },
+  "rules": {
+    "scopeSingle": "Nur diese Buchung",
+    "scopeRecipient": "Alle Buchungen dieses Empfängers",
+    "remember": "Für ähnliche Buchungen merken",
+    "title": "Regel",
+    "field": "Feld",
+    "fields": {
+      "counterparty": "Gegenpartei",
+      "counterparty_iban": "IBAN",
+      "purpose": "Verwendungszweck"
+    },
+    "operator": "Bedingung",
+    "operators": {
+      "contains": "enthält",
+      "equals": "ist gleich",
+      "starts_with": "beginnt mit",
+      "regex": "regulärer Ausdruck"
+    },
+    "pattern": "Suchtext",
+    "sign": "Betrag",
+    "signs": {
+      "any": "Alle",
+      "positive": "Nur Einnahmen",
+      "negative": "Nur Ausgaben"
+    },
+    "preview": "{n} Buchungen würden geändert",
+    "previewMatches": "{n} Buchungen passen",
+    "updated": "{n} Buchungen geändert",
+    "saved": "Regel gespeichert",
+    "applied": "Regel gespeichert, {n} Buchungen zugeordnet",
+    "suggest": "Regel anlegen?",
+    "suggestText": "{counterparty} → {category}: {n} Buchungen würden zugeordnet",
+    "accept": "Annehmen",
+    "decline": "Nicht mehr vorschlagen",
+    "new": "Neue Regel",
+    "edit": "Regel bearbeiten",
+    "up": "Nach oben",
+    "down": "Nach unten",
+    "active": "Aktiv",
+    "invalidRegex": "Ungültiger regulärer Ausdruck",
+    "mixedRecipients": "Für unterschiedliche Empfänger kann keine Regel gespeichert werden",
+    "changeCategory": "Kategorie ändern",
+    "category": "Kategorie",
+    "empty": "Noch keine Regeln. Lege sie beim Kategorisieren mit „Für ähnliche Buchungen merken“ oder hier an."
   }
 }
