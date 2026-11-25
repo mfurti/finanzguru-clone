@@ -745,7 +745,29 @@ export const ruleSuggestion = sqliteTable(
   ],
 )
 
+/**
+ * Logo choice per recipient (008): a built-in brand, "Kein Logo", or an own upload. Keyed by
+ * the normalized recipient key (domain/logo.ts recipientKey), so it covers future bookings too.
+ */
+export const recipientLogo = sqliteTable(
+  'recipient_logo',
+  {
+    recipientKey: text('recipient_key').primaryKey(),
+    mode: text('mode', { enum: ['brand', 'none', 'upload'] }).notNull(),
+    brandSlug: text('brand_slug'),
+    fileName: text('file_name'),
+    updatedAt: text('updated_at').notNull().default(nowIso),
+  },
+  (t) => [
+    check('recipient_logo_key_len', sql`length(${t.recipientKey}) BETWEEN 1 AND 200`),
+    check('recipient_logo_mode', inList('mode', ['brand', 'none', 'upload'])),
+    check('recipient_logo_brand', sql`(${t.mode} = 'brand') = (${t.brandSlug} IS NOT NULL)`),
+    check('recipient_logo_file', sql`(${t.mode} = 'upload') = (${t.fileName} IS NOT NULL)`),
+  ],
+)
+
 export const schema = {
+  recipientLogo,
   owner,
   institution,
   dataSource,

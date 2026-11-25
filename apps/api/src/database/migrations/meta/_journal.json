@@ -78,6 +78,13 @@
       "when": 1795626421151,
       "tag": "0010_transaction_note",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1795650651848,
+      "tag": "0011_recipient_logo",
+      "breakpoints": true
     }
   ]
 }
