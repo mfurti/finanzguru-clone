@@ -23,7 +23,7 @@
 
 ### User Story 1 - See brand logos automatically (Priority: P1)
 
-The owner opens Transaktionen and sees the logos of well-known merchants (e.g. Rewe, Lidl, PayPal, Amazon, Netflix, Deutsche Bahn) next to the bookings, without doing anything. Bookings of unknown recipients keep the initials avatar.
+The owner opens Transaktionen and sees the logos of well-known merchants (e.g. Rewe, Lidl, PayPal, Netflix, Deutsche Bahn) next to the bookings, without doing anything. Bookings of unknown recipients keep the initials avatar.
 
 **Why this priority**: It delivers the visible "like the reference" effect for the majority of everyday bookings with zero effort and no privacy cost.
 
@@ -89,7 +89,7 @@ For a recipient without a brand logo (e.g. the local bakery, or ING, Lieferando,
 ### Functional Requirements
 
 - **FR-001**: The app MUST ship a built-in brand logo set (single-color glyphs with brand color) and MUST NOT fetch logos from any external service.
-- **FR-002**: The app MUST map recipient names to brands automatically using a curated alias list covering at least the brands verified on 2026-11-25 (Rewe, Lidl, Aldi Nord, Aldi Süd, Edeka, dm, Kaufland, Netto, Penny, PayPal, Klarna, Amazon, Netflix, Spotify, Deutsche Bahn, Vodafone, Telekom, O2, IKEA, Shell, Aral, Sparkasse, N26, Apple, Google, McDonald's, Burger King, Zalando, eBay, Otto, Rossmann, Uber).
+- **FR-002**: The app MUST map recipient names to brands automatically using a curated alias list covering at least the brands verified on 2026-11-25 (Rewe, Lidl, Aldi Nord, Aldi Süd, Edeka, dm, Kaufland, Netto, Penny, PayPal, Klarna, Netflix, Spotify, Deutsche Bahn, Vodafone, Telekom, O2, IKEA, Shell, Aral, Sparkasse, N26, Apple, Google, McDonald's, Burger King, Zalando, eBay, Otto, Rossmann, Uber).
 - **FR-003**: Matching MUST be case-insensitive on the normalized recipient key and MUST match aliases as whole words only.
 - **FR-004**: The logo rule MUST be the same everywhere a booking recipient is shown: own upload, else manual brand choice, else automatic match, else initials. "Kein Logo" MUST suppress the automatic match.
 - **FR-005**: The booking side panel MUST offer "Logo ändern" with a searchable brand picker (search by name and alias), "Automatisch", "Kein Logo" and "Eigenes Logo hochladen".
@@ -118,7 +118,7 @@ For a recipient without a brand logo (e.g. the local bakery, or ING, Lieferando,
 
 ## Assumptions
 
-- The brand set is Simple Icons (CC0), bundled with the app at build time; brands it lacks (ING, Lieferando, Tchibo, Flixbus as of 2026-11-25) are covered by own uploads.
+- The brand set is Simple Icons (CC0), bundled with the app at build time; brands it lacks (ING, Lieferando, Tchibo, Flixbus as of 2026-11-25; Amazon was removed from the set at the brand's request, found in T005) are covered by own uploads.
 - Single-color glyphs in brand color are acceptable instead of colored original logos.
 - The recipient key and fallback order (counterparty, IBAN, purpose part) from feature 006 are reused, so logo choices and category rules address the same recipient.
 - Securities, depots and accounts keep their current icons/initials (out of scope).

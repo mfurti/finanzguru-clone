@@ -3,7 +3,7 @@
 ## R1 – Logo source
 
 - **Decision**: `simple-icons` npm package (CC0, ≈ 3 300 brands, title + hex + SVG path), used by the API only.
-- **Rationale**: offline, licence-free, single source for search and rendering; checked 2026-11-25 that 31 of 35 relevant German brands exist (ING, Lieferando, Tchibo, Flixbus missing → uploads).
+- **Rationale**: offline, licence-free, single source for search and rendering; checked 2026-11-25 that 31 of 35 relevant German brands exist (ING, Lieferando, Tchibo, Flixbus missing → uploads). Correction 2026-11-26 (T005): Amazon is not in the installed package either (removed at the brand's request; the CDN check used an older copy) → upload.
 - **Alternatives**: logo.dev / Brandfetch / Google or DuckDuckGo favicons – coloured real logos, but every merchant name or domain goes to a third party (violates principle II); Clearbit's free logo API is discontinued. `@iconify-json/simple-icons` in the web bundle – same data, but either a large client bundle or Nuxt icon server bundle without brand colours; serving from the API is simpler.
 
 ## R2 – Rendering and colour
@@ -16,7 +16,7 @@
 
 - **Decision**: curated alias list `{ slug, aliases[] }` in `domain/brands.ts`; recipient text normalized like 006 (`normalizeText`: NFKC, lower case, single spaces, umlauts kept) then tokenized; an alias (one or more words) matches when its words appear as consecutive whole words. Order: longest alias first (e.g. "aldi sud" before "aldi"). Matching uses counterparty, else the purpose part after " · " (card payments).
 - **Rationale**: whole words avoid "dm" in "Admiral", "otto" in "Ottobrunn"; explicit aliases avoid false positives from matching all 3 300 titles.
-- **Examples**: "rewe" → rewe; "lidl" → lidl; "aldi nord", "aldi" → aldinord; "aldi sud", "aldi süd" → aldisud; "paypal" → paypal; "klarna" → klarna; "amazon", "amzn" → amazon; "netflix"; "spotify"; "db vertrieb", "deutsche bahn" → deutschebahn; "vodafone"; "telekom", "telekom deutschland" → deutschetelekom; "o2", "telefonica" → o2; "ikea"; "shell"; "aral"; "sparkasse"; "n26"; "apple"; "google"; "mcdonalds", "mc donalds" → mcdonalds; "burger king" → burgerking; "zalando"; "ebay"; "otto"; "rossmann"; "uber"; "edeka"; "dm drogerie", "dm-drogerie", "dm" → dm; "kaufland"; "netto"; "penny".
+- **Examples**: "rewe" → rewe; "lidl" → lidl; "aldi nord", "aldi" → aldinord; "aldi sud", "aldi süd" → aldisud; "paypal" → paypal; "klarna" → klarna; "netflix"; "spotify"; "db vertrieb", "deutsche bahn" → deutschebahn; "vodafone"; "telekom", "telekom deutschland" → deutschetelekom; "o2", "telefonica" → o2; "ikea"; "shell"; "aral"; "sparkasse"; "n26"; "apple"; "google"; "mcdonalds", "mc donalds" → mcdonalds; "burger king" → burgerking; "zalando"; "ebay"; "otto"; "rossmann"; "uber"; "edeka"; "dm drogerie", "dm-drogerie", "dm" → dm; "kaufland"; "netto"; "penny".
 - **Alternatives**: fuzzy matching against all titles (too many false positives); online merchant databases (privacy).
 
 ## R4 – Uploads
