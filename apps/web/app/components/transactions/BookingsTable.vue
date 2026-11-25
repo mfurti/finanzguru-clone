@@ -6,6 +6,7 @@ import {
   TRANSACTION_PAGE_SIZES,
   type TagDto,
   type TransactionExportColumn,
+  type CategorizeResult,
   type TransactionListItem,
   type TransactionPage,
 } from '@finance/shared'
@@ -304,10 +305,26 @@ async function bulk(payload: Record<string, unknown>) {
   })
 }
 
-async function setCategory(ids: string[], categoryId: string | null): Promise<void> {
-  await bulk({ ids, action: 'setCategory', value: categoryId })
-  await changed()
+/** Category change goes through the dialog: scope and "merken" (006 US1). */
+const pending = ref<{ items: TransactionListItem[]; categoryId: string } | null>(null)
+const dialogOpen = ref(false)
+const pendingName = computed(
+  () => categoryItems.value.find((item) => item.value === pending.value?.categoryId)?.label ?? '',
+)
+function setCategory(ids: string[], categoryId: string | null): void {
+  if (!categoryId) return
+  const items = (data.value?.items ?? []).filter((item) => ids.includes(item.id))
+  if (items.length === 0) return
+  pending.value = { items, categoryId }
+  dialogOpen.value = true
 }
+async function categoryChanged(suggestion: CategorizeResult['suggestion']): Promise<void> {
+  rowSelection.value = {}
+  await changed()
+  if (suggestion) suggestionsRefresh.value++
+}
+/** Bumped when a category change produced a rule suggestion (006 US2). */
+const suggestionsRefresh = useState('rule-suggestions-refresh', () => 0)
 
 async function remove(ids: string[]): Promise<void> {
   const result = await bulk({ ids, action: 'delete' })
@@ -428,6 +445,15 @@ const rangeLabel = computed(() => {
         </div>
       </div>
     </template>
+
+    <CategoryChangeDialog
+      v-if="pending"
+      v-model:open="dialogOpen"
+      :items="pending.items"
+      :category-id="pending.categoryId"
+      :category-name="pendingName"
+      @done="categoryChanged"
+    />
 
     <BulkBar
       v-if="selectedIds.length > 0"
