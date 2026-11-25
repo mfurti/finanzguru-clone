@@ -67,7 +67,7 @@
 
 - [X] T014 [P] [US3] API in `apps/api/src/modules/categories/`: (preview already done in T007) `POST /api/rules/reorder` (full id list, two-pass priority rewrite in one transaction; 400 when the list does not contain exactly all rule ids), POST `/api/rules` appends at the end. E2e `apps/api/test/e2e/rules-management.e2e-spec.ts`.
 - [X] T015 [US3] Web `apps/web/app/pages/settings/categories.vue`: "Neue Regel" and edit dialogs with `RuleFields` and category select, up/down buttons, "Aktiv" switch (PATCH `enabled`), rule rows show field, condition, pattern and category chip; replace the stale "Lege sie beim Prüfen an" empty text. Component test `apps/web/tests/rules-page.spec.ts`.
-- [ ] T016 [US3] Playwright `e2e/us-r3-rules-management.spec.ts`: create with preview, reorder, disable, delete; 360 px.
+- [X] T016 [US3] Playwright `e2e/us-r3-rules-management.spec.ts`: create with preview, reorder, disable, delete; 360 px.
 
 ---
 
