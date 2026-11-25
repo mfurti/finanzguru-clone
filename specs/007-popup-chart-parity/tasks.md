@@ -18,14 +18,14 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 [P] Shared DTOs in `packages/shared/src/schemas/transaction.ts`: list item `note: string | null`; `updateTransactionInput.note` ("max 1 000 characters", trimmed, `''` → null); filter `direction` (`in` | `out`) in the list, export and bulk filter schemas.
+- [X] T001 [P] Shared DTOs in `packages/shared/src/schemas/transaction.ts` and the list item in `cashflow.ts` (`note`, plus `institutionName` and `counterpartyIban` for the side panel; committed together with T003 because the API must return them to compile): `updateTransactionInput.note` ("max 1 000 characters", trimmed, `''` → null); filter `direction` (`in` | `out`) in the list, export and bulk filter schemas.
 - [ ] T002 [P] German texts in `apps/web/i18n/locales/de.json`: side panel (Konto, Details, An, IBAN, Verwendungszweck, Betrag, Datum, Transaktionstyp, "Als ungeprüft markieren", "Als Kontentransfer markieren", Tags, Notizen, "Notiz hinzufügen", "Transaktion löschen"), category window ("Kategorie ändern", "Kategorie suchen", "Alle Kategorien", "Eigene Kategorien", "Neue Kategorie erstellen"), filter (Konten, "Art der Transaktion", Zeitraum, Kontobewegungen, "Ein- und ausgehende", Eingehende, Ausgehende, "Min Betrag", "Max Betrag", "Ergebnisse anzeigen"), info texts for Gesamtvermögen and Gewinn, add window ("Was möchtest du hinzufügen?", Anbieter, Assets, "Anbieter, IBAN oder BIC eingeben", "Beliebte Anbieter", "Anbieter manuell hinzufügen", "Wie möchtest du importieren?", Automatisch, "Datei hochladen", Manuell), "Gesamtausgaben", "Gesamteinnahmen".
 
 ---
 
 ## Phase 2: Foundational
 
-- [ ] T003 Migration `apps/api/src/database/migrations/0010_transaction_note.sql` + `schema.ts`: `transaction.note` text nullable with check "length(note) <= 1000". API: list returns `note`; PATCH saves it (trim, `''` → null, > 1 000 → 400) in `transactions-review.service.ts`; list/export/bulk filter `direction` (`in` → `amount_cents > 0`, `out` → `< 0`, other → 400). Tests: `apps/api/test/unit/schema-007.spec.ts` and `apps/api/test/e2e/transaction-note-direction.e2e-spec.ts`.
+- [X] T003 Migration `apps/api/src/database/migrations/0010_transaction_note.sql` + `schema.ts`: `transaction.note` text nullable with check "length(note) <= 1000". API: list returns `note`; PATCH saves it (trim, `''` → null, > 1 000 → 400) in `transactions-review.service.ts`; list/export/bulk filter `direction` (`in` → `amount_cents > 0`, `out` → `< 0`, other → 400). Tests: `apps/api/test/unit/schema-007.spec.ts` (incl. upgrade from 0009 keeping bookings and tags) and `apps/api/test/e2e/transaction-note-direction.e2e-spec.ts`. The CHECK makes drizzle-kit rebuild `transactions`; its generated copy statement wrongly selected `note` from the old table and was corrected by hand.
 
 ---
 

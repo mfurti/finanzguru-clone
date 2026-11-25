@@ -71,6 +71,13 @@
       "when": 1795612529772,
       "tag": "0009_rule_suggestions",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1795626421151,
+      "tag": "0010_transaction_note",
+      "breakpoints": true
     }
   ]
 }

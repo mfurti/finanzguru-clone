@@ -69,6 +69,14 @@ export const updateTransactionInput = z.object({
   reviewStatus: reviewStatus.optional(),
   tagIds: z.array(z.string().min(1)).max(20).optional(),
   type: transactionType.optional(),
+  /** Owner's note (007); trimmed, empty → null, max 1 000 characters. */
+  note: z
+    .string()
+    .trim()
+    .max(1000)
+    .nullable()
+    .optional()
+    .transform((value) => (value === '' ? null : value)),
   /** Also categorize all bookings of the same recipient (006 US1). */
   scope: z.enum(['single', 'recipient']).default('single'),
   /** Save a rule for similar bookings (001 T069, restored in 006). */
@@ -107,6 +115,8 @@ export const transactionFilter = z.object({
   to: isoDate.optional(),
   minCents: centsParam,
   maxCents: centsParam,
+  /** Kontobewegungen (007): `in` = amount > 0, `out` = amount < 0. */
+  direction: z.enum(['in', 'out']).optional(),
   q: z.string().trim().max(100).optional(),
 })
 export type TransactionFilter = z.infer<typeof transactionFilter>

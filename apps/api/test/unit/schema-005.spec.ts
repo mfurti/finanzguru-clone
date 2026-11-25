@@ -100,17 +100,9 @@ describe('feature 005 schema (migration 0008)', () => {
         sourceId: 'scalable_mcp',
       })
       .run()
-    db.insert(transaction)
-      .values({
-        id: 't1',
-        accountId: 'a1',
-        bookingDate: '2026-11-01',
-        amountCents: -500,
-        type: 'expense',
-        source: 'csv',
-        fingerprint: 'f1',
-      })
-      .run()
+    // Plain SQL: the current table definition has columns a 0007 database does not (e.g. note).
+    sqlite.exec(`INSERT INTO transactions (id, account_id, booking_date, amount_cents, type, source, fingerprint)
+      VALUES ('t1', 'a1', '2026-11-01', -500, 'expense', 'csv', 'f1')`)
     db.insert(tag).values({ id: 'g1', name: 'Urlaub' }).run()
     db.insert(transactionTag).values({ transactionId: 't1', tagId: 'g1' }).run()
 

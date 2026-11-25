@@ -220,6 +220,8 @@ export const transaction = sqliteTable(
     fingerprint: text('fingerprint').notNull().unique(),
     /** Set by the import pipeline; the import_job table arrives with US2. */
     importJobId: text('import_job_id'),
+    /** Owner's note (007), max 1 000 characters. */
+    note: text('note'),
     createdAt: text('created_at').notNull().default(nowIso),
   },
   (t) => [
@@ -229,6 +231,7 @@ export const transaction = sqliteTable(
     uniqueIndex('transactions_source_ref_unique').on(t.source, t.sourceRef),
     check('transactions_type', inList('type', TRANSACTION_TYPES)),
     check('transactions_review_status', inList('review_status', REVIEW_STATUSES)),
+    check('transactions_note_len', sql`${t.note} IS NULL OR length(${t.note}) <= 1000`),
     check('transactions_source', inList('source', TRANSACTION_SOURCES)),
     check(
       'transactions_category_source',

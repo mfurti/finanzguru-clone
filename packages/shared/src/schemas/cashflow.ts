@@ -66,11 +66,16 @@ export const transactionListItem = z.object({
   id: z.string(),
   accountId: z.string(),
   accountName: z.string(),
+  /** Bank or broker of the account, for the booking side panel (007). */
+  institutionName: z.string().nullable(),
   bookingDate: isoDate,
   amountCents: cents,
   type: z.string(),
   counterparty: z.string().nullable(),
+  counterpartyIban: z.string().nullable(),
   purpose: z.string().nullable(),
+  /** Owner's note, max 1 000 characters (007). */
+  note: z.string().nullable(),
   categoryId: z.string().nullable(),
   categoryName: z.string().nullable(),
   categoryIcon: z.string().nullable(),

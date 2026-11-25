@@ -15,10 +15,12 @@ import {
   desc,
   eq,
   exists,
+  gt,
   gte,
   inArray,
   isNull,
   like,
+  lt,
   lte,
   ne,
   not,
@@ -29,7 +31,14 @@ import {
 } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
-import { account, category, tag, transaction, transactionTag } from '../../database/schema'
+import {
+  account,
+  category,
+  institution,
+  tag,
+  transaction,
+  transactionTag,
+} from '../../database/schema'
 import { assertValidPattern, counterpartyKey, wouldChange } from '../../domain/categorize'
 import { appendRule, applyRule } from './rule-apply'
 import { recordManualCategorization } from './rule-suggestion-store'
@@ -95,6 +104,9 @@ export class TransactionsReviewService {
       filter.to ? lte(transaction.bookingDate, filter.to) : undefined,
       filter.minCents !== undefined ? gte(transaction.amountCents, filter.minCents) : undefined,
       filter.maxCents !== undefined ? lte(transaction.amountCents, filter.maxCents) : undefined,
+      // Kontobewegungen (007): incoming or outgoing only.
+      filter.direction === 'in' ? gt(transaction.amountCents, 0) : undefined,
+      filter.direction === 'out' ? lt(transaction.amountCents, 0) : undefined,
       search
         ? or(like(transaction.counterparty, search), like(transaction.purpose, search))
         : undefined,
@@ -129,11 +141,14 @@ export class TransactionsReviewService {
         id: transaction.id,
         accountId: transaction.accountId,
         accountName: account.name,
+        institutionName: institution.name,
         bookingDate: transaction.bookingDate,
         amountCents: transaction.amountCents,
         type: transaction.type,
         counterparty: transaction.counterparty,
+        counterpartyIban: transaction.counterpartyIban,
         purpose: transaction.purpose,
+        note: transaction.note,
         categoryId: transaction.categoryId,
         categoryName: category.name,
         categoryIcon: category.icon,
@@ -143,6 +158,7 @@ export class TransactionsReviewService {
       })
       .from(transaction)
       .innerJoin(account, eq(account.id, transaction.accountId))
+      .leftJoin(institution, eq(institution.id, account.institutionId))
       .leftJoin(category, eq(category.id, transaction.categoryId))
       .where(where)
       .orderBy(...this.orderFor(query.sort, query.dir))
@@ -226,6 +242,7 @@ export class TransactionsReviewService {
             categorySource: input.categoryId ? 'manual' : null,
           }),
           ...(input.type && { type: input.type }),
+          ...(input.note !== undefined && { note: input.note }),
           reviewStatus: input.reviewStatus ?? (categoryChanged ? 'reviewed' : row.reviewStatus),
         })
         .where(eq(transaction.id, id))
