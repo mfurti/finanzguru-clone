@@ -243,7 +243,7 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
                     }),
                     h('span', { class: 'truncate' }, row.original.categoryName),
                   ]
-                : [h('span', { class: 'text-muted' }, t('budget.review.category'))],
+                : [h('span', { class: 'text-muted' }, t('rules.category'))],
             ),
         },
       ),

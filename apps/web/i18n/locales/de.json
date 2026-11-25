@@ -854,6 +854,7 @@
     "mixedRecipients": "Für unterschiedliche Empfänger kann keine Regel gespeichert werden",
     "changeCategory": "Kategorie ändern",
     "category": "Kategorie",
-    "empty": "Noch keine Regeln. Lege sie beim Kategorisieren mit „Für ähnliche Buchungen merken“ oder hier an."
+    "empty": "Noch keine Regeln. Lege sie beim Kategorisieren mit „Für ähnliche Buchungen merken“ oder hier an.",
+    "appliedAll": "{n} Buchungen kategorisiert"
   }
 }

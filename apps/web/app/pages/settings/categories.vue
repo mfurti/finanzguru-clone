@@ -54,7 +54,7 @@ async function removeRule(id: string): Promise<void> {
 
 async function applyRules(): Promise<void> {
   const result = await apiFetch<{ updated: number }>('/api/rules/apply', { method: 'POST' })
-  toast.add({ title: t('budget.review.applied', { n: result.updated }), color: 'success' })
+  toast.add({ title: t('rules.appliedAll', { n: result.updated }), color: 'success' })
 }
 </script>
 
