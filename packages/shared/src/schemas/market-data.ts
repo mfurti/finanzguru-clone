@@ -41,7 +41,8 @@ export const quoteDto = z.object({
 })
 export type QuoteDto = z.infer<typeof quoteDto>
 
-export const CHART_RANGES = ['1M', '6M', '1Y', '5Y'] as const
+/** Scalable's chart has no 5-year timeframe; `MAX` is the full history (005 T024). */
+export const CHART_RANGES = ['1M', '6M', '1Y', 'MAX'] as const
 export type ChartRange = (typeof CHART_RANGES)[number]
 
 export const chartQuery = z.object({ range: z.enum(CHART_RANGES).default('1M') })

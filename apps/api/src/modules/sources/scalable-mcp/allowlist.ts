@@ -21,6 +21,10 @@ export const READ_TOOLS: ReadonlySet<string> = new Set<string>([
   'list_portfolio_transactions',
   'get_overnight_summary',
   'list_overnight_transactions',
+  // Market data for the watchlist (005 US4, research R6); read-only, no portfolio data.
+  'search_securities',
+  'get_security_quote',
+  'get_security_chart',
 ])
 
 /**

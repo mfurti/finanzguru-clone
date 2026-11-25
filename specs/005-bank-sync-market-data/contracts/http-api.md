@@ -33,6 +33,6 @@ Daily sync is switched by the env flag `BANK_DAILY_SYNC` (default off), like `SC
 | POST | `/api/watchlists/:id/entries` (existing, extended) body `{ instrumentId }` or `{ isin, name, assetClass }` | 201; creates the instrument if unknown; 409 if already on the list |
 | GET | `/api/market-data/quotes?ids=…` | `{ instrumentId, price, changeAbs, changePct, quotedAt }[]` |
 | POST | `/api/market-data/refresh` | 202; refreshes quotes for watchlist and held instruments |
-| GET | `/api/market-data/chart/:instrumentId?range=1M\|6M\|1Y\|5Y` | `{ date, close }[]` |
+| GET | `/api/market-data/chart/:instrumentId?range=1M\|6M\|1Y\|MAX` | `{ date, close }[]` |
 
 Without an active Scalable source: search returns `{ available: false, groups: [] }`; refresh returns 409.

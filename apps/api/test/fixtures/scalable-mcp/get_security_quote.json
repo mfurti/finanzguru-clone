@@ -1,0 +1,66 @@
+{
+  "portfolioId": "pf-001",
+  "security": {
+    "securityId": "US0378331005",
+    "isin": "US0378331005",
+    "name": "Apple",
+    "securityType": "STOCK",
+    "quote": {
+      "quoteTickId": "US0378331005",
+      "midPrice": 321.075,
+      "bidPrice": 320.85,
+      "askPrice": 321.3,
+      "currency": "EUR",
+      "timestampUtc": "2026-11-25T11:12:26.925Z",
+      "isOutdated": false,
+      "performanceDate": "2026-11-25",
+      "performances": [
+        {
+          "timeframe": "INTRADAY",
+          "performance": -0.0053,
+          "simpleAbsoluteReturn": -1.725
+        },
+        {
+          "timeframe": "MAX",
+          "performance": 11.2082,
+          "simpleAbsoluteReturn": 294.775
+        },
+        {
+          "timeframe": "ONE_MONTH",
+          "performance": 0.0352,
+          "simpleAbsoluteReturn": 10.925
+        },
+        {
+          "timeframe": "ONE_WEEK",
+          "performance": 0.009,
+          "simpleAbsoluteReturn": 2.875
+        },
+        {
+          "timeframe": "ONE_YEAR",
+          "performance": 0.3402,
+          "simpleAbsoluteReturn": 81.5
+        },
+        {
+          "timeframe": "SIX_MONTHS",
+          "performance": 0.2065,
+          "simpleAbsoluteReturn": 54.95
+        },
+        {
+          "timeframe": "THREE_MONTHS",
+          "performance": 0.205,
+          "simpleAbsoluteReturn": 54.625
+        },
+        {
+          "timeframe": "TWO_DAYS",
+          "performance": -0.0053,
+          "simpleAbsoluteReturn": -1.725
+        },
+        {
+          "timeframe": "YEAR_TO_DATE",
+          "performance": 0.3826,
+          "simpleAbsoluteReturn": 88.85
+        }
+      ]
+    }
+  }
+}

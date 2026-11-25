@@ -5,6 +5,9 @@
  * goes to `data/scalable-raw/` (git-ignored, contains personal data); the
  * anonymized fixtures in `test/fixtures/scalable-mcp/` are made from it.
  * Only read tools on the allowlist can be called (ReadOnlyToolGuard).
+ *
+ * `--market` (005 T024) records only search, quote and chart for a public security (Apple),
+ * which carry no personal data.
  */
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -69,6 +72,15 @@ async function main(): Promise<void> {
       console.log(`fail ${name}: ${error instanceof Error ? error.message : error}`)
       return null
     }
+  }
+
+  if (process.argv.includes('--market')) {
+    await call('search_securities', { query: 'Apple' })
+    await call('get_security_quote', { isin: 'US0378331005' })
+    await call('get_security_chart', { isin: 'US0378331005', timeframe: 'one_month' })
+    await client.close()
+    console.log(`raw responses in ${out} (git-ignored)`)
+    return
   }
 
   await call('get_account_profile')

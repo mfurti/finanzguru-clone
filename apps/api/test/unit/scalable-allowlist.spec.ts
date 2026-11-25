@@ -32,6 +32,21 @@ describe('Scalable tool allowlist', () => {
     }
   })
 
+  it('allows the market-data read tools for the watchlist (005 T024)', () => {
+    const tools = (
+      JSON.parse(
+        readFileSync(join(__dirname, '../fixtures/scalable-mcp/tools-list.json'), 'utf8'),
+      ) as { tools: { name: string; description?: string; annotations?: object }[] }
+    ).tools
+    for (const name of ['search_securities', 'get_security_quote', 'get_security_chart']) {
+      const tool = tools.find((item) => item.name === name)!
+      expect(decideTool(tool), name).toMatchObject({ allowed: true })
+    }
+    expect(
+      tools.filter((tool) => /order/i.test(tool.name)).some((t) => decideTool(t).allowed),
+    ).toBe(false)
+  })
+
   it('matches risky words in descriptions only as whole words', () => {
     const allow = new Set(['get_cash'])
     expect(
