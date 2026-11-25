@@ -6,6 +6,7 @@ import {
   TRANSACTION_TYPES,
 } from '../enums.js'
 import { accountsParam, cents, decimalString, isoDate, pagination } from './common.js'
+import { ruleDraft, ruleSuggestionDto } from './import.js'
 
 export const transactionType = z.enum(TRANSACTION_TYPES)
 export const reviewStatus = z.enum(REVIEW_STATUSES)
@@ -68,15 +69,21 @@ export const updateTransactionInput = z.object({
   reviewStatus: reviewStatus.optional(),
   tagIds: z.array(z.string().min(1)).max(20).optional(),
   type: transactionType.optional(),
-  createRule: z
-    .object({
-      matchField: z.enum(['counterparty', 'purpose', 'counterparty_iban']),
-      operator: z.enum(['contains', 'equals', 'starts_with', 'regex']),
-      pattern: z.string().min(1).max(200),
-    })
-    .optional(),
+  /** Also categorize all bookings of the same recipient (006 US1). */
+  scope: z.enum(['single', 'recipient']).default('single'),
+  /** Save a rule for similar bookings (001 T069, restored in 006). */
+  createRule: ruleDraft.optional(),
 })
 export type UpdateTransactionInput = z.infer<typeof updateTransactionInput>
+
+/** Result of a category change (006): changed bookings, saved rule and a possible suggestion. */
+export const categorizeResult = z.object({
+  updated: z.number().int().min(0),
+  ruleId: z.string().nullable(),
+  ruleApplied: z.number().int().min(0),
+  suggestion: ruleSuggestionDto.nullable(),
+})
+export type CategorizeResult = z.infer<typeof categorizeResult>
 
 /** Sortable columns of the transactions table (R1). */
 export const TRANSACTION_SORTS = ['date', 'amount', 'counterparty', 'category', 'account'] as const
@@ -157,6 +164,8 @@ export const transactionBulkInput = z
       .union([z.string(), z.array(z.string())])
       .nullable()
       .optional(),
+    /** `setCategory` only: save a rule; all selected bookings must share one recipient (006). */
+    createRule: ruleDraft.optional(),
   })
   .refine((input) => (input.ids ? !input.filter : !!input.filter), {
     message: 'Either `ids` or `filter`, not both',
@@ -166,6 +175,8 @@ export type TransactionBulkInput = z.infer<typeof transactionBulkInput>
 export const transactionBulkResult = z.object({
   affected: z.number().int().min(0),
   undoToken: z.string().optional(),
+  ruleId: z.string().optional(),
+  ruleApplied: z.number().int().min(0).optional(),
 })
 export type TransactionBulkResult = z.infer<typeof transactionBulkResult>
 export const restoreInput = z.object({ undoToken: z.string().min(1) })

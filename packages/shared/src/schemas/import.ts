@@ -96,3 +96,34 @@ export const categorizationRuleDto = categorizationRuleInput.extend({
   priority: z.number().int(),
 })
 export type CategorizationRuleDto = z.infer<typeof categorizationRuleDto>
+
+/** A rule without category and order, as edited in the dialog (006). */
+export const ruleDraft = z.object({
+  matchField: z.enum(RULE_MATCH_FIELDS),
+  operator: z.enum(RULE_OPERATORS),
+  pattern: z.string().trim().min(1).max(200),
+  amountSign: z.enum(AMOUNT_SIGNS).nullable().optional(),
+})
+export type RuleDraft = z.infer<typeof ruleDraft>
+
+/** `POST /api/rules/preview` (006 R6): all matching bookings, and those a rule would change. */
+export const rulePreviewResult = z.object({
+  matches: z.number().int().min(0),
+  wouldChange: z.number().int().min(0),
+})
+export type RulePreviewResult = z.infer<typeof rulePreviewResult>
+
+/** `POST /api/rules/reorder`: every rule id in the new order (006 R5). */
+export const ruleReorderInput = z.object({ ids: z.array(z.string().min(1)).min(1).max(500) })
+export type RuleReorderInput = z.infer<typeof ruleReorderInput>
+
+/** Open suggestion "Regel anlegen?" (006 US2). */
+export const ruleSuggestionDto = z.object({
+  id: z.string(),
+  counterparty: z.string(),
+  categoryId: z.string(),
+  count: z.number().int().min(0),
+  /** Uncategorized or rule-categorized bookings the rule would change. */
+  affected: z.number().int().min(0),
+})
+export type RuleSuggestionDto = z.infer<typeof ruleSuggestionDto>
