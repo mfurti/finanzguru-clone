@@ -1,14 +1,24 @@
 <script setup lang="ts">
 import { type CashflowSummary, formatEur, formatEurCompact } from '@finance/shared'
 import { GroupedBar } from '@unovis/ts'
-import { VisAxis, VisCrosshair, VisGroupedBar, VisTooltip, VisXYContainer } from '@unovis/vue'
+import {
+  VisAxis,
+  VisCrosshair,
+  VisGroupedBar,
+  VisPlotline,
+  VisTooltip,
+  VisXYContainer,
+} from '@unovis/vue'
 
 /**
  * 12 periods of income vs. expenses, styled like the reference: all bars are
  * dimmed, the period under the mouse is shown in full color, and the current
  * (selected) period is hatched. Clicking a bar jumps to that period.
  */
-const props = defineProps<{ bars: CashflowSummary['bars'] }>()
+const props = withDefaults(
+  defineProps<{ bars: CashflowSummary['bars']; granularity?: 'month' | 'quarter' | 'year' }>(),
+  { granularity: 'month' },
+)
 const emit = defineEmits<{ select: [from: string] }>()
 const { t } = useI18n()
 
@@ -54,8 +64,9 @@ function onPointerMove(event: PointerEvent): void {
   hovered.value = distance <= columnWidth / 2 ? best : null
 }
 
-const short = (label: string) => label.replace(/^(\w{3})\w*/, '$1')
-const tick = (index: number) => short(data.value[Math.round(index)]?.label ?? '')
+/** Two-line month labels with a year divider like the reference (007 R6). */
+const axis = computed(() => monthAxis(props.bars, props.granularity))
+const tick = (index: number) => axis.value.labels[Math.round(index)] ?? ''
 const tooltip = (bar: Bar) =>
   `<div class="text-xs"><div class="font-medium">${bar.label}</div><div>${t('budget.income')}: ${formatEur(bar.incomeCents)}</div><div>${t('budget.expenses')}: ${formatEur(-bar.expenseCents)}</div></div>`
 const barEvents = { [GroupedBar.selectors.bar]: { click: (bar: Bar) => emit('select', bar.from) } }
@@ -92,7 +103,7 @@ const barEvents = { [GroupedBar.selectors.bar]: { click: (bar: Bar) => emit('sel
       >
     </div>
     <ClientOnly>
-      <VisXYContainer :data="data" :height="200" class="chart" :padding="{ top: 8 }">
+      <VisXYContainer :data="data" :height="200" class="chart" :padding="{ top: 8, bottom: 6 }">
         <VisGroupedBar
           :x="x"
           :y="y"
@@ -108,6 +119,18 @@ const barEvents = { [GroupedBar.selectors.bar]: { click: (bar: Bar) => emit('sel
           :tick-format="tick"
           :tick-values="data.map((bar) => bar.index)"
           :grid-line="false"
+          tick-text-fit-mode="wrap"
+          :tick-text-width="30"
+          tick-text-separator=" "
+        />
+        <VisPlotline
+          v-for="value in axis.dividers"
+          :key="value"
+          axis="x"
+          :value="value"
+          color="var(--ui-border-accented)"
+          :line-width="1"
+          line-style="dash"
         />
         <VisAxis
           type="y"

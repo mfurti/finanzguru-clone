@@ -42,7 +42,7 @@ const hasData = computed(() =>
       action-to="/settings/sources"
     />
     <template v-else>
-      <CashflowBars :bars="data!.bars" class="mb-3" />
+      <CashflowBars :bars="data!.bars" :granularity="granularity" class="mb-3" />
       <SummaryTiles :summary="data!" />
     </template>
   </UCard>

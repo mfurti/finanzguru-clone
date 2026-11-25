@@ -60,7 +60,7 @@
 
 ## Phase 6: User Story 4 – Cash-flow charts like the reference (P3)
 
-- [ ] T014 [P] [US4] Shared month-axis labels `apps/web/app/utils/month-axis.ts` (month line, year line only at January or the first bar, divider at year change) with unit test; use in `CashflowCard.vue` and `apps/web/app/pages/budget/index.vue`; figures Einnahmen/Ausgaben/Saldo in a bordered 3-column grid and Gespart/Sparquote in their own box in both places.
+- [X] T014 [P] [US4] Shared month-axis labels `apps/web/app/utils/month-axis.ts` (month line, year line only at January or the first bar, divider at year change) with unit test; use in `CashflowCard.vue` and `apps/web/app/pages/budget/index.vue`; figures Einnahmen/Ausgaben/Saldo in a bordered 3-column grid and Gespart/Sparquote in their own box in both places.
 - [ ] T015 [US4] Budget › Analyse: Sankey card (existing Sankey component, €/% switch, link "Zur Sankey-Ansicht") between chart and categories in `apps/web/app/pages/budget/index.vue`; `DonutChart.vue` without gaps and centre label "Gesamtausgaben"/"Gesamteinnahmen". Component test `apps/web/tests/budget-analyse.spec.ts`; Playwright `e2e/us-u4-cashflow.spec.ts`.
 
 ---
