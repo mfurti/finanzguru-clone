@@ -856,5 +856,81 @@
     "category": "Kategorie",
     "empty": "Noch keine Regeln. Lege sie beim Kategorisieren mit „Für ähnliche Buchungen merken“ oder hier an.",
     "appliedAll": "{n} Buchungen kategorisiert"
+  },
+  "panel": {
+    "account": "Konto",
+    "details": "Details",
+    "to": "An",
+    "from": "Von",
+    "iban": "IBAN",
+    "purpose": "Verwendungszweck",
+    "amount": "Betrag",
+    "date": "Datum",
+    "type": "Transaktionstyp",
+    "unreviewed": "Als ungeprüft markieren",
+    "transfer": "Als Kontentransfer markieren",
+    "tags": "Tags",
+    "notes": "Notizen",
+    "notePlaceholder": "Notiz hinzufügen",
+    "delete": "Transaktion löschen",
+    "category": "Kategorie",
+    "close": "Schließen"
+  },
+  "categoryWindow": {
+    "title": "Kategorie ändern",
+    "search": "Kategorie suchen",
+    "all": "Alle Kategorien",
+    "own": "Eigene Kategorien",
+    "create": "Neue Kategorie erstellen",
+    "createName": "Name der Kategorie",
+    "createParent": "Hauptkategorie",
+    "none": "Keine passende Kategorie"
+  },
+  "filterPanel": {
+    "title": "Filter",
+    "accounts": "Konten",
+    "allAccounts": "Alle Konten",
+    "type": "Art der Transaktion",
+    "all": "Alle",
+    "period": "Zeitraum",
+    "category": "Kategorie",
+    "tags": "Tags",
+    "direction": "Kontobewegungen",
+    "both": "Ein- und ausgehende",
+    "in": "Eingehende",
+    "out": "Ausgehende",
+    "min": "Min Betrag",
+    "max": "Max Betrag",
+    "status": "Status",
+    "reset": "Zurücksetzen",
+    "apply": "Ergebnisse anzeigen"
+  },
+  "info": {
+    "netWorth": "Summe aller Konten und Depots zum letzten Tag des Zeitraums.",
+    "gain": "Veränderung im Zeitraum ohne Ein- und Auszahlungen."
+  },
+  "addWindow": {
+    "title": "Was möchtest du hinzufügen?",
+    "providers": "Anbieter",
+    "assets": "Assets",
+    "search": "Anbieter, IBAN oder BIC eingeben",
+    "popular": "Beliebte Anbieter",
+    "manual": "Anbieter manuell hinzufügen",
+    "how": "Wie möchtest du importieren?",
+    "automatic": "Automatisch",
+    "automaticHint": "Konto verbinden und Transaktionen automatisch importieren",
+    "file": "Datei hochladen",
+    "fileHint": "CSV-Export deiner Bank oder deines Brokers",
+    "manualImport": "Manuell",
+    "manualHint": "Transaktionen manuell pflegen",
+    "unsupported": "Für diesen Anbieter nicht verfügbar",
+    "back": "Zurück",
+    "securities": "Wertpapier suchen"
+  },
+  "charts": {
+    "totalExpenses": "Gesamtausgaben",
+    "totalIncome": "Gesamteinnahmen",
+    "toSankey": "Zur Sankey-Ansicht",
+    "sankey": "Sankey Diagramm"
   }
 }
