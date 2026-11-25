@@ -171,4 +171,25 @@ describe('category change with scope and rules (006 US1)', () => {
     expect(res.body).toContain('unterschiedliche Empfänger')
     expect(row(a).categoryId).toBeNull()
   })
+
+  it('previews how many bookings a draft rule matches and would change', async () => {
+    booking({ counterparty: 'Vorschau Laden' })
+    booking({ counterparty: 'Vorschau Laden', categoryId: strom, categorySource: 'manual' })
+    booking({ counterparty: 'Vorschau Laden', type: 'transfer' })
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/rules/preview',
+      headers: { cookie },
+      payload: { matchField: 'counterparty', operator: 'contains', pattern: 'vorschau' },
+    })
+    expect(res.statusCode).toBe(200)
+    expect(res.json()).toEqual({ matches: 3, wouldChange: 1 })
+    const bad = await app.inject({
+      method: 'POST',
+      url: '/api/rules/preview',
+      headers: { cookie },
+      payload: { matchField: 'purpose', operator: 'regex', pattern: '[' },
+    })
+    expect(bad.statusCode).toBe(400)
+  })
 })

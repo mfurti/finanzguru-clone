@@ -10,13 +10,21 @@ import type {
   CategorizationRuleInput,
   CategoryNode,
   CreateCategoryInput,
+  RuleDraft,
+  RulePreviewResult,
   UpdateCategoryInput,
 } from '@finance/shared'
 import { and, asc, count, eq, isNull, max, ne, or } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { categorizationRule, category, transaction } from '../../database/schema'
-import { assertValidPattern, categorize, type Rule } from '../../domain/categorize'
+import {
+  assertValidPattern,
+  categorize,
+  matchesRule,
+  type Rule,
+  wouldChange,
+} from '../../domain/categorize'
 
 type CategoryRow = typeof category.$inferSelect
 
@@ -160,6 +168,36 @@ export class CategoriesService {
   removeRule(id: string): void {
     const result = this.db.delete(categorizationRule).where(eq(categorizationRule.id, id)).run()
     if (result.changes === 0) throw new NotFoundException('Regel nicht gefunden')
+  }
+
+  /**
+   * How many bookings a draft rule matches, and how many it would change (006 R6): manual,
+   * imported, transfer and trade bookings are counted as matches but never changed.
+   */
+  preview(draft: RuleDraft): RulePreviewResult {
+    try {
+      assertValidPattern(draft.operator, draft.pattern)
+    } catch {
+      throw new BadRequestException('Regulärer Ausdruck ist ungültig')
+    }
+    const rule: Rule = {
+      id: 'preview',
+      priority: 0,
+      matchField: draft.matchField,
+      operator: draft.operator,
+      pattern: draft.pattern,
+      amountSign: draft.amountSign ?? null,
+      categoryId: 'preview',
+      enabled: true,
+    }
+    let matches = 0
+    let changes = 0
+    for (const row of this.db.select().from(transaction).all()) {
+      if (!matchesRule(rule, row)) continue
+      matches++
+      if (wouldChange(row)) changes++
+    }
+    return { matches, wouldChange: changes }
   }
 
   /** Re-runs all rules on unreviewed bookings that have no manual category. */

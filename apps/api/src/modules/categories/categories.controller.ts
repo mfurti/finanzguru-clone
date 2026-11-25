@@ -15,6 +15,8 @@ import {
   categorizationRuleInput,
   type CategoryNode,
   createCategoryInput,
+  ruleDraft,
+  type RulePreviewResult,
   updateCategoryInput,
 } from '@finance/shared'
 import { createZodDto } from 'nestjs-zod'
@@ -26,6 +28,7 @@ class UpdateCategoryDto extends createZodDto(
   updateCategoryInput.extend({ parentId: z.string().nullable().optional() }),
 ) {}
 class CreateRuleDto extends createZodDto(categorizationRuleInput) {}
+class RuleDraftDto extends createZodDto(ruleDraft) {}
 class UpdateRuleDto extends createZodDto(
   categorizationRuleInput.partial().extend({ priority: z.number().int().min(1).optional() }),
 ) {}
@@ -64,6 +67,13 @@ export class CategoriesController {
   @Post('rules')
   createRule(@Body() body: CreateRuleDto): CategorizationRuleDto {
     return this.categories.createRule(body)
+  }
+
+  /** Matches and changes a draft rule would cause (006 R6); before `rules/:id`. */
+  @Post('rules/preview')
+  @HttpCode(HttpStatus.OK)
+  preview(@Body() body: RuleDraftDto): RulePreviewResult {
+    return this.categories.preview(body)
   }
 
   /** Must be declared before `rules/:id`. */
