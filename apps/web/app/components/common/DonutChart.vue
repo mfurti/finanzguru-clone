@@ -16,8 +16,15 @@ export interface DonutItem {
 }
 
 const props = withDefaults(
-  defineProps<{ items: DonutItem[]; size?: number; thickness?: number; duration?: number }>(),
-  { size: 176, thickness: 22, duration: 900 },
+  defineProps<{
+    items: DonutItem[]
+    size?: number
+    thickness?: number
+    duration?: number
+    /** Gaps and rounded ends between slices; off for the budget categories (007 R6). */
+    gaps?: boolean
+  }>(),
+  { size: 176, thickness: 22, duration: 900, gaps: true },
 )
 const hovered = defineModel<string | null>('hovered', { default: null })
 const emit = defineEmits<{ select: [key: string] }>()
@@ -61,9 +68,15 @@ onBeforeUnmount(() => cancelAnimationFrame(frame))
 /** Rounded ends and the gap between slices (d3 arc, angles clockwise from 12 o'clock). */
 const CORNER = 5
 const PAD = 0.03
-function ringPath(r0: number, r1: number, a0: number, a1: number, corner = CORNER): string {
+function ringPath(
+  r0: number,
+  r1: number,
+  a0: number,
+  a1: number,
+  corner = props.gaps ? CORNER : 0,
+): string {
   if (a1 - a0 <= 0) return ''
-  const single = visible.value.length === 1
+  const single = visible.value.length === 1 || !props.gaps
   return (
     arc()
       .innerRadius(r0)

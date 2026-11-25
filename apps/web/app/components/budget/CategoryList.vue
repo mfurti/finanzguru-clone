@@ -142,6 +142,7 @@ watch([kind, query], () => (hovered.value = null))
           :items="data!.items"
           :total-cents="data!.totalCents"
           :sign="sign"
+          :kind="kind"
           :colors="colorOf"
           @select="open"
         />

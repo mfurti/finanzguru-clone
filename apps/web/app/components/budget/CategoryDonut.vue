@@ -13,6 +13,8 @@ const props = defineProps<{
   totalCents: number
   sign: number
   colors: (item: Item, index: number) => string
+  /** "expense" → "Gesamtausgaben", "income" → "Gesamteinnahmen" in the centre (007 R6). */
+  kind?: 'expense' | 'income'
 }>()
 const hovered = defineModel<string | null>('hovered', { default: null })
 const emit = defineEmits<{ select: [categoryId: string] }>()
@@ -37,6 +39,7 @@ const donutItems = computed(() =>
       :items="donutItems"
       :size="260"
       :thickness="30"
+      :gaps="false"
       @select="(key) => emit('select', key)"
     >
       <template #center="{ item }">
@@ -45,7 +48,15 @@ const donutItems = computed(() =>
           <Money v-else :cents="sign * totalCents" animate />
         </span>
         <span class="line-clamp-2 text-sm text-muted" data-testid="donut-center-label">
-          {{ item ? item.label : t('budget.chart.total') }}
+          {{
+            item
+              ? item.label
+              : kind === 'income'
+                ? t('charts.totalIncome')
+                : kind === 'expense'
+                  ? t('charts.totalExpenses')
+                  : t('budget.chart.total')
+          }}
         </span>
       </template>
     </DonutChart>

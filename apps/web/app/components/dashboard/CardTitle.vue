@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
+import type { RouteLocationRaw } from 'vue-router'
 
 /**
  * Card header like the reference (007 US3): title as "Titel ›" link, controls on the right
  * (slot) and an optional ⋮ menu.
  */
-defineProps<{ title: string; to?: string; menu?: DropdownMenuItem[][] }>()
+defineProps<{ title: string; to?: RouteLocationRaw; menu?: DropdownMenuItem[][] }>()
 const { t } = useI18n()
 </script>
 

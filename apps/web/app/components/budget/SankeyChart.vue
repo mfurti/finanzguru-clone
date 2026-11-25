@@ -15,6 +15,8 @@ const props = defineProps<{
   unit: 'eur' | 'pct'
   /** Category id of the block that filters the bookings below (Sankey page, FR-019). */
   selected?: string | null
+  /** Upper height limit; the Analyse card uses a compact one (007 US4). */
+  maxHeight?: number
 }>()
 const emit = defineEmits<{ select: [categoryId: string | null] }>()
 const { t } = useI18n()
@@ -63,7 +65,10 @@ onMounted(() => {
 onBeforeUnmount(() => observer?.disconnect())
 const subCount = computed(() => nodesIn.value.filter((node) => node.kind === 'sub').length)
 /** Grows with the number of entries (reference: 800 px for ~20 entries). */
-const height = computed(() => Math.max(420, Math.min(800, subCount.value * 52 + 160)))
+const height = computed(() => {
+  const max = props.maxHeight ?? 800
+  return Math.min(max, Math.max(420, Math.min(800, subCount.value * 52 + 160)))
+})
 
 const layout = computed(() => {
   if (linksIn.value.length === 0) return { nodes: [] as LaidNode[], links: [] as LaidLink[] }
