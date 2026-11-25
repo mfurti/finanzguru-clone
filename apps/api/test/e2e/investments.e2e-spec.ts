@@ -122,6 +122,31 @@ describe('investments export, detail and transactions', () => {
     expect(missing.statusCode).toBe(404)
   })
 
+  it('splits the GuV into realized and price gain for open and sold securities (005 T022)', async () => {
+    const get = async <T>(url: string): Promise<T> => {
+      const res = await app.inject({ method: 'GET', url, headers: { cookie } })
+      expect(res.statusCode, url).toBe(200)
+      return res.json() as T
+    }
+    type Detail = {
+      position: { gainCents: number } | null
+      gain: { totalGainCents: number; realizedCents: number; priceGainCents: number }
+    }
+    const detail = (id: string) => get<Detail>(`/api/investments/instruments/${id}?period=1M`)
+    const open = await get<PositionDto[]>('/api/investments/positions')
+    for (const row of open) {
+      const { gain } = await detail(row.instrumentId)
+      expect(gain.realizedCents + gain.priceGainCents).toBe(gain.totalGainCents)
+      expect(gain.priceGainCents).toBe(row.valueCents - row.entryValueCents)
+    }
+    const sold = await get<PositionDto[]>('/api/investments/positions?status=sold')
+    for (const row of sold) {
+      const { gain } = await detail(row.instrumentId)
+      expect(gain.priceGainCents).toBe(0)
+      expect(gain.totalGainCents).toBe(gain.realizedCents)
+    }
+  })
+
   it('pages investment transactions and filters by type', async () => {
     const res = await app.inject({
       method: 'GET',

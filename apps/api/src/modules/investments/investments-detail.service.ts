@@ -1,5 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common'
 import type {
+  GainSplit,
   InvestmentTransactionRow,
   InvestmentTransactionsQuery,
   InvestmentTransactionsResponse,
@@ -13,6 +14,7 @@ import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { account, instrument, price, transaction } from '../../database/schema'
 import { resolvePeriod, todayIso } from '../../domain/period'
+import { computePositions, gainSplit, summarize } from '../../domain/positions'
 import { downsample } from '../overview/overview.service'
 import { InvestmentsService } from './investments.service'
 
@@ -207,7 +209,39 @@ export class InvestmentsDetailService {
             .where(and(inArray(transaction.accountId, depots), eq(transaction.instrumentId, id)))
             .orderBy(desc(transaction.bookingDate))
             .all()
-    return { instrument: info, position, series, transactions }
+    return {
+      instrument: info,
+      position,
+      series,
+      transactions,
+      gain: this.gain(id, transactions, position),
+    }
+  }
+
+  /**
+   * GuV = Realisiert + Kursgewinn (005 US3). FIFO runs per depot, so a sale only consumes lots
+   * of its own depot; the price gain uses the current value of the open position.
+   */
+  private gain(
+    id: string,
+    transactions: (typeof transaction.$inferSelect)[],
+    position: { valueCents: number; quantity: string } | null,
+  ): GainSplit {
+    const byDepot = new Map<string, (typeof transaction.$inferSelect)[]>()
+    for (const tx of transactions) {
+      byDepot.set(tx.accountId, [...(byDepot.get(tx.accountId) ?? []), tx])
+    }
+    let realizedCents = 0
+    let investedCents = 0
+    for (const txs of byDepot.values()) {
+      const state = computePositions(txs).get(id)
+      if (!state) continue
+      realizedCents += gainSplit(state, 0).realizedCents
+      investedCents += summarize(state).investedCents
+    }
+    const open = position && Number(position.quantity) > 0 ? position.valueCents : 0
+    const priceGainCents = open > 0 ? open - investedCents : 0
+    return { totalGainCents: realizedCents + priceGainCents, realizedCents, priceGainCents }
   }
 
   /** Bookings of the selected depots, filtered and sorted; `sumCents` covers all filtered rows. */

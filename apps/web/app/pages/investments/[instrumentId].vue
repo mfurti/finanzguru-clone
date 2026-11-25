@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { formatDate, formatEur, type Period, type PositionDto } from '@finance/shared'
+import {
+  formatDate,
+  formatEur,
+  type GainSplit,
+  type Period,
+  type PositionDto,
+} from '@finance/shared'
 import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
 
 const { t } = useI18n()
@@ -18,6 +24,8 @@ interface Detail {
     amountCents: number
     quantity: string | null
   }[]
+  /** GuV = Realisiert + Kursgewinn (005 US3). */
+  gain: GainSplit
 }
 
 const { data, error } = await useApi<Detail>(
@@ -104,8 +112,20 @@ const tooltip = (point: Point) =>
             <dd class="font-medium"><Money :cents="data.position.entryValueCents" /></dd>
           </div>
           <div>
-            <dt class="text-muted">{{ t('investments.columns.gain') }}</dt>
-            <dd class="font-medium"><Money :cents="data.position.gainCents" signed /></dd>
+            <dt class="text-muted">{{ t('investments.gainSplit.total') }}</dt>
+            <dd class="font-medium" data-testid="gain-total">
+              <Money :cents="data.gain.totalGainCents" signed />
+            </dd>
+            <dd class="mt-1 space-y-0.5 text-xs text-muted">
+              <span class="flex justify-between gap-2">
+                {{ t('investments.gainSplit.realized') }}
+                <Money :cents="data.gain.realizedCents" signed data-testid="gain-realized" />
+              </span>
+              <span class="flex justify-between gap-2">
+                {{ t('investments.gainSplit.priceGain') }}
+                <Money :cents="data.gain.priceGainCents" signed data-testid="gain-price" />
+              </span>
+            </dd>
           </div>
           <div>
             <dt class="text-muted">{{ t('investments.tx.quantity') }}</dt>
