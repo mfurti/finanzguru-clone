@@ -313,6 +313,28 @@ async function bulk(payload: Record<string, unknown>) {
 /** Category change goes through the large window: list, scope and "merken" (007 US1). */
 const categoryTargets = ref<TransactionListItem[]>([])
 const categoryOpen = ref(false)
+/** Side panel of one booking (007 US1); keeps the last copy if a reload filters it out. */
+const panelId = ref<string | null>(null)
+const panelOpen = ref(false)
+const panelLast = ref<TransactionListItem | null>(null)
+const panelItem = computed(() => {
+  const found = (data.value?.items ?? []).find((item) => item.id === panelId.value)
+  return found ?? panelLast.value
+})
+watch(panelItem, (value) => {
+  if (value) panelLast.value = value
+})
+function openPanel(_event: Event, row: { original: TransactionListItem }): void {
+  panelLast.value = row.original
+  panelId.value = row.original.id
+  panelOpen.value = true
+}
+async function deleteFromPanel(): Promise<void> {
+  if (!panelId.value) return
+  panelOpen.value = false
+  await remove([panelId.value])
+}
+
 function openCategory(ids: string[]): void {
   const items = (data.value?.items ?? []).filter((item) => ids.includes(item.id))
   if (items.length === 0) return
@@ -471,6 +493,16 @@ const rangeLabel = computed(() => {
       </div>
     </template>
 
+    <BookingPanel
+      v-if="panelItem"
+      v-model:open="panelOpen"
+      :item="panelItem"
+      :tags="tags ?? []"
+      @changed="changed"
+      @category="openCategory([panelItem.id])"
+      @delete="deleteFromPanel"
+    />
+
     <CategoryWindow
       v-if="categoryTargets.length > 0"
       v-model:open="categoryOpen"
@@ -500,8 +532,9 @@ const rangeLabel = computed(() => {
       :columns="columns"
       :get-row-id="(row: TransactionListItem) => row.id"
       :loading="status === 'pending'"
-      :ui="{ tr: 'group/row', td: 'py-2.5' }"
+      :ui="{ tr: 'group/row cursor-pointer', td: 'py-2.5' }"
       data-testid="transactions-table"
+      @select="openPanel"
     />
 
     <template #footer>
