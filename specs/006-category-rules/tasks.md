@@ -55,7 +55,7 @@
 - [X] T010 [P] [US2] Domain `apps/api/src/domain/rule-suggestions.ts` (research R4): `shouldSuggest(count, status, coveredByRule)` (count ≥ 2, status `open`, not covered). Unit test `apps/api/test/unit/rule-suggestions.spec.ts`.
 - [X] T011 [US2] API (shared functions in `apps/api/src/modules/transactions/rule-suggestion-store.ts`, used by both modules without a cycle): in `transactions-review.service.ts` upsert `rule_suggestion` on every single-scope manual categorization with counterparty and return `suggestion` when `shouldSuggest`; "merken" marks a matching suggestion `accepted`. Endpoints in `apps/api/src/modules/categories/categories.controller.ts` + service: `GET /api/rules/suggestions`, `POST /api/rules/suggestions/:id/accept` (creates pre-filled rule and applies it), `POST /api/rules/suggestions/:id/decline` (204), declared before `rules/:id`. E2e `apps/api/test/e2e/rule-suggestions.e2e-spec.ts`.
 - [X] T012 [US2] Web `apps/web/app/components/transactions/RuleSuggestions.vue`: banner on Transaktionen with open suggestions (counterparty, category chip, affected count, "Annehmen", "Nicht mehr vorschlagen"); the category-change toast offers "Annehmen" when the response carries a suggestion (in `BookingsTable.vue`); the banner sits above the table in `apps/web/app/pages/transactions.vue`. Component test `apps/web/tests/rule-suggestions.spec.ts`.
-- [ ] T013 [US2] Playwright `e2e/us-r2-rule-suggestions.spec.ts`: two single categorizations → suggestion → accept; second pair → decline → reload, not shown.
+- [X] T013 [US2] Playwright `e2e/us-r2-rule-suggestions.spec.ts`: two single categorizations → suggestion → accept; second pair → decline → reload, not shown.
 
 ---
 
