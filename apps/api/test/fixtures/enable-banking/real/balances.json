@@ -1,0 +1,22 @@
+{
+  "balances": [
+    {
+      "name": "Accounting balance",
+      "balance_amount": {
+        "currency": "EUR",
+        "amount": "86.58"
+      },
+      "balance_type": "CLBD",
+      "reference_date": "2025-10-21"
+    },
+    {
+      "name": "Interim available balance",
+      "balance_amount": {
+        "currency": "EUR",
+        "amount": "86.58"
+      },
+      "balance_type": "ITAV",
+      "reference_date": "2025-10-21"
+    }
+  ]
+}

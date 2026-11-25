@@ -90,3 +90,43 @@ describe('Enable Banking mapper (005 T009)', () => {
     ).toBeUndefined()
   })
 })
+
+describe('Enable Banking mapper on recorded Sparkasse responses (005 T008, anonymized)', () => {
+  const real = <T>(name: string): T => fixture<T>(`real/${name}`)
+  const transactions = real<{ transactions: BankTransaction[] }>('transactions.page1').transactions
+  const batch = mapBankData({
+    institution: 'Sparkasse Musterstadt',
+    accounts: [
+      {
+        uid: '00000000-0000-4000-8000-0000000000b1',
+        details: real<SessionAccount>('details'),
+        balances: real<{ balances: Balance[] }>('balances').balances,
+        transactions,
+      },
+    ],
+  })
+
+  it('names the account by product, never by the holder name', () => {
+    expect(batch.accounts[0]!.name).toBe('Sparkasse Musterstadt Giro Trend …3000')
+    expect(batch.accounts[0]!.name).not.toContain('MUSTERMANN')
+  })
+
+  it('imports every booked entry with a unique ref and the posting text first', () => {
+    expect(batch.rowErrors).toEqual([])
+    expect(batch.transactions).toHaveLength(transactions.filter((t) => t.status === 'BOOK').length)
+    expect(new Set(batch.transactions.map((t) => t.sourceRef)).size).toBe(batch.transactions.length)
+    const card = batch.transactions.find((t) => t.purpose?.startsWith('KARTENZAHLUNG'))
+    expect(card).toMatchObject({ type: 'expense' })
+    expect(card!.amountCents).toBeLessThan(0)
+    expect(batch.transactions.some((t) => t.type === 'income')).toBe(true)
+  })
+
+  it('takes the booked closing balance', () => {
+    const clbd = real<{ balances: Balance[] }>('balances').balances.find(
+      (b) => b.balance_type === 'CLBD',
+    )!
+    expect(batch.accounts[0]!.balanceCents).toBe(
+      Math.round(Number(clbd.balance_amount.amount) * 100),
+    )
+  })
+})

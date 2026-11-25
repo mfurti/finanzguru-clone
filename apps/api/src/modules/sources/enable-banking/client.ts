@@ -102,6 +102,8 @@ export interface BankTransaction {
   creditor_account?: { iban?: string | null } | null
   debtor_account?: { iban?: string | null } | null
   remittance_information?: string[] | null
+  /** Posting text and code, e.g. `{ description: "KARTENZAHLUNG" }`. */
+  bank_transaction_code?: { description?: string | null; code?: string | null } | null
 }
 
 export interface TransactionsPage {

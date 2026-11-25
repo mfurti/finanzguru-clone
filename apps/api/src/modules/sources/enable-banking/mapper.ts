@@ -53,10 +53,13 @@ function bookingHash(tx: BankTransaction): string {
   return `h:${createHash('sha256').update(key).digest('hex').slice(0, 32)}`
 }
 
-/** Display name like the CSV import: "<Bank> Girokonto …1234". */
+/**
+ * Display name like the CSV import: "<Bank> <Produkt> …1234". The PSD2 `name` is the account
+ * holder's name at many banks (Sparkasse), so it is never used (005 T016).
+ */
 function accountName(institution: string, details: SessionAccount, iban: string | undefined) {
-  const base = details.name?.trim() || `${institution} Girokonto`
-  return iban && !base.includes(iban.slice(-4)) ? `${base} …${iban.slice(-4)}` : base
+  const base = `${institution} ${details.product?.trim() || 'Girokonto'}`
+  return iban ? `${base} …${iban.slice(-4)}` : base
 }
 
 export function mapBankData(data: BankData): SyncBatch {
@@ -93,7 +96,10 @@ export function mapBankData(data: BankData): SyncBatch {
       const outgoing = amountCents < 0
       const counterparty = (outgoing ? tx.creditor?.name : tx.debtor?.name)?.trim() || undefined
       const counterIban = (outgoing ? tx.creditor_account?.iban : tx.debtor_account?.iban) ?? ''
-      const purpose = (tx.remittance_information ?? []).map((line) => line.trim()).filter(Boolean)
+      // Posting text first ("KARTENZAHLUNG"), like the CSV column "Buchungstext" (005 T016).
+      const purpose = [tx.bank_transaction_code?.description, ...(tx.remittance_information ?? [])]
+        .map((line) => line?.trim())
+        .filter((line): line is string => !!line)
       const base = tx.entry_reference?.trim() || bookingHash(tx)
       const count = seen.get(base) ?? 0
       seen.set(base, count + 1)
@@ -103,7 +109,12 @@ export function mapBankData(data: BankData): SyncBatch {
         bookingDate: bookingDate.slice(0, 10),
         valueDate: tx.value_date?.slice(0, 10) ?? undefined,
         amountCents,
-        type: /entgelt/i.test(purpose.join(' ')) ? 'fee' : outgoing ? 'expense' : 'income',
+        // Bank fees by posting text, as in the CSV import; without a code the text is checked.
+        type: /entgelt/i.test(tx.bank_transaction_code?.description ?? purpose.join(' '))
+          ? 'fee'
+          : outgoing
+            ? 'expense'
+            : 'income',
         counterparty,
         counterpartyIban: isValidIban(counterIban) ? normalizeIban(counterIban) : undefined,
         purpose: purpose.join(' · ') || undefined,
