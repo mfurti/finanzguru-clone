@@ -1,0 +1,1428 @@
+{
+  "numTotalTestSuites": 85,
+  "numPassedTestSuites": 85,
+  "numFailedTestSuites": 0,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 100,
+  "numPassedTests": 100,
+  "numFailedTests": 0,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1795630229153,
+  "success": true,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["AddWindow (007 T016)"],
+          "fullName": "AddWindow (007 T016) opens \"Was möchtest du hinzufügen?\" with providers and assets tabs",
+          "status": "passed",
+          "title": "opens \"Was möchtest du hinzufügen?\" with providers and assets tabs",
+          "duration": 568.0131000000001,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["AddWindow (007 T016)"],
+          "fullName": "AddWindow (007 T016) searches by name and by IBAN",
+          "status": "passed",
+          "title": "searches by name and by IBAN",
+          "duration": 349.7367000000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["AddWindow (007 T016)"],
+          "fullName": "AddWindow (007 T016) asks \"Wie möchtest du importieren?\" and opens the chosen flow",
+          "status": "passed",
+          "title": "asks \"Wie möchtest du importieren?\" and opens the chosen flow",
+          "duration": 299.58389999999963,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["AccountFormModal"],
+          "fullName": "AccountFormModal mounts closed without errors",
+          "status": "passed",
+          "title": "mounts closed without errors",
+          "duration": 32.56200000000081,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630236185,
+      "endTime": 1795630237436.562,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/add-window.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["AllocationCard"],
+          "fullName": "AllocationCard lists slices in € and switches to %",
+          "status": "passed",
+          "title": "lists slices in € and switches to %",
+          "duration": 222.8182999999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["KpiCard"],
+          "fullName": "KpiCard shows the KPI rows with signed values and rates",
+          "status": "passed",
+          "title": "shows the KPI rows with signed values and rates",
+          "duration": 93.8770999999997,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630242608,
+      "endTime": 1795630242924.8772,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/allocation-kpi.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ReturnHeatmap"],
+          "fullName": "ReturnHeatmap shows monthly returns per year and the yearly total",
+          "status": "passed",
+          "title": "shows monthly returns per year and the yearly total",
+          "duration": 242.48089999999956,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["YearlyTable"],
+          "fullName": "YearlyTable marks the current year as YTD and shows real returns",
+          "status": "passed",
+          "title": "marks the current year as YTD and shows real returns",
+          "duration": 35.97029999999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["ClassificationForm"],
+          "fullName": "ClassificationForm shows the sum per dimension and prefills new rows with the remainder",
+          "status": "passed",
+          "title": "shows the sum per dimension and prefills new rows with the remainder",
+          "duration": 691.8828000000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630236180,
+      "endTime": 1795630237151.8828,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/analysis.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["AssetSearch (005 T028)"],
+          "fullName": "AssetSearch (005 T028) shows hits grouped by class with ISIN and an add button",
+          "status": "passed",
+          "title": "shows hits grouped by class with ISIN and an add button",
+          "duration": 395.6197999999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["AssetSearch (005 T028)"],
+          "fullName": "AssetSearch (005 T028) explains that search needs the Scalable connection",
+          "status": "passed",
+          "title": "explains that search needs the Scalable connection",
+          "duration": 113.6216000000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["AssetSearch (005 T028)"],
+          "fullName": "AssetSearch (005 T028) waits for at least 2 characters",
+          "status": "passed",
+          "title": "waits for at least 2 characters",
+          "duration": 56.2509,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630236190,
+      "endTime": 1795630236756.251,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/asset-search.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["BankCard (005 T014)"],
+          "fullName": "BankCard (005 T014) offers to connect when no bank is connected",
+          "status": "passed",
+          "title": "offers to connect when no bank is connected",
+          "duration": 306.616,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BankCard (005 T014)"],
+          "fullName": "BankCard (005 T014) shows consent end, warning and approved accounts when active",
+          "status": "passed",
+          "title": "shows consent end, warning and approved accounts when active",
+          "duration": 86.66539999999986,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BankCard (005 T014)"],
+          "fullName": "BankCard (005 T014) offers to add accounts while the consent is still long valid",
+          "status": "passed",
+          "title": "offers to add accounts while the consent is still long valid",
+          "duration": 87.78510000000006,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BankCard (005 T014)"],
+          "fullName": "BankCard (005 T014) asks to renew an expired consent",
+          "status": "passed",
+          "title": "asks to renew an expired consent",
+          "duration": 91.60369999999966,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630241269,
+      "endTime": 1795630241841.6038,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/bank-card.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["BookingFilterPanel (007 T009)"],
+          "fullName": "BookingFilterPanel (007 T009) shows the reference sections in a side panel",
+          "status": "passed",
+          "title": "shows the reference sections in a side panel",
+          "duration": 930.2534999999998,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BookingFilterPanel (007 T009)"],
+          "fullName": "BookingFilterPanel (007 T009) outgoing with 10–100 € becomes the signed range −100 € to −10 €",
+          "status": "passed",
+          "title": "outgoing with 10–100 € becomes the signed range −100 € to −10 €",
+          "duration": 803.3595999999989,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BookingFilterPanel (007 T009)"],
+          "fullName": "BookingFilterPanel (007 T009) incoming keeps the amounts positive; reopening shows unsigned values",
+          "status": "passed",
+          "title": "incoming keeps the amounts positive; reopening shows unsigned values",
+          "duration": 976.1355000000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BookingFilterPanel (007 T009)"],
+          "fullName": "BookingFilterPanel (007 T009) Zurücksetzen clears everything including the accounts",
+          "status": "passed",
+          "title": "Zurücksetzen clears everything including the accounts",
+          "duration": 369.308500000001,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630236188,
+      "endTime": 1795630239267.3086,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/booking-filter.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["BookingPanel (007 T006)"],
+          "fullName": "BookingPanel (007 T006) shows header, account and details",
+          "status": "passed",
+          "title": "shows header, account and details",
+          "duration": 902.3222000000005,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BookingPanel (007 T006)"],
+          "fullName": "BookingPanel (007 T006) saves the note on blur, trimmed, and only when changed",
+          "status": "passed",
+          "title": "saves the note on blur, trimmed, and only when changed",
+          "duration": 427.02439999999933,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BookingPanel (007 T006)"],
+          "fullName": "BookingPanel (007 T006) switches mark unreviewed and transfer",
+          "status": "passed",
+          "title": "switches mark unreviewed and transfer",
+          "duration": 240.9360999999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BookingPanel (007 T006)"],
+          "fullName": "BookingPanel (007 T006) turning transfer off restores the type by sign",
+          "status": "passed",
+          "title": "turning transfer off restores the type by sign",
+          "duration": 391.6907999999994,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BookingPanel (007 T006)"],
+          "fullName": "BookingPanel (007 T006) asks the table for the category window and for delete",
+          "status": "passed",
+          "title": "asks the table for the category window and for delete",
+          "duration": 251.63739999999962,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630235906,
+      "endTime": 1795630238120.6375,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/booking-panel.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Transaktionen columns (007 T004)"],
+          "fullName": "Transaktionen columns (007 T004) hides Konto and Verwendungszweck by default",
+          "status": "passed",
+          "title": "hides Konto and Verwendungszweck by default",
+          "duration": 2.5635000000002037,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["Transaktionen columns (007 T004)"],
+          "fullName": "Transaktionen columns (007 T004) keeps an explicit choice and other stored columns",
+          "status": "passed",
+          "title": "keeps an explicit choice and other stored columns",
+          "duration": 0.3878999999997177,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["Transaktionen columns (007 T004)"],
+          "fullName": "Transaktionen columns (007 T004) falls back to the defaults on broken storage",
+          "status": "passed",
+          "title": "falls back to the defaults on broken storage",
+          "duration": 0.34470000000055734,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630235912,
+      "endTime": 1795630235915.3447,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/bookings-columns.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Budget › Analyse (007 T015)"],
+          "fullName": "Budget › Analyse (007 T015) labels the donut centre \"Gesamtausgaben\" or \"Gesamteinnahmen\"",
+          "status": "passed",
+          "title": "labels the donut centre \"Gesamtausgaben\" or \"Gesamteinnahmen\"",
+          "duration": 142.95610000000033,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["Budget › Analyse (007 T015)"],
+          "fullName": "Budget › Analyse (007 T015) draws the category donut without gaps",
+          "status": "passed",
+          "title": "draws the category donut without gaps",
+          "duration": 8.553499999999985,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630243097,
+      "endTime": 1795630243248.5535,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/budget-analyse.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["CategoryDonut (US7)"],
+          "fullName": "CategoryDonut (US7) shows the total in the center",
+          "status": "passed",
+          "title": "shows the total in the center",
+          "duration": 142.89039999999932,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["CategoryDonut (US7)"],
+          "fullName": "CategoryDonut (US7) shows the empty state without data",
+          "status": "passed",
+          "title": "shows the empty state without data",
+          "duration": 12.707399999999325,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["CategoryList with pie chart (US7)"],
+          "fullName": "CategoryList with pie chart (US7) switches between € and %, and the shares add up to 100 %",
+          "status": "passed",
+          "title": "switches between € and %, and the shares add up to 100 %",
+          "duration": 78.04809999999998,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["CategoryList with pie chart (US7)"],
+          "fullName": "CategoryList with pie chart (US7) highlights the row of the hovered category",
+          "status": "passed",
+          "title": "highlights the row of the hovered category",
+          "duration": 55.7503999999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630242867,
+      "endTime": 1795630243157.7505,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/budget-pie.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["SummaryTiles"],
+          "fullName": "SummaryTiles shows income, expenses, balance, saved and savings rate",
+          "status": "passed",
+          "title": "shows income, expenses, balance, saved and savings rate",
+          "duration": 231.83899999999994,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["PeriodSwitcher"],
+          "fullName": "PeriodSwitcher steps back and disables next in the current period",
+          "status": "passed",
+          "title": "steps back and disables next in the current period",
+          "duration": 145.82959999999912,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["CategoryList"],
+          "fullName": "CategoryList lists categories with counts and negative totals",
+          "status": "passed",
+          "title": "lists categories with counts and negative totals",
+          "duration": 54.14859999999953,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630242238,
+      "endTime": 1795630242670.1487,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/budget.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["category colors"],
+          "fullName": "category colors maps stored keys to one hex and unknown keys to a stable slot",
+          "status": "passed",
+          "title": "maps stored keys to one hex and unknown keys to a stable slot",
+          "duration": 3.1822999999994863,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["category colors"],
+          "fullName": "category colors lightens deeper levels and keeps names stable",
+          "status": "passed",
+          "title": "lightens deeper levels and keeps names stable",
+          "duration": 0.522899999999936,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["useCategoryAppearance"],
+          "fullName": "useCategoryAppearance lets sub categories inherit the main color and fall back to its icon",
+          "status": "passed",
+          "title": "lets sub categories inherit the main color and fall back to its icon",
+          "duration": 562.9515999999994,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630235796,
+      "endTime": 1795630236362.9517,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/category-appearance.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["CategoryWindow (007 T005)"],
+          "fullName": "CategoryWindow (007 T005) opens the group of the current category and marks it",
+          "status": "passed",
+          "title": "opens the group of the current category and marks it",
+          "duration": 739.9655000000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["CategoryWindow (007 T005)"],
+          "fullName": "CategoryWindow (007 T005) filters by search",
+          "status": "passed",
+          "title": "filters by search",
+          "duration": 359.3657999999996,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["CategoryWindow (007 T005)"],
+          "fullName": "CategoryWindow (007 T005) saves the chosen category with scope and a pre-filled rule",
+          "status": "passed",
+          "title": "saves the chosen category with scope and a pre-filled rule",
+          "duration": 763.1976000000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["CategoryWindow (007 T005)"],
+          "fullName": "CategoryWindow (007 T005) hides the recipient scope without counterparty",
+          "status": "passed",
+          "title": "hides the recipient scope without counterparty",
+          "duration": 190.2551000000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["CategoryWindow (007 T005)"],
+          "fullName": "CategoryWindow (007 T005) sends bulk without a rule and explains why for different recipients",
+          "status": "passed",
+          "title": "sends bulk without a rule and explains why for different recipients",
+          "duration": 254.84850000000006,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["CategoryWindow (007 T005)"],
+          "fullName": "CategoryWindow (007 T005) shows the inline form for a new category",
+          "status": "passed",
+          "title": "shows the inline form for a new category",
+          "duration": 349.60049999999865,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630236179,
+      "endTime": 1795630238835.6006,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/category-window.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["PerformanceChart class chips (005 T019)"],
+          "fullName": "PerformanceChart class chips (005 T019) adds one line per selected class and keeps the headline on \"Alle\"",
+          "status": "passed",
+          "title": "adds one line per selected class and keeps the headline on \"Alle\"",
+          "duration": 160.76400000000012,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630244373,
+      "endTime": 1795630244533.764,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/class-chart.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Avatar"],
+          "fullName": "Avatar shows up to two initials on a stable color",
+          "status": "passed",
+          "title": "shows up to two initials on a stable color",
+          "duration": 214.90880000000016,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["CopyButton"],
+          "fullName": "CopyButton writes the value to the clipboard",
+          "status": "passed",
+          "title": "writes the value to the clipboard",
+          "duration": 74.59109999999964,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["Sparkline"],
+          "fullName": "Sparkline draws a flat line for fewer than two points",
+          "status": "passed",
+          "title": "draws a flat line for fewer than two points",
+          "duration": 19.784700000000157,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["Sparkline"],
+          "fullName": "Sparkline scales a series into the box without NaN",
+          "status": "passed",
+          "title": "scales a series into the box without NaN",
+          "duration": 14.15350000000035,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["SortHeader"],
+          "fullName": "SortHeader exposes aria-sort and emits toggle",
+          "status": "passed",
+          "title": "exposes aria-sort and emits toggle",
+          "duration": 13.703499999999622,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["CategoryIcon"],
+          "fullName": "CategoryIcon renders the tile in the given color",
+          "status": "passed",
+          "title": "renders the tile in the given color",
+          "duration": 8.26890000000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630241193,
+      "endTime": 1795630241543.2688,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/common-parts.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Money"],
+          "fullName": "Money formats cents in de-DE",
+          "status": "passed",
+          "title": "formats cents in de-DE",
+          "duration": 119.53110000000015,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["Money"],
+          "fullName": "Money colors signed gains and losses",
+          "status": "passed",
+          "title": "colors signed gains and losses",
+          "duration": 15.84519999999975,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["Money"],
+          "fullName": "Money renders a dash for missing values",
+          "status": "passed",
+          "title": "renders a dash for missing values",
+          "duration": 5.419799999999668,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["Percent"],
+          "fullName": "Percent formats decimal-string ratios",
+          "status": "passed",
+          "title": "formats decimal-string ratios",
+          "duration": 6.546400000000176,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["Percent"],
+          "fullName": "Percent renders a dash for null instead of NaN",
+          "status": "passed",
+          "title": "renders a dash for null instead of NaN",
+          "duration": 5.947200000000521,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["PeriodTabs"],
+          "fullName": "PeriodTabs marks the active period and emits changes",
+          "status": "passed",
+          "title": "marks the active period and emits changes",
+          "duration": 70.2486000000008,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["EmptyState"],
+          "fullName": "EmptyState shows title, description and action",
+          "status": "passed",
+          "title": "shows title, description and action",
+          "duration": 13.075200000000223,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630242919,
+      "endTime": 1795630243157.0752,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/common.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["compactEur (007 T011)"],
+          "fullName": "compactEur (007 T011) 0 cents → 0 €",
+          "status": "passed",
+          "title": "0 cents → 0 €",
+          "duration": 2.4574000000002343,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["compactEur (007 T011)"],
+          "fullName": "compactEur (007 T011) 85000 cents → 850 €",
+          "status": "passed",
+          "title": "85000 cents → 850 €",
+          "duration": 0.4355999999997948,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["compactEur (007 T011)"],
+          "fullName": "compactEur (007 T011) 500000 cents → 5K €",
+          "status": "passed",
+          "title": "500000 cents → 5K €",
+          "duration": 0.5173000000004322,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["compactEur (007 T011)"],
+          "fullName": "compactEur (007 T011) 250000 cents → 2,5K €",
+          "status": "passed",
+          "title": "250000 cents → 2,5K €",
+          "duration": 0.3316000000004351,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["compactEur (007 T011)"],
+          "fullName": "compactEur (007 T011) 2000000 cents → 20K €",
+          "status": "passed",
+          "title": "2000000 cents → 20K €",
+          "duration": 0.25609999999960564,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["compactEur (007 T011)"],
+          "fullName": "compactEur (007 T011) 12345600 cents → 123,5K €",
+          "status": "passed",
+          "title": "12345600 cents → 123,5K €",
+          "duration": 0.16550000000006548,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["compactEur (007 T011)"],
+          "fullName": "compactEur (007 T011) 120000000 cents → 1,2M €",
+          "status": "passed",
+          "title": "120000000 cents → 1,2M €",
+          "duration": 0.17999999999938154,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["compactEur (007 T011)"],
+          "fullName": "compactEur (007 T011) -500000 cents → -5K €",
+          "status": "passed",
+          "title": "-500000 cents → -5K €",
+          "duration": 0.180899999999383,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630235704,
+      "endTime": 1795630235708.181,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/compact-eur.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["dashboard cards (007 T012)"],
+          "fullName": "dashboard cards (007 T012) CardTitle links the title with a chevron and keeps controls right",
+          "status": "passed",
+          "title": "CardTitle links the title with a chevron and keeps controls right",
+          "duration": 241.34389999999985,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["dashboard cards (007 T012)"],
+          "fullName": "dashboard cards (007 T012) CardTitle without link is plain text",
+          "status": "passed",
+          "title": "CardTitle without link is plain text",
+          "duration": 8.382499999999709,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["dashboard cards (007 T012)"],
+          "fullName": "dashboard cards (007 T012) ReviewBanner is one line with count, label and \"Alle anzeigen\"",
+          "status": "passed",
+          "title": "ReviewBanner is one line with count, label and \"Alle anzeigen\"",
+          "duration": 58.44790000000012,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630242259,
+      "endTime": 1795630242567.448,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/dashboard-cards.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["HoldingsCard"],
+          "fullName": "HoldingsCard shows top holdings and a dash for an empty flop list",
+          "status": "passed",
+          "title": "shows top holdings and a dash for an empty flop list",
+          "duration": 309.21100000000024,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["AccountsCard"],
+          "fullName": "AccountsCard groups depots and accounts and collapses a group",
+          "status": "passed",
+          "title": "groups depots and accounts and collapses a group",
+          "duration": 38.1232,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["ReviewBanner"],
+          "fullName": "ReviewBanner shows the formatted count and a link",
+          "status": "passed",
+          "title": "shows the formatted count and a link",
+          "duration": 23.274499999999534,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630242374,
+      "endTime": 1795630242745.2744,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/dashboard-lists.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["DonutChart"],
+          "fullName": "DonutChart draws one slice per item with a value",
+          "status": "passed",
+          "title": "draws one slice per item with a value",
+          "duration": 629.3021000000008,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["DonutChart"],
+          "fullName": "DonutChart reports the hovered slice and shows it in the center",
+          "status": "passed",
+          "title": "reports the hovered slice and shows it in the center",
+          "duration": 41.878200000000106,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["DonutChart"],
+          "fullName": "DonutChart emits select on click",
+          "status": "passed",
+          "title": "emits select on click",
+          "duration": 15.219500000000153,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630235751,
+      "endTime": 1795630236438.2195,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/donut-chart.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ImportResult"],
+          "fullName": "ImportResult shows counts and translated row errors with line numbers",
+          "status": "passed",
+          "title": "shows counts and translated row errors with line numbers",
+          "duration": 356.23319999999967,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["ColumnMapper"],
+          "fullName": "ColumnMapper guesses date, amount and counterparty columns from header names",
+          "status": "passed",
+          "title": "guesses date, amount and counterparty columns from header names",
+          "duration": 1431.495499999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630236190,
+      "endTime": 1795630237981.4956,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/import.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["overview page"],
+          "fullName": "overview page renders only visible widgets in layout order with empty states",
+          "status": "passed",
+          "title": "renders only visible widgets in layout order with empty states",
+          "duration": 209.06460000000015,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630244487,
+      "endTime": 1795630244696.0647,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/index.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ContractList"],
+          "fullName": "ContractList shows type, provider, premium per interval and yearly cost",
+          "status": "passed",
+          "title": "shows type, provider, premium per interval and yearly cost",
+          "duration": 106.56089999999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630243314,
+      "endTime": 1795630243420.5608,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/insurance.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["PositionsTable"],
+          "fullName": "PositionsTable renders positions, asset-class filter, export link and sold positions",
+          "status": "passed",
+          "title": "renders positions, asset-class filter, export link and sold positions",
+          "duration": 432.60459999999966,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["AssetClassTable"],
+          "fullName": "AssetClassTable lists asset classes with share and value",
+          "status": "passed",
+          "title": "lists asset classes with share and value",
+          "duration": 26.527600000000348,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630242027,
+      "endTime": 1795630242486.5276,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/investments.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["default layout"],
+          "fullName": "default layout shows brand, the four tabs and the account filter",
+          "status": "passed",
+          "title": "shows brand, the four tabs and the account filter",
+          "duration": 452.4312,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630241689,
+      "endTime": 1795630242141.4312,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/layout.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["monthAxis (007 T014)"],
+          "fullName": "monthAxis (007 T014) shows the year at the first bar and at January, with a divider at the change",
+          "status": "passed",
+          "title": "shows the year at the first bar and at January, with a divider at the change",
+          "duration": 3.058799999999792,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["monthAxis (007 T014)"],
+          "fullName": "monthAxis (007 T014) has no divider when January is the first bar",
+          "status": "passed",
+          "title": "has no divider when January is the first bar",
+          "duration": 0.39400000000023283,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["monthAxis (007 T014)"],
+          "fullName": "monthAxis (007 T014) labels quarters and years",
+          "status": "passed",
+          "title": "labels quarters and years",
+          "duration": 0.4811999999992622,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630235657,
+      "endTime": 1795630235660.4812,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/month-axis.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["NetWorthChart"],
+          "fullName": "NetWorthChart shows total and gain in de-DE format",
+          "status": "passed",
+          "title": "shows total and gain in de-DE format",
+          "duration": 162.0310999999997,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630244362,
+      "endTime": 1795630244524.031,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/networth-chart.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["budget period picker (003 US3)"],
+          "fullName": "budget period picker (003 US3) disables \"Aktueller Monat\" while the current month is shown",
+          "status": "passed",
+          "title": "disables \"Aktueller Monat\" while the current month is shown",
+          "duration": 416.7520000000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["budget period picker (003 US3)"],
+          "fullName": "budget period picker (003 US3) shows the date range of the selected month and quarter",
+          "status": "passed",
+          "title": "shows the date range of the selected month and quarter",
+          "duration": 127.7488000000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630241021,
+      "endTime": 1795630241565.7488,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/period-picker.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["RuleFields (006 T007)"],
+          "fullName": "RuleFields (006 T007) shows how many bookings the rule would change",
+          "status": "passed",
+          "title": "shows how many bookings the rule would change",
+          "duration": 638.0807000000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["RuleFields (006 T007)"],
+          "fullName": "RuleFields (006 T007) edits the pattern through v-model",
+          "status": "passed",
+          "title": "edits the pattern through v-model",
+          "duration": 242.03859999999986,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630236181,
+      "endTime": 1795630237061.0386,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/rule-fields.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["RuleSuggestions (006 T012)"],
+          "fullName": "RuleSuggestions (006 T012) shows recipient, category and affected bookings with accept and decline",
+          "status": "passed",
+          "title": "shows recipient, category and affected bookings with accept and decline",
+          "duration": 370.8072000000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630241643,
+      "endTime": 1795630242013.8071,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/rule-suggestions.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["rules page (006 T015)"],
+          "fullName": "rules page (006 T015) lists rules with condition, sign, category and state",
+          "status": "passed",
+          "title": "lists rules with condition, sign, category and state",
+          "duration": 502.9262999999992,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["rules page (006 T015)"],
+          "fullName": "rules page (006 T015) moves a rule down by sending the full new order",
+          "status": "passed",
+          "title": "moves a rule down by sending the full new order",
+          "duration": 176.41509999999926,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["rules page (006 T015)"],
+          "fullName": "rules page (006 T015) has no stale hint about the old review page",
+          "status": "passed",
+          "title": "has no stale hint about the old review page",
+          "duration": 126.90869999999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630241118,
+      "endTime": 1795630241932.9087,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/rules-page.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["sankeyOrder"],
+          "fullName": "sankeyOrder sorts main categories by amount with the balance last",
+          "status": "passed",
+          "title": "sorts main categories by amount with the balance last",
+          "duration": 2.981999999999971,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["sankeyOrder"],
+          "fullName": "sankeyOrder groups sub categories under their main category in the same order",
+          "status": "passed",
+          "title": "groups sub categories under their main category in the same order",
+          "duration": 0.639299999999821,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["sankeyOrder"],
+          "fullName": "sankeyOrder produces no crossing links between the middle and the right column",
+          "status": "passed",
+          "title": "produces no crossing links between the middle and the right column",
+          "duration": 0.715900000000147,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630235669,
+      "endTime": 1795630235673.7158,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/sankey-order.spec.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["data sources page (US7)"],
+          "fullName": "data sources page (US7) shows the Sparkasse live query as planned",
+          "status": "passed",
+          "title": "shows the Sparkasse live query as planned",
+          "duration": 459.3864999999996,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795630236171,
+      "endTime": 1795630236630.3865,
+      "status": "passed",
+      "message": "",
+      "name": "V:/GitHub/finanzguru-clone/apps/web/tests/sources.spec.ts"
+    }
+  ]
+}
