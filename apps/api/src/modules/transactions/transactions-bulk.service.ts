@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 import {
+  type RuleDraft,
   transactionFilter,
   type TransactionBulkInput,
   type TransactionBulkResult,
@@ -8,6 +9,8 @@ import { and, eq, inArray } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { category, tag, transaction, transactionTag } from '../../database/schema'
+import { assertValidPattern, counterpartyKey } from '../../domain/categorize'
+import { appendRule, applyRule } from './rule-apply'
 import { TransactionsReviewService } from './transactions-review.service'
 import { TransactionsTrashService } from './transactions-trash.service'
 
@@ -29,6 +32,46 @@ export class TransactionsBulkService {
     private readonly trash: TransactionsTrashService,
   ) {}
 
+  /**
+   * "Kategorie setzen" with "Für ähnliche Buchungen merken" (006 US1, FR-005): only when all
+   * selected bookings share one recipient; the rule is saved once and applied.
+   */
+  private setCategoryWithRule(
+    ids: string[],
+    categoryId: string | null,
+    draft: RuleDraft,
+  ): TransactionBulkResult {
+    if (!categoryId) throw new BadRequestException('Für eine Regel wird eine Kategorie benötigt')
+    try {
+      assertValidPattern(draft.operator, draft.pattern)
+    } catch {
+      throw new BadRequestException('Regulärer Ausdruck ist ungültig')
+    }
+    const rows = this.db
+      .select({ counterparty: transaction.counterparty })
+      .from(transaction)
+      .where(inArray(transaction.id, ids))
+      .all()
+    const recipients = new Set(rows.map((row) => counterpartyKey(row)))
+    if (recipients.size !== 1 || recipients.has(null)) {
+      throw new BadRequestException(
+        'Für unterschiedliche Empfänger kann keine Regel gespeichert werden',
+      )
+    }
+    return this.db.transaction((tx) => {
+      let affected = 0
+      for (const part of chunks(ids)) {
+        affected += tx
+          .update(transaction)
+          .set({ categoryId, categorySource: 'manual', reviewStatus: 'reviewed' })
+          .where(inArray(transaction.id, part))
+          .run().changes
+      }
+      const rule = appendRule(tx, draft, categoryId)
+      return { affected, ruleId: rule.id, ruleApplied: applyRule(tx, rule) }
+    })
+  }
+
   run(input: TransactionBulkInput): TransactionBulkResult {
     const ids = input.ids ?? this.idsForFilter(input.filter!)
     if (ids.length === 0) return { affected: 0 }
@@ -42,6 +85,7 @@ export class TransactionsBulkService {
         if (categoryId && !this.exists(category, categoryId)) {
           throw new BadRequestException('Kategorie nicht gefunden')
         }
+        if (input.createRule) return this.setCategoryWithRule(ids, categoryId, input.createRule)
         return {
           affected: this.update(ids, {
             categoryId,

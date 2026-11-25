@@ -137,4 +137,38 @@ describe('category change with scope and rules (006 US1)', () => {
     expect(bad.statusCode).toBe(400)
     expect(row(card).categoryId).toBeNull()
   })
+
+  const bulk = (payload: object) =>
+    app.inject({ method: 'POST', url: '/api/transactions/bulk', headers: { cookie }, payload })
+
+  it('bulk: saves one rule when all selected bookings share the recipient', async () => {
+    const ids = [1, 2, 3].map(() => booking({ counterparty: 'Wasserwerk Nord' }))
+    const later = booking({ counterparty: 'Wasserwerk Nord' })
+    const before = db.select().from(categorizationRule).all().length
+    const res = await bulk({
+      ids: ids.slice(0, 2),
+      action: 'setCategory',
+      value: strom,
+      createRule: { matchField: 'counterparty', operator: 'contains', pattern: 'wasserwerk' },
+    })
+    expect(res.statusCode).toBe(200)
+    expect(res.json()).toMatchObject({ affected: 2, ruleId: expect.any(String), ruleApplied: 2 })
+    expect(db.select().from(categorizationRule).all()).toHaveLength(before + 1)
+    expect(row(ids[2]!)).toMatchObject({ categoryId: strom, categorySource: 'rule' })
+    expect(row(later)).toMatchObject({ categoryId: strom, categorySource: 'rule' })
+  })
+
+  it('bulk: refuses a rule for different recipients', async () => {
+    const a = booking({ counterparty: 'Laden A' })
+    const b = booking({ counterparty: 'Laden B' })
+    const res = await bulk({
+      ids: [a, b],
+      action: 'setCategory',
+      value: strom,
+      createRule: { matchField: 'counterparty', operator: 'contains', pattern: 'laden' },
+    })
+    expect(res.statusCode).toBe(400)
+    expect(res.body).toContain('unterschiedliche Empfänger')
+    expect(row(a).categoryId).toBeNull()
+  })
 })
