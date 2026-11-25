@@ -25,6 +25,21 @@ async function rename(): Promise<void> {
   renaming.value = false
   await refresh()
 }
+const toast = useToast()
+const refreshing = ref(false)
+/** Fetches fresh quotes through the Scalable connection (005 US4), then reloads the list. */
+async function refreshQuotes(): Promise<void> {
+  refreshing.value = true
+  try {
+    await apiFetch('/api/market-data/refresh', { method: 'POST' })
+    await refresh()
+  } catch {
+    toast.add({ title: t('marketData.unavailable'), color: 'warning' })
+  } finally {
+    refreshing.value = false
+  }
+}
+
 async function remove(entry: WatchlistEntryDto): Promise<void> {
   await apiFetch(`/api/watchlists/${route.params.id}/entries/${entry.instrumentId}`, {
     method: 'DELETE',
@@ -67,7 +82,19 @@ async function remove(entry: WatchlistEntryDto): Promise<void> {
               @click="startRename"
             />
           </h2>
-          <PeriodTabs v-model="period" />
+          <div class="flex flex-wrap items-center gap-2">
+            <UButton
+              icon="i-lucide-refresh-cw"
+              size="xs"
+              variant="soft"
+              color="neutral"
+              :loading="refreshing"
+              :label="t('marketData.refresh')"
+              data-testid="watchlist-refresh"
+              @click="refreshQuotes"
+            />
+            <PeriodTabs v-model="period" />
+          </div>
         </div>
       </template>
       <div class="space-y-4">

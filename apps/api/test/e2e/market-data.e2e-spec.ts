@@ -162,6 +162,8 @@ describe('market data through the Scalable connection (005 US4)', () => {
     })
     const list = (await call('GET', `/api/watchlists/${watchlistId}`)).json() as WatchlistDto
     expect(list.entries[0]!.priceCents).toBe(32108)
+    expect(list.entries[0]!.quotedAt).toBe('2026-11-25T11:12:26.925Z')
+    expect(list.entries[0]!.sparkline!.length).toBeGreaterThanOrEqual(2)
   })
 
   it('returns one close per day for the chart and keeps them as prices', async () => {

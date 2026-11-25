@@ -189,6 +189,8 @@ export const watchlistEntryDto = z.object({
   hasPrices: z.boolean(),
   /** Time of the latest broker quote (005 US4); null when only daily closes exist. */
   quotedAt: z.string().nullable().optional(),
+  /** Daily closes (EUR) of the last 30 days for the row's sparkline (005 US4). */
+  sparkline: z.array(z.number()).optional(),
 })
 export type WatchlistEntryDto = z.infer<typeof watchlistEntryDto>
 

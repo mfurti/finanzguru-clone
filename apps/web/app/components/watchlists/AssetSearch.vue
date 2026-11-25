@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AssetClass, SecurityHit, SecuritySearchResponse } from '@finance/shared'
+import type { AssetClass, SecurityHit, SecuritySearchResponse, WatchlistDto } from '@finance/shared'
 import { FetchError } from 'ofetch'
 
 /**
@@ -50,10 +50,17 @@ async function search(text: string): Promise<void> {
 async function add(hit: SecurityHit): Promise<void> {
   adding.value = hit.isin
   try {
-    await apiFetch(`/api/watchlists/${props.watchlistId}/entries`, {
+    const list = await apiFetch<WatchlistDto>(`/api/watchlists/${props.watchlistId}/entries`, {
       method: 'POST',
       body: { isin: hit.isin, name: hit.name, assetClass: hit.assetClass },
     })
+    // Load a month of closes so the new row has a price and a sparkline right away.
+    const added = list.entries.find((entry) => entry.isin === hit.isin)
+    if (added) {
+      await apiFetch(`/api/market-data/chart/${added.instrumentId}`, {
+        query: { range: '1M' },
+      }).catch(() => undefined)
+    }
     toast.add({ title: t('marketData.added'), description: hit.name, color: 'success' })
     emit('added')
   } catch (error) {

@@ -7,12 +7,13 @@ import type {
   WatchlistInput,
   WatchlistSummary,
 } from '@finance/shared'
-import { and, asc, count, desc, eq, lte } from 'drizzle-orm'
+import { and, asc, count, desc, eq, gte, lte } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
-import { instrument, price, watchlist, watchlistEntry } from '../../database/schema'
+import { instrument, price, quote, watchlist, watchlistEntry } from '../../database/schema'
 import { D, eurosToCents, ratio } from '../../domain/money'
-import { daysBetween, resolvePeriod, todayIso } from '../../domain/period'
+import { addDays, daysBetween, resolvePeriod, todayIso } from '../../domain/period'
+import { sparkline } from '../../domain/sparkline'
 import { STALE_AFTER_DAYS } from '../../domain/snapshots'
 import { InstrumentsService } from '../instruments/instruments.service'
 
@@ -112,8 +113,23 @@ export class WatchlistsService {
     // Last close on or before the period start; the first close when the period starts earlier.
     const baseClose = (closeOn(from) ?? first).close
     const change = new D(latest.close).minus(baseClose)
+    const quotedAt =
+      this.db
+        .select({ quotedAt: quote.quotedAt })
+        .from(quote)
+        .where(eq(quote.instrumentId, item.instrumentId))
+        .get()?.quotedAt ?? null
+    const recent = this.db
+      .select({ close: price.close })
+      .from(price)
+      .where(and(eq(price.instrumentId, item.instrumentId), gte(price.date, addDays(today, -30))))
+      .orderBy(asc(price.date))
+      .all()
+      .map((row) => Number(row.close))
     return {
       ...item,
+      quotedAt,
+      sparkline: sparkline(recent),
       priceCents: eurosToCents(latest.close),
       priceDate: latest.date,
       changeCents: eurosToCents(change),
