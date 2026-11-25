@@ -8,6 +8,8 @@ import {
   investmentTransactionsQuery,
   type InvestmentTransactionsResponse,
   performanceQuery,
+  classPerformanceQuery,
+  type ClassPerformanceResponse,
   type PerformanceResponse,
   type PositionDto,
   positionsCsvQuery,
@@ -24,6 +26,7 @@ import {
 import { InvestmentsService } from './investments.service'
 
 class PerformanceQueryDto extends createZodDto(performanceQuery) {}
+class ClassPerformanceQueryDto extends createZodDto(classPerformanceQuery) {}
 class PositionsQueryDto extends createZodDto(positionsQuery) {}
 class AccountsQueryDto extends createZodDto(z.object({ accounts: accountsParam })) {}
 class PositionsCsvQueryDto extends createZodDto(positionsCsvQuery) {}
@@ -42,6 +45,12 @@ export class InvestmentsController {
   @Get('performance')
   performance(@Query() query: PerformanceQueryDto): PerformanceResponse {
     return this.investments.performance(query)
+  }
+
+  /** Value and return line per asset class for the chart chips (005 US2). */
+  @Get('performance/classes')
+  classPerformance(@Query() query: ClassPerformanceQueryDto): ClassPerformanceResponse {
+    return this.investments.classPerformance(query)
   }
 
   @Get('positions')

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import type {
   AssetClass,
   AssetClassDto,
+  ClassPerformanceResponse,
   Period,
   PerformanceResponse,
   PositionDto,
@@ -11,7 +12,7 @@ import { and, desc, eq, gte, inArray, lt, lte, sql } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { instrument, instrumentValueSnapshot, price, transaction } from '../../database/schema'
-import { eachDay } from '../../domain/period'
+import { classSeries } from '../../domain/class-performance'
 import { D, eurosToCents, ratio } from '../../domain/money'
 import { computePositions, summarize } from '../../domain/positions'
 import { downsample, OverviewService } from '../overview/overview.service'
@@ -37,14 +38,12 @@ export class InvestmentsService {
     period: Period
     from?: string
     to?: string
-    assetClass?: AssetClass
   }): PerformanceResponse {
     const depots = this.overview
       .resolveAccounts(query.accounts)
       .filter((acc) => acc.type === 'depot')
     if (depots.length === 0) return { valueCents: 0, gainCents: 0, gainPct: null, series: [] }
     const range = this.overview.range(depots, query)
-    if (query.assetClass) return this.assetClassPerformance(depots, range, query.assetClass)
     const totals = this.overview.dailyTotals(depots, range)
     if (totals.length === 0) return { valueCents: 0, gainCents: 0, gainPct: null, series: [] }
     const first = totals[0]!
@@ -66,20 +65,26 @@ export class InvestmentsService {
   }
 
   /**
-   * Performance of one asset class (004 US2) from the per-instrument values.
-   * Days without a holding count as 0. Gain = change of (value − invested),
-   * i.e. the unrealized gain over the period; % relative to the invested amount.
+   * Lines per asset class for the chart chips (005 US2, research R5): value and time-weighted
+   * return of each class from the per-instrument rows, plus the "Alle" line.
    */
-  private assetClassPerformance(
-    depots: readonly { id: string }[],
-    range: { from: string; to: string },
-    assetClass: AssetClass,
-  ): PerformanceResponse {
+  classPerformance(query: {
+    accounts?: string[]
+    period: Period
+    from?: string
+    to?: string
+  }): ClassPerformanceResponse {
+    const depots = this.overview
+      .resolveAccounts(query.accounts)
+      .filter((acc) => acc.type === 'depot')
+    if (depots.length === 0) return { classes: [], series: [] }
+    const range = this.overview.range(depots, query)
     const rows = this.db
       .select({
         date: instrumentValueSnapshot.date,
+        assetClass: instrument.assetClass,
         valueCents: sql<number>`sum(${instrumentValueSnapshot.valueCents})`,
-        investedCents: sql<number>`sum(${instrumentValueSnapshot.investedCents})`,
+        flowCents: sql<number>`sum(${instrumentValueSnapshot.flowCents})`,
       })
       .from(instrumentValueSnapshot)
       .innerJoin(instrument, eq(instrument.id, instrumentValueSnapshot.instrumentId))
@@ -89,30 +94,19 @@ export class InvestmentsService {
             instrumentValueSnapshot.accountId,
             depots.map((d) => d.id),
           ),
-          eq(instrument.assetClass, assetClass),
           gte(instrumentValueSnapshot.date, range.from),
           lte(instrumentValueSnapshot.date, range.to),
         ),
       )
-      .groupBy(instrumentValueSnapshot.date)
+      .groupBy(instrumentValueSnapshot.date, instrument.assetClass)
       .all()
-    const byDate = new Map(rows.map((row) => [row.date, row]))
-    const series = eachDay(range.from, range.to).map((date) => ({
-      date,
-      valueCents: Number(byDate.get(date)?.valueCents ?? 0),
-      investedCents: Number(byDate.get(date)?.investedCents ?? 0),
-    }))
-    if (series.length === 0) return { valueCents: 0, gainCents: 0, gainPct: null, series: [] }
-    const first = series[0]!
-    const last = series.at(-1)!
-    const gainCents =
-      last.valueCents - last.investedCents - (first.valueCents - first.investedCents)
-    return {
-      valueCents: last.valueCents,
-      gainCents,
-      gainPct: last.investedCents > 0 ? ratio(gainCents, last.investedCents, 6) : null,
-      series: downsample(series),
-    }
+      .map((row) => ({
+        ...row,
+        valueCents: Number(row.valueCents),
+        flowCents: Number(row.flowCents),
+      }))
+    const result = classSeries(rows, range.from, range.to)
+    return { classes: result.classes, series: downsample(result.series) }
   }
 
   positions(query: PositionsQuery): PositionDto[] {
