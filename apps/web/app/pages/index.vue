@@ -22,8 +22,11 @@ const WIDGETS: Record<WidgetKey, Component> = {
   cashflow: CashflowCard,
   budgets: BudgetsCard,
 }
-/** Widgets that span both columns on wide screens. */
-const WIDE = new Set<WidgetKey>(['networth', 'review'])
+/**
+ * Fixed columns like the reference (007 R5): left Aufteilung, Kennzahlen, Holdings; right
+ * Portfolios & Konten, Ungeprüfte, Einnahmen & Ausgaben, Budgets; the chart on top.
+ */
+const LEFT = new Set<WidgetKey>(['allocation', 'kpis', 'holdings'])
 
 const { data: layout, refresh } = await useApi<WidgetLayoutItem[]>('/api/dashboard/layout', {
   default: () => [],
@@ -31,18 +34,13 @@ const { data: layout, refresh } = await useApi<WidgetLayoutItem[]>('/api/dashboa
 const visible = computed(() =>
   [...(layout.value ?? [])].sort((a, b) => a.position - b.position).filter((item) => item.visible),
 )
-
-/** Consecutive runs of wide widgets and of column widgets, in layout order. */
-const segments = computed(() => {
-  const result: { key: string; wide: boolean; start: number; items: WidgetLayoutItem[] }[] = []
-  visible.value.forEach((item, index) => {
-    const wide = WIDE.has(item.widgetKey)
-    const last = result.at(-1)
-    if (!wide && last && !last.wide) last.items.push(item)
-    else result.push({ key: item.widgetKey, wide, start: index, items: [item] })
-  })
-  return result
-})
+const top = computed(() => visible.value.filter((item) => item.widgetKey === 'networth'))
+const left = computed(() => visible.value.filter((item) => LEFT.has(item.widgetKey)))
+const right = computed(() =>
+  visible.value.filter((item) => item.widgetKey !== 'networth' && !LEFT.has(item.widgetKey)),
+)
+/** Position in the layout: animation delay and the order when stacked below 1024 px. */
+const rank = (item: WidgetLayoutItem) => visible.value.indexOf(item)
 
 const customizing = ref(false)
 const toast = useToast()
@@ -74,27 +72,33 @@ async function saveLayout(next: WidgetLayoutItem[]): Promise<void> {
       <h1 class="sr-only">{{ t('nav.overview') }}</h1>
 
       <!--
-      Like the reference: wide widgets span the page, the others flow into two
-      independent columns (masonry) so short cards do not leave gaps.
+      Below 1024 px the columns dissolve (display: contents) and every card is ordered by its
+      layout position; from 1024 px two fixed columns like the reference.
     -->
       <div class="space-y-3" data-testid="dashboard">
-        <template v-for="segment in segments" :key="segment.key">
-          <component
-            :is="WIDGETS[segment.items[0]!.widgetKey]"
-            v-if="segment.wide"
-            class="reveal card-hover"
-            :style="{ '--i': segment.start }"
-          />
-          <div v-else class="gap-3 md:columns-2">
+        <component
+          :is="WIDGETS[item.widgetKey]"
+          v-for="item in top"
+          :key="item.widgetKey"
+          class="reveal card-hover"
+          :style="{ '--i': rank(item) }"
+        />
+        <div class="flex flex-col gap-3 lg:grid lg:grid-cols-2 lg:items-start">
+          <div
+            v-for="column in [left, right]"
+            :key="column === left ? 'left' : 'right'"
+            class="contents lg:flex lg:flex-col lg:gap-3"
+            :data-testid="column === left ? 'dashboard-left' : 'dashboard-right'"
+          >
             <component
               :is="WIDGETS[item.widgetKey]"
-              v-for="(item, offset) in segment.items"
+              v-for="item in column"
               :key="item.widgetKey"
-              class="reveal card-hover mb-3 break-inside-avoid"
-              :style="{ '--i': segment.start + offset }"
+              class="reveal card-hover"
+              :style="{ '--i': rank(item), order: rank(item) }"
             />
           </div>
-        </template>
+        </div>
       </div>
 
       <CustomizeModal v-model:open="customizing" :layout="layout ?? []" @save="saveLayout" />
