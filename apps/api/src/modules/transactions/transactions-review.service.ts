@@ -6,6 +6,7 @@ import type {
   TransactionSort,
   TransactionType,
   UpdateTransactionInput,
+  CategorizeResult,
 } from '@finance/shared'
 import {
   and,
@@ -19,7 +20,7 @@ import {
   isNull,
   like,
   lte,
-  max,
+  ne,
   not,
   or,
   type SQL,
@@ -28,15 +29,9 @@ import {
 } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
-import {
-  account,
-  categorizationRule,
-  category,
-  tag,
-  transaction,
-  transactionTag,
-} from '../../database/schema'
-import { assertValidPattern, matchesRule, type Rule } from '../../domain/categorize'
+import { account, category, tag, transaction, transactionTag } from '../../database/schema'
+import { assertValidPattern, counterpartyKey, wouldChange } from '../../domain/categorize'
+import { appendRule, applyRule } from './rule-apply'
 import { OverviewService } from '../overview/overview.service'
 
 @Injectable()
@@ -186,11 +181,12 @@ export class TransactionsReviewService {
   }
 
   /**
-   * Categorize / review one transaction. Setting a category marks it reviewed and
-   * manual. `createRule` also stores a rule and applies it to other unreviewed,
-   * uncategorized bookings (SC-005).
+   * Categorize / review one transaction. Setting a category marks it reviewed and manual.
+   * `scope: 'recipient'` also sets it on the other bookings of the same recipient (006 US1);
+   * `createRule` saves a rule and applies it (001 T069, restored in 006). Manual bookings,
+   * transfers and trades of other rows are never changed (FR-008).
    */
-  update(id: string, input: UpdateTransactionInput): { updated: number } {
+  update(id: string, input: UpdateTransactionInput): CategorizeResult {
     const row = this.db.select().from(transaction).where(eq(transaction.id, id)).get()
     if (!row) throw new NotFoundException('Transaktion nicht gefunden')
     if (
@@ -202,6 +198,13 @@ export class TransactionsReviewService {
         .get()
     ) {
       throw new BadRequestException('Kategorie nicht gefunden')
+    }
+    const recipient = counterpartyKey(row)
+    if (input.scope === 'recipient') {
+      if (!input.categoryId) {
+        throw new BadRequestException('Für alle Buchungen wird eine Kategorie benötigt')
+      }
+      if (!recipient) throw new BadRequestException('Die Buchung hat keinen Empfänger')
     }
     if (input.createRule) {
       if (!input.categoryId)
@@ -243,32 +246,30 @@ export class TransactionsReviewService {
       }
 
       let updated = 1
-      if (input.createRule && input.categoryId) {
-        const priority =
-          (tx
-            .select({ top: max(categorizationRule.priority) })
-            .from(categorizationRule)
-            .get()?.top ?? 0) + 1
-        const rule = tx
-          .insert(categorizationRule)
-          .values({ ...input.createRule, categoryId: input.categoryId, priority })
-          .returning()
-          .get() as Rule
-        const candidates = tx
-          .select()
-          .from(transaction)
-          .where(and(eq(transaction.reviewStatus, 'unreviewed'), isNull(transaction.categoryId)))
-          .all()
-        for (const candidate of candidates) {
-          if (!matchesRule(rule, candidate)) continue
+      if (input.scope === 'recipient' && input.categoryId) {
+        // The owner decided for the whole recipient: these become manual, like this booking.
+        for (const other of tx.select().from(transaction).where(ne(transaction.id, id)).all()) {
+          if (counterpartyKey(other) !== recipient || !wouldChange(other)) continue
           tx.update(transaction)
-            .set({ categoryId: input.categoryId, categorySource: 'rule' })
-            .where(eq(transaction.id, candidate.id))
+            .set({
+              categoryId: input.categoryId,
+              categorySource: 'manual',
+              reviewStatus: 'reviewed',
+            })
+            .where(eq(transaction.id, other.id))
             .run()
           updated++
         }
       }
-      return { updated }
+
+      let ruleId: string | null = null
+      let ruleApplied = 0
+      if (input.createRule && input.categoryId) {
+        const rule = appendRule(tx, input.createRule, input.categoryId)
+        ruleId = rule.id
+        ruleApplied = applyRule(tx, rule)
+      }
+      return { updated, ruleId, ruleApplied, suggestion: null }
     })
   }
 }
