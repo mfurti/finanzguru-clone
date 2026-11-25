@@ -165,6 +165,37 @@ export class CategoriesService {
     })
   }
 
+  /**
+   * New order of all rules (006 R5): the list must hold every rule id exactly once. Priorities
+   * are rewritten in two passes so the unique constraint never sees a duplicate.
+   */
+  reorderRules(ids: readonly string[]): CategorizationRuleDto[] {
+    const existing = this.db.select({ id: categorizationRule.id }).from(categorizationRule).all()
+    const known = new Set(existing.map((row) => row.id))
+    if (
+      ids.length !== known.size ||
+      new Set(ids).size !== ids.length ||
+      ids.some((id) => !known.has(id))
+    ) {
+      throw new BadRequestException('Die Reihenfolge muss jede Regel genau einmal enthalten')
+    }
+    this.db.transaction((tx) => {
+      ids.forEach((id, index) => {
+        tx.update(categorizationRule)
+          .set({ priority: -(index + 1) })
+          .where(eq(categorizationRule.id, id))
+          .run()
+      })
+      ids.forEach((id, index) => {
+        tx.update(categorizationRule)
+          .set({ priority: index + 1 })
+          .where(eq(categorizationRule.id, id))
+          .run()
+      })
+    })
+    return this.rules()
+  }
+
   removeRule(id: string): void {
     const result = this.db.delete(categorizationRule).where(eq(categorizationRule.id, id)).run()
     if (result.changes === 0) throw new NotFoundException('Regel nicht gefunden')

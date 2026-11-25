@@ -16,6 +16,7 @@ import {
   type CategoryNode,
   createCategoryInput,
   ruleDraft,
+  ruleReorderInput,
   type RulePreviewResult,
   updateCategoryInput,
 } from '@finance/shared'
@@ -29,6 +30,7 @@ class UpdateCategoryDto extends createZodDto(
 ) {}
 class CreateRuleDto extends createZodDto(categorizationRuleInput) {}
 class RuleDraftDto extends createZodDto(ruleDraft) {}
+class RuleReorderDto extends createZodDto(ruleReorderInput) {}
 class UpdateRuleDto extends createZodDto(
   categorizationRuleInput.partial().extend({ priority: z.number().int().min(1).optional() }),
 ) {}
@@ -74,6 +76,13 @@ export class CategoriesController {
   @HttpCode(HttpStatus.OK)
   preview(@Body() body: RuleDraftDto): RulePreviewResult {
     return this.categories.preview(body)
+  }
+
+  /** Every rule id in the new order (006 US3); before `rules/:id`. */
+  @Post('rules/reorder')
+  @HttpCode(HttpStatus.OK)
+  reorder(@Body() body: RuleReorderDto): CategorizationRuleDto[] {
+    return this.categories.reorderRules(body.ids)
   }
 
   /** Must be declared before `rules/:id`. */
