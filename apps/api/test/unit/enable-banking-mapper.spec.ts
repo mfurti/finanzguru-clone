@@ -7,6 +7,7 @@ import type {
   SessionAccount,
 } from '../../src/modules/sources/enable-banking/client'
 import {
+  accountType,
   bankRef,
   mapBankData,
   pickBalance,
@@ -128,5 +129,14 @@ describe('Enable Banking mapper on recorded Sparkasse responses (005 T008, anony
     expect(batch.accounts[0]!.balanceCents).toBe(
       Math.round(Number(clbd.balance_amount.amount) * 100),
     )
+  })
+})
+
+describe('account types from cash_account_type (005)', () => {
+  it('maps savings and card accounts; anything else is checking', () => {
+    expect(accountType({ uid: 'a', cash_account_type: 'SVGS' })).toBe('savings')
+    expect(accountType({ uid: 'a', cash_account_type: 'CARD' })).toBe('credit_card')
+    expect(accountType({ uid: 'a', cash_account_type: 'CACC' })).toBe('checking')
+    expect(accountType({ uid: 'a' })).toBe('checking')
   })
 })

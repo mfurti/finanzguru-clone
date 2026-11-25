@@ -800,7 +800,9 @@
       "state": "Die Anmeldung konnte nicht zugeordnet werden. Bitte erneut verbinden.",
       "expired": "Die Anmeldung bei der Bank ist abgelaufen. Bitte erneut verbinden.",
       "generic": "Die Bankverbindung ist fehlgeschlagen."
-    }
+    },
+    "addAccounts": "Konten hinzufügen",
+    "addAccountsHint": "Wähle bei der Bank alle Konten aus, die die App lesen soll."
   },
   "marketData": {
     "search": "Asset suchen",

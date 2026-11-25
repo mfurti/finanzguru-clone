@@ -33,7 +33,7 @@ const fixture = (name: string): unknown =>
 const calls: string[] = []
 /** Body of the last POST /auth. */
 let authBody: { state: string; access: { valid_until: string }; redirect_url: string } | null = null
-let mode: 'ok' | 'expired' = 'ok'
+let mode: 'ok' | 'expired' | 'limit' = 'ok'
 
 /** Stands in for api.enablebanking.com with the documented response shapes. */
 const fakeHttp: EnableBankingHttp = async (url, init) => {
@@ -52,6 +52,9 @@ const fakeHttp: EnableBankingHttp = async (url, init) => {
   }
   if (mode === 'expired') {
     return reply(401, { code: 401, error: 'EXPIRED_SESSION', message: 'Session expired' })
+  }
+  if (mode === 'limit') {
+    return reply(429, { code: 429, error: 'ASPSP_RATE_LIMIT_EXCEEDED', message: 'limit' })
   }
   if (pathname.endsWith('/details')) return reply(200, fixture('details'))
   if (pathname.endsWith('/balances')) return reply(200, fixture('balances'))
@@ -134,33 +137,11 @@ describe('bank connection and sync through Enable Banking (005 US1)', () => {
     expect(denied.headers.location).toBe('/settings/sources?error=bank&reason=denied')
   })
 
-  it('stores the consent after the bank login; responses never show the session', async () => {
-    const res = await call(
-      'GET',
-      `/api/sources/bank/callback?code=c1&state=${encodeURIComponent(authBody!.state)}`,
-    )
-    expect(res.headers.location).toBe('/settings/sources?connected=bank')
-    const source = await bankSource()
-    expect(source).toMatchObject({
-      status: 'active',
-      institution: 'Sparkasse Musterstadt',
-      consentEndsAt: '2027-02-22T10:00:00+00:00',
-      consentWarning: false,
-      dailySync: false,
-    })
-    const body = (await call('GET', '/api/sources')).body
-    expect(body).not.toMatch(/encrypted|session_id|00000000-0000-4000-8000-000000000001/i)
-    // The state is used once.
-    const again = await call(
-      'GET',
-      `/api/sources/bank/callback?code=c1&state=${encodeURIComponent(authBody!.state)}`,
-    )
-    expect(again.headers.location).toBe('/settings/sources?error=bank&reason=state')
-  })
+  let giro: typeof account.$inferSelect
 
-  it('syncs into the CSV account with the same IBAN without duplicates (SC-001, SC-002)', async () => {
+  it('stores the consent after the bank login; responses never show the session', async () => {
     const inst = db.insert(institution).values({ name: 'Sparkasse' }).returning().get()
-    const giro = db
+    giro = db
       .insert(account)
       .values({
         institutionId: inst.id,
@@ -185,9 +166,42 @@ describe('bank connection and sync through Enable Banking (005 US1)', () => {
       })
       .run()
 
+    const res = await call(
+      'GET',
+      `/api/sources/bank/callback?code=c1&state=${encodeURIComponent(authBody!.state)}`,
+    )
+    expect(res.headers.location).toBe('/settings/sources?connected=bank')
+    const source = await bankSource()
+    expect(source).toMatchObject({
+      status: 'active',
+      institution: 'Sparkasse Musterstadt',
+      consentEndsAt: '2027-02-22T10:00:00+00:00',
+      consentWarning: false,
+      dailySync: false,
+    })
+    const body = (await call('GET', '/api/sources')).body
+    expect(body).not.toMatch(/encrypted|session_id|00000000-0000-4000-8000-000000000001/i)
+    // The state is used once.
+    const again = await call(
+      'GET',
+      `/api/sources/bank/callback?code=c1&state=${encodeURIComponent(authBody!.state)}`,
+    )
+    expect(again.headers.location).toBe('/settings/sources?error=bank&reason=state')
+  })
+
+  it('syncs into the CSV account with the same IBAN without duplicates (SC-001, SC-002)', async () => {
+    // The callback started the first sync right away, with the longest history (005 T035).
     const sync = app.get(SyncService)
-    const first = await sync.run('enable_banking')
-    expect(first).toMatchObject({ status: 'partial', imported: 2, skipped: 1 })
+    await vi.waitFor(() => expect(sync.isRunning('enable_banking')).toBe(false), {
+      timeout: 10_000,
+    })
+    expect(sync.lastRun('enable_banking')).toMatchObject({
+      status: 'partial',
+      imported: 2,
+      skipped: 1,
+    })
+    const reads = calls.filter((line) => line.includes('/transactions'))
+    expect(reads[0]).toContain('strategy=longest')
     const rows = db.select().from(transaction).where(eq(transaction.accountId, giro.id)).all()
     expect(rows).toHaveLength(3)
     expect(rows.find((tx) => tx.fingerprint === 'csv-1')).toMatchObject({
@@ -201,6 +215,8 @@ describe('bank connection and sync through Enable Banking (005 US1)', () => {
 
     const second = await sync.run('enable_banking')
     expect(second.imported).toBe(0)
+    // Later syncs read the recent days only.
+    expect(calls.filter((line) => line.includes('/transactions')).at(-1)).not.toContain('longest')
     expect(db.select().from(transaction).all()).toHaveLength(3)
 
     const source = await bankSource()
@@ -220,6 +236,14 @@ describe('bank connection and sync through Enable Banking (005 US1)', () => {
     const soon = new Date(Date.now() + 5 * 86_400_000).toISOString()
     db.update(bankConsent).set({ validUntil: soon }).run()
     expect((await bankSource())!.consentWarning).toBe(true)
+  })
+
+  it('explains the daily limit of the bank in German', async () => {
+    mode = 'limit'
+    const outcome = await app.get(SyncService).run('enable_banking')
+    expect(outcome.status).toBe('failed')
+    expect((await bankSource())!.lastError).toMatch(/^Tageslimit der Bank erreicht/)
+    mode = 'ok'
   })
 
   it('stops with consent_expired when the bank ended the session', async () => {

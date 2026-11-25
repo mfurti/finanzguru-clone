@@ -134,6 +134,8 @@ export class SyncController {
     }
     try {
       await this.bank.callback(code, state)
+      // Sync at once while the bank login is fresh: the long history is read now (005 T035).
+      if (!this.sync.isRunning(BANK_SOURCE_ID)) this.sync.start(BANK_SOURCE_ID)
       await reply.redirect('/settings/sources?connected=bank', 302)
     } catch (cause) {
       const reason = cause instanceof BankCallbackError ? `&reason=${cause.reason}` : ''

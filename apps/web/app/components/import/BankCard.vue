@@ -203,11 +203,11 @@ async function disconnect(): Promise<void> {
           data-testid="bank-sync"
           @click="sync"
         />
+        <!-- A new consent replaces the old one: renews it and adds accounts approved at the bank. -->
         <UButton
-          v-if="source?.consentWarning"
-          icon="i-lucide-key-round"
+          :icon="source?.consentWarning ? 'i-lucide-key-round' : 'i-lucide-plus'"
           variant="soft"
-          :label="t('bank.renew')"
+          :label="source?.consentWarning ? t('bank.renew') : t('bank.addAccounts')"
           data-testid="bank-renew"
           @click="openPicker"
         />
@@ -225,6 +225,9 @@ async function disconnect(): Promise<void> {
 
     <UModal v-model:open="pickerOpen" :title="t('bank.choose')">
       <template #body>
+        <p v-if="connected && !notConfigured" class="mb-2 text-sm text-muted">
+          {{ t('bank.addAccountsHint') }}
+        </p>
         <p v-if="notConfigured" class="text-sm text-warning" data-testid="bank-not-configured">
           {{ t('bank.notConfigured') }}
         </p>

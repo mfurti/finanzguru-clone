@@ -6,7 +6,13 @@
  * `sourceRef` (the bank's `entry_reference`, else a hash of the booking) so repeated syncs skip it.
  */
 import { createHash } from 'node:crypto'
-import { emptyBatch, isValidIban, normalizeIban, type SyncBatch } from '@finance/shared'
+import {
+  type AccountType,
+  emptyBatch,
+  isValidIban,
+  normalizeIban,
+  type SyncBatch,
+} from '@finance/shared'
 import { eurosToCents } from '../../../domain/money'
 import type { Balance, BankTransaction, SessionAccount } from './client'
 
@@ -25,6 +31,18 @@ export interface BankData {
 
 /** Preferred balance types: booked closing balance first (R3). */
 const BALANCE_PRIORITY = ['CLBD', 'ITAV', 'XPCD', 'CLAV', 'ITBD']
+
+/** ISO 20022 cash account types → account types of the app; everything else is checking. */
+const ACCOUNT_KIND: Record<string, AccountType> = {
+  CACC: 'checking',
+  SVGS: 'savings',
+  CARD: 'credit_card',
+}
+
+/** Account type from `cash_account_type` (savings and card accounts of the same bank, 005). */
+export function accountType(details: SessionAccount): AccountType {
+  return ACCOUNT_KIND[details.cash_account_type?.toUpperCase() ?? ''] ?? 'checking'
+}
 
 /** Batch-local account reference for a consent account. */
 export const bankRef = (uid: string) => `eb:${uid}`
@@ -71,7 +89,7 @@ export function mapBankData(data: BankData): SyncBatch {
     batch.accounts.push({
       externalRef: ref,
       name: accountName(data.institution, item.details, iban),
-      type: 'checking',
+      type: accountType(item.details),
       iban,
       institutionName: data.institution,
       balanceCents: pickBalance(item.balances),

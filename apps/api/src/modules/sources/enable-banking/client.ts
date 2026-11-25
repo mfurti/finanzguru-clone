@@ -45,6 +45,10 @@ const SESSION_GONE = new Set([
 
 const MAX_ERROR = 500
 
+/** Shown on the bank card when the bank's daily limit for reads is used up (005 T035). */
+export const RATE_LIMIT_MESSAGE =
+  'Tageslimit der Bank erreicht: höchstens 4 Abrufe pro Tag ohne neue Anmeldung. Morgen wieder möglich.'
+
 /** Strips JWTs and ids from upstream messages and caps the length. */
 export function sanitizeError(message: string): string {
   return message
@@ -72,6 +76,8 @@ export interface SessionAccount {
   name?: string | null
   currency?: string | null
   product?: string | null
+  /** ISO 20022 type: CACC checking, SVGS savings, CARD card account. */
+  cash_account_type?: string | null
 }
 
 export interface SessionResponse {
@@ -177,10 +183,12 @@ export class EnableBankingClient {
 
   transactions(
     uid: string,
-    query: { dateFrom: string; continuationKey?: string | null },
+    query: { dateFrom: string; continuationKey?: string | null; longest?: boolean },
   ): Promise<TransactionsPage> {
     const params = new URLSearchParams({ date_from: query.dateFrom })
     if (query.continuationKey) params.set('continuation_key', query.continuationKey)
+    // "longest": Enable Banking looks for the longest history the bank allows (005 T035).
+    if (query.longest) params.set('strategy', 'longest')
     return this.request('GET', `/accounts/${encodeURIComponent(uid)}/transactions?${params}`)
   }
 
@@ -212,6 +220,8 @@ export class EnableBankingClient {
       `Enable Banking ${response.status} ${code} ${payload.message ?? ''}`.trim(),
     )
     if (response.status === 401 || SESSION_GONE.has(code)) throw new AuthExpiredError(message)
+    // PSD2: at most 4 reads per day without the owner logging in at the bank.
+    if (code === 'ASPSP_RATE_LIMIT_EXCEEDED') throw new UpstreamError(RATE_LIMIT_MESSAGE)
     throw new UpstreamError(message)
   }
 }

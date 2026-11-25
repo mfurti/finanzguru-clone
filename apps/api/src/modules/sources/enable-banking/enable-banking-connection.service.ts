@@ -32,6 +32,8 @@ export interface BankCredentials {
   state?: string
   stateExpiresAt?: number
   pendingAspsp?: { name: string; country: string }
+  /** Set after each bank login: the next sync reads the longest history (005 T035). */
+  historyPending?: boolean
 }
 
 /** Why a callback was refused; the controller turns it into `?reason=…`. */
@@ -119,6 +121,7 @@ export class EnableBankingConnectionService {
     this.save({
       sessionId: session.session_id,
       accountUids: session.accounts.map((item) => item.uid),
+      historyPending: true,
     })
     const consent = {
       aspspName: session.aspsp?.name ?? stored.pendingAspsp?.name ?? 'Bank',
@@ -168,10 +171,19 @@ export class EnableBankingConnectionService {
   }
 
   /** Stored session for a sync; undefined when not connected. */
-  session(): { sessionId: string; accountUids: string[] } | undefined {
+  session(): { sessionId: string; accountUids: string[]; historyPending: boolean } | undefined {
     const stored = this.load()
     if (!stored.sessionId) return undefined
-    return { sessionId: stored.sessionId, accountUids: stored.accountUids ?? [] }
+    return {
+      sessionId: stored.sessionId,
+      accountUids: stored.accountUids ?? [],
+      historyPending: stored.historyPending ?? false,
+    }
+  }
+
+  /** The long history after a bank login was read; later syncs read the recent days only. */
+  historyDone(): void {
+    this.update({ historyPending: false })
   }
 
   /** Signed client for the configured application; 503 when it is not configured. */

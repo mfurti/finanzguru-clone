@@ -29,7 +29,16 @@ describe('BankCard (005 T014)', () => {
     expect(wrapper.get('[data-testid="bank-warning"]').text()).toContain('Tagen ab')
     expect(wrapper.get('[data-testid="bank-accounts"]').text()).toContain('DE89 •••• •••• 3000')
     expect(wrapper.find('[data-testid="bank-sync"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="bank-renew"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="bank-renew"]').text()).toBe('Zugang erneuern')
+  })
+
+  it('offers to add accounts while the consent is still long valid', async () => {
+    const ends = new Date(Date.now() + 60 * 86_400_000).toISOString()
+    const wrapper = await mountSuspended(BankCard, {
+      props: { source: { ...base, status: 'active', consentEndsAt: ends, consentWarning: false } },
+    })
+    expect(wrapper.get('[data-testid="bank-renew"]').text()).toBe('Konten hinzufügen')
+    expect(wrapper.find('[data-testid="bank-warning"]').exists()).toBe(false)
   })
 
   it('asks to renew an expired consent', async () => {
