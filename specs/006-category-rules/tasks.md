@@ -27,7 +27,7 @@
 
 ## Phase 2: Foundational
 
-- [ ] T003 Migration `apps/api/src/database/migrations/0009_rule_suggestions.sql` and `apps/api/src/database/schema.ts`: table `rule_suggestion` (`id` text PK; `counterparty_key` text not null, "1–200 chars"; `category_id` → `category.id` on delete cascade; `count` integer not null default 0, "≥ 0"; `status` text not null default `open`, "`open`, `accepted`, `declined`"; `updated_at` default now; unique `(counterparty_key, category_id)`). Test in `apps/api/test/unit/schema-006.spec.ts` (checks, unique, cascade, upgrade from 0008 keeps rows).
+- [X] T003 Migration `apps/api/src/database/migrations/0009_rule_suggestions.sql` and `apps/api/src/database/schema.ts`: table `rule_suggestion` (`id` text PK; `counterparty_key` text not null, "1–200 chars"; `category_id` → `category.id` on delete cascade; `count` integer not null default 0, "≥ 0"; `status` text not null default `open`, "`open`, `accepted`, `declined`"; `updated_at` default now; unique `(counterparty_key, category_id)`). Test in `apps/api/test/unit/schema-006.spec.ts` (checks, unique, cascade). The migration is additive (new table only), so no upgrade test with child rows is needed.
 - [ ] T004 [P] Domain helpers in `apps/api/src/domain/categorize.ts`: `counterpartyKey(tx)` (normalized counterparty or null), `draftRuleFor(tx)` (research R2: `counterparty contains <key>`, else IBAN `equals`, else purpose `contains` first 40 chars after the posting text), `wouldChange(tx)` (category source null or `rule`, type not `transfer`). Unit tests in `apps/api/test/unit/dedupe-categorize.spec.ts`.
 
 ---

@@ -715,6 +715,33 @@ export const quote = sqliteTable(
   (t) => [check('quote_price_positive', sql`CAST(${t.price} AS REAL) > 0`)],
 )
 
+/**
+ * Counts manual categorizations per recipient and category (006 US2, research R4). From the
+ * second one the app suggests a rule; a declined suggestion is never shown again.
+ */
+export const ruleSuggestion = sqliteTable(
+  'rule_suggestion',
+  {
+    id: id(),
+    /** Normalized counterparty (see domain/categorize.ts counterpartyKey). */
+    counterpartyKey: text('counterparty_key').notNull(),
+    categoryId: text('category_id')
+      .notNull()
+      .references(() => category.id, { onDelete: 'cascade' }),
+    count: integer('count').notNull().default(0),
+    status: text('status', { enum: ['open', 'accepted', 'declined'] })
+      .notNull()
+      .default('open'),
+    updatedAt: text('updated_at').notNull().default(nowIso),
+  },
+  (t) => [
+    uniqueIndex('rule_suggestion_pair_idx').on(t.counterpartyKey, t.categoryId),
+    check('rule_suggestion_key_len', sql`length(${t.counterpartyKey}) BETWEEN 1 AND 200`),
+    check('rule_suggestion_count', sql`${t.count} >= 0`),
+    check('rule_suggestion_status', inList('status', ['open', 'accepted', 'declined'])),
+  ],
+)
+
 export const schema = {
   owner,
   institution,
@@ -750,4 +777,5 @@ export const schema = {
   instrumentValueSnapshot,
   bankConsent,
   quote,
+  ruleSuggestion,
 }
