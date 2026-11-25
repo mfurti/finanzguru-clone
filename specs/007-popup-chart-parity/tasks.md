@@ -67,7 +67,7 @@
 
 ## Phase 7: User Story 5 – Add something from one large window (P3)
 
-- [ ] T016 [US5] `apps/web/app/components/common/AddWindow.vue` replacing `AddMenu.vue` (research R7): tabs Anbieter/Assets, search (name, IBAN, BIC), supported providers with import methods, "Anbieter manuell hinzufügen", step "Wie möchtest du importieren?" linking to existing flows; Assets tab: Konto anlegen, Transaktion erfassen, Wertpapier suchen. Component test `apps/web/tests/add-window.spec.ts`; update `apps/web/tests/add-menu.spec.ts` callers; Playwright `e2e/us-u5-add.spec.ts`.
+- [X] T016 [US5] `apps/web/app/components/common/AddWindow.vue` replacing `AddMenu.vue` (research R7): tabs Anbieter/Assets, search (name, IBAN, BIC), supported providers with import methods, "Anbieter manuell hinzufügen", step "Wie möchtest du importieren?" linking to existing flows; Assets tab: Konto anlegen, Transaktion erfassen, Wertpapier suchen. Component test `apps/web/tests/add-window.spec.ts`; update `apps/web/tests/add-menu.spec.ts` callers; Playwright `e2e/us-u5-add.spec.ts`.
 
 ---
 

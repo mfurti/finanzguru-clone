@@ -70,7 +70,7 @@ const menuItems = computed(() =>
         </div>
         <div class="ml-auto flex items-center gap-1 sm:gap-2">
           <slot name="actions" />
-          <AddMenu />
+          <AddWindow />
         </div>
       </div>
       <slot />

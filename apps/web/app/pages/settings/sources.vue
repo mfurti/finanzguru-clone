@@ -78,7 +78,7 @@ const statusColor = (status: DataSourceDto['status']) =>
       </div>
     </div>
 
-    <UCard>
+    <UCard id="csv" class="scroll-mt-20">
       <template #header>
         <h2 class="font-semibold">{{ t('import.title') }}</h2>
         <p class="text-sm text-muted">{{ t('import.subtitle') }}</p>
@@ -86,9 +86,9 @@ const statusColor = (status: DataSourceDto['status']) =>
       <CsvUpload @imported="refresh()" />
     </UCard>
 
-    <BankCard :source="bank" @changed="refresh()" />
+    <BankCard id="bank" class="scroll-mt-20" :source="bank" @changed="refresh()" />
 
-    <ScalableCard :source="scalable" @changed="refresh()" />
+    <ScalableCard id="scalable" class="scroll-mt-20" :source="scalable" @changed="refresh()" />
 
     <UCard>
       <template #header>

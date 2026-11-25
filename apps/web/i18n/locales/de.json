@@ -243,7 +243,8 @@
     "csv": "CSV importieren",
     "account": "Konto anlegen",
     "transaction": "Transaktion erfassen",
-    "noAccounts": "Lege zuerst ein Konto an."
+    "noAccounts": "Lege zuerst ein Konto an.",
+    "otherBank": "Andere Bank"
   },
   "forms": {
     "name": "Name",
