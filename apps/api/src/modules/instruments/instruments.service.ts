@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common'
 import {
   type InstrumentDto,
+  type AssetClass,
   type InstrumentInput,
   isValidIsin,
   type PricesInput,
@@ -75,13 +76,15 @@ export class InstrumentsService {
   }
 
   /** Finds an instrument by ISIN or creates it (watchlists). */
-  findOrCreate(isin: string, name: string): Row {
+  /** Existing instrument by ISIN, or a new one; the class comes from the security search (005). */
+  findOrCreate(isin: string, name: string, assetClass: AssetClass = 'etf'): Row {
     if (!isValidIsin(isin)) throw new BadRequestException('Ungültige ISIN')
     const existing = this.db.select().from(instrument).where(eq(instrument.isin, isin)).get()
     if (existing) return existing
+    const fund = assetClass === 'etf' || assetClass === 'fund'
     return this.db
       .insert(instrument)
-      .values({ isin, name, assetClass: 'etf', fundType: 'equity' })
+      .values({ isin, name, assetClass, fundType: fund ? 'equity' : null })
       .returning()
       .get()
   }

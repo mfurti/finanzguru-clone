@@ -127,7 +127,7 @@ export class WatchlistsService {
     if (!this.db.select({ id: watchlist.id }).from(watchlist).where(eq(watchlist.id, id)).get()) {
       throw new NotFoundException('Watchlist nicht gefunden')
     }
-    const target = this.instruments.findOrCreate(input.isin, input.name)
+    const target = this.instruments.findOrCreate(input.isin, input.name, input.assetClass)
     const exists = this.db
       .select()
       .from(watchlistEntry)
