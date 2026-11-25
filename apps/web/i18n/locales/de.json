@@ -934,5 +934,20 @@
     "totalIncome": "Gesamteinnahmen",
     "toSankey": "Zur Sankey-Ansicht",
     "sankey": "Sankey Diagramm"
+  },
+  "logo": {
+    "change": "Logo ändern",
+    "title": "Logo wählen",
+    "search": "Marke suchen",
+    "auto": "Automatisch",
+    "autoDetected": "Automatisch erkannt",
+    "none": "Kein Logo",
+    "upload": "Eigenes Logo hochladen",
+    "tooBig": "Bild zu groß (max. 256 KB)",
+    "wrongType": "Nur PNG, JPEG oder WebP",
+    "appliesAll": "Gilt für alle Buchungen von {name}",
+    "noResults": "Keine passende Marke",
+    "saved": "Logo gespeichert",
+    "licence": "Markenlogos: Simple Icons (CC0). Marken sind Eigentum ihrer Inhaber."
   }
 }
