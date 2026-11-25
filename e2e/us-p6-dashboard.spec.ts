@@ -44,9 +44,8 @@ test.describe('003 US6 dashboard', () => {
     await page.goto('/')
     const card = page.getByTestId('review-banner')
     test.skip((await card.count()) === 0, 'no unreviewed bookings left')
-    await expect(card.getByTestId('review-latest').locator('li')).toHaveCount(
-      Math.min(3, Number((await card.locator('h2 .tabular-nums').textContent()) ?? 0)),
-    )
+    // 007: one-line tile with the count, no list of bookings.
+    await expect(card.getByTestId('review-count')).toHaveText(/^\d[\d.]*$/)
     await card.getByRole('link').click()
     await expect(page).toHaveURL(/\/transactions\?review=unreviewed/)
   })

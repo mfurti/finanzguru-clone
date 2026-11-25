@@ -61,10 +61,9 @@ const rows = computed<Row[]>(() => {
 <template>
   <UCard data-testid="kpi-card">
     <template #header>
-      <div class="flex items-center justify-between gap-2">
-        <h2 class="font-semibold">{{ t('overview.kpis.title') }}</h2>
+      <CardTitle :title="t('overview.kpis.title')">
         <USelect v-model="period" :items="periodItems" size="sm" class="w-32" />
-      </div>
+      </CardTitle>
     </template>
 
     <EmptyState v-if="!data" :title="t('overview.empty.title')" icon="i-lucide-calculator" />
@@ -99,8 +98,13 @@ const rows = computed<Row[]>(() => {
         </div>
       </dl>
       <USeparator class="my-2" />
-      <dl class="grid grid-cols-2 gap-x-4 gap-y-2">
-        <div v-for="rate in ['twror', 'irr', 'inflation', 'realReturn'] as const" :key="rate">
+      <!-- 2-column grid, value right in the same line like the reference (007 US3). -->
+      <dl class="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2" data-testid="kpi-rates">
+        <div
+          v-for="rate in ['twror', 'irr', 'inflation', 'realReturn'] as const"
+          :key="rate"
+          class="flex items-center justify-between gap-2"
+        >
           <dt class="flex items-center gap-1 text-muted">
             {{ t(`overview.kpis.${rate}`) }}
             <InfoTooltip :text="t(`overview.kpis.info.${rate}`)" />

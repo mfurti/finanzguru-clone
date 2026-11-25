@@ -19,7 +19,7 @@ const toggle = (type: string) => {
 <template>
   <UCard data-testid="accounts-card">
     <template #header>
-      <h2 class="font-semibold">{{ t('overview.accounts.title') }}</h2>
+      <CardTitle :title="t('overview.accounts.title')" to="/accounts" />
     </template>
 
     <EmptyState

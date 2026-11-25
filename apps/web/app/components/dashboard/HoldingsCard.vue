@@ -26,15 +26,13 @@ const groups = computed<{ key: 'top' | 'flop'; items: Holding[] }[]>(() => [
 <template>
   <UCard data-testid="holdings-card">
     <template #header>
-      <div class="flex items-center justify-between gap-2">
-        <NuxtLink to="/investments" class="font-semibold link-hover">
-          {{ t('overview.holdings.title') }}
-        </NuxtLink>
+      <CardTitle :title="t('overview.holdings.title')" to="/investments">
         <USelect v-model="range" :items="rangeItems" size="sm" class="w-28" />
-      </div>
+      </CardTitle>
     </template>
 
-    <div class="space-y-4">
+    <!-- Top and Flop side by side from 768 px (007 US3). -->
+    <div class="grid gap-4 md:grid-cols-2" data-testid="holdings-groups">
       <section v-for="group in groups" :key="group.key">
         <h3 class="mb-1 text-sm text-muted">{{ t(`overview.holdings.${group.key}`) }}</h3>
         <p v-if="group.items.length === 0" class="text-sm text-muted">–</p>

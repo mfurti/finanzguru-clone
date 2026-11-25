@@ -42,23 +42,7 @@ const display = (slice: Slice) =>
 <template>
   <UCard data-testid="allocation-card">
     <template #header>
-      <div class="flex items-center justify-between gap-2">
-        <h2 class="font-semibold">{{ t('overview.allocation.title') }}</h2>
-        <UFieldGroup size="xs">
-          <UButton
-            :variant="unit === 'eur' ? 'soft' : 'ghost'"
-            color="neutral"
-            label="€"
-            @click="unit = 'eur'"
-          />
-          <UButton
-            :variant="unit === 'pct' ? 'soft' : 'ghost'"
-            color="neutral"
-            label="%"
-            @click="unit = 'pct'"
-          />
-        </UFieldGroup>
-      </div>
+      <CardTitle :title="t('overview.allocation.title')" to="/investments" />
     </template>
 
     <EmptyState
@@ -96,6 +80,23 @@ const display = (slice: Slice) =>
             <span class="tabular-nums">{{ display(slice) }}</span>
           </li>
         </ul>
+      </div>
+      <!-- €/% below right of the donut like the reference (007 US3). -->
+      <div class="mt-2 flex justify-end">
+        <UFieldGroup size="xs" data-testid="allocation-unit">
+          <UButton
+            :variant="unit === 'eur' ? 'soft' : 'ghost'"
+            color="neutral"
+            label="€"
+            @click="unit = 'eur'"
+          />
+          <UButton
+            :variant="unit === 'pct' ? 'soft' : 'ghost'"
+            color="neutral"
+            label="%"
+            @click="unit = 'pct'"
+          />
+        </UFieldGroup>
       </div>
     </div>
   </UCard>
