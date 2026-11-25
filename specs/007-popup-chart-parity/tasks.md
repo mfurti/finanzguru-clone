@@ -45,7 +45,7 @@
 
 ## Phase 4: User Story 2 – Filter in a side panel (P2)
 
-- [ ] T009 [US2] `apps/web/app/components/transactions/BookingFilterPanel.vue` as `USlideover`: Konten, Art der Transaktion, Zeitraum (`DateRangePicker`), Kategorie, Tags, Kontobewegungen (alle / eingehend / ausgehend → `direction`), Min/Max Betrag, Status; "Zurücksetzen", "Ergebnisse anzeigen"; badge with active-filter count; URL sync of `direction`. Component test `apps/web/tests/booking-filter.spec.ts`.
+- [X] T009 [US2] `apps/web/app/components/transactions/BookingFilterPanel.vue` as `USlideover`: Konten, Art der Transaktion, Zeitraum (`DateRangePicker`), Kategorie, Tags, Kontobewegungen (alle / eingehend / ausgehend → `direction`), Min/Max Betrag, Status; "Zurücksetzen", "Ergebnisse anzeigen"; badge with active-filter count; URL sync of `direction`. Component test `apps/web/tests/booking-filter.spec.ts`.
 - [ ] T010 [US2] Playwright `e2e/us-u2-filter.spec.ts`: ausgehend + 10–100 € → only matching rows, badge "2"; 360 px.
 
 ---

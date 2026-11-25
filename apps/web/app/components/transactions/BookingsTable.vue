@@ -451,6 +451,7 @@ const rangeLabel = computed(() => {
             :hide-categories="!!fixed.categoryIds"
             :hide-period="!!fixed.from"
             :tags="tags ?? []"
+            :show-accounts="routeSync && !fixed.accounts"
             @apply="set"
           />
           <UDropdownMenu :items="columnMenu" :content="{ align: 'end' }">

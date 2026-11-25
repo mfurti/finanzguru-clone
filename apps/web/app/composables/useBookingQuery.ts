@@ -7,6 +7,8 @@ export interface BookingQueryState {
   types: string[]
   categoryIds: string[]
   tagIds: string[]
+  /** Kontobewegungen (007 US2): incoming (> 0) or outgoing (< 0) only. */
+  direction: 'all' | 'in' | 'out'
   from: string
   to: string
   minCents: number | null
@@ -31,6 +33,7 @@ const DEFAULTS: BookingQueryState = {
   types: [],
   categoryIds: [],
   tagIds: [],
+  direction: 'all',
   from: '',
   to: '',
   minCents: null,
@@ -56,12 +59,14 @@ function fromRoute(query: LocationQuery): BookingQueryState {
   const review = one(query.review)
   const sort = one(query.sort)
   const pageSize = Number(one(query.pageSize))
+  const direction = one(query.direction)
   return {
     q: one(query.q) ?? '',
     review: review === 'unreviewed' || review === 'reviewed' ? review : 'all',
     types: list(query.types),
     categoryIds: list(query.categoryIds),
     tagIds: list(query.tagIds),
+    direction: direction === 'in' || direction === 'out' ? direction : 'all',
     from: one(query.from) ?? '',
     to: one(query.to) ?? '',
     minCents: num(query.minCents),
@@ -106,8 +111,11 @@ export function useBookingQuery(options: { routeSync?: boolean; fixed?: () => Bo
     options.routeSync ? fromRoute(route.query) : local.value,
   )
 
-  /** Changes some fields; any filter change resets to page 1. */
-  function set(patch: Partial<BookingQueryState>): void {
+  /**
+   * Changes some fields; any filter change resets to page 1. `accounts` (route only) sets the
+   * global account filter in the same navigation.
+   */
+  async function set(patch: Partial<BookingQueryState>, accounts?: string[]): Promise<void> {
     const next = { ...state.value, ...patch }
     if (!('page' in patch)) next.page = 1
     if (!options.routeSync) {
@@ -115,9 +123,13 @@ export function useBookingQuery(options: { routeSync?: boolean; fixed?: () => Bo
       return
     }
     const keep = Object.fromEntries(
-      Object.entries(route.query).filter(([key]) => !(key in DEFAULTS)),
+      Object.entries(route.query).filter(
+        ([key]) => !(key in DEFAULTS) && !(accounts && key === 'accounts'),
+      ),
     )
-    void router.replace({ query: { ...keep, ...toStrings(next) } })
+    const chosen =
+      accounts && accounts.length > 0 ? { accounts: [...accounts].sort().join(',') } : {}
+    await router.replace({ query: { ...keep, ...chosen, ...toStrings(next) } })
   }
 
   function reset(): void {
@@ -164,6 +176,7 @@ export function useBookingQuery(options: { routeSync?: boolean; fixed?: () => Bo
       s.types.length > 0,
       s.categoryIds.length > 0,
       s.tagIds.length > 0,
+      s.direction !== 'all',
       !!s.from || !!s.to,
       s.minCents !== null || s.maxCents !== null,
     ].filter(Boolean).length
