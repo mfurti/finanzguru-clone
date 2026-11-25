@@ -32,6 +32,8 @@ import { payload, SCALABLE_TRANSPORT } from '../sources/scalable-mcp/scalable-mc
 
 /** Hits per class group before "Mehr anzeigen". */
 export const GROUP_SIZE = 10
+/** Hits when one class is selected ("Mehr anzeigen" selects the class). */
+export const CLASS_SIZE = 50
 
 /** Scalable security types → asset classes of the app; anything else is "Sonstige" (R6). */
 const TYPE_TO_CLASS: Record<string, AssetClass> = {
@@ -116,12 +118,13 @@ export class MarketDataService {
       list.push({ isin: item.isin, wkn: null, name: item.name, assetClass: hitClass })
       groups.set(hitClass, list)
     }
+    const size = assetClass ? CLASS_SIZE : GROUP_SIZE
     return {
       available: true,
       groups: ASSET_CLASSES.filter((key) => groups.has(key)).map((key) => ({
         assetClass: key,
-        hits: groups.get(key)!.slice(0, GROUP_SIZE),
-        more: groups.get(key)!.length > GROUP_SIZE,
+        hits: groups.get(key)!.slice(0, size),
+        more: groups.get(key)!.length > size,
       })),
     }
   }

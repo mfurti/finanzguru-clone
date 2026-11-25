@@ -71,6 +71,7 @@ async function remove(entry: WatchlistEntryDto): Promise<void> {
         </div>
       </template>
       <div class="space-y-4">
+        <AssetSearchDialog :watchlist-id="data.id" @added="refresh()" />
         <AddSecurityForm :watchlist-id="data.id" @added="refresh()" />
         <WatchlistTable :entries="data.entries" @remove="remove" />
       </div>
