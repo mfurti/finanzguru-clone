@@ -23,7 +23,7 @@ Daily sync is switched by the env flag `BANK_DAILY_SYNC` (default off), like `SC
 | GET | `/api/investments/performance/classes?from&to` | `{ classes: AssetClass[], series: { date, total: { valueCents, twrorPct }, byClass: Record<AssetClass, { valueCents, twrorPct }> }[] }` |
 | GET | `/api/investments/instruments/:id` (existing) | adds `gain: { totalGainCents, realizedCents, priceGainCents }` |
 
-`twrorPct` is a decimal string with 4 places; `null` before the first holding of that class.
+`twrorPct` is a ratio as decimal string with 6 places (0.1 = 10 %), like `gainPct`; `null` before the first holding of that class.
 
 ## Market data
 
