@@ -32,7 +32,13 @@ const sizeClass = computed(() => ({ sm: 'size-7', md: 'size-9', lg: 'size-12' })
       :alt="name"
       loading="lazy"
       decoding="async"
-      :class="logo.kind === 'brand' ? 'size-3/5 object-contain' : 'size-full object-cover'"
+      :class="
+        logo.kind === 'upload'
+          ? 'size-full object-cover'
+          : logo.hex === null
+            ? 'size-[70%] object-contain'
+            : 'size-3/5 object-contain'
+      "
       @error="failed = true"
     />
   </span>

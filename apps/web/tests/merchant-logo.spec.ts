@@ -26,6 +26,22 @@ describe('MerchantLogo (008 T008)', () => {
     expect(img.classes()).toContain('object-contain')
   })
 
+  it('shows coloured logos a bit larger than glyphs', async () => {
+    const wrapper = await mountSuspended(MerchantLogo, {
+      props: {
+        name: 'Amazon',
+        logo: {
+          kind: 'brand',
+          slug: 'thesvg-color:amazon',
+          title: 'Amazon',
+          hex: null,
+          url: '/api/logos/brands/thesvg-color/amazon.svg?v=1',
+        },
+      },
+    })
+    expect(wrapper.get('img').classes()).toContain('size-[70%]')
+  })
+
   it('fills the tile with an uploaded image', async () => {
     const wrapper = await mountSuspended(MerchantLogo, {
       props: { name: 'Bäckerei', logo: { kind: 'upload', url: '/api/logos/files/x.png' } },

@@ -39,7 +39,7 @@ test.describe('008 US2 logo choice', () => {
     await page.getByTestId('panel-logo').click()
     const picker = page.getByRole('dialog', { name: 'Logo wählen' })
     await picker.getByTestId('logo-search').fill('lid')
-    await picker.getByTestId('logo-option-lidl').click()
+    await picker.getByTestId('logo-option-thesvg-color:lidl').click()
     await expect(picker).toHaveCount(0)
     await expect(rows.getByTestId('merchant-logo')).toHaveCount(2)
 

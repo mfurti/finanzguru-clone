@@ -47,7 +47,11 @@ test.describe('008 US1 brand logos', () => {
 
     const rewe = row(names[0]!).getByTestId('merchant-logo')
     await expect(rewe).toHaveAttribute('data-kind', 'brand')
-    await expect(rewe.locator('img')).toHaveAttribute('src', /\/api\/logos\/brands\/rewe\.svg/)
+    // Coloured logo from the theSVG set first (008 R8).
+    await expect(rewe.locator('img')).toHaveAttribute(
+      'src',
+      /\/api\/logos\/brands\/thesvg-color\/rewe\.svg/,
+    )
     await expect
       .poll(() => rewe.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth))
       .toBeGreaterThan(0)
