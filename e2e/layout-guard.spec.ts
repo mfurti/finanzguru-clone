@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { PAGES } from './pages'
 
 /**
  * 010 US3 layout guard (quickstart Q4, Q5): every page at phone, tablet and desktop width –
@@ -6,23 +7,6 @@ import { expect, test, type Page } from '@playwright/test'
  * on desktop, a table that has to scroll keeps its first column fixed, and all dropdowns on a
  * page have one height (US4).
  */
-const PAGES = [
-  '/',
-  '/accounts',
-  '/transactions',
-  '/budget',
-  '/budget/sankey',
-  '/budget/budgets',
-  '/investments',
-  '/investments/transactions',
-  '/investments/analysis',
-  '/investments/dividends',
-  '/investments/taxes',
-  '/investments/watchlists',
-  '/insurance',
-  '/settings/sources',
-  '/settings/categories',
-]
 const WIDTHS = [375, 768, 1440]
 
 /** Tables that must fit their box at the given minimum width. */
