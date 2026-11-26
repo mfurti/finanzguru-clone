@@ -19,6 +19,8 @@ const apiEnv = {
   OWNER_PASSWORD: E2E_PASSWORD,
   // Every E2E project logs in; keep the production limit (5/min) out of the way.
   LOGIN_RATE_LIMIT: '100',
+  // Invented local brand only (009 US2); real logos never go into the repository.
+  BRAND_LOGOS_DIR: join(import.meta.dirname, 'fixtures', 'local-logos'),
 }
 
 export default defineConfig({
