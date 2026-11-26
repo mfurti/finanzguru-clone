@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-26
 
-**Status**: Draft
+**Status**: Implemented (2026-11-26)
 
 **Input**: User description: "Bei Finanzfluss haben die Portfolios und Konten auch Logos – umsetzen. Fehlende Bank-Logos (Scalable Capital, ING, DKB, comdirect, Consorsbank, Volksbank, Postbank, flatex, Trading 212, Bitpanda) über einen lokalen, nicht versionierten Logo-Ordner einbinden; die App läuft nur lokal, das Repo ist nur wegen der GitHub-Freiminuten öffentlich."
 
