@@ -299,11 +299,11 @@
     "views": {
       "positions": "Positionen",
       "assetClasses": "Assetklassen",
-      "transactions": "Transaktionen",
+      "transactions": "Buchungen",
       "analysis": "Analyse",
       "dividends": "Dividenden",
       "taxes": "Steuern",
-      "watchlists": "Watchlists"
+      "watchlists": "Watchlist"
     },
     "columns": {
       "name": "Name",
