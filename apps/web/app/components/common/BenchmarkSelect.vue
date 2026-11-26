@@ -30,7 +30,7 @@ const value = computed({
         :aria-label="t('benchmark.empty')"
       />
     </UTooltip>
-    <USelect v-else v-model="value" :items="items" size="xs" class="w-44" />
+    <USelect v-else v-model="value" :items="items" class="w-44" />
     <UBadge v-if="stale && model" color="warning" variant="soft" size="sm">
       {{ t('benchmark.stale') }}
     </UBadge>

@@ -62,7 +62,7 @@ const rows = computed<Row[]>(() => {
   <UCard data-testid="kpi-card">
     <template #header>
       <CardTitle :title="t('overview.kpis.title')">
-        <USelect v-model="period" :items="periodItems" size="sm" class="w-32" />
+        <USelect v-model="period" :items="periodItems" class="w-32" />
       </CardTitle>
     </template>
 

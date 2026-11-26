@@ -92,7 +92,6 @@ async function remove(id: string): Promise<void> {
               { value: 'single', label: t('taxes.single') },
               { value: 'joint', label: t('taxes.joint') },
             ]"
-            size="sm"
             class="w-48"
             data-testid="tax-assessment"
           />

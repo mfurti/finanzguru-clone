@@ -110,7 +110,6 @@ async function onSaved(id?: string): Promise<void> {
         v-if="groupingItems.length > 0"
         v-model="groupingId"
         :items="groupingItems"
-        size="sm"
         class="w-48"
         data-testid="grouping-select"
       />

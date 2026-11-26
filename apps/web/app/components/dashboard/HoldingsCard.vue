@@ -27,7 +27,7 @@ const groups = computed<{ key: 'top' | 'flop'; items: Holding[] }[]>(() => [
   <UCard data-testid="holdings-card">
     <template #header>
       <CardTitle :title="t('overview.holdings.title')" to="/investments">
-        <USelect v-model="range" :items="rangeItems" size="sm" class="w-28" />
+        <USelect v-model="range" :items="rangeItems" class="w-28" />
       </CardTitle>
     </template>
 

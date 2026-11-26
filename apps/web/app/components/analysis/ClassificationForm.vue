@@ -127,7 +127,6 @@ async function save(): Promise<void> {
           <USelect
             v-model="row.key"
             :items="keyItems(dimension)"
-            size="sm"
             class="min-w-0 flex-1"
             :data-testid="`weight-key-${dimension}-${index}`"
           />

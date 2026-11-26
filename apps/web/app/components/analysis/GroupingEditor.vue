@@ -114,7 +114,6 @@ async function remove(): Promise<void> {
             <USelect
               v-model="assignment[position.instrumentId]"
               :items="groupItems"
-              size="sm"
               class="w-40 shrink-0"
               :data-testid="`grouping-assign-${position.isin}`"
             />

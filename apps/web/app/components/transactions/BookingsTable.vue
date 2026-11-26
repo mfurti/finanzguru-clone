@@ -578,7 +578,6 @@ const rangeLabel = computed(() => {
           <USelect
             :model-value="state.pageSize"
             :items="pageSizeItems"
-            size="sm"
             class="w-20"
             data-testid="page-size"
             @update:model-value="(value) => set({ pageSize: value as 25 | 50 | 100 })"

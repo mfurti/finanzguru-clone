@@ -28,7 +28,6 @@ const hasData = computed(() =>
               { label: t('budget.quarter'), value: 'quarter' },
               { label: t('budget.year'), value: 'year' },
             ]"
-            size="xs"
             class="w-24"
           />
         </span>

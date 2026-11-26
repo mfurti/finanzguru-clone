@@ -3,7 +3,8 @@ import { expect, test, type Page } from '@playwright/test'
 /**
  * 010 US3 layout guard (quickstart Q4, Q5): every page at phone, tablet and desktop width –
  * no page-level horizontal scroll, booking tables fit, positions and investment bookings fit
- * on desktop, and a table that has to scroll keeps its first column fixed.
+ * on desktop, a table that has to scroll keeps its first column fixed, and all dropdowns on a
+ * page have one height (US4).
  */
 const PAGES = [
   '/',
@@ -44,9 +45,18 @@ async function measure(page: Page) {
         firstSticky: first ? getComputedStyle(first).position === 'sticky' : false,
       }
     })
+    // Select/dropdown triggers (010 US4): one height per page.
+    const controlHeights = [
+      ...new Set(
+        [...document.querySelectorAll('main [role=combobox]')]
+          .map((element) => Math.round(element.getBoundingClientRect().height))
+          .filter((height) => height > 0),
+      ),
+    ]
     return {
       pageOverflow: document.documentElement.scrollWidth - window.innerWidth,
       tables,
+      controlHeights,
     }
   })
 }
@@ -65,6 +75,8 @@ test.describe('010 layout guard', () => {
         const result = await measure(page)
         if (result.pageOverflow > 1)
           problems.push(`${path}: page scrolls sideways (+${result.pageOverflow})`)
+        if (result.controlHeights.length > 1)
+          problems.push(`${path}: dropdown heights ${result.controlHeights.join('/')} px`)
         for (const rule of MUST_FIT[path] ?? []) {
           if (width < rule.from) continue
           const table = result.tables.find((item) => item.testId === rule.testId && item.visible)

@@ -79,7 +79,6 @@ const months = computed(() => {
         v-if="view === 'grid'"
         v-model="year"
         :items="years.map((y) => ({ label: String(y), value: y }))"
-        size="xs"
         class="w-24"
         data-testid="calendar-year"
       />

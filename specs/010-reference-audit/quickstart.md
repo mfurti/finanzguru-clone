@@ -35,3 +35,4 @@ Owner amounts go only into `apps/api/data/audit-010-local.md` (git-ignored); thi
 | B2 Positionen | fixed: fits at 1440 px (name truncated, tooltip), sticky name column when scrolling (T014) |
 | B3 Investments › Buchungen | fixed: fits at 768/1024/1280/1440 px (Depot from 1536 px, Steuern/Gebühren from 1280 px, cards below 768 px) (T014) |
 | B4 Steuern › Vorabpauschale | scrolls on phones with a sticky first column (T014) |
+| B5 Dropdowns | fixed: one height (32 px, Nuxt UI size md) on every page, checked by the layout guard (T016) |
