@@ -372,7 +372,7 @@
     "expenses": "Ausgaben",
     "balance": "Saldo",
     "saved": "Gespart",
-    "savedInfo": "Ausgaben in Spar-Kategorien wie „Sparen und Anlegen“.",
+    "savedInfo": "Ausgaben in „Sparen und Anlegen“, inklusive Wertpapierkäufen, die vom Referenzkonto des Brokers bezahlt werden.",
     "savingsRate": "Sparquote",
     "savingsRateInfo": "Gespart geteilt durch Einnahmen im Zeitraum.",
     "categories": "Kategorien",

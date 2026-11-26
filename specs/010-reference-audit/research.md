@@ -27,6 +27,7 @@ Status: T002 resolved 2026-11-26 with the owner's trade list (computed locally) 
 
 - **Observed**: the reference counts the category "Sparen und Anlegen" as expense and shows its sum as Gespart; Saldo = Einnahmen − Ausgaben including it; Sparquote is a PLUS feature.
 - **Decision**: same rule; Sparquote = Gespart ÷ Einnahmen (0 when no income), ⓘ text states the formula.
+- **Result (T007)**: the reference's "Wertpapieranlage" is the depot purchase itself (savings plan), paid from the broker cash account. Purchases of a depot whose reference account is in the selection now count as expense in "Sparen und Anlegen › Wertpapieranlage" and as Gespart (summary, bars, categories, Sankey). Sells stay out. Owner check: Ausgaben, Gespart and Saldo of the audited month equal the reference exactly.
 
 ## R5 – Default categories
 

@@ -3,7 +3,8 @@
  * Only cash accounts count (depots are investments, not spending).
  * Transfers between own accounts are ignored. Outflows booked to a category
  * of kind `savings` (e.g. "Sparen und Anlegen › Wertpapieranlage") count as
- * expenses and additionally as "Gespart".
+ * expenses and additionally as "Gespart". Purchases in a depot paid from a selected broker
+ * cash account count like that too (reference rule, 010 R4): they are money put aside.
  */
 import type { CategoryKind, TransactionType } from '@finance/shared'
 import { ratio } from './money'
@@ -47,6 +48,25 @@ export interface PeriodTotals {
 function isSavings(tx: CashflowTx, categories: ReadonlyMap<string, CategoryInfo>): boolean {
   if (!tx.categoryId) return false
   return categories.get(tx.categoryId)?.kind === 'savings'
+}
+
+/**
+ * Depot purchases as savings outflows (010 R4): each buy becomes an expense booked to the
+ * savings category, so it shows under "Sparen und Anlegen" and in "Gespart". Sells and other
+ * depot bookings stay out of the budget.
+ */
+export function purchasesAsSavings(
+  depotTxs: readonly CashflowTx[],
+  savingsCategoryId: string,
+): CashflowTx[] {
+  return depotTxs
+    .filter((tx) => tx.type === 'buy' && tx.amountCents !== 0)
+    .map((tx) => ({
+      bookingDate: tx.bookingDate,
+      amountCents: -Math.abs(tx.amountCents),
+      type: 'expense' as const,
+      categoryId: savingsCategoryId,
+    }))
 }
 
 export function relevant(tx: CashflowTx): boolean {

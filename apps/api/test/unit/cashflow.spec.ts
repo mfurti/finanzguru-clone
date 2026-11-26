@@ -6,6 +6,7 @@ import {
   categoryTotals,
   sankey,
   totals,
+  purchasesAsSavings,
 } from '../../src/domain/cashflow'
 
 const categories = new Map<string, CategoryInfo>(
@@ -108,5 +109,54 @@ describe('sankey', () => {
       categories,
     )
     expect(graph.links).toContainEqual({ source: 'income', target: 'rest', valueCents: 600 })
+  })
+})
+
+describe('depot purchases as savings (010 T007)', () => {
+  it('turns buys into savings expenses, ignores sells and other depot bookings', () => {
+    const rows = purchasesAsSavings(
+      [
+        { bookingDate: '2026-11-02', amountCents: -5000, type: 'buy', categoryId: null },
+        { bookingDate: '2026-11-10', amountCents: 8000, type: 'sell', categoryId: null },
+        { bookingDate: '2026-11-12', amountCents: 25, type: 'dividend', categoryId: null },
+      ],
+      'savings-sub',
+    )
+    expect(rows).toEqual([
+      { bookingDate: '2026-11-02', amountCents: -5000, type: 'expense', categoryId: 'savings-sub' },
+    ])
+  })
+
+  it('counts them as expense and Gespart; Sparquote = Gespart ÷ Einnahmen', () => {
+    const categories = new Map([
+      [
+        'savings-sub',
+        {
+          id: 'savings-sub',
+          parentId: 'savings',
+          name: 'Wertpapieranlage',
+          kind: 'savings' as const,
+          color: 'violet',
+        },
+      ],
+    ])
+    const result = totals(
+      [
+        { bookingDate: '2026-11-01', amountCents: 100000, type: 'income', categoryId: null },
+        { bookingDate: '2026-11-03', amountCents: -20000, type: 'expense', categoryId: null },
+        ...purchasesAsSavings(
+          [{ bookingDate: '2026-11-02', amountCents: -5000, type: 'buy', categoryId: null }],
+          'savings-sub',
+        ),
+      ],
+      categories,
+    )
+    expect(result).toMatchObject({
+      incomeCents: 100000,
+      expenseCents: 25000,
+      balanceCents: 75000,
+      savedCents: 5000,
+      savingsRate: '0.05',
+    })
   })
 })

@@ -34,7 +34,7 @@
 - [X] T004 [US1] Cost basis, Einstiegswert, Investiertes Kapital and Kursgewinn per R1 in `apps/api/src/domain/positions.ts` and `period-returns.ts`; positions and Kennzahlen use them. Unit tests where FIFO and average differ; API e2e for `/api/investments/positions` and `/api/overview/kpis`.
 - [X] T005 [US1] Realized gains brutto/netto and Steuern & Gebühren per R2 in `positions.ts` / `portfolio.service.ts`. Unit tests with partial sells, fees and taxes.
 - [X] T006 [US1] Gesamtertrag, TWROR, IZF, Realrendite (FR-004) from the corrected inputs in `returns.ts` / `portfolio.service.ts`; Realrendite null when the reference shows none; ⓘ texts updated in `de.json`. Unit tests.
-- [ ] T007 [US1] "Sparen und Anlegen" as expense and Gespart, Saldo and Sparquote = Gespart ÷ Einnahmen (FR-006, R4) in `apps/api/src/domain/cashflow.ts`; ⓘ texts. Unit tests and e2e for `/api/cashflow/summary`.
+- [X] T007 [US1] "Sparen und Anlegen" as expense and Gespart, Saldo and Sparquote = Gespart ÷ Einnahmen (FR-006, R4) in `apps/api/src/domain/cashflow.ts`; ⓘ texts. Unit tests and e2e for `/api/cashflow/summary`.
 - [ ] T008 [US1] Unreviewed count and monthly bar rules per R6 (FR-008); fix or document the remaining difference in `quickstart.md`. Tests for the chosen rule.
 - [ ] T009 [US1] Owner check Q1/Q2 with the audit script and the reference (read only); real values only in `apps/api/data/audit-010-local.md`; status (matched / explained) in `quickstart.md`.
 

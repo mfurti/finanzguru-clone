@@ -9,12 +9,13 @@ import type {
 import { and, eq, gte, inArray, lte } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
-import { category, transaction } from '../../database/schema'
+import { account, category, transaction } from '../../database/schema'
 import {
   bars,
   type CashflowTx,
   type CategoryInfo,
   categoryTotals,
+  purchasesAsSavings,
   sankey,
   totals,
 } from '../../domain/cashflow'
@@ -48,22 +49,49 @@ export class CashflowService {
 
   private load(accountIds: string[], from: string, to: string): CashflowTx[] {
     if (accountIds.length === 0) return []
-    return this.db
-      .select({
-        bookingDate: transaction.bookingDate,
-        amountCents: transaction.amountCents,
-        type: transaction.type,
-        categoryId: transaction.categoryId,
-      })
-      .from(transaction)
-      .where(
-        and(
-          inArray(transaction.accountId, accountIds),
-          gte(transaction.bookingDate, from),
-          lte(transaction.bookingDate, to),
-        ),
-      )
+    const select = (ids: string[]) =>
+      this.db
+        .select({
+          bookingDate: transaction.bookingDate,
+          amountCents: transaction.amountCents,
+          type: transaction.type,
+          categoryId: transaction.categoryId,
+        })
+        .from(transaction)
+        .where(
+          and(
+            inArray(transaction.accountId, ids),
+            gte(transaction.bookingDate, from),
+            lte(transaction.bookingDate, to),
+          ),
+        )
+        .all()
+    const own = select(accountIds)
+    // Purchases paid from a selected broker cash account count as "Sparen und Anlegen" (010 R4).
+    const depots = this.db
+      .select({ id: account.parentAccountId })
+      .from(account)
+      .where(and(inArray(account.id, accountIds), eq(account.type, 'reference')))
       .all()
+      .map((row) => row.id)
+      .filter((id): id is string => !!id)
+    const savingsId = depots.length > 0 ? this.savingsCategoryId() : null
+    return savingsId ? [...own, ...purchasesAsSavings(select(depots), savingsId)] : own
+  }
+
+  /** "Sparen und Anlegen › Wertpapieranlage" (or the first savings category). */
+  private savingsCategoryId(): string | null {
+    const rows = this.db
+      .select({ id: category.id, name: category.name, parentId: category.parentId })
+      .from(category)
+      .where(eq(category.kind, 'savings'))
+      .all()
+    return (
+      rows.find((row) => row.name === 'Wertpapieranlage')?.id ??
+      rows.find((row) => row.parentId)?.id ??
+      rows[0]?.id ??
+      null
+    )
   }
 
   summary(query: CashflowQuery, today = todayIso()): CashflowSummary {
