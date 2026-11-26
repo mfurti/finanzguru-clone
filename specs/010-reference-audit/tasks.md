@@ -16,7 +16,7 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 Owner audit script `apps/api/src/scripts/audit-figures.ts` (+ `audit:figures` script in `apps/api/package.json`): prints the app's figures of spec section A for given account ids (net worth, gain, Kennzahlen 1 J, positions, current-month cash flow, categories, unreviewed count) as a table; writes nothing into the repository. Unit-free; smoke-tested against the e2e demo database.
+- [X] T001 Owner audit script `apps/api/src/scripts/audit-figures.ts` (+ `audit:figures` script in `apps/api/package.json`): prints the app's figures of spec section A for given account ids (net worth, gain, Kennzahlen 1 J, positions, current-month cash flow, categories, unreviewed count) as a table; writes nothing into the repository. Unit-free; smoke-tested against the e2e demo database.
 
 ---
 

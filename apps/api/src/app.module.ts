@@ -47,7 +47,8 @@ import { SyncModule } from './modules/sources/sync.module'
           // Docker polls /api/health every 30 s; keep it out of the request log.
           exclude: [{ method: RequestMethod.GET, path: 'health' }],
           pinoHttp: {
-            level: env === 'test' ? 'silent' : 'info',
+            // LOG_LEVEL lets scripts (e.g. audit:figures) keep the request log quiet.
+            level: env === 'test' ? 'silent' : (process.env.LOG_LEVEL ?? 'info'),
             // Never log session cookies or auth headers.
             redact: {
               paths: [
