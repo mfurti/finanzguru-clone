@@ -36,6 +36,13 @@ export const BRAND_ALIASES: readonly { slug: string; aliases: readonly string[] 
   { slug: 'ebay', aliases: ['ebay'] },
   { slug: 'otto', aliases: ['otto gmbh', 'otto de'] },
   { slug: 'uber', aliases: ['uber', 'uber eats'] },
+  { slug: 'deutschepost', aliases: ['deutsche post'] },
+  { slug: 'dhl', aliases: ['dhl'] },
+  { slug: 'commerzbank', aliases: ['commerzbank'] },
+  { slug: 'zara', aliases: ['zara'] },
+  { slug: 'mediamarkt', aliases: ['media markt', 'mediamarkt'] },
+  { slug: 'saturn', aliases: ['saturn electro', 'saturn'] },
+  { slug: 'easyjet', aliases: ['easyjet'] },
 ]
 
 /** Curated slugs, shown first in the brand picker. */

@@ -20,6 +20,8 @@ describe('merchant logo matching (008 T005)', () => {
     ["McDonald's Deutschland", 'mcdonalds'],
     ['DB Vertrieb GmbH', 'deutschebahn'],
     ['Telekom Deutschland GmbH', 'deutschetelekom'],
+    ['Deutsche Post AG', 'deutschepost'],
+    ['MediaMarkt Heilbronn', 'mediamarkt'],
   ])('%s → %s', (name, slug) => {
     expect(matchBrand(name)).toBe(slug)
   })
