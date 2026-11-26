@@ -55,7 +55,7 @@
 
 - [X] T012 [US3] Phone layout of `BookingsTable.vue` below 768 px (moved from 640 px in T013) (CSS, same table so selection, side panel and tests keep working): date under the name instead of its own column, category chip icon-only (name in the accessible label, header text hidden), narrower name, tighter cell padding, hover delete hidden (delete via side panel); measured fit at 360 and 375 px. Date grouping and a ⋮ toolbar menu like the reference are left out (documented in quickstart); fit checked by the layout guard (T015).
 - [X] T013 [US3] Tablet columns in `BookingsTable.vue` (640–1023 px): Name, Datum short ("24.11.26"), Kategorie, Betrag; measured fit at 768 px. Component test.
-- [ ] T014 [US3] `PositionsTable.vue` fits at 1440 px (default columns like the reference: Name, Aktueller Kurs, Aktueller Wert, Einstiegswert, Kursgewinn, Allokation, Dividende) and has a sticky first column; investment bookings and taxes tables sticky first column. Component tests.
+- [X] T014 [US3] `PositionsTable.vue` fits at 1440 px (default columns like the reference: Name, Aktueller Kurs, Aktueller Wert, Einstiegswert, Kursgewinn, Allokation, Dividende) and has a sticky first column; investment bookings and taxes tables sticky first column. Component tests.
 - [ ] T015 [US3] Playwright layout guard `e2e/layout-guard.spec.ts`: all 15 pages at 375/768/1440 px – no page overflow, booking amount visible, tables fit at 1440 px, sticky first column where a table scrolls.
 
 ---

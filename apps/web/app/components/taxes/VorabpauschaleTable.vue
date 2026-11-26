@@ -34,7 +34,9 @@ const { t } = useI18n()
       <table class="w-full min-w-[520px] text-sm">
         <thead>
           <tr class="border-b border-default text-left text-xs text-muted">
-            <th class="py-2 font-medium">{{ t('dividends.security') }}</th>
+            <th class="sticky left-0 z-10 bg-(--app-card) py-2 font-medium">
+              {{ t('dividends.security') }}
+            </th>
             <th class="py-2 font-medium">{{ t('taxes.fundType') }}</th>
             <th class="py-2 text-right font-medium">{{ t('taxes.basisertrag') }}</th>
             <th class="py-2 text-right font-medium">{{ t('taxes.vorabpauschale') }}</th>
@@ -57,7 +59,7 @@ const { t } = useI18n()
             :key="`${row.accountId}-${row.instrumentId}`"
             class="row-hover"
           >
-            <td class="py-2 pr-2">
+            <td class="sticky left-0 z-10 max-w-40 bg-(--app-card) py-2 pr-2">
               <NuxtLink :to="`/investments/${row.instrumentId}`" class="link-hover">{{
                 row.name
               }}</NuxtLink>

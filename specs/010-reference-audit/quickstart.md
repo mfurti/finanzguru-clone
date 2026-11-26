@@ -32,3 +32,6 @@ Owner amounts go only into `apps/api/data/audit-010-local.md` (git-ignored); thi
 
 | B1 Transaktionen on phones | fixed: fits at 360/375 px, amount visible (T012); no date grouping, toolbar stays a row (reference: date groups, ⋮ menu) |
 | B1 Transaktionen on tablets | fixed: short year ("24.11.26") below 1024 px, phone layout up to 767 px; fits at 360, 640, 700, 768, 1024, 1440 px (T013) |
+| B2 Positionen | fixed: fits at 1440 px (name truncated, tooltip), sticky name column when scrolling (T014) |
+| B3 Investments › Buchungen | fixed: fits at 768/1024/1280/1440 px (Depot from 1536 px, Steuern/Gebühren from 1280 px, cards below 768 px) (T014) |
+| B4 Steuern › Vorabpauschale | scrolls on phones with a sticky first column (T014) |

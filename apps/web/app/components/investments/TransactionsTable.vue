@@ -87,7 +87,8 @@ const columns = computed<TableColumn<InvestmentTransactionRow>[]>(() => [
   {
     id: 'date',
     header: sortHeader('date', t('investments.tx.date')),
-    cell: ({ row }) => formatDate(row.original.bookingDate),
+    cell: ({ row }) =>
+      h('span', { class: 'whitespace-nowrap' }, formatDate(row.original.bookingDate)),
   },
   {
     id: 'type',
@@ -98,11 +99,16 @@ const columns = computed<TableColumn<InvestmentTransactionRow>[]>(() => [
     id: 'name',
     header: sortHeader('name', t('investments.columns.name')),
     cell: ({ row }) =>
-      h('div', { class: 'min-w-40' }, [
+      // Truncated so the table fits its box (010 US3); full name in the tooltip.
+      h('div', { class: 'w-40 lg:w-44 xl:w-64' }, [
         row.original.instrumentId
           ? h(
               NuxtLink,
-              { to: `/investments/${row.original.instrumentId}`, class: 'font-medium link-hover' },
+              {
+                to: `/investments/${row.original.instrumentId}`,
+                class: 'block truncate font-medium link-hover',
+                title: row.original.instrumentName ?? '',
+              },
               () => row.original.instrumentName,
             )
           : h('span', { class: 'text-muted' }, '–'),
@@ -118,6 +124,8 @@ const columns = computed<TableColumn<InvestmentTransactionRow>[]>(() => [
   {
     id: 'account',
     header: sortHeader('account', t('investments.tx.depot')),
+    // Only on very wide screens; the depot filter above the table covers the rest (010 US3).
+    meta: { class: { th: 'hidden 2xl:table-cell', td: 'hidden 2xl:table-cell' } },
     cell: ({ row }) => row.original.accountName,
   },
   {
@@ -138,6 +146,7 @@ const columns = computed<TableColumn<InvestmentTransactionRow>[]>(() => [
   {
     id: 'tax',
     header: sortHeader('tax', t('investments.tx.tax')),
+    meta: { class: { th: 'hidden xl:table-cell', td: 'hidden xl:table-cell' } },
     cell: ({ row }) =>
       h(
         'div',
@@ -148,6 +157,7 @@ const columns = computed<TableColumn<InvestmentTransactionRow>[]>(() => [
   {
     id: 'fee',
     header: sortHeader('fee', t('investments.tx.fee')),
+    meta: { class: { th: 'hidden xl:table-cell', td: 'hidden xl:table-cell' } },
     cell: ({ row }) =>
       h(
         'div',
@@ -264,10 +274,10 @@ const exportUrl = computed(() => {
         v-model:column-visibility="columnVisibility"
         :data="data!.items"
         :columns="columns"
-        class="w-full max-sm:hidden"
+        class="w-full max-md:hidden"
         data-testid="tx-table"
       />
-      <ul class="divide-y divide-default text-sm sm:hidden" data-testid="tx-cards">
+      <ul class="divide-y divide-default text-sm md:hidden" data-testid="tx-cards">
         <li
           v-for="row in data!.items"
           :key="row.id"

@@ -110,17 +110,26 @@ const percent = (value: string | null, signed = true) => h(Percent, { value, sig
 const number = (value: string | null) =>
   value === null ? '–' : Number(value).toLocaleString('de-DE', { maximumFractionDigits: 6 })
 
+/** Sticky first column with the card background, so scrolled cells pass underneath. */
+const STICKY = 'sticky left-0 z-10 bg-(--app-card)'
+
 const columns = computed<TableColumn<PositionDto>[]>(() => [
   {
     id: 'name',
     header: header('name', 'left'),
+    // Fixed first column while the table scrolls on small screens (010 US3).
+    meta: { class: { th: STICKY, td: STICKY } },
     cell: ({ row }) =>
-      h('div', { class: 'flex min-w-48 items-center gap-3' }, [
+      h('div', { class: 'flex w-44 items-center gap-3 md:w-56 xl:w-64' }, [
         h(Avatar, { name: row.original.name, size: 'sm' }),
         h('div', { class: 'min-w-0' }, [
           h(
             NuxtLink,
-            { to: `/investments/${row.original.instrumentId}`, class: 'font-medium link-hover' },
+            {
+              to: `/investments/${row.original.instrumentId}`,
+              class: 'block truncate font-medium link-hover',
+              title: row.original.name,
+            },
             () => row.original.name,
           ),
           h('div', { class: 'flex flex-wrap items-center gap-x-1 text-xs text-muted' }, [
