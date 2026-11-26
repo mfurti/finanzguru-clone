@@ -1,0 +1,118 @@
+{
+  "portfolioId": "pf-001",
+  "query": "Apple",
+  "results": [
+    {
+      "isin": "CA03785Y1007",
+      "name": "Apple CDR",
+      "securityType": "STOCK",
+      "links": {
+        "securityDetails": "https://de.scalable.capital/broker/security?isin=CA03785Y1007"
+      },
+      "currentQuote": {
+        "midPrice": 31.4,
+        "currency": "EUR",
+        "timestampUtc": "2026-11-25T10:26:50.806Z",
+        "isOutdated": false
+      }
+    },
+    {
+      "isin": "IE00BK5BZS07",
+      "name": "Leverage Shares 3x Apple ETP",
+      "securityType": "ETF",
+      "links": {
+        "securityDetails": "https://de.scalable.capital/broker/security?isin=IE00BK5BZS07"
+      },
+      "currentQuote": {
+        "midPrice": 151.995,
+        "currency": "EUR",
+        "timestampUtc": "2026-11-25T11:12:04.894Z",
+        "isOutdated": false
+      }
+    },
+    {
+      "isin": "IE00BKTWZ451",
+      "name": "Leverage Shares -1x Apple ETP Securities",
+      "securityType": "ETF",
+      "links": {
+        "securityDetails": "https://de.scalable.capital/broker/security?isin=IE00BKTWZ451"
+      },
+      "currentQuote": {
+        "midPrice": 2.6556,
+        "currency": "EUR",
+        "timestampUtc": "2026-11-25T11:12:21.374Z",
+        "isOutdated": false
+      }
+    },
+    {
+      "isin": "US0378331005",
+      "name": "Apple",
+      "securityType": "STOCK",
+      "links": {
+        "securityDetails": "https://de.scalable.capital/broker/security?isin=US0378331005"
+      },
+      "currentQuote": {
+        "midPrice": 321.075,
+        "currency": "EUR",
+        "timestampUtc": "2026-11-25T11:12:26.925Z",
+        "isOutdated": false
+      }
+    },
+    {
+      "isin": "US03784Y2000",
+      "name": "Apple Hospitality REIT",
+      "securityType": "STOCK",
+      "links": {
+        "securityDetails": "https://de.scalable.capital/broker/security?isin=US03784Y2000"
+      },
+      "currentQuote": {
+        "midPrice": 17.7075,
+        "currency": "EUR",
+        "timestampUtc": "2026-11-25T11:12:18.318Z",
+        "isOutdated": false
+      }
+    },
+    {
+      "isin": "XS2820605157",
+      "name": "Leverage Shares 2x Apple ETP",
+      "securityType": "ETF",
+      "links": {
+        "securityDetails": "https://de.scalable.capital/broker/security?isin=XS2820605157"
+      },
+      "currentQuote": {
+        "midPrice": 73.2445,
+        "currency": "EUR",
+        "timestampUtc": "2026-11-25T11:12:04.147Z",
+        "isOutdated": false
+      }
+    },
+    {
+      "isin": "XS2901884663",
+      "name": "IncomeShares Apple (AAPL) Options ETP",
+      "securityType": "ETF",
+      "links": {
+        "securityDetails": "https://de.scalable.capital/broker/security?isin=XS2901884663"
+      },
+      "currentQuote": {
+        "midPrice": 7.7075,
+        "currency": "EUR",
+        "timestampUtc": "2026-11-25T11:12:24.875Z",
+        "isOutdated": false
+      }
+    },
+    {
+      "isin": "XS3420365036",
+      "name": "Leverage Shares -3x Short Apple (AAPL) ETP Securities",
+      "securityType": "ETF",
+      "links": {
+        "securityDetails": "https://de.scalable.capital/broker/security?isin=XS3420365036"
+      },
+      "currentQuote": {
+        "midPrice": 19.3285,
+        "currency": "EUR",
+        "timestampUtc": "2026-11-25T11:12:26.027Z",
+        "isOutdated": false
+      }
+    }
+  ]
+}

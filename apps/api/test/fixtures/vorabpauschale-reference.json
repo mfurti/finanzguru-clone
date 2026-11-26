@@ -1,0 +1,47 @@
+{
+  "_source": "Hand-calculated with the InvStG § 18 scheme: Basisertrag = units × price at the start of the year × Basiszins × 0.7, reduced by 1/12 per full month before purchase; capped at (end − start price) × units + distributions; Vorabpauschale = Basisertrag − distributions (min 0); taxable = Vorabpauschale × (1 − Teilfreistellung). Cents rounded half-even per step.",
+  "cases": [
+    {
+      "name": "full year, equity fund",
+      "input": {
+        "year": 2024,
+        "baseRate": "0.0229",
+        "fundType": "equity",
+        "startPrice": "100",
+        "endPrice": "110",
+        "lots": [{ "quantity": "100", "openDate": "2022-03-01" }],
+        "distributionsCents": 0
+      },
+      "comment": "100 × 100 × 0.0229 × 0.7 = 160.30 €; gain 1000 € does not cap; taxable 160.30 × 0.7 = 112.21 €",
+      "expected": { "basisertragCents": 16030, "vorabpauschaleCents": 16030, "taxableCents": 11221 }
+    },
+    {
+      "name": "purchase in May (4/12 reduction)",
+      "input": {
+        "year": 2024,
+        "baseRate": "0.0229",
+        "fundType": "equity",
+        "startPrice": "80",
+        "endPrice": "90",
+        "lots": [{ "quantity": "50", "openDate": "2024-05-15" }],
+        "distributionsCents": 0
+      },
+      "comment": "50 × 80 × 0.0229 × 0.7 × 8/12 = 42.7467 € → 42.75 €; taxable 42.75 × 0.7 = 29.925 → 29.92 € (half-even)",
+      "expected": { "basisertragCents": 4275, "vorabpauschaleCents": 4275, "taxableCents": 2992 }
+    },
+    {
+      "name": "gain below the Basisertrag, distribution, mixed fund",
+      "input": {
+        "year": 2024,
+        "baseRate": "0.0229",
+        "fundType": "mixed",
+        "startPrice": "50",
+        "endPrice": "50.2",
+        "lots": [{ "quantity": "200", "openDate": "2020-01-10" }],
+        "distributionsCents": 3000
+      },
+      "comment": "Basisertrag 160.30 € capped at 0.2 × 200 + 30 = 70 €; minus distributions 30 € = 40 €; taxable 40 × 0.85 = 34 €",
+      "expected": { "basisertragCents": 7000, "vorabpauschaleCents": 4000, "taxableCents": 3400 }
+    }
+  ]
+}

@@ -1,0 +1,957 @@
+{
+  "app": {
+    "name": "Vermögenskompass",
+    "footer": "Deine Daten bleiben auf deinem Server."
+  },
+  "nav": {
+    "label": "Hauptnavigation",
+    "overview": "Übersicht",
+    "investments": "Investments",
+    "budget": "Budget",
+    "insurance": "Versicherung"
+  },
+  "header": {
+    "search": "Suche",
+    "settings": "Einstellungen",
+    "logout": "Abmelden"
+  },
+  "filter": {
+    "allAccounts": "Alle Konten",
+    "oneAccount": "1 Konto",
+    "nAccounts": "{n} Konten",
+    "noAccounts": "Noch keine Konten vorhanden."
+  },
+  "login": {
+    "title": "Anmelden",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "wrong": "Passwort falsch.",
+    "tooMany": "Zu viele Versuche. Bitte warte eine Minute."
+  },
+  "period": {
+    "1W": "1W",
+    "1M": "1M",
+    "YTD": "YTD",
+    "1Y": "1J",
+    "3Y": "3J",
+    "5Y": "5J",
+    "ALL": "Gesamt"
+  },
+  "placeholder": {
+    "title": "Diese Ansicht folgt",
+    "description": "Die Daten dafür sind vorbereitet; die Oberfläche kommt in einem der nächsten Schritte."
+  },
+  "settings": {
+    "sources": "Datenquellen",
+    "categories": "Kategorien & Regeln",
+    "inflation": "Inflation"
+  },
+  "overview": {
+    "netWorth": {
+      "tabValue": "Vermögen",
+      "tabReturn": "Rendite",
+      "total": "Gesamtvermögen",
+      "gain": "Gewinn",
+      "value": "Vermögen inkl. Cash & Dividenden",
+      "invested": "Investiertes Kapital",
+      "cash": "Cash",
+      "return": "Rendite"
+    },
+    "empty": {
+      "title": "Noch keine Daten",
+      "description": "Importiere eine CSV-Datei oder verbinde ein Depot, um dein Vermögen zu sehen.",
+      "action": "Daten hinzufügen"
+    },
+    "allocation": {
+      "title": "Aufteilung",
+      "center": "Vermögen"
+    },
+    "kpis": {
+      "title": "Kennzahlen",
+      "invested": "Investiertes Kapital",
+      "priceGain": "Kursgewinn",
+      "realized": "Realisierte Gewinne",
+      "otherGains": "Sonstige Gewinne",
+      "dividends": "Dividenden",
+      "interest": "Zinsen",
+      "taxesFees": "Steuern & Gebühren",
+      "totalReturn": "Gesamtertrag",
+      "net": "Netto",
+      "twror": "TWROR",
+      "irr": "IZF",
+      "inflation": "Inflation",
+      "realReturn": "Realrendite",
+      "info": {
+        "priceGain": "Veränderung der nicht realisierten Gewinne im Zeitraum (Kurswert minus Durchschnittseinstandswert), ohne realisierte Gewinne und Handelskosten.",
+        "realized": "Gewinne aus Verkäufen im Zeitraum: Verkaufserlös minus Durchschnittseinstandswert der verkauften Stücke; netto nach Gebühren und Steuern.",
+        "otherGains": "Sonstige Erträge, z. B. aus Kapitalmaßnahmen.",
+        "twror": "Zeitgewichtete Rendite: misst die Anlageentscheidung unabhängig vom Zeitpunkt der Ein- und Auszahlungen.",
+        "irr": "Interner Zinsfuß (geldgewichtet, p. a.): berücksichtigt Zeitpunkt und Höhe deiner Ein- und Auszahlungen.",
+        "inflation": "Jährliche Inflationsrate laut Einstellungen.",
+        "realReturn": "TWROR minus Inflation: (1 + TWROR) ÷ (1 + Inflation) − 1.",
+        "invested": "Einstandswert der offenen Positionen nach gleitendem Durchschnittspreis (Käufe inkl. Gebühren).",
+        "taxesFees": "Handelsgebühren und Steuern auf Kapitalerträge im Zeitraum; Abo-Gebühren des Brokers zählen nicht dazu."
+      }
+    },
+    "holdings": {
+      "title": "Holdings",
+      "top": "Top",
+      "flop": "Flop",
+      "range": {
+        "1D": "1 Tag",
+        "1W": "1 Woche",
+        "1M": "1 Monat",
+        "1Y": "1 Jahr"
+      }
+    },
+    "accounts": {
+      "title": "Portfolios & Konten",
+      "depots": "Depots",
+      "accounts": "Konten",
+      "empty": "Noch keine Konten"
+    },
+    "cashflow": {
+      "title": "Einnahmen & Ausgaben",
+      "empty": "Noch keine Kontobewegungen"
+    },
+    "budgets": {
+      "title": "Budgets",
+      "emptyTitle": "Keine Daten verfügbar",
+      "emptyDescription": "Du hast noch keine Budgets erstellt.",
+      "create": "Jetzt Budgets erstellen"
+    },
+    "widgets": {
+      "networth": "Vermögensverlauf",
+      "allocation": "Aufteilung",
+      "kpis": "Kennzahlen",
+      "holdings": "Holdings",
+      "accounts": "Portfolios & Konten",
+      "review": "Ungeprüfte Transaktionen",
+      "cashflow": "Einnahmen & Ausgaben",
+      "budgets": "Budgets"
+    },
+    "customize": {
+      "button": "Anpassen",
+      "title": "Übersicht anpassen",
+      "up": "Nach oben",
+      "down": "Nach unten",
+      "error": "Layout konnte nicht gespeichert werden."
+    },
+    "views": {
+      "dashboard": "Dashboard",
+      "accounts": "Portfolios & Konten",
+      "transactions": "Transaktionen"
+    }
+  },
+  "periodLong": {
+    "1M": "1 Monat",
+    "YTD": "Seit Jahresbeginn",
+    "1Y": "1 Jahr",
+    "3Y": "3 Jahre",
+    "5Y": "5 Jahre",
+    "ALL": "Gesamt"
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "close": "Schließen",
+    "estimate": "Schätzung",
+    "loading": "Lädt …",
+    "error": "Etwas ist schiefgelaufen"
+  },
+  "import": {
+    "title": "CSV importieren",
+    "subtitle": "Kontoauszüge der Sparkasse, Exporte von Scalable Capital oder eigene CSV-Dateien.",
+    "drop": "CSV-Datei hierher ziehen",
+    "dropHint": "oder klicken zum Auswählen (max. 20 MB)",
+    "upload": "Hochladen",
+    "confirm": "Importieren",
+    "detected": "Erkanntes Format: {format}",
+    "unknownLayout": "Unbekanntes Format – bitte Spalten zuordnen.",
+    "targetAccount": "Zielkonto",
+    "autoAccount": "Automatisch (aus der Datei)",
+    "failed": "Import fehlgeschlagen.",
+    "errors": "Fehlerhafte Zeilen",
+    "line": "Zeile {n}",
+    "status": {
+      "succeeded": "Import abgeschlossen",
+      "partial": "Import mit Fehlern abgeschlossen",
+      "failed": "Import fehlgeschlagen",
+      "pending": "Wartet auf Bestätigung",
+      "running": "Import läuft"
+    },
+    "counts": {
+      "imported": "Neu",
+      "skipped": "Bereits vorhanden",
+      "failed": "Fehler"
+    },
+    "reasons": {
+      "invalid_date": "Ungültiges Datum",
+      "invalid_amount": "Ungültiger Betrag",
+      "unknown_currency_no_rate": "Fremdwährung ohne Kurs",
+      "missing_isin": "ISIN fehlt",
+      "invalid_isin": "ISIN ungültig",
+      "missing_quantity": "Stückzahl fehlt",
+      "not_executed": "Nicht ausgeführt",
+      "not_booked": "Nur vorgemerkt",
+      "unknown_type": "Unbekannte Buchungsart"
+    },
+    "fields": {
+      "date": "Datum",
+      "amount": "Betrag",
+      "counterparty": "Empfänger/Zahler",
+      "purpose": "Verwendungszweck",
+      "iban": "IBAN",
+      "valueDate": "Valuta",
+      "isin": "ISIN",
+      "quantity": "Stück",
+      "price": "Kurs",
+      "fee": "Gebühr",
+      "tax": "Steuer",
+      "type": "Buchungsart"
+    },
+    "mapping": {
+      "none": "– nicht verwenden –",
+      "dateFormat": "Datumsformat",
+      "decimal": "Dezimaltrennzeichen",
+      "comma": "Komma (1.234,56)",
+      "dot": "Punkt (1,234.56)",
+      "delimiter": "Trennzeichen",
+      "encoding": "Zeichensatz",
+      "skipRows": "Zeilen überspringen",
+      "saveAs": "Zuordnung speichern als",
+      "saveHint": "optional, für den nächsten Import"
+    },
+    "instrument": "Wertpapier für die Kursliste"
+  },
+  "sources": {
+    "title": "Datenquellen",
+    "lastSync": "Letzte Synchronisierung: {at}",
+    "status": {
+      "active": "aktiv",
+      "needs_reauth": "Verbindung erneuern",
+      "error": "Fehler",
+      "planned": "geplant",
+      "disabled": "deaktiviert",
+      "consent_expired": "Zugang abgelaufen"
+    },
+    "plannedHint": "Kommt in einer späteren Version. Bis dahin Sparkasse-Umsätze als CSV importieren."
+  },
+  "add": {
+    "button": "Hinzufügen",
+    "csv": "CSV importieren",
+    "account": "Konto anlegen",
+    "transaction": "Transaktion erfassen",
+    "noAccounts": "Lege zuerst ein Konto an.",
+    "otherBank": "Andere Bank"
+  },
+  "forms": {
+    "name": "Name",
+    "type": "Art",
+    "iban": "IBAN",
+    "balance": "Aktueller Kontostand",
+    "optional": "optional",
+    "failed": "Speichern fehlgeschlagen.",
+    "account": "Konto",
+    "date": "Datum",
+    "amount": "Betrag",
+    "quantity": "Stück",
+    "counterparty": "Empfänger/Zahler",
+    "purpose": "Verwendungszweck"
+  },
+  "accountTypes": {
+    "depot": "Depot",
+    "checking": "Girokonto",
+    "savings": "Sparkonto",
+    "reference": "Referenzkonto",
+    "credit_card": "Kreditkarte",
+    "cash": "Bargeld"
+  },
+  "transactionTypes": {
+    "income": "Einnahme",
+    "expense": "Ausgabe",
+    "transfer": "Umbuchung",
+    "buy": "Kauf",
+    "sell": "Verkauf",
+    "dividend": "Dividende",
+    "interest": "Zinsen",
+    "tax": "Steuer",
+    "fee": "Gebühr",
+    "split": "Split",
+    "deposit": "Einzahlung",
+    "withdrawal": "Auszahlung"
+  },
+  "investments": {
+    "value": "Wert",
+    "invested": "Investiertes Kapital",
+    "gain": "Gewinn",
+    "empty": "Noch keine Wertpapiere",
+    "positions": "Positionen ({n})",
+    "columnsButton": "Spalten",
+    "export": "Export",
+    "all": "Alle",
+    "pieces": "St.",
+    "sold": "Verkaufte Investments ({n})",
+    "realized": "Realisiert",
+    "views": {
+      "positions": "Positionen",
+      "assetClasses": "Assetklassen",
+      "transactions": "Transaktionen",
+      "analysis": "Analyse",
+      "dividends": "Dividenden",
+      "taxes": "Steuern",
+      "watchlists": "Watchlists"
+    },
+    "columns": {
+      "name": "Name",
+      "price": "Aktueller Kurs",
+      "value": "Aktueller Wert",
+      "entryValue": "Einstiegswert",
+      "gain": "Kursgewinn",
+      "allocation": "Allokation",
+      "dividends": "Dividende"
+    },
+    "detail": {
+      "position": "Deine Position",
+      "transactions": "Transaktionen",
+      "price": "Kursverlauf",
+      "noPosition": "Keine offene Position"
+    },
+    "tx": {
+      "date": "Datum",
+      "type": "Art",
+      "instrument": "Wertpapier",
+      "quantity": "Stück",
+      "amount": "Betrag",
+      "empty": "Keine Transaktionen",
+      "depot": "Depot",
+      "unitPrice": "Kaufpreis/Stück",
+      "tax": "Steuern",
+      "fee": "Gebühren",
+      "total": "Gesamtbetrag",
+      "sum": "Summe",
+      "from": "Von",
+      "to": "Bis",
+      "allDepots": "Alle Depots",
+      "allSecurities": "Alle Wertpapiere"
+    },
+    "allAssetClasses": "Alle Assetklassen",
+    "gainSplit": {
+      "total": "GuV",
+      "realized": "Realisiert",
+      "priceGain": "Kursgewinn"
+    },
+    "classChips": {
+      "all": "Alle",
+      "noHoldings": "Keine Bestände im Zeitraum"
+    }
+  },
+  "assetClasses": {
+    "stock": "Aktien",
+    "etf": "ETF",
+    "fund": "Fonds",
+    "bond": "Anleihen",
+    "crypto": "Krypto",
+    "commodity": "Rohstoffe",
+    "other": "Sonstige",
+    "cash": "Cash"
+  },
+  "budget": {
+    "title": "Budget",
+    "analysis": "Analyse",
+    "month": "Monat",
+    "quarter": "Quartal",
+    "year": "Jahr",
+    "previous": "Vorheriger Zeitraum",
+    "next": "Nächster Zeitraum",
+    "current": "Aktueller Zeitraum",
+    "income": "Einnahmen",
+    "expenses": "Ausgaben",
+    "balance": "Saldo",
+    "saved": "Gespart",
+    "savedInfo": "Ausgaben in „Sparen und Anlegen“, inklusive Wertpapierkäufen, die vom Referenzkonto des Brokers bezahlt werden.",
+    "savingsRate": "Sparquote",
+    "savingsRateInfo": "Gespart geteilt durch Einnahmen im Zeitraum.",
+    "categories": "Kategorien",
+    "expensesTotal": "Ausgaben gesamt",
+    "incomeTotal": "Einnahmen gesamt",
+    "noData": "Keine Buchungen in diesem Zeitraum",
+    "sankey": "Geldfluss",
+    "budgets": {
+      "title": "Budgets",
+      "create": "Budget anlegen",
+      "limit": "Monatliches Limit",
+      "spent": "ausgegeben",
+      "remaining": "übrig",
+      "over": "überschritten",
+      "category": "Kategorie",
+      "delete": "Budget löschen"
+    },
+    "nav": {
+      "analysis": "Analyse",
+      "sankey": "Sankey",
+      "budgets": "Budgets"
+    },
+    "chart": {
+      "title": "Verteilung",
+      "total": "Gesamt"
+    }
+  },
+  "categories": {
+    "title": "Kategorien",
+    "newSub": "Neue Unterkategorie",
+    "add": "Hinzufügen",
+    "rules": "Regeln",
+    "apply": "Regeln anwenden",
+    "noRules": "Noch keine Regeln. Lege sie beim Kategorisieren mit „Für ähnliche Buchungen merken“ oder hier an.",
+    "fields": {
+      "counterparty": "Empfänger",
+      "purpose": "Verwendungszweck",
+      "counterparty_iban": "IBAN"
+    },
+    "operators": {
+      "contains": "enthält",
+      "equals": "ist",
+      "starts_with": "beginnt mit",
+      "regex": "passt auf"
+    }
+  },
+  "insurance": {
+    "add": "Versicherung hinzufügen",
+    "edit": "Versicherung bearbeiten",
+    "type": "Art",
+    "provider": "Versicherer",
+    "contractNumber": "Vertragsnummer",
+    "premium": "Beitrag",
+    "interval": "Zahlweise",
+    "start": "Beginn",
+    "end": "Ende",
+    "notes": "Notizen",
+    "since": "seit {date}",
+    "perYear": "pro Jahr",
+    "total": "Gesamtkosten pro Jahr",
+    "emptyTitle": "Noch keine Versicherungen",
+    "emptyDescription": "Erfasse deine Verträge, um Beiträge und Laufzeiten im Blick zu behalten.",
+    "deleteTitle": "Vertrag löschen?",
+    "deleteText": "Der Vertrag bei {name} wird gelöscht.",
+    "types": {
+      "health": "Krankenversicherung",
+      "term_life": "Risiko-Lebensversicherung",
+      "liability": "Haftpflicht",
+      "household": "Hausrat",
+      "disability": "Berufsunfähigkeit",
+      "car": "Kfz",
+      "legal": "Rechtsschutz",
+      "other": "Sonstige"
+    },
+    "intervals": {
+      "monthly": "monatlich",
+      "quarterly": "vierteljährlich",
+      "semiannual": "halbjährlich",
+      "annual": "jährlich"
+    },
+    "per": {
+      "monthly": "/ Monat",
+      "quarterly": "/ Quartal",
+      "semiannual": "/ Halbjahr",
+      "annual": "/ Jahr"
+    }
+  },
+  "analysis": {
+    "title": "Analyse",
+    "breakdown": "Aufteilung",
+    "unassigned": "Nicht zugeordnet",
+    "dimensions": {
+      "assetClass": "Assetklassen",
+      "region": "Regionen",
+      "sector": "Branchen",
+      "currency": "Währungen",
+      "volatility": "Volatilität",
+      "return": "Rendite",
+      "grouping": "Eigene Aufteilung"
+    },
+    "returns": {
+      "title": "Rendite",
+      "line": "Linie",
+      "heatmap": "Heatmap",
+      "bars": "Balken",
+      "yearly": "Wertentwicklung",
+      "year": "Jahr",
+      "twror": "TWROR",
+      "xirr": "IZF",
+      "inflation": "Inflation",
+      "real": "Realrendite",
+      "ytd": "YTD",
+      "total": "Jahr gesamt"
+    },
+    "compare": {
+      "title": "Portfoliovergleich",
+      "select": "Depots auswählen",
+      "empty": "Mindestens zwei Depots auswählen"
+    },
+    "classification": {
+      "title": "Klassifizierung",
+      "fundType": "Fondsart",
+      "benchmark": "Als Benchmark verwenden",
+      "sum": "Summe {sum}",
+      "sumTooHigh": "Summe {sum} – höchstens 100 %",
+      "add": "Eintrag hinzufügen",
+      "saved": "Klassifizierung gespeichert"
+    },
+    "grouping": {
+      "manage": "Aufteilungen verwalten",
+      "new": "Neue Aufteilung",
+      "name": "Name",
+      "groups": "Gruppen (eine pro Zeile)",
+      "none": "Keine eigene Aufteilung",
+      "assign": "Zuordnung",
+      "noGroup": "Keine Gruppe"
+    },
+    "empty": "Noch keine Positionen für eine Analyse"
+  },
+  "dividends": {
+    "title": "Dividenden",
+    "last12": "Letzte 12 Monate",
+    "avgMonth": "Ø pro Monat",
+    "yieldYtd": "Dividendenrendite YTD",
+    "cagr": "CAGR",
+    "history": "Entwicklung",
+    "bySecurity": "Nach Wertpapieren",
+    "calendar": "Dividendenkalender",
+    "year": "Jahr",
+    "amount": "Betrag",
+    "change": "Zum Vorjahr",
+    "expected": "erwartet",
+    "received": "erhalten",
+    "addExpected": "Erwartete Zahlung",
+    "payDate": "Zahltag",
+    "exDate": "Ex-Tag",
+    "perShare": "Betrag je Anteil",
+    "note": "Notiz",
+    "security": "Wertpapier",
+    "empty": "Noch keine Dividenden",
+    "deleteExpected": "Erwartete Zahlung löschen?",
+    "viewList": "Liste",
+    "viewGrid": "Kalender"
+  },
+  "taxes": {
+    "title": "Steuern",
+    "allowance": "Freibetrag",
+    "available": "{amount} noch verfügbar",
+    "assessment": "Veranlagung",
+    "single": "Einzelveranlagung",
+    "joint": "Zusammenveranlagung",
+    "orders": "Freistellungsaufträge {year}",
+    "addOrder": "Freistellungsauftrag hinzufügen",
+    "broker": "Broker",
+    "amount": "Betrag",
+    "used": "{used} von {amount} genutzt",
+    "remaining": "Verbleibend",
+    "income": "Kapitalerträge",
+    "exceeds": "Sparerpauschbetrag überschritten: Summe der Aufträge {total} > {allowance}",
+    "baseRate": "Basiszins {year}",
+    "baseRateMissing": "Basiszins fehlt",
+    "vorab": "Geschätzte Vorabpauschale {year}",
+    "vorabNote": "Schätzung ohne Gewähr; maßgeblich ist die Abrechnung deines Brokers.",
+    "basisertrag": "Basisertrag",
+    "vorabpauschale": "Vorabpauschale",
+    "taxable": "Steuerpflichtig",
+    "fundType": "Fondsart",
+    "noFunds": "Keine Fonds im Bestand",
+    "deleteOrder": "Freistellungsauftrag löschen?"
+  },
+  "benchmark": {
+    "compare": "Vergleichen mit",
+    "none": "Keiner",
+    "empty": "Keine Benchmark mit Kursen – Kurse unter Datenquellen importieren",
+    "stale": "Kurse veraltet"
+  },
+  "watchlists": {
+    "title": "Watchlists",
+    "new": "Neue Watchlist",
+    "name": "Name",
+    "rename": "Umbenennen",
+    "delete": "Watchlist löschen?",
+    "add": "Wertpapier hinzufügen",
+    "isin": "ISIN",
+    "securityName": "Name",
+    "invalidIsin": "Ungültige ISIN",
+    "empty": "Noch nichts hinzugefügt",
+    "emptyLists": "Noch keine Watchlist",
+    "noPrices": "Keine Kurse",
+    "importPrices": "Kurse importieren",
+    "count": "{n} Wertpapiere",
+    "price": "Kurs",
+    "change": "Veränderung",
+    "remove": "Entfernen"
+  },
+  "txws": {
+    "title": "Transaktionen",
+    "balance": "Kontostand",
+    "balanceInfo": "Summe der Kontostände der gewählten Konten.",
+    "unreviewed": "Ungeprüfte Transaktionen",
+    "onlyUnreviewed": "Nur ungeprüfte anzeigen",
+    "markAllReviewed": "Alle als geprüft markieren",
+    "markAllConfirm": "{n} Buchungen als geprüft markieren?",
+    "markAllConfirmInfo": "Betrifft alle ungeprüften Buchungen im aktuellen Filter.",
+    "search": "Suchen …",
+    "filter": "Filtern",
+    "columns": "Spalten",
+    "tags": "Tags",
+    "categories": "Kategorien",
+    "export": "Export",
+    "selectAll": "Alle auswählen",
+    "selected": "{n} ausgewählt",
+    "setCategory": "Kategorie setzen",
+    "setTags": "Tags",
+    "markReviewed": "Als geprüft markieren",
+    "delete": "Löschen",
+    "deleteConfirm": "{n} Buchungen löschen?",
+    "deleted": "{n} Buchungen gelöscht",
+    "undo": "Rückgängig",
+    "restored": "Wiederhergestellt",
+    "perPage": "Pro Seite",
+    "rows": "{from}–{to} von {total}",
+    "sum": "Summe",
+    "empty": "Keine Transaktionen gefunden",
+    "unreviewedDot": "Ungeprüft",
+    "col": {
+      "select": "Auswahl",
+      "name": "Name",
+      "date": "Datum",
+      "category": "Kategorie",
+      "tags": "Eigenschaften",
+      "account": "Konto",
+      "amount": "Betrag",
+      "purpose": "Verwendungszweck"
+    },
+    "filters": {
+      "title": "Filter",
+      "accounts": "Konten",
+      "types": "Typ",
+      "categories": "Kategorien",
+      "tags": "Tags",
+      "from": "Von",
+      "to": "Bis",
+      "minAmount": "Betrag ab",
+      "maxAmount": "Betrag bis",
+      "review": "Status",
+      "reviewAll": "Alle",
+      "reviewUnreviewed": "Ungeprüft",
+      "reviewReviewed": "Geprüft",
+      "reset": "Zurücksetzen",
+      "apply": "Anwenden"
+    }
+  },
+  "tags": {
+    "title": "Tags",
+    "new": "Neuer Tag",
+    "name": "Name",
+    "color": "Farbe",
+    "usage": "{n} Buchungen",
+    "empty": "Noch keine Tags",
+    "duplicate": "Tag existiert bereits",
+    "deleteConfirm": "Tag „{name}“ löschen? Die Buchungen bleiben erhalten."
+  },
+  "accountsOverview": {
+    "depots": "Depots",
+    "accounts": "Konten",
+    "lastImport": "Letzter Import: {date}",
+    "lastSync": "Zuletzt {date}",
+    "refresh": "Aktualisieren",
+    "noUpdate": "Noch keine Daten",
+    "copyIban": "IBAN kopieren",
+    "copied": "Kopiert",
+    "add": "Hinzufügen",
+    "figures": {
+      "balance": "Kontostand",
+      "change": "Veränderung",
+      "inflow": "Eingänge",
+      "outflow": "Ausgänge"
+    },
+    "history": "Verlauf",
+    "bookings": "Buchungen",
+    "positions": "Positionen",
+    "notFound": "Konto nicht gefunden"
+  },
+  "periodPicker": {
+    "current": "Aktueller Monat",
+    "pick": "Zeitraum wählen",
+    "months": "Monate",
+    "quarters": "Quartale",
+    "years": "Jahre",
+    "range": "{from} – {to}"
+  },
+  "budgetsPage": {
+    "chart": "Budget vs. Ausgaben",
+    "totalBudget": "Gesamtbudget",
+    "budget": "Budget",
+    "spent": "Ausgaben",
+    "limit": "Budgethöhe",
+    "status": "Status",
+    "diff": "Differenz",
+    "add": "Hinzufügen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "deleteConfirm": "Budget „{name}“ löschen?",
+    "empty": "Noch keine Budgets",
+    "emptyInfo": "Lege ein Budget an, um Ausgaben je Kategorie zu begrenzen."
+  },
+  "categoryDetail": {
+    "history": "Verlauf (12 Monate)",
+    "bookings": "Buchungen",
+    "empty": "Keine Buchungen in diesem Zeitraum",
+    "icon": "Symbol",
+    "color": "Farbe"
+  },
+  "search": {
+    "open": "Suchen",
+    "placeholder": "Seiten, Wertpapiere, Konten, Buchungen …",
+    "empty": "Keine Treffer",
+    "minChars": "Mindestens 2 Zeichen",
+    "groups": {
+      "pages": "Seiten",
+      "instruments": "Wertpapiere",
+      "accounts": "Konten",
+      "transactions": "Transaktionen"
+    }
+  },
+  "refine": {
+    "years": "Jahre",
+    "periods": "Zeiträume",
+    "split": "Aufteilung",
+    "bySecurity": "Wertpapiere",
+    "byRegion": "Regionen",
+    "bySector": "Branchen",
+    "broker": "Broker",
+    "subtotal": "Zwischensumme",
+    "allAssets": "Alle",
+    "copy": "Kopieren",
+    "customRange": "Eigener Zeitraum",
+    "investedCapital": "Investiertes Kapital",
+    "benchmark": "Benchmark",
+    "chartMenu": "Diagramm-Optionen",
+    "latestUnreviewed": "Neueste ungeprüfte Buchungen",
+    "showAll": "Alle anzeigen"
+  },
+  "trailing": {
+    "1M": "1 Monat",
+    "3M": "3 Monate",
+    "YTD": "Seit Jahresbeginn",
+    "1Y": "1 Jahr",
+    "3Y": "3 Jahre",
+    "5Y": "5 Jahre"
+  },
+  "scalable": {
+    "title": "Scalable Capital",
+    "connect": "Scalable Capital verbinden",
+    "connected": "Verbunden",
+    "reauth": "Neu verbinden",
+    "error": "Fehler",
+    "disabled": "Nicht verbunden",
+    "sync": "Synchronisieren",
+    "disconnect": "Verbindung trennen",
+    "disconnectConfirm": "Verbindung zu Scalable Capital trennen? Importierte Daten bleiben erhalten.",
+    "daily": "Täglich synchronisieren",
+    "dailyOn": "Tägliche Synchronisierung ist aktiv",
+    "dailyOff": "Tägliche Synchronisierung ist aus (Server-Einstellung)",
+    "running": "Synchronisierung läuft bereits",
+    "started": "Synchronisierung gestartet",
+    "lastSync": "Zuletzt synchronisiert {date}",
+    "lastRun": "{imported} neu, {skipped} übersprungen",
+    "never": "Noch nie synchronisiert",
+    "info": "Du meldest dich direkt bei Scalable Capital an. Vermögenskompass speichert nur den verschlüsselten Zugriffsschlüssel und nutzt ausschließlich lesende Funktionen.",
+    "refused": "Verbindung zu Scalable nicht hergestellt",
+    "refusedAgentic": "Aktiviere „Agentic Investing“ in den Sicherheitseinstellungen von Scalable Capital (im Web) und verbinde dann erneut.",
+    "refusedDenied": "Scalable hat den Zugriff abgelehnt oder die Anmeldung wurde abgebrochen."
+  },
+  "bank": {
+    "title": "Bankkonto (Enable Banking)",
+    "hint": "Du meldest dich auf der Seite deiner Bank an und gibst dort den Lesezugriff frei. Die App sieht dein Bankpasswort nie.",
+    "connect": "Bank verbinden",
+    "choose": "Bank auswählen",
+    "searchBank": "Bank suchen",
+    "notConfigured": "Für die Bankverbindung fehlt die Enable-Banking-App in der Server-Konfiguration.",
+    "validUntil": "Zugang gültig bis {date}",
+    "endsIn": "Zugang läuft in {days} Tagen ab",
+    "renew": "Zugang erneuern",
+    "expired": "Zugang abgelaufen",
+    "expiredHint": "Der Bankzugang ist abgelaufen. Erneuere ihn, damit Umsätze wieder abgerufen werden.",
+    "disconnect": "Trennen",
+    "disconnectConfirm": "Bankverbindung trennen? Konten und Umsätze bleiben erhalten.",
+    "disconnected": "Bankverbindung getrennt",
+    "connected": "Bank verbunden",
+    "refresh": "Aktualisieren",
+    "accounts": "Freigegebene Konten",
+    "errors": {
+      "denied": "Die Freigabe bei der Bank wurde abgebrochen.",
+      "state": "Die Anmeldung konnte nicht zugeordnet werden. Bitte erneut verbinden.",
+      "expired": "Die Anmeldung bei der Bank ist abgelaufen. Bitte erneut verbinden.",
+      "generic": "Die Bankverbindung ist fehlgeschlagen."
+    },
+    "addAccounts": "Konten hinzufügen",
+    "addAccountsHint": "Wähle bei der Bank alle Konten aus, die die App lesen soll."
+  },
+  "marketData": {
+    "search": "Asset suchen",
+    "placeholder": "Name, ISIN oder WKN",
+    "minChars": "Mindestens 2 Zeichen eingeben",
+    "noResults": "Keine Treffer",
+    "more": "Mehr anzeigen",
+    "add": "Hinzufügen",
+    "added": "Zur Watchlist hinzugefügt",
+    "duplicate": "Schon auf der Watchlist",
+    "unavailable": "Suche und Kurse brauchen die Scalable-Verbindung.",
+    "toSources": "Zu den Datenquellen",
+    "quotedAt": "Kurs vom {time}",
+    "refresh": "Kurse aktualisieren",
+    "refreshing": "Kurse werden aktualisiert",
+    "columns": {
+      "isin": "ISIN",
+      "class": "Klasse",
+      "name": "Name"
+    }
+  },
+  "rules": {
+    "scopeSingle": "Nur diese Buchung",
+    "scopeRecipient": "Alle Buchungen dieses Empfängers",
+    "remember": "Für ähnliche Buchungen merken",
+    "title": "Regel",
+    "field": "Feld",
+    "fields": {
+      "counterparty": "Gegenpartei",
+      "counterparty_iban": "IBAN",
+      "purpose": "Verwendungszweck"
+    },
+    "operator": "Bedingung",
+    "operators": {
+      "contains": "enthält",
+      "equals": "ist gleich",
+      "starts_with": "beginnt mit",
+      "regex": "regulärer Ausdruck"
+    },
+    "pattern": "Suchtext",
+    "sign": "Betrag",
+    "signs": {
+      "any": "Alle",
+      "positive": "Nur Einnahmen",
+      "negative": "Nur Ausgaben"
+    },
+    "preview": "{n} Buchungen würden geändert",
+    "previewMatches": "{n} Buchungen passen",
+    "updated": "{n} Buchungen geändert",
+    "saved": "Regel gespeichert",
+    "applied": "Regel gespeichert, {n} Buchungen zugeordnet",
+    "suggest": "Regel anlegen?",
+    "suggestText": "{counterparty} → {category}: {n} Buchungen würden zugeordnet",
+    "accept": "Annehmen",
+    "decline": "Nicht mehr vorschlagen",
+    "new": "Neue Regel",
+    "edit": "Regel bearbeiten",
+    "up": "Nach oben",
+    "down": "Nach unten",
+    "active": "Aktiv",
+    "invalidRegex": "Ungültiger regulärer Ausdruck",
+    "mixedRecipients": "Für unterschiedliche Empfänger kann keine Regel gespeichert werden",
+    "changeCategory": "Kategorie ändern",
+    "category": "Kategorie",
+    "empty": "Noch keine Regeln. Lege sie beim Kategorisieren mit „Für ähnliche Buchungen merken“ oder hier an.",
+    "appliedAll": "{n} Buchungen kategorisiert"
+  },
+  "panel": {
+    "account": "Konto",
+    "details": "Details",
+    "to": "An",
+    "from": "Von",
+    "iban": "IBAN",
+    "purpose": "Verwendungszweck",
+    "amount": "Betrag",
+    "date": "Datum",
+    "type": "Transaktionstyp",
+    "unreviewed": "Als ungeprüft markieren",
+    "transfer": "Als Kontentransfer markieren",
+    "tags": "Tags",
+    "notes": "Notizen",
+    "notePlaceholder": "Notiz hinzufügen",
+    "delete": "Transaktion löschen",
+    "category": "Kategorie",
+    "close": "Schließen"
+  },
+  "categoryWindow": {
+    "title": "Kategorie ändern",
+    "search": "Kategorie suchen",
+    "all": "Alle Kategorien",
+    "own": "Eigene Kategorien",
+    "create": "Neue Kategorie erstellen",
+    "createName": "Name der Kategorie",
+    "createParent": "Hauptkategorie",
+    "none": "Keine passende Kategorie"
+  },
+  "filterPanel": {
+    "title": "Filter",
+    "accounts": "Konten",
+    "allAccounts": "Alle Konten",
+    "type": "Art der Transaktion",
+    "all": "Alle",
+    "period": "Zeitraum",
+    "category": "Kategorie",
+    "tags": "Tags",
+    "direction": "Kontobewegungen",
+    "both": "Ein- und ausgehende",
+    "in": "Eingehende",
+    "out": "Ausgehende",
+    "min": "Min Betrag",
+    "max": "Max Betrag",
+    "status": "Status",
+    "reset": "Zurücksetzen",
+    "apply": "Ergebnisse anzeigen"
+  },
+  "info": {
+    "netWorth": "Summe aller Konten und Depots zum letzten Tag des Zeitraums.",
+    "gain": "Veränderung im Zeitraum ohne Ein- und Auszahlungen."
+  },
+  "addWindow": {
+    "title": "Was möchtest du hinzufügen?",
+    "providers": "Anbieter",
+    "assets": "Assets",
+    "search": "Anbieter, IBAN oder BIC eingeben",
+    "popular": "Beliebte Anbieter",
+    "manual": "Anbieter manuell hinzufügen",
+    "how": "Wie möchtest du importieren?",
+    "automatic": "Automatisch",
+    "automaticHint": "Konto verbinden und Transaktionen automatisch importieren",
+    "file": "Datei hochladen",
+    "fileHint": "CSV-Export deiner Bank oder deines Brokers",
+    "manualImport": "Manuell",
+    "manualHint": "Transaktionen manuell pflegen",
+    "unsupported": "Für diesen Anbieter nicht verfügbar",
+    "back": "Zurück",
+    "securities": "Wertpapier suchen"
+  },
+  "charts": {
+    "totalExpenses": "Gesamtausgaben",
+    "totalIncome": "Gesamteinnahmen",
+    "toSankey": "Zur Sankey-Ansicht",
+    "sankey": "Sankey Diagramm"
+  },
+  "logo": {
+    "change": "Logo ändern",
+    "title": "Logo wählen",
+    "search": "Marke suchen",
+    "auto": "Automatisch",
+    "autoDetected": "Automatisch erkannt",
+    "none": "Kein Logo",
+    "upload": "Eigenes Logo hochladen",
+    "tooBig": "Bild zu groß (max. 256 KB)",
+    "wrongType": "Nur PNG, JPEG oder WebP",
+    "appliesAll": "Gilt für alle Buchungen von {name}",
+    "noResults": "Keine passende Marke",
+    "saved": "Logo gespeichert",
+    "licence": "Markenlogos: theSVG (MIT) und Simple Icons (CC0), in der App enthalten. Marken sind Eigentum ihrer Inhaber.",
+    "institutionAppliesAll": "Gilt für alle Konten von {name}",
+    "localHint": "Eigene Logos für Banken und Händler kannst du lokal im Logo-Ordner ablegen (siehe README)."
+  }
+}

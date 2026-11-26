@@ -1,0 +1,90 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1795395317358,
+      "tag": "0000_shared_entities",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1795396788964,
+      "tag": "0001_dashboard_layout",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1795430841846,
+      "tag": "0002_import_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1795433783032,
+      "tag": "0003_budget",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1795434733900,
+      "tag": "0004_insurance",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1795450128748,
+      "tag": "0005_investment_analysis",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1795513612318,
+      "tag": "0006_reference_parity",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1795533142100,
+      "tag": "0007_sync_and_history",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1795560549194,
+      "tag": "0008_bank_sync_market_data",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1795612529772,
+      "tag": "0009_rule_suggestions",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1795626421151,
+      "tag": "0010_transaction_note",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1795650651848,
+      "tag": "0011_recipient_logo",
+      "breakpoints": true
+    }
+  ]
+}

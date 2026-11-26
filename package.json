@@ -1,0 +1,35 @@
+{
+  "name": "finanzguru-clone",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": ">=26 <27"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @finance/shared build && pnpm --parallel --filter api --filter web dev",
+    "build": "pnpm -r build",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "typecheck": "pnpm --filter @finance/shared build && pnpm -r typecheck",
+    "format:check": "prettier --check .",
+    "test": "pnpm --filter @finance/shared build && pnpm -r test",
+    "test:e2e": "playwright test -c e2e/playwright.config.ts",
+    "docker:local": "docker compose -f compose.local.yaml up -d --build",
+    "docker:local:down": "docker compose -f compose.local.yaml down",
+    "dev:local": "pnpm --filter @finance/shared build && pnpm --parallel --filter api --filter web run dev:local",
+    "dev:local:https": "pnpm --filter @finance/shared build && pnpm --parallel --filter api --filter web run dev:local:https"
+  },
+  "devDependencies": {
+    "@nuxt/eslint-config": "^1.17.0",
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^26.6.6",
+    "eslint": "^10.15.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.10.1",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.73.0",
+    "vitest": "^5.1.1",
+    "vue-tsc": "^3.3.14"
+  }
+}

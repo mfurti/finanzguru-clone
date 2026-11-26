@@ -1,0 +1,114 @@
+/** Enum values shared by the database schema, the API DTOs and the web app (data-model.md). */
+
+export const ACCOUNT_TYPES = [
+  'depot',
+  'checking',
+  'savings',
+  'reference',
+  'credit_card',
+  'cash',
+] as const
+export type AccountType = (typeof ACCOUNT_TYPES)[number]
+
+export const ASSET_CLASSES = [
+  'stock',
+  'etf',
+  'fund',
+  'bond',
+  'crypto',
+  'commodity',
+  'other',
+] as const
+export type AssetClass = (typeof ASSET_CLASSES)[number]
+
+export const PRICE_SOURCES = ['scalable', 'csv', 'manual'] as const
+export type PriceSource = (typeof PRICE_SOURCES)[number]
+
+export const TRANSACTION_TYPES = [
+  'income',
+  'expense',
+  'transfer',
+  'buy',
+  'sell',
+  'dividend',
+  'interest',
+  'tax',
+  'fee',
+  'split',
+  'deposit',
+  'withdrawal',
+] as const
+export type TransactionType = (typeof TRANSACTION_TYPES)[number]
+
+export const CATEGORY_SOURCES = ['manual', 'rule', 'import'] as const
+export type CategorySource = (typeof CATEGORY_SOURCES)[number]
+
+export const REVIEW_STATUSES = ['unreviewed', 'reviewed'] as const
+export type ReviewStatus = (typeof REVIEW_STATUSES)[number]
+
+export const TRANSACTION_SOURCES = ['csv', 'scalable_mcp', 'manual', 'enable_banking'] as const
+export type TransactionSource = (typeof TRANSACTION_SOURCES)[number]
+
+export const CATEGORY_KINDS = ['income', 'expense', 'savings', 'transfer'] as const
+export type CategoryKind = (typeof CATEGORY_KINDS)[number]
+
+/** `sparkasse_fints` stays for existing rows; live bank access is `enable_banking` (005). */
+export const SOURCE_KINDS = ['csv', 'scalable_mcp', 'sparkasse_fints', 'enable_banking'] as const
+export type SourceKind = (typeof SOURCE_KINDS)[number]
+
+export const SOURCE_STATUSES = [
+  'active',
+  'needs_reauth',
+  'error',
+  'planned',
+  'disabled',
+  'consent_expired',
+] as const
+export type SourceStatus = (typeof SOURCE_STATUSES)[number]
+
+export const IMPORT_JOB_KINDS = ['csv_upload', 'sync'] as const
+export type ImportJobKind = (typeof IMPORT_JOB_KINDS)[number]
+
+export const IMPORT_JOB_STATUSES = ['pending', 'running', 'succeeded', 'partial', 'failed'] as const
+export type ImportJobStatus = (typeof IMPORT_JOB_STATUSES)[number]
+
+export const RULE_MATCH_FIELDS = ['counterparty', 'purpose', 'counterparty_iban'] as const
+export type RuleMatchField = (typeof RULE_MATCH_FIELDS)[number]
+
+export const RULE_OPERATORS = ['contains', 'equals', 'starts_with', 'regex'] as const
+export type RuleOperator = (typeof RULE_OPERATORS)[number]
+
+export const AMOUNT_SIGNS = ['positive', 'negative'] as const
+export type AmountSign = (typeof AMOUNT_SIGNS)[number]
+
+export const INSURANCE_TYPES = [
+  'health',
+  'term_life',
+  'liability',
+  'household',
+  'disability',
+  'car',
+  'legal',
+  'other',
+] as const
+export type InsuranceType = (typeof INSURANCE_TYPES)[number]
+
+export const PREMIUM_INTERVALS = ['monthly', 'quarterly', 'semiannual', 'annual'] as const
+export type PremiumInterval = (typeof PREMIUM_INTERVALS)[number]
+
+/** Overview widgets in their default order (dashboard_layout.widget_key). */
+export const WIDGET_KEYS = [
+  'networth',
+  'allocation',
+  'kpis',
+  'holdings',
+  'accounts',
+  'review',
+  'cashflow',
+  'budgets',
+] as const
+export type WidgetKey = (typeof WIDGET_KEYS)[number]
+
+/** Chart/KPI periods (contracts/http-api.md, common query param `period`). */
+export const PERIODS = ['1W', '1M', 'YTD', '1Y', '3Y', '5Y', 'ALL'] as const
+export type Period = (typeof PERIODS)[number]

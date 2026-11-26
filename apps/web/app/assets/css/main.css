@@ -1,0 +1,137 @@
+@import 'tailwindcss';
+@import '@nuxt/ui';
+/* Outfit (OFL-1.1), bundled from npm and served by the app itself: no font CDN (FR-023, FR-025). */
+@import '@fontsource-variable/outfit';
+
+/*
+ * Motion and hover system. Durations stay short (120-320 ms) so the app feels
+ * responsive, and every movement is switched off for prefers-reduced-motion.
+ */
+@theme {
+  --font-sans: 'Outfit Variable', 'Outfit', Arial, sans-serif;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/*
+ * Page and card surfaces: cards stand out from the page by a small color step
+ * instead of borders (dark values measured from the reference: page #1B1D22,
+ * card #24272E).
+ */
+:root {
+  --app-page: var(--ui-color-neutral-100);
+  --app-card: #ffffff;
+  --app-card-hover: var(--ui-color-neutral-50);
+}
+.dark {
+  --app-page: #1b1d22;
+  --app-card: #24272e;
+  --app-card-hover: #2b2f37;
+}
+
+html {
+  /* Reserve the scrollbar width so pages do not shift sideways (short vs. long pages). */
+  scrollbar-gutter: stable;
+  background-color: var(--app-page);
+}
+
+/* Card titles like the reference (about 22 px, bold). */
+[data-slot='header'] h2 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+}
+
+/* Links in card headers and lists: underline fades in, text takes the accent. */
+@utility link-hover {
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition:
+    color 150ms ease,
+    text-decoration-color 150ms ease;
+  &:hover,
+  &:focus-visible {
+    color: var(--ui-primary);
+    text-decoration-color: currentColor;
+  }
+}
+
+/* List rows: soft background on hover, bleeding slightly into the card padding. */
+@utility row-hover {
+  margin-inline: -0.5rem;
+  padding-inline: 0.5rem;
+  border-radius: calc(var(--ui-radius) * 1.5);
+  transition: background-color 150ms ease;
+  &:hover {
+    background-color: var(--app-card-hover);
+  }
+}
+
+/* Dashboard widgets: border and shadow lift on hover. */
+@utility card-hover {
+  transition:
+    box-shadow 200ms var(--ease-out-soft),
+    translate 200ms var(--ease-out-soft),
+    --tw-ring-color 200ms ease;
+  &:hover {
+    --tw-ring-color: var(--ui-border-accented);
+    box-shadow:
+      0 0 0 1px var(--tw-ring-color),
+      0 8px 24px -12px rgb(0 0 0 / 0.25);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Route changes (nuxt.config app.pageTransition). */
+  .page-enter-active,
+  .page-leave-active {
+    transition:
+      opacity 180ms var(--ease-out-soft),
+      translate 180ms var(--ease-out-soft);
+  }
+  .page-enter-from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+  .page-leave-to {
+    opacity: 0;
+  }
+
+  /* Staggered entrance; set --i on each element for the delay. */
+  .reveal {
+    /* backwards, not both: a held end state would block the hover translate. */
+    animation: fade-up 320ms var(--ease-out-soft) backwards;
+    animation-delay: calc(var(--i, 0) * 45ms);
+  }
+
+  .card-hover:hover {
+    translate: 0 -2px;
+  }
+
+  /*
+   * Bar charts: the hovered bar stays, the rest dims. Unovis writes `opacity`
+   * and `transition: fill` inline, so dim with fill-opacity instead.
+   * (Donuts use DonutChart.vue with its own hover halo.)
+   */
+  .chart-hover path[class$='-bar'] {
+    transition: fill-opacity 150ms ease !important;
+  }
+  .chart-hover:has(path[class$='-bar']:hover) path[class$='-bar']:not(:hover) {
+    fill-opacity: 0.4;
+  }
+}
+
+.chart-hover path[class$='-bar'] {
+  cursor: pointer;
+}

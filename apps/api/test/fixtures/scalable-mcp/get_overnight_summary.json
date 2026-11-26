@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "portfolio_context_required",
+    "message": "No active overnight savings accounts are accessible to the authenticated user."
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "_source": "Reference values computed independently: XIRR from the Microsoft Excel XIRR documentation example (0.373362535), simple one-year cases by hand, TWROR chains by hand. Tolerance per SC-007: 0.0001 (0.01 percentage points).",
+  "xirr": [
+    {
+      "name": "Excel XIRR documentation example",
+      "flows": [
+        { "date": "2008-01-01", "amountCents": -1000000 },
+        { "date": "2008-03-01", "amountCents": 275000 },
+        { "date": "2008-10-30", "amountCents": 425000 },
+        { "date": "2009-02-15", "amountCents": 325000 },
+        { "date": "2009-04-01", "amountCents": 275000 }
+      ],
+      "expected": 0.373362535
+    },
+    {
+      "name": "10 % in exactly 365 days",
+      "flows": [
+        { "date": "2025-01-01", "amountCents": -100000 },
+        { "date": "2026-01-01", "amountCents": 110000 }
+      ],
+      "expected": 0.1
+    },
+    {
+      "name": "loss of 25 % in one year",
+      "flows": [
+        { "date": "2025-01-01", "amountCents": -100000 },
+        { "date": "2026-01-01", "amountCents": 75000 }
+      ],
+      "expected": -0.25
+    },
+    {
+      "name": "two deposits, one payout after two years",
+      "flows": [
+        { "date": "2024-01-01", "amountCents": -100000 },
+        { "date": "2024-12-31", "amountCents": -100000 },
+        { "date": "2025-12-31", "amountCents": 231000 }
+      ],
+      "expected": 0.1
+    }
+  ],
+  "twror": [
+    {
+      "name": "growth, then a deposit at the start of a day",
+      "series": [
+        { "date": "2026-01-01", "valueCents": 100000, "flowCents": 0 },
+        { "date": "2026-01-02", "valueCents": 110000, "flowCents": 0 },
+        { "date": "2026-01-03", "valueCents": 165000, "flowCents": 50000 }
+      ],
+      "expected": 0.134375
+    },
+    {
+      "name": "first purchase into an empty depot",
+      "series": [
+        { "date": "2026-01-01", "valueCents": 0, "flowCents": 0 },
+        { "date": "2026-01-02", "valueCents": 100000, "flowCents": 100000 },
+        { "date": "2026-01-03", "valueCents": 95000, "flowCents": 0 }
+      ],
+      "expected": -0.05
+    },
+    {
+      "name": "withdrawal does not count as loss",
+      "series": [
+        { "date": "2026-01-01", "valueCents": 200000, "flowCents": 0 },
+        { "date": "2026-01-02", "valueCents": 110000, "flowCents": -100000 }
+      ],
+      "expected": 0.1
+    }
+  ]
+}

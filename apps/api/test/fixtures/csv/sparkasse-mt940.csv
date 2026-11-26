@@ -1,0 +1,4 @@
+"Auftragskonto";"Buchungstag";"Valutadatum";"Buchungstext";"Verwendungszweck";"Beguenstigter/Zahlungspflichtiger";"Kontonummer";"BLZ";"Betrag";"Waehrung";"Info"
+"DE45120300001234567890";"02.11.26";"02.11.26";"GUTSCHRIFT";"Erstattung";"Demo Online-Shop";"0000202051";"12030000";"19,99";"EUR";"Umsatz gebucht"
+"DE45120300001234567890";"06.11.26";"06.11.26";"LASTSCHRIFT";"Streaming Abo";"Demo Streaming";"0000202051";"12030000";"-12,99";"EUR";"Umsatz gebucht"
+"DE45120300001234567890";"08.11.26";"08.11.26";"ENTGELTABSCHLUSS";"Kontoführung";"";"";"";"-4,95";"EUR";"Umsatz gebucht"

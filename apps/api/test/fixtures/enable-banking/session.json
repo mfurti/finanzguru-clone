@@ -1,0 +1,15 @@
+{
+  "session_id": "00000000-0000-4000-8000-000000000001",
+  "accounts": [
+    {
+      "uid": "00000000-0000-4000-8000-0000000000a1",
+      "account_id": { "iban": "DE89370400440532013000" },
+      "name": null,
+      "currency": "EUR",
+      "product": "Girokonto"
+    }
+  ],
+  "aspsp": { "name": "Sparkasse Musterstadt", "country": "DE" },
+  "psu_type": "personal",
+  "access": { "valid_until": "2027-02-22T10:00:00+00:00" }
+}

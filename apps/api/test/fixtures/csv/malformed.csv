@@ -1,0 +1,5 @@
+"Auftragskonto";"Buchungstag";"Valutadatum";"Buchungstext";"Verwendungszweck";"Glaeubiger ID";"Mandatsreferenz";"Kundenreferenz (End-to-End)";"Sammlerreferenz";"Lastschrift Ursprungsbetrag";"Auslagenersatz Ruecklastschrift";"Beguenstigter/Zahlungspflichtiger";"Kontonummer/IBAN";"BIC (SWIFT-Code)";"Betrag";"Waehrung";"Info"
+"DE45120300001234567890";"01.11.26";"01.11.26";"GUTSCHR. UEBERWEISUNG";"Gehalt";"";"";"";"";"";"";"Demo Arbeitgeber GmbH";"DE02120300000000202051";"BYLADEM1001";"2.480,00";"EUR";"Umsatz gebucht"
+"DE45120300001234567890";"31.02.26";"31.02.26";"KARTENZAHLUNG";"Ungültiges Datum";"";"";"";"";"";"";"Demo Shop";"";"BYLADEM1001";"-10,00";"EUR";"Umsatz gebucht"
+"DE45120300001234567890";"04.11.26";"04.11.26";"KARTENZAHLUNG";"Ungültiger Betrag";"";"";"";"";"";"";"Demo Shop";"";"BYLADEM1001";"zehn Euro";"EUR";"Umsatz gebucht"
+"DE45120300001234567890";"05.11.26";"05.11.26";"FOLGELASTSCHRIFT";"Abschlag Strom";"";"";"";"";"";"";"Demo Stadtwerke";"DE02120300000000202051";"BYLADEM1001";"-50,00";"EUR";"Umsatz gebucht"

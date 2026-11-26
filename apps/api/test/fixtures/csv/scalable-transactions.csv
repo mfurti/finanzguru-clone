@@ -1,0 +1,10 @@
+date;time;status;reference;description;assetType;type;isin;shares;price;amount;fee;tax;currency
+2026-10-01;10:00:00;Executed;SCDEMO0001;Einzahlung;Cash;Deposit;;;;500,00;0,00;0,00;EUR
+2026-10-02;09:15:11;Executed;SCDEMO0002;iShares Core MSCI World UCITS ETF (Acc);Security;Savings plan;IE00B4L5Y983;1,25;100,00;-125,00;0,00;0,00;EUR
+2026-10-05;11:02:45;Executed;SCDEMO0003;Apple Inc.;Security;Buy;US0378331005;2;150,00;-300,99;0,99;0,00;EUR
+2026-10-20;08:00:00;Executed;SCDEMO0004;Vanguard FTSE All-World UCITS ETF (Dist);Security;Buy;IE00B3RBWM25;1;110,00;-110,00;0,00;0,00;EUR
+2026-11-02;09:15:11;Executed;SCDEMO0005;iShares Core MSCI World UCITS ETF (Acc);Security;Savings plan;IE00B4L5Y983;1,2;104,00;-124,80;0,00;0,00;EUR
+2026-11-10;12:30:00;Executed;SCDEMO0006;Apple Inc.;Security;Sell;US0378331005;1;160,00;158,51;0,99;0,50;EUR
+2026-11-15;07:00:00;Executed;SCDEMO0007;Vanguard FTSE All-World UCITS ETF (Dist);Security;Distribution;IE00B3RBWM25;;;0,42;0,00;0,08;EUR
+2026-11-16;07:00:00;Executed;SCDEMO0008;Zinsen;Cash;Interest;;;;0,25;0,00;0,00;EUR
+2026-11-18;14:00:00;Cancelled;SCDEMO0009;Apple Inc.;Security;Buy;US0378331005;5;150,00;-750,00;0,99;0,00;EUR

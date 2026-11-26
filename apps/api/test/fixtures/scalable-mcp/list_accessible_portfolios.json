@@ -1,0 +1,12 @@
+{
+  "portfolios": [
+    {
+      "portfolioId": "pf-001",
+      "displayName": "Demo Depot"
+    }
+  ],
+  "resolution": {
+    "status": "auto_resolved",
+    "autoResolvedPortfolioId": "pf-001"
+  }
+}

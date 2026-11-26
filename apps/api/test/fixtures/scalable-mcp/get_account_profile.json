@@ -1,0 +1,16 @@
+{
+  "profile": {
+    "personId": "person-demo",
+    "displayName": "Demo Nutzer",
+    "firstName": "Demo",
+    "lastName": "Nutzer",
+    "locale": "de_DE"
+  },
+  "brokerPortfolioContext": {
+    "accessiblePortfolioCount": 1,
+    "resolution": {
+      "status": "auto_resolved",
+      "autoResolvedPortfolioId": "pf-001"
+    }
+  }
+}

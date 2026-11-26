@@ -1,0 +1,212 @@
+{
+  "isin": "US0378331005",
+  "timeframe": "one_month",
+  "currency": "EUR",
+  "source": "CONSOLIDATED",
+  "closingReferencePoint": {
+    "midPrice": 310.15,
+    "timestampUtc": "2026-10-23T21:00:00.000Z"
+  },
+  "dataPoints": [
+    {
+      "midPrice": 308.975,
+      "timestampUtc": "2026-10-26T05:00:43.000Z"
+    },
+    {
+      "midPrice": 307,
+      "timestampUtc": "2026-10-26T12:59:58.000Z"
+    },
+    {
+      "midPrice": 307.8,
+      "timestampUtc": "2026-10-26T20:59:59.000Z"
+    },
+    {
+      "midPrice": 307.375,
+      "timestampUtc": "2026-10-27T12:59:59.000Z"
+    },
+    {
+      "midPrice": 312.15,
+      "timestampUtc": "2026-10-27T20:59:59.000Z"
+    },
+    {
+      "midPrice": 310.375,
+      "timestampUtc": "2026-10-28T10:59:55.000Z"
+    },
+    {
+      "midPrice": 308.875,
+      "timestampUtc": "2026-10-28T18:59:59.000Z"
+    },
+    {
+      "midPrice": 311.675,
+      "timestampUtc": "2026-10-29T08:59:56.000Z"
+    },
+    {
+      "midPrice": 313.35,
+      "timestampUtc": "2026-10-29T16:59:59.000Z"
+    },
+    {
+      "midPrice": 313.575,
+      "timestampUtc": "2026-10-30T06:59:22.000Z"
+    },
+    {
+      "midPrice": 312.3,
+      "timestampUtc": "2026-10-30T14:59:59.000Z"
+    },
+    {
+      "midPrice": 308.2,
+      "timestampUtc": "2026-11-02T05:00:16.000Z"
+    },
+    {
+      "midPrice": 307.25,
+      "timestampUtc": "2026-11-02T12:59:40.000Z"
+    },
+    {
+      "midPrice": 302.4,
+      "timestampUtc": "2026-11-02T20:59:59.000Z"
+    },
+    {
+      "midPrice": 290.4,
+      "timestampUtc": "2026-11-03T10:59:54.000Z"
+    },
+    {
+      "midPrice": 296.625,
+      "timestampUtc": "2026-11-03T18:59:58.000Z"
+    },
+    {
+      "midPrice": 294.375,
+      "timestampUtc": "2026-11-04T08:59:59.000Z"
+    },
+    {
+      "midPrice": 315.325,
+      "timestampUtc": "2026-11-04T16:59:59.000Z"
+    },
+    {
+      "midPrice": 310.625,
+      "timestampUtc": "2026-11-05T06:59:57.000Z"
+    },
+    {
+      "midPrice": 313.75,
+      "timestampUtc": "2026-11-05T14:59:59.000Z"
+    },
+    {
+      "midPrice": 305.725,
+      "timestampUtc": "2026-11-06T05:00:49.000Z"
+    },
+    {
+      "midPrice": 304.55,
+      "timestampUtc": "2026-11-06T12:59:59.000Z"
+    },
+    {
+      "midPrice": 307.275,
+      "timestampUtc": "2026-11-06T20:59:59.000Z"
+    },
+    {
+      "midPrice": 307.775,
+      "timestampUtc": "2026-11-09T10:59:59.000Z"
+    },
+    {
+      "midPrice": 313,
+      "timestampUtc": "2026-11-09T18:59:58.000Z"
+    },
+    {
+      "midPrice": 311.425,
+      "timestampUtc": "2026-11-10T08:59:54.000Z"
+    },
+    {
+      "midPrice": 312.2,
+      "timestampUtc": "2026-11-10T16:59:59.000Z"
+    },
+    {
+      "midPrice": 311.45,
+      "timestampUtc": "2026-11-11T06:59:59.000Z"
+    },
+    {
+      "midPrice": 318.925,
+      "timestampUtc": "2026-11-11T14:59:58.000Z"
+    },
+    {
+      "midPrice": 321.65,
+      "timestampUtc": "2026-11-12T05:00:45.000Z"
+    },
+    {
+      "midPrice": 322.1,
+      "timestampUtc": "2026-11-12T12:59:58.000Z"
+    },
+    {
+      "midPrice": 321,
+      "timestampUtc": "2026-11-12T20:59:59.000Z"
+    },
+    {
+      "midPrice": 322.7,
+      "timestampUtc": "2026-11-13T10:59:48.000Z"
+    },
+    {
+      "midPrice": 324.9,
+      "timestampUtc": "2026-11-13T18:59:59.000Z"
+    },
+    {
+      "midPrice": 324.125,
+      "timestampUtc": "2026-11-16T08:59:59.000Z"
+    },
+    {
+      "midPrice": 321.125,
+      "timestampUtc": "2026-11-16T16:59:57.000Z"
+    },
+    {
+      "midPrice": 320.375,
+      "timestampUtc": "2026-11-17T06:59:56.000Z"
+    },
+    {
+      "midPrice": 322.9,
+      "timestampUtc": "2026-11-17T14:59:57.000Z"
+    },
+    {
+      "midPrice": 318.675,
+      "timestampUtc": "2026-11-18T05:00:34.000Z"
+    },
+    {
+      "midPrice": 319.625,
+      "timestampUtc": "2026-11-18T12:59:29.000Z"
+    },
+    {
+      "midPrice": 320.925,
+      "timestampUtc": "2026-11-18T20:59:59.000Z"
+    },
+    {
+      "midPrice": 322.1,
+      "timestampUtc": "2026-11-19T12:59:33.000Z"
+    },
+    {
+      "midPrice": 318.05,
+      "timestampUtc": "2026-11-19T20:59:59.000Z"
+    },
+    {
+      "midPrice": 320,
+      "timestampUtc": "2026-11-20T10:59:52.000Z"
+    },
+    {
+      "midPrice": 314.925,
+      "timestampUtc": "2026-11-20T18:59:59.000Z"
+    },
+    {
+      "midPrice": 318.025,
+      "timestampUtc": "2026-11-23T10:59:58.000Z"
+    },
+    {
+      "midPrice": 320.1,
+      "timestampUtc": "2026-11-23T18:59:55.000Z"
+    },
+    {
+      "midPrice": 320.85,
+      "timestampUtc": "2026-11-24T08:59:51.000Z"
+    },
+    {
+      "midPrice": 320.2,
+      "timestampUtc": "2026-11-24T16:59:57.000Z"
+    },
+    {
+      "midPrice": 322.475,
+      "timestampUtc": "2026-11-25T06:59:58.000Z"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+import { describe, expect, it } from 'vitest'
+import { validateEnv } from '../../src/config/env.schema'
+
+const valid = {
+  API_SESSION_SECRET: 'x'.repeat(32),
+  API_ENCRYPTION_KEY: Buffer.alloc(32, 1).toString('base64'),
+}
+
+describe('validateEnv', () => {
+  it('applies defaults', () => {
+    const env = validateEnv(valid)
+    expect(env.PORT).toBe(3001)
+    expect(env.COOKIE_SECURE).toBe(true)
+    expect(env.DATABASE_PATH).toBe('./data/app.db')
+  })
+
+  it('prefers API_PORT over PORT', () => {
+    expect(validateEnv({ ...valid, PORT: '3100', API_PORT: '3101' }).PORT).toBe(3101)
+  })
+
+  it('parses COOKIE_SECURE=false', () => {
+    expect(validateEnv({ ...valid, COOKIE_SECURE: 'false' }).COOKIE_SECURE).toBe(false)
+  })
+
+  it('keeps Enable Banking optional and the bank daily sync off (005 T001)', () => {
+    const env = validateEnv(valid)
+    expect(env.ENABLE_BANKING_APP_ID).toBeUndefined()
+    expect(env.ENABLE_BANKING_KEY_FILE).toBeUndefined()
+    expect(env.BANK_DAILY_SYNC).toBe(false)
+    expect(validateEnv({ ...valid, BANK_DAILY_SYNC: 'true' }).BANK_DAILY_SYNC).toBe(true)
+  })
+
+  it('rejects an Enable Banking app id that is not a UUID', () => {
+    expect(() => validateEnv({ ...valid, ENABLE_BANKING_APP_ID: 'abc' })).toThrow(
+      /ENABLE_BANKING_APP_ID/,
+    )
+  })
+
+  it('rejects a short session secret', () => {
+    expect(() => validateEnv({ ...valid, API_SESSION_SECRET: 'short' })).toThrow(
+      /API_SESSION_SECRET/,
+    )
+  })
+
+  it('rejects an encryption key that is not 32 bytes', () => {
+    expect(() => validateEnv({ ...valid, API_ENCRYPTION_KEY: 'AAAA' })).toThrow(
+      /API_ENCRYPTION_KEY/,
+    )
+  })
+})

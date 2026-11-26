@@ -1,0 +1,12 @@
+{
+  "aspsps": [
+    {
+      "name": "Sparkasse Musterstadt",
+      "country": "DE",
+      "logo": "https://example.test/logo.png",
+      "psu_types": ["personal"],
+      "maximum_consent_validity": 7776000
+    },
+    { "name": "Testbank", "country": "DE", "logo": null, "psu_types": ["personal", "business"] }
+  ]
+}
