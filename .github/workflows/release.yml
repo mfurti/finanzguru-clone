@@ -1,8 +1,9 @@
 name: Release images
 
+# Images are built only for a version tag or a manual run, not on every merge to main:
+# deployment is a separate, deliberate step.
 on:
   push:
-    branches: [main]
     tags: ['v*']
   workflow_dispatch:
 
