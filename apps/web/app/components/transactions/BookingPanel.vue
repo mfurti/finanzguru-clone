@@ -24,6 +24,9 @@ const typeItems = computed(() =>
 )
 const tagItems = computed(() => props.tags.map((tag) => ({ label: tag.name, value: tag.id })))
 
+/** "Logo ändern" (008 US2). */
+const logoOpen = ref(false)
+
 const note = ref(props.item.note ?? '')
 watch(
   () => [props.item.id, props.item.note] as const,
@@ -71,7 +74,18 @@ function saveNote(): void {
   >
     <template #header>
       <div class="flex w-full items-start gap-3" data-testid="booking-panel-header">
-        <MerchantLogo :name="name" :logo="item.logo" size="lg" />
+        <button
+          v-if="item.recipientKey"
+          type="button"
+          class="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-primary"
+          :aria-label="t('logo.change')"
+          :title="t('logo.change')"
+          data-testid="panel-logo"
+          @click="logoOpen = true"
+        >
+          <MerchantLogo :name="name" :logo="item.logo" size="lg" />
+        </button>
+        <MerchantLogo v-else :name="name" :logo="item.logo" size="lg" />
         <div class="min-w-0 flex-1">
           <h2 class="truncate font-semibold" :title="name">{{ name }}</h2>
           <p class="text-sm text-muted">{{ formatDate(item.bookingDate) }}</p>
@@ -186,4 +200,13 @@ function saveNote(): void {
       </div>
     </template>
   </USlideover>
+  <LogoPicker
+    v-if="item.recipientKey"
+    v-model:open="logoOpen"
+    :recipient-key="item.recipientKey"
+    :name="name"
+    :logo="item.logo"
+    :logo-source="item.logoSource"
+    @saved="emit('changed')"
+  />
 </template>
