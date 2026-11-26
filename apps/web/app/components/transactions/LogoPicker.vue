@@ -3,8 +3,9 @@ import type { BrandSearchResult, LogoRef, LogoSource } from '@finance/shared'
 import { FetchError } from 'ofetch'
 
 /**
- * "Logo ändern" (008 US2): search the built-in brand logos and pick one, or choose
- * "Automatisch" / "Kein Logo". The choice applies to all bookings of the recipient.
+ * "Logo ändern" (008 US2/US3): search the built-in brand logos and pick one, choose
+ * "Automatisch" / "Kein Logo", or upload an own image (PNG, JPEG, WebP up to 256 KB).
+ * The choice applies to all bookings of the recipient.
  */
 const props = defineProps<{
   recipientKey: string
@@ -65,6 +66,29 @@ const choose = (slug: string) =>
   run(() => apiFetch(path.value, { method: 'PUT', body: { mode: 'brand', brandSlug: slug } }))
 const none = () => run(() => apiFetch(path.value, { method: 'PUT', body: { mode: 'none' } }))
 const automatic = () => run(() => apiFetch(path.value, { method: 'DELETE' }))
+
+/** Same limits as the API (FR-007); checked here first for a quick German message. */
+const MAX_BYTES = 256 * 1024
+const TYPES = ['image/png', 'image/jpeg', 'image/webp']
+const fileInput = ref<HTMLInputElement | null>(null)
+function upload(event: Event): void {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = ''
+  if (!file) return
+  const problem = !TYPES.includes(file.type)
+    ? t('logo.wrongType')
+    : file.size > MAX_BYTES
+      ? t('logo.tooBig')
+      : null
+  if (problem) {
+    toast.add({ title: problem, color: 'error' })
+    return
+  }
+  const body = new FormData()
+  body.append('file', file)
+  void run(() => apiFetch(`${path.value}/upload`, { method: 'POST', body }))
+}
 </script>
 
 <template>
@@ -121,7 +145,23 @@ const automatic = () => run(() => apiFetch(path.value, { method: 'DELETE' }))
             data-testid="logo-none"
             @click="none"
           />
-          <slot name="upload" />
+          <UButton
+            variant="soft"
+            color="neutral"
+            icon="i-lucide-upload"
+            :label="t('logo.upload')"
+            :disabled="busy"
+            data-testid="logo-upload"
+            @click="fileInput?.click()"
+          />
+          <input
+            ref="fileInput"
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            class="hidden"
+            data-testid="logo-file"
+            @change="upload"
+          />
           <span v-if="logoSource === 'auto'" class="ml-auto text-xs text-muted">
             {{ t('logo.autoDetected') }}
           </span>

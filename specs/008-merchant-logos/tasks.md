@@ -61,7 +61,7 @@
 **Independent Test**: L5 in quickstart.
 
 - [X] T013 [US3] API `POST /api/logos/recipients/:key/upload` (multipart, field `file`, > 256 KB → 413 "Bild zu groß (max. 256 KB)", type by magic bytes PNG/JPEG/WebP else 415 "Nur PNG, JPEG oder WebP", SVG refused) storing `<uuid>.<png|jpg|webp>` in `dirname(DATABASE_PATH)/logos/` (created on demand, old file removed) and `GET /api/logos/files/:name` (name `^[0-9a-f-]{36}\.(png|jpg|webp)$` else 404, `X-Content-Type-Options: nosniff`, `Cache-Control: private, max-age=86400`, auth). E2E `apps/api/test/e2e/logos-upload.e2e-spec.ts` (PNG ok and served, big file 413, SVG and text 415, traversal name 404, unauthenticated 401, delete removes file).
-- [ ] T014 [US3] Upload in `LogoPicker.vue` (file input accept png/jpeg/webp, client-side size check with the same German messages, preview); `MerchantLogo` shows uploads with `cover`. Extend `apps/web/tests/logo-picker.spec.ts`; Playwright `e2e/us-l3-logo-upload.spec.ts` (L5 with a generated 64×64 PNG fixture in `e2e/fixtures/`).
+- [X] T014 [US3] Upload in `LogoPicker.vue` (file input accept png/jpeg/webp, client-side size check with the same German messages, preview); `MerchantLogo` shows uploads with `cover`. Extend `apps/web/tests/logo-picker.spec.ts`; Playwright `e2e/us-l3-logo-upload.spec.ts` (L5 with a generated 64×64 PNG fixture in `e2e/fixtures/`).
 
 ---
 
