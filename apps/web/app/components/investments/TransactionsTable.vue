@@ -100,7 +100,7 @@ const columns = computed<TableColumn<InvestmentTransactionRow>[]>(() => [
     header: sortHeader('name', t('investments.columns.name')),
     cell: ({ row }) =>
       // Truncated so the table fits its box (010 US3); full name in the tooltip.
-      h('div', { class: 'w-40 lg:w-44 xl:w-64' }, [
+      h('div', { class: 'w-36 lg:w-44 xl:w-64' }, [
         row.original.instrumentId
           ? h(
               NuxtLink,

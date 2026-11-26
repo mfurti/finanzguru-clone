@@ -179,7 +179,7 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
       const item = row.original
       const name = item.counterparty ?? item.purpose ?? t(`transactionTypes.${item.type}`)
       // Phones (010 US3): narrower name, date below it, so Betrag stays in view.
-      return h('div', { class: 'flex min-w-0 items-center gap-3 md:min-w-48' }, [
+      return h('div', { class: 'flex min-w-0 items-center gap-2 md:min-w-48 md:gap-3' }, [
         h(MerchantLogo, { name, logo: item.logo, size: 'sm' }),
         h('div', { class: 'min-w-0' }, [
           h('div', { class: 'flex items-center gap-1.5 font-medium' }, [
@@ -190,7 +190,11 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
                   'data-testid': 'unreviewed-dot',
                 })
               : null,
-            h('span', { class: 'max-w-22 truncate md:max-w-40 xl:max-w-56', title: name }, name),
+            h(
+              'span',
+              { class: 'max-w-18 truncate md:max-w-36 lg:max-w-40 xl:max-w-56', title: name },
+              name,
+            ),
           ]),
           // Purpose line only on wide screens and when it has no column of its own.
           item.counterparty && item.purpose && columnVisibility.value.purpose === false
