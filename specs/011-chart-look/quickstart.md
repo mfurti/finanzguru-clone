@@ -25,3 +25,10 @@ Local only (web 3100, API 3101). Gates: `pnpm lint`, `pnpm format:check`, `pnpm 
 | # | Status |
 |---|---|
 | Q6 | Layout guard (375/768/1440) and hydration check green. Sankey on phones scrolls inside its card (page does not scroll sideways); labels of the first two columns are cut with "…" to the gap between columns, full name in the tooltip and the block list; reduced motion turns the animation off |
+
+## Status after T009 (2026-11-26)
+
+| # | Status |
+|---|---|
+| Q5 | Dashboard, Investments › Analyse, Investments › Dividenden and Budget › Analyse draw the same donut (192 px box, ring 22 px, gaps and rounded ends, centre amount and short label); Dividenden now shows its total and the hovered item in the centre; checked dark and light |
+| Q1–Q4, Q6 | see T005 and T008 above; owner's own look at the new Sankey still to come |

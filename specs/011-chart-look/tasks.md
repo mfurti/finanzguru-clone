@@ -37,7 +37,7 @@
 
 ## Phase 6: Polish
 
-- [ ] T009 Owner check Q1–Q6 in dark and light; status in `specs/011-chart-look/quickstart.md`.
+- [X] T009 Owner check Q1–Q6 in dark and light; status in `specs/011-chart-look/quickstart.md`.
 - [ ] T010 Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`), reading the e2e log for failures; mark spec Status "Implemented".
 
 ## Dependencies
