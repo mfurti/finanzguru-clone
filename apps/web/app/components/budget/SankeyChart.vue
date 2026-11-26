@@ -124,6 +124,7 @@ const option = computed(() =>
     selectedNodeId: selectedNodeId.value,
     reducedMotion: reducedMotion.value,
     labelSpace: labelSpace.value,
+    width: width.value,
   }),
 )
 

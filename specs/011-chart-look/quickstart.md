@@ -19,3 +19,9 @@ Local only (web 3100, API 3101). Gates: `pnpm lint`, `pnpm format:check`, `pnpm 
 | Q2 | Hover keeps connected parts, rest fades; tooltip with amount and share of income |
 | Q3 | Click on a block filters the bookings (and clears again); keyboard block list does the same (e2e W7) |
 | Q4 | Analyse card shows the same drawing; switching dark/light without reload updates labels and outline |
+
+## Status after T008 (2026-11-26)
+
+| # | Status |
+|---|---|
+| Q6 | Layout guard (375/768/1440) and hydration check green. Sankey on phones scrolls inside its card (page does not scroll sideways); labels of the first two columns are cut with "…" to the gap between columns, full name in the tooltip and the block list; reduced motion turns the animation off |

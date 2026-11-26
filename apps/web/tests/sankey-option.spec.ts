@@ -100,6 +100,12 @@ describe('buildSankeyOption (011 T002)', () => {
     expect(option.animation).toBe(false)
   })
 
+  it('cuts labels of the first two columns to the gap between columns', () => {
+    const option = buildSankeyOption({ ...base, width: 560, labelSpace: 200 })
+    expect(node(option, 'main:wohnen').label).toMatchObject({ overflow: 'truncate', width: 142 })
+    expect(node(option, 'sub:miete').label).not.toHaveProperty('overflow')
+  })
+
   it('totals a block by its incoming flows, the income block by its outgoing ones', () => {
     const totals = sankeyNodeTotals(links)
     expect(totals.get('income')).toBe(150000)

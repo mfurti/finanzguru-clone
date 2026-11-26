@@ -26,6 +26,8 @@ export interface SankeyOptionInput {
   reducedMotion?: boolean
   /** Space reserved right of the last column for its labels. */
   labelSpace?: number
+  /** Chart width in px; labels of the first two columns are cut to the gap between columns. */
+  width?: number
 }
 
 export const SANKEY_NODE_WIDTH = 12
@@ -113,6 +115,13 @@ export function buildSankeyOption(input: SankeyOptionInput) {
     for (const id of ids) pixels.set(id, sum > 0 ? ((totals.get(id) ?? 0) / sum) * free : 0)
   }
 
+  // Labels of columns 0 and 1 stand in the gap to the next column; cut them to fit (011 T008).
+  const right = input.labelSpace ?? 170
+  const columnGap = input.width
+    ? (input.width - PADDING - right - SANKEY_NODE_WIDTH * 3) / 2
+    : Number.POSITIVE_INFINITY
+  const innerLabelWidth = Math.max(40, Math.floor(columnGap - 16))
+
   return {
     animation: !input.reducedMotion,
     animationDuration: 600,
@@ -142,7 +151,7 @@ export function buildSankeyOption(input: SankeyOptionInput) {
         left: PADDING,
         top: PADDING,
         bottom: PADDING,
-        right: input.labelSpace ?? 170,
+        right,
         nodeWidth: SANKEY_NODE_WIDTH,
         nodeGap: SANKEY_NODE_GAP,
         nodeAlign: 'justify' as const,
@@ -187,7 +196,12 @@ export function buildSankeyOption(input: SankeyOptionInput) {
               ? { borderColor: input.theme.text, borderWidth: 2 }
               : {}),
           },
-          label: { show: (pixels.get(node.id) ?? 0) >= SANKEY_MIN_LABEL_PX },
+          label: {
+            show: (pixels.get(node.id) ?? 0) >= SANKEY_MIN_LABEL_PX,
+            ...(DEPTH[node.kind] < 2 && Number.isFinite(columnGap)
+              ? { width: innerLabelWidth, overflow: 'truncate' as const, ellipsis: '…' }
+              : {}),
+          },
         })),
         links: links.map((link) => ({
           source: link.source,

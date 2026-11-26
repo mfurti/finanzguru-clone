@@ -33,7 +33,7 @@
 
 **Goal**: no regressions at 375/768/1440 px. **Independent test**: quickstart Q6.
 
-- [ ] T008 [US3] Sankey at 375 and 768 px: fits or scrolls inside its card (no page scroll), labels readable; reduced motion shows no animation; run `e2e/layout-guard.spec.ts` and `e2e/hydration.spec.ts`; fix in `SankeyChart.vue` / `sankey-option.ts` if needed.
+- [X] T008 [US3] Sankey at 375 and 768 px: fits or scrolls inside its card (no page scroll), labels readable; reduced motion shows no animation; run `e2e/layout-guard.spec.ts` and `e2e/hydration.spec.ts`; fix in `SankeyChart.vue` / `sankey-option.ts` if needed.
 
 ## Phase 6: Polish
 
