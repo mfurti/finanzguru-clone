@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Depot detail (003 US2): value history, positions and bookings of this depot only. */
+definePageMeta({ layout: 'overview' })
 const route = useRoute()
 const id = computed(() => String(route.params.id))
 const filters = computed(() => ({ accounts: id.value }))
