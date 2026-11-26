@@ -948,6 +948,8 @@
     "appliesAll": "Gilt für alle Buchungen von {name}",
     "noResults": "Keine passende Marke",
     "saved": "Logo gespeichert",
-    "licence": "Markenlogos: theSVG (MIT) und Simple Icons (CC0), in der App enthalten. Marken sind Eigentum ihrer Inhaber."
+    "licence": "Markenlogos: theSVG (MIT) und Simple Icons (CC0), in der App enthalten. Marken sind Eigentum ihrer Inhaber.",
+    "institutionAppliesAll": "Gilt für alle Konten von {name}",
+    "localHint": "Eigene Logos für Banken und Händler kannst du lokal im Logo-Ordner ablegen (siehe README)."
   }
 }

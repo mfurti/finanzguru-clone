@@ -17,7 +17,7 @@
 ## Phase 1: Setup
 
 - [X] T001 [P] Shared: `AccountDto` in `packages/shared/src/schemas/account.ts` gains `logo` (LogoRef), `logoSource`, `logoKey` ("`institution:<institutionId>`; null for institution Manuell"); API `accounts.service.ts` returns them as null until T005 so the build stays green.
-- [ ] T002 [P] German texts in `apps/web/i18n/locales/de.json`: `logo.institutionAppliesAll` "Gilt für alle Konten von {name}", `logo.localHint` (README pointer for the local folder).
+- [X] T002 [P] German texts in `apps/web/i18n/locales/de.json`: `logo.institutionAppliesAll` "Gilt für alle Konten von {name}", `logo.localHint` (README pointer for the local folder).
 
 ---
 
