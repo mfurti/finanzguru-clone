@@ -49,6 +49,22 @@ export class LogosController {
     return this.logos.search(query.q, query.limit)
   }
 
+  /** The owner's local logo (009): only for the owner, never sniffed, SVG without scripts. */
+  @Get('brands/local/:key')
+  localBrand(@Param('key') key: string, @Res({ passthrough: true }) reply: FastifyReply): Buffer {
+    const file = /^[a-z0-9-]{1,60}$/.test(key) ? this.logos.localFile(key) : null
+    if (!file) throw new NotFoundException('Unbekannte Marke')
+    void reply
+      .header('content-type', file.contentType)
+      .header('cache-control', 'private, max-age=86400')
+      .header('x-content-type-options', 'nosniff')
+      .header(
+        'content-security-policy',
+        "default-src 'none'; style-src 'unsafe-inline'; img-src data:",
+      )
+    return file.body
+  }
+
   /** Coloured logo or glyph; versioned URL, so browsers may cache it for a year. */
   @Get('brands/:set/:name.svg')
   brand(

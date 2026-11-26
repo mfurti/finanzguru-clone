@@ -22,11 +22,15 @@ export function setTestEnv(overrides: Record<string, string> = {}): void {
   })
 }
 
-/** Boots the full AppModule on Fastify, optionally with extra test-only modules. */
+/**
+ * Boots the full AppModule on Fastify, optionally with extra test-only modules and
+ * environment overrides (e.g. `BRAND_LOGOS_DIR`).
+ */
 export async function createTestApp(
   extra: Pick<ModuleMetadata, 'imports' | 'controllers' | 'providers'> = {},
+  env: Record<string, string> = {},
 ): Promise<NestFastifyApplication> {
-  setTestEnv()
+  setTestEnv(env)
   const moduleRef = await Test.createTestingModule({
     imports: [AppModule, ...(extra.imports ?? [])],
     controllers: extra.controllers ?? [],
