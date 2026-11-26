@@ -6,7 +6,7 @@
 |---|---|---|
 | recipient_key | text PK | 1–200 characters; `recipientKey()` of research R5 |
 | mode | text not null | `brand` \| `none` \| `upload` (CHECK) |
-| brand_slug | text null | required when mode = `brand`, else null (CHECK); must exist in the catalogue when saved |
+| brand_slug | text null | required when mode = `brand`, else null (CHECK); brand key `<set>:<name>` (legacy: Simple Icons slug without prefix); must exist in the catalogue when saved |
 | file_name | text null | required when mode = `upload`, else null (CHECK); `<uuid>.<png\|jpg\|webp>` |
 | updated_at | text not null | ISO timestamp, default now |
 
@@ -18,9 +18,9 @@
 
 | Field | Source |
 |---|---|
-| slug | simple-icons slug |
-| title | simple-icons title |
-| hex | simple-icons hex (6 digits) |
+| key | `<set>:<name>`, set `thesvg-color` or `simple-icons` (R8) |
+| title | Simple Icons title; for the colour set the name in title case ("deutsche-bahn" → "Deutsche Bahn") |
+| hex | Simple Icons hex (6 digits); null for coloured logos |
 | aliases | curated list (`domain/brands.ts`), only for auto-matching and extra search words |
 
 ## LogoRef (API → web, part of TransactionListItem)

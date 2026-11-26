@@ -6,6 +6,13 @@
 - **Rationale**: offline, licence-free, single source for search and rendering; checked 2026-11-25 that 31 of 35 relevant German brands exist (ING, Lieferando, Tchibo, Flixbus missing → uploads). Correction 2026-11-26 (T005): Amazon is not in the installed package either (removed at the brand's request; the CDN check used an older copy) → upload.
 - **Alternatives**: logo.dev / Brandfetch / Google or DuckDuckGo favicons – coloured real logos, but every merchant name or domain goes to a third party (violates principle II); Clearbit's free logo API is discontinued. `@iconify-json/simple-icons` in the web bundle – same data, but either a large client bundle or Nuxt icon server bundle without brand colours; serving from the API is simpler.
 
+## R8 – Iconify colour set (amendment 2026-11-26)
+
+- **Decision**: add `@iconify-json/thesvg-color@1.2.25` (MIT, 5 226 coloured brand logos, theSVG project) to the API as the first source; Simple Icons stays the fallback. Brand keys become `<set>:<name>` (e.g. `thesvg-color:amazon`, `simple-icons:rewe`); stored keys without prefix are read as Simple Icons slugs. Aliases point to an ordered key list (colour first). Version 1.2.25 is the newest one at least two weeks old; the package exists only since 2026-08, so a pinned exact version and the existing fallback limit the risk.
+- **Rationale**: coloured logos like the reference; covers Amazon (removed from Simple Icons); stays offline. Checked: Amazon, Rewe, Lidl, Edeka, dm, Aldi Nord/Süd, PayPal, Klarna, Deutsche Bahn, Netflix, Sparkasse present; Telekom, ING, Tchibo, Flixbus, Lieferando missing.
+- **Security**: set SVG bodies are third-party markup. They are rendered only from the installed package, rejected when they contain `<script`, `on…=` handlers, `javascript:` or external `href`s, and served with `Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:` so even a direct visit cannot run scripts.
+- **Alternatives**: Iconify web API (sends merchant names out – rejected); `logos` set (CC0, tech brands only); `arcticons` / `cbi` (outline style, CC-BY-SA / non-commercial licences); SVG Repo (per-file licences, no package).
+
 ## R2 – Rendering and colour
 
 - **Decision**: `GET /api/logos/brands/:slug.svg?v=<pkgVersion>` returns the glyph with `fill="#<hex>"`; web shows it in a round white tile with a subtle border (both themes), glyph ≈ 60 % of the tile.

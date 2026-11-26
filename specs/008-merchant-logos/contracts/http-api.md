@@ -18,9 +18,9 @@ Search over title, slug and aliases (normalized, substring). Empty `q` → curat
 [{ "slug": "lidl", "title": "Lidl", "hex": "0050AA", "url": "/api/logos/brands/lidl.svg?v=16.38.1" }]
 ```
 
-### `GET /api/logos/brands/:slug.svg`
+### `GET /api/logos/brands/:set/:name.svg` (legacy `/api/logos/brands/:slug.svg` = Simple Icons)
 
-`image/svg+xml`, 24×24 viewBox, `fill="#<hex>"`. `Cache-Control: public, max-age=31536000, immutable`. Unknown slug → 404.
+`image/svg+xml`; Simple Icons: 24×24 viewBox, `fill="#<hex>"`; colour set: original viewBox and colours. Header `Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:`. `Cache-Control: public, max-age=31536000, immutable`. Unknown slug → 404.
 
 ### `PUT /api/logos/recipients/:key`
 

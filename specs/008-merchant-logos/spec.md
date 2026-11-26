@@ -6,7 +6,9 @@
 
 **Status**: Draft
 
-**Input**: User description: "Händler-Logos für Buchungen (wie Finanzfluss Copilot). Logos neben Empfängern in Transaktionen, Seitenpanel und überall, wo Buchungen gelistet sind. Quelle A: Markenlogos aus der freien Sammlung Simple Icons (CC0), in die App eingebaut, kein Netzwerkzugriff, einfarbig in Markenfarbe. Quelle C: eigenes Logo pro Empfänger hochladen (lokal gespeichert, Bildgröße begrenzt). Zuordnung über Aliasliste, manuelle Wahl im Seitenpanel mit Suche, gilt für alle Buchungen des Empfängers. Fallback: Initialen-Avatar. Nicht im Umfang: Online-Logodienste, farbige Originallogos, Logos für Wertpapiere, Deployment."
+**Input**: User description: "Händler-Logos für Buchungen (wie Finanzfluss Copilot). Logos neben Empfängern in Transaktionen, Seitenpanel und überall, wo Buchungen gelistet sind. Quelle A: Markenlogos aus der freien Sammlung Simple Icons (CC0), in die App eingebaut, kein Netzwerkzugriff, einfarbig in Markenfarbe. Quelle C: eigenes Logo pro Empfänger hochladen (lokal gespeichert, Bildgröße begrenzt). Zuordnung über Aliasliste, manuelle Wahl im Seitenpanel mit Suche, gilt für alle Buchungen des Empfängers. Fallback: Initialen-Avatar. Nicht im Umfang: Online-Logodienste, Logos für Wertpapiere, Deployment."
+
+**Amendment 2026-11-26**: owner asked for Iconify. Coloured brand logos from the theSVG colour set (MIT, via the Iconify package `@iconify-json/thesvg-color`, installed with the app) are now the first source; Simple Icons stays the fallback. Still no online service.
 
 **Origin**: Owner request after 007, 2026-11-25. The reference app shows a logo next to most bookings; it gets them from its data provider. The bank connection used here (PSD2) delivers no logos.
 
@@ -88,7 +90,7 @@ For a recipient without a brand logo (e.g. the local bakery, or ING, Lieferando,
 
 ### Functional Requirements
 
-- **FR-001**: The app MUST ship a built-in brand logo set (single-color glyphs with brand color) and MUST NOT fetch logos from any external service.
+- **FR-001**: The app MUST ship built-in brand logo sets – coloured logos (theSVG colour set, MIT) first, single-colour glyphs in brand colour (Simple Icons, CC0) as fallback – and MUST NOT fetch logos from any external service (also not from the Iconify API).
 - **FR-002**: The app MUST map recipient names to brands automatically using a curated alias list covering at least the brands verified on 2026-11-25 (Rewe, Lidl, Aldi Nord, Aldi Süd, Edeka, dm, Kaufland, Netto, Penny, PayPal, Klarna, Netflix, Spotify, Deutsche Bahn, Vodafone, Telekom, O2, IKEA, Shell, Aral, Sparkasse, N26, Apple, Google, McDonald's, Burger King, Zalando, eBay, Otto, Rossmann, Uber).
 - **FR-003**: Matching MUST be case-insensitive on the normalized recipient key and MUST match aliases as whole words only.
 - **FR-004**: The logo rule MUST be the same everywhere a booking recipient is shown: own upload, else manual brand choice, else automatic match, else initials. "Kein Logo" MUST suppress the automatic match.
@@ -98,7 +100,8 @@ For a recipient without a brand logo (e.g. the local bakery, or ING, Lieferando,
 - **FR-008**: Uploaded and brand logos MUST be shown in the same round tile as the initials avatar in sizes small (lists) and large (panel header), in dark and light mode, with the recipient name as accessible label.
 - **FR-009**: Bookings of type transfer, buy, sell, dividend, split MUST keep their current icons; logos apply to income, expense, fee, interest, tax, deposit and withdrawal bookings only.
 - **FR-010**: All texts MUST be German; no layout shift (007 guard) when logos load or the picker opens.
-- **FR-011**: The licence note of the brand set (CC0) and the note that brand logos remain trademarks of their owners MUST appear in the app's settings/about area.
+- **FR-011**: The licence notes of the brand sets (theSVG MIT, Simple Icons CC0) and the note that brand logos remain trademarks of their owners MUST appear in the app's settings/about area.
+- **FR-012**: Brand SVGs from a set MUST be served so that they cannot run scripts, also when opened directly (content check plus a restrictive content security policy on the response).
 
 ### Key Entities
 
@@ -119,7 +122,7 @@ For a recipient without a brand logo (e.g. the local bakery, or ING, Lieferando,
 ## Assumptions
 
 - The brand set is Simple Icons (CC0), bundled with the app at build time; brands it lacks (ING, Lieferando, Tchibo, Flixbus as of 2026-11-25; Amazon was removed from the set at the brand's request, found in T005) are covered by own uploads.
-- Single-color glyphs in brand color are acceptable instead of colored original logos.
+- Coloured logos come from the theSVG colour set where it has the brand; otherwise the single-colour Simple Icons glyph is shown (amended 2026-11-26).
 - The recipient key and fallback order (counterparty, IBAN, purpose part) from feature 006 are reused, so logo choices and category rules address the same recipient.
 - Securities, depots and accounts keep their current icons/initials (out of scope).
 - Local dev server testing only; deployment follows a separate plan.

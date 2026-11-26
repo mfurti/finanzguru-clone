@@ -65,11 +65,24 @@
 
 ---
 
-## Phase 6: Polish
+## Phase 6: Coloured logos via Iconify (amendment 2026-11-26, research R8)
+
+**Goal**: coloured logos like the reference, Amazon covered; still offline.
+
+**Independent Test**: L1 shows coloured Rewe/PayPal logos; L7 repeated.
+
+- [ ] T018 Install `@iconify-json/thesvg-color@1.2.25` (exact, MIT) in `apps/api`; `brand-catalog.ts` loads both sets with keys `<set>:<name>` (legacy slug without prefix = `simple-icons`), title from the Simple Icons title or the name in title case, `hex` null for the colour set; safe rendering of set bodies (reject `<script`, `on…=`, `javascript:`, external `href`) and route `GET /api/logos/brands/:set/:name.svg` with `Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:` (also on the legacy route). Unit `brand-catalog.spec.ts` and e2e `logos-brands.e2e-spec.ts` extended (colour SVG served, CSP header, unsafe body refused).
+- [ ] T019 Aliases point to ordered key lists, colour first (`apps/api/src/domain/brands.ts`), Amazon back (`thesvg-color:amazon`); shared `brandSlug` accepts `<set>:<name>` and legacy slugs, `hex` nullable in `logoRef` and `brandSearchResult`; stored choices without prefix keep working. Unit `logo.spec.ts` (every alias key exists, Amazon → colour, Telekom → Simple Icons fallback), e2e list/choice tests updated.
+- [ ] T020 [P] Web: `MerchantLogo.vue` shows coloured logos slightly larger (≈ 70 %) than glyphs; `LogoPicker.vue` lists colour logos first; component tests and Playwright `us-l1-logos`, `us-l2-logo-choice` updated to the new keys.
+- [ ] T021 Owner check L7 again (share with logo, top 30 without wrong match) recorded in `quickstart.md`; licence note `logo.licence` names theSVG (MIT) and Simple Icons (CC0); README section updated.
+
+---
+
+## Phase 7: Polish
 
 - [X] T015 [P] Licence note `logo.licence` in the Datenquellen page footer (`apps/web/app/pages/settings/sources.vue`); README section "Logos" (source, offline, uploads in the data dir).
 - [X] T016 Owner check L7 on the local dev server with real bookings: share of expense bookings (last 3 months) with logo and top-30 recipients without wrong match; fix aliases in `apps/api/src/domain/brands.ts` (only generic brand words, no private data in the repo); record the numbers in `quickstart.md`.
-- [ ] T017 Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`); mark spec Status "Implemented".
+- [ ] T017 (after T018–T021) Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`); mark spec Status "Implemented".
 
 ---
 
@@ -78,7 +91,7 @@
 - T001 → T005, T006; T002, T003 [P] with T001.
 - T004 → T007, T010.
 - US1 (T006–T009) before US2 (picker needs the list fields and brand search) and US3 (upload extends the picker).
-- T016 after US1 at the earliest; T017 last.
+- T016 after US1 at the earliest; T018 → T019 → T020, T021; T017 last.
 
 ## Parallel Examples
 
