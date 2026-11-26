@@ -29,3 +29,5 @@ Owner amounts go only into `apps/api/data/audit-010-local.md` (git-ignored); thi
 | A16 Nicht kategorisiert | fixed: 5 expenses left in the audited month (was 27); five main categories now equal the reference (T010, T011) |
 | A17 Ungeprüfte | same rule; difference = different review marks (T008) |
 | A18 Monatsbalken | open: 100 € in one month, cause not found on app side |
+
+| B1 Transaktionen on phones | fixed: fits at 360/375 px, amount visible (T012); no date grouping, toolbar stays a row (reference: date groups, ⋮ menu) |
