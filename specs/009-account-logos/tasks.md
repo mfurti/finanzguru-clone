@@ -42,7 +42,7 @@
 
 **Independent Test**: A2, A3 in quickstart.
 
-- [ ] T008 [US2] Local brands as merchant logos too (bookings, picker search first) – verify via e2e `apps/api/test/e2e/logos-local.e2e-spec.ts` (booking "Scalable Capital Bank GmbH" → `local:scalable-capital`); README section "Eigene Logos (lokal)" with `brands.json` example, folder location, `BRAND_LOGOS_DIR`, licence note (official logos only locally, never committed).
+- [X] T008 [US2] Local brands as merchant logos too (bookings, picker search first) – verify via e2e `apps/api/test/e2e/logos-local.e2e-spec.ts` (booking "Scalable Capital Bank GmbH" → `local:scalable-capital`); README section "Eigene Logos (lokal)" with `brands.json` example, folder location, `BRAND_LOGOS_DIR`, licence note (official logos only locally, never committed).
 - [ ] T009 [US2] Playwright `e2e/us-a2-local-logos.spec.ts`: e2e web server started with `BRAND_LOGOS_DIR` pointing to generated fixtures (`e2e/fixtures/brand-logos/` with an invented brand only), logo shown for account and booking.
 
 ---

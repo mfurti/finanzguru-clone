@@ -1,9 +1,12 @@
 import type { NestFastifyApplication } from '@nestjs/platform-fastify'
-import type { BrandSearchResult } from '@finance/shared'
+import type { BrandSearchResult, TransactionPage } from '@finance/shared'
 import { mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { DB } from '../../src/database/database.constants'
+import type { AppDatabase } from '../../src/database/drizzle.module'
+import { account, institution, transaction } from '../../src/database/schema'
 import { loginCookie } from '../helpers/auth'
 import { createTestApp } from '../helpers/test-app'
 
@@ -83,5 +86,33 @@ describe('local logos (009 T004)', () => {
       .inject({ url: '/api/logos/brands?limit=2', headers: { cookie } })
       .then((res) => res.json())) as BrandSearchResult[]
     expect(first.map((hit) => hit.slug)).toEqual(['local:musterbroker', 'local:beispielbank'])
+  })
+
+  it('uses local logos for booking recipients too (009 T008)', async () => {
+    const db = app.get<AppDatabase>(DB)
+    const inst = db.insert(institution).values({ name: 'Lokaltestbank' }).returning().get()
+    const acc = db
+      .insert(account)
+      .values({ institutionId: inst.id, name: 'Lokal-Giro', type: 'checking' })
+      .returning()
+      .get()
+    db.insert(transaction)
+      .values({
+        accountId: acc.id,
+        bookingDate: '2026-11-20',
+        amountCents: -10000,
+        type: 'expense',
+        source: 'manual',
+        counterparty: 'Musterbroker Capital Bank GmbH',
+        fingerprint: 'local-1',
+      })
+      .run()
+    const page = (await app
+      .inject({ url: `/api/transactions?accounts=${acc.id}`, headers: { cookie } })
+      .then((res) => res.json())) as TransactionPage
+    expect(page.items[0]).toMatchObject({
+      logo: { kind: 'brand', slug: 'local:musterbroker' },
+      logoSource: 'auto',
+    })
   })
 })

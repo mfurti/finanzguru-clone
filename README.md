@@ -56,6 +56,23 @@ The consent lasts about 90 days. From 14 days before it ends the app shows a not
 
 Bookings show the logo of well-known merchants (Rewe, Lidl, PayPal, …) next to the recipient. The logos come from two sets installed with the API: coloured logos from [theSVG](https://github.com/glincker/thesvg) (MIT, via the Iconify package `@iconify-json/thesvg-color`) and, where a brand is missing there, single-colour glyphs from [Simple Icons](https://simpleicons.org) (CC0). Nothing is loaded from the internet, also not from the Iconify web service. In the booking side panel, "Logo ändern" picks another brand, "Kein Logo" or an own image (PNG, JPEG or WebP, max. 256 KB). Own images are stored in `logos/` next to the database (or `LOGOS_DIR`), inside the git-ignored `data` directory. Brand logos remain trademarks of their owners.
 
+### Eigene Logos (lokal)
+
+Banks, brokers and merchants missing from the built-in sets (e.g. Scalable Capital, ING, DKB, comdirect) can get their logo from a local folder. Official logos have no free licence, so this folder is **never committed**: it lives in the git-ignored `apps/api/data/brand-logos/` (or `BRAND_LOGOS_DIR`), and the commit check refuses files from it.
+
+```json
+[
+  {
+    "key": "scalable-capital",
+    "title": "Scalable Capital",
+    "words": ["scalable capital", "scalable"],
+    "file": "scalable-capital.png"
+  }
+]
+```
+
+Save this as `brands.json` next to the image files (PNG, JPEG, WebP or SVG without scripts, max. 256 KB each) and restart the API. `words` are matched as whole words against bank, broker and booking recipient names; local logos win over the built-in sets. Invalid entries are skipped with a warning in the API log. Logos appear on accounts, portfolios, bookings and in the logo picker.
+
 ## Setup
 
 Requires Node.js 26 and pnpm (`corepack enable`).
