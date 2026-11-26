@@ -34,6 +34,8 @@ test.describe('009 US2 local logo folder', () => {
       page.getByTestId('transactions-table').getByTestId('merchant-logo').locator('img'),
     ).toHaveAttribute('src', /local\/musterbroker/)
 
-    await request.delete(`/api/accounts/${accountId}`)
+    // The account has a booking: deleting it needs force (otherwise 409 and the data stays).
+    const deleted = await request.delete(`/api/accounts/${accountId}?force=true`)
+    expect(deleted.ok()).toBe(true)
   })
 })
