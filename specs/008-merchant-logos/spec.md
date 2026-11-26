@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-25
 
-**Status**: Draft
+**Status**: Implemented (2026-11-26)
 
 **Input**: User description: "Händler-Logos für Buchungen (wie Finanzfluss Copilot). Logos neben Empfängern in Transaktionen, Seitenpanel und überall, wo Buchungen gelistet sind. Quelle A: Markenlogos aus der freien Sammlung Simple Icons (CC0), in die App eingebaut, kein Netzwerkzugriff, einfarbig in Markenfarbe. Quelle C: eigenes Logo pro Empfänger hochladen (lokal gespeichert, Bildgröße begrenzt). Zuordnung über Aliasliste, manuelle Wahl im Seitenpanel mit Suche, gilt für alle Buchungen des Empfängers. Fallback: Initialen-Avatar. Nicht im Umfang: Online-Logodienste, Logos für Wertpapiere, Deployment."
 

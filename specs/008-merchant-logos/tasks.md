@@ -82,7 +82,7 @@
 
 - [X] T015 [P] Licence note `logo.licence` in the Datenquellen page footer (`apps/web/app/pages/settings/sources.vue`); README section "Logos" (source, offline, uploads in the data dir).
 - [X] T016 Owner check L7 on the local dev server with real bookings: share of expense bookings (last 3 months) with logo and top-30 recipients without wrong match; fix aliases in `apps/api/src/domain/brands.ts` (only generic brand words, no private data in the repo); record the numbers in `quickstart.md`.
-- [ ] T017 (after T018–T021) Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`); mark spec Status "Implemented".
+- [X] T017 (after T018–T021) Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`); mark spec Status "Implemented".
 
 ---
 
