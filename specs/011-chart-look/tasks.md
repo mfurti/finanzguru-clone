@@ -20,7 +20,7 @@
 
 - [X] T003 [US1] Rewrite `apps/web/app/components/budget/SankeyChart.vue` on `vue-echarts` (`data-testid="sankey-chart"`, client-only with the existing skeleton fallback, width from the card, height as today incl. `maxHeight`), option from `buildSankeyOption`, theme tokens read on mount and on colour-mode change, node click → `select` (same id again → `null`; income/balance → `null`), `selected` node highlighted; props and emits unchanged (contracts/ui.md).
 - [X] T004 [US1] Visually hidden block list in `SankeyChart.vue`: one button per main/sub node (`data-testid="sankey-node"`, `data-node="<kind>:<id>"`, label text, `aria-pressed` for the selected one), visible on focus, click/Enter selects like the block; component test `apps/web/tests/sankey-chart.spec.ts` (list rendered in order, select/unselect emits); update `e2e/us-p3-budget.spec.ts` W7 to select via the block list.
-- [ ] T005 [US1] Check Analyse card and Sankey page in dark and light at 1440 px (labels readable, no overlap for ≥ 15 categories, tooltip in theme); adjust `buildSankeyOption` spacing/sizes if needed; record status in `specs/011-chart-look/quickstart.md`.
+- [X] T005 [US1] Check Analyse card and Sankey page in dark and light at 1440 px (labels readable, no overlap for ≥ 15 categories, tooltip in theme); adjust `buildSankeyOption` spacing/sizes if needed; record status in `specs/011-chart-look/quickstart.md`.
 - [ ] T006 [US1] Remove `d3-sankey` and its types from `apps/web/package.json` once nothing imports it; drop unused helpers/styles from the old drawing (`sankey-link`, `sankey-label` CSS) in `apps/web/app/components/budget/SankeyChart.vue`.
 
 ## Phase 4: User Story 2 – All donuts look the same (P2)

@@ -158,7 +158,7 @@ export function buildSankeyOption(input: SankeyOptionInput) {
           color: input.theme.text,
           fontSize: 12,
           textBorderColor: input.theme.background,
-          textBorderWidth: 3,
+          textBorderWidth: 2,
           formatter: (params: { name: string }) =>
             `{name|${labelOf.get(params.name) ?? ''}}  {value|${format(totals.get(params.name) ?? 0)}}`,
           rich: {
@@ -167,13 +167,13 @@ export function buildSankeyOption(input: SankeyOptionInput) {
               fontSize: 12,
               fontWeight: 600,
               textBorderColor: input.theme.background,
-              textBorderWidth: 3,
+              textBorderWidth: 2,
             },
             value: {
               color: input.theme.muted,
               fontSize: 12,
               textBorderColor: input.theme.background,
-              textBorderWidth: 3,
+              textBorderWidth: 2,
             },
           },
         },

@@ -77,7 +77,6 @@ function colorOf(id: string): string {
 }
 
 /** Text and tooltip colours from the app tokens; read again when the colour mode changes. */
-const colorMode = useColorMode()
 const theme = ref({
   text: '#e5e7eb',
   muted: '#9ca3af',
@@ -96,14 +95,15 @@ function readTheme(): void {
   }
 }
 const reducedMotion = ref(false)
+/** The colour mode switches a class on <html>; read the tokens again once it has changed. */
+let themeObserver: MutationObserver | undefined
 onMounted(() => {
   readTheme()
   reducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  themeObserver = new MutationObserver(readTheme)
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 })
-watch(
-  () => colorMode.value,
-  () => nextTick(readTheme),
-)
+onBeforeUnmount(() => themeObserver?.disconnect())
 
 const selectedNodeId = computed(() =>
   props.selected
