@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-26
 
-**Status**: Draft
+**Status**: Implemented
 
 **Input**: User description: "Für 010 werden wir alle Features, Rechnungen, Daten etc. kontrollieren, vieles von meiner App weicht von Finanzfluss ab, dort genau nach prüfen. Des Weiteren das Layout etwas anpassen: selbe Größe der Dropdowns, Umrahmungen von dem markierten Teil (Einnahmen/Ausgaben/Saldo, Gespart/Sparquote) etc. Verschiedene Browsergrößen testen (Tablet, Handy, PC), Layout aller Tabellen prüfen und aus den Abweichungen Spec, Plan und Tasks für Issue 010 erstellen."
 
