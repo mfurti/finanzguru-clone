@@ -34,7 +34,7 @@
 - [X] T004 [US1] Route `GET /api/logos/brands/local/:key` in `logos.controller.ts` (content type by file, `Cache-Control: private, max-age=86400`, `nosniff`, 008 CSP for SVG, unknown → 404); brand URLs for local brands point there. E2E in `apps/api/test/e2e/logos-local.e2e-spec.ts` with `BRAND_LOGOS_DIR` set to a temp fixture folder.
 - [X] T005 [US1] `accounts.service.ts` list: logo via `LogosService` (`logoFor` with institution name as counterparty text, choice from `recipient_logo` key `institution:<institutionId>`, no logo for "Manuell"). E2E `apps/api/test/e2e/account-logos.e2e-spec.ts` (Sparkasse/Klarna logo, Manuell null, unknown institution null, local brand wins).
 - [X] T006 [US1] Web composable `apps/web/app/composables/useAccountLogos.ts` (`byAccount(id)`, `byInstitution(name)`, shares `key: 'accounts'`); `MerchantLogo` in `AccountsCard.vue`, `AccountRow.vue`, `AccountDetail.vue`, `AccountFilter.vue` (small), `BookingPanel.vue` (account line), `BankCard.vue`, `ScalableCard.vue`. Component test `apps/web/tests/account-logos.spec.ts`.
-- [ ] T007 [US1] Playwright `e2e/us-a1-account-logos.spec.ts`: logos on overview card, Konten, detail, filter; Manuell initials; only same-origin requests; 360 px.
+- [X] T007 [US1] Playwright `e2e/us-a1-account-logos.spec.ts`: logos on overview card, Konten, detail, filter; Manuell initials; only same-origin requests; 360 px.
 
 ---
 
