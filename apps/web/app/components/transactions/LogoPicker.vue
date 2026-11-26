@@ -9,6 +9,8 @@ import { FetchError } from 'ofetch'
  */
 const props = defineProps<{
   recipientKey: string
+  /** Replaces "Gilt für alle Buchungen von …" (e.g. for an institution, 009). */
+  note?: string
   name: string
   logo: LogoRef
   logoSource: LogoSource
@@ -95,7 +97,7 @@ function upload(event: Event): void {
   <UModal v-model:open="open" :title="t('logo.title')" :ui="{ content: 'sm:max-w-xl' }">
     <template #body>
       <div class="space-y-4" data-testid="logo-picker">
-        <p class="text-sm text-muted">{{ t('logo.appliesAll', { name }) }}</p>
+        <p class="text-sm text-muted">{{ note ?? t('logo.appliesAll', { name }) }}</p>
         <UInput
           v-model="query"
           icon="i-lucide-search"

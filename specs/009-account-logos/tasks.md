@@ -51,7 +51,7 @@
 
 **Independent Test**: A4 in quickstart.
 
-- [ ] T010 [US3] `AccountDetail.vue`: clicking the logo opens `LogoPicker` with `recipient-key` = `logoKey`, note "Gilt für alle Konten von …"; after save refresh accounts. Component test extended; Playwright `e2e/us-a3-institution-logo.spec.ts` (Kein Logo, Automatisch, upload of the 008 PNG fixture).
+- [X] T010 [US3] `AccountDetail.vue`: clicking the logo opens `LogoPicker` with `recipient-key` = `logoKey`, note "Gilt für alle Konten von …"; after save refresh accounts. Component test extended; Playwright `e2e/us-a3-institution-logo.spec.ts` (Kein Logo, Automatisch, upload of the 008 PNG fixture).
 
 ---
 

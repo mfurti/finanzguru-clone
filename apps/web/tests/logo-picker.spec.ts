@@ -107,4 +107,25 @@ describe('LogoPicker (008 T011)', () => {
     expect(options.method).toBe('POST')
     expect((options.body as FormData).get('file')).toBeInstanceOf(File)
   })
+
+  it('shows the institution note instead of the booking note (009)', async () => {
+    const wrapper = await mountSuspended(LogoPicker, {
+      props: {
+        open: true,
+        recipientKey: 'institution:i1',
+        name: 'Sparkasse Bodensee',
+        logo: null,
+        logoSource: null,
+        note: 'Gilt für alle Konten von Sparkasse Bodensee',
+      },
+      attachTo: document.body,
+    })
+    unmount = () => wrapper.unmount()
+    await flushPromises()
+    expect(document.body.textContent).toContain('Gilt für alle Konten von Sparkasse Bodensee')
+    expect(document.body.textContent).not.toContain('Gilt für alle Buchungen')
+    q('[data-testid="logo-none"]')!.click()
+    await flushPromises()
+    expect(calls.at(-1)![0]).toBe('/api/logos/recipients/institution%3Ai1')
+  })
 })

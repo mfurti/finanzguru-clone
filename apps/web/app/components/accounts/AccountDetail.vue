@@ -49,7 +49,10 @@ const figures = computed(() =>
     : [],
 )
 /** Bank and broker logo (009). */
-const { byAccount } = await useAccountLogos()
+const { accounts, byAccount, refresh: refreshLogos } = await useAccountLogos()
+/** "Logo ändern" for the bank or broker of this account (009 US3). */
+const logoOpen = ref(false)
+const logoAccount = computed(() => accounts.value?.find((acc) => acc.id === props.id))
 </script>
 
 <template>
@@ -70,13 +73,40 @@ const { byAccount } = await useAccountLogos()
           to="/accounts"
           :aria-label="t('overview.views.accounts')"
         />
+        <button
+          v-if="logoAccount?.logoKey"
+          type="button"
+          class="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-primary"
+          :aria-label="t('logo.change')"
+          :title="t('logo.change')"
+          data-testid="account-logo-change"
+          @click="logoOpen = true"
+        >
+          <MerchantLogo
+            :name="data.account.institution"
+            :logo="byAccount(id)"
+            size="lg"
+            data-testid="account-logo"
+          />
+        </button>
         <MerchantLogo
+          v-else
           :name="
             data.account.institution === 'Manuell' ? data.account.name : data.account.institution
           "
           :logo="byAccount(id)"
           size="lg"
           data-testid="account-logo"
+        />
+        <LogoPicker
+          v-if="logoAccount?.logoKey"
+          v-model:open="logoOpen"
+          :recipient-key="logoAccount.logoKey"
+          :name="data.account.institution"
+          :logo="logoAccount.logo"
+          :logo-source="logoAccount.logoSource"
+          :note="t('logo.institutionAppliesAll', { name: data.account.institution })"
+          @saved="refreshLogos()"
         />
         <div class="min-w-0">
           <h1 class="truncate text-xl font-bold">{{ data.account.name }}</h1>
