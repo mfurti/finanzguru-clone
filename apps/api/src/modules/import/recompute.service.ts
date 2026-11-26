@@ -17,6 +17,7 @@ import {
   type DailySnapshot,
   firstBookingDate,
   type PriceSeries,
+  referenceCashTxs,
 } from '../../domain/snapshots'
 
 /** Rows per INSERT; SQLite allows 32766 bound parameters, a snapshot row has 6. */
@@ -33,10 +34,17 @@ type Db = Pick<AppDatabase, 'select' | 'insert' | 'delete'>
 export class RecomputeService {
   recompute(db: Db, accountIds: readonly string[], from?: string, today = todayIso()): void {
     if (accountIds.length === 0) return
+    // A depot's reference (cash) account depends on the depot's trades (010 R3).
+    const children = db
+      .select({ id: account.id })
+      .from(account)
+      .where(and(inArray(account.parentAccountId, [...accountIds]), eq(account.type, 'reference')))
+      .all()
+      .map((row) => row.id)
     const accounts = db
       .select()
       .from(account)
-      .where(inArray(account.id, [...accountIds]))
+      .where(inArray(account.id, [...new Set([...accountIds, ...children])]))
       .all()
 
     for (const acc of accounts) {
@@ -103,7 +111,22 @@ export class RecomputeService {
             .run()
         }
       } else {
-        snapshots = computeCashSnapshots(acc.id, acc.balanceCents, txs, start, today)
+        const cashTxs =
+          acc.type === 'reference' && acc.parentAccountId
+            ? referenceCashTxs(
+                txs,
+                db
+                  .select({
+                    bookingDate: transaction.bookingDate,
+                    amountCents: transaction.amountCents,
+                    type: transaction.type,
+                  })
+                  .from(transaction)
+                  .where(eq(transaction.accountId, acc.parentAccountId))
+                  .all(),
+              )
+            : txs
+        snapshots = computeCashSnapshots(acc.id, acc.balanceCents, cashTxs, start, today)
       }
 
       db.delete(netWorthSnapshot)
@@ -115,5 +138,29 @@ export class RecomputeService {
           .run()
       }
     }
+  }
+
+  /**
+   * After new quotes (010 R3): rebuilds the snapshots of every depot holding one of the
+   * instruments from `from` on, so charts end with the same value as positions and allocation.
+   */
+  recomputeHolders(
+    db: Db,
+    instrumentIds: readonly string[],
+    from: string,
+    today = todayIso(),
+  ): void {
+    if (instrumentIds.length === 0) return
+    const depots = [
+      ...new Set(
+        db
+          .select({ id: positionLot.accountId })
+          .from(positionLot)
+          .where(inArray(positionLot.instrumentId, [...instrumentIds]))
+          .all()
+          .map((row) => row.id),
+      ),
+    ]
+    this.recompute(db, depots, from, today)
   }
 }

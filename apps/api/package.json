@@ -21,6 +21,7 @@
     "perf": "nest build --config nest-cli.dev.json && node dist/scripts/perf.js",
     "enable-banking:record": "nest build --config nest-cli.dev.json && node --env-file-if-exists=.env dist/scripts/enable-banking-record.js",
     "audit:figures": "nest build --config nest-cli.dev.json && node --env-file-if-exists=.env dist/scripts/audit-figures.js",
+    "recompute:all": "nest build --config nest-cli.dev.json && node --env-file-if-exists=.env dist/scripts/recompute-all.js",
     "scalable:record": "nest build --config nest-cli.dev.json && node --env-file-if-exists=.env dist/scripts/scalable-record.js"
   },
   "dependencies": {

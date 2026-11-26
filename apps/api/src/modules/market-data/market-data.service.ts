@@ -10,6 +10,7 @@ import {
   type SecuritySearchResponse,
 } from '@finance/shared'
 import { eq, inArray } from 'drizzle-orm'
+import { RecomputeService } from '../import/recompute.service'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import {
@@ -82,6 +83,7 @@ export class MarketDataService {
     private readonly store: ScalableCredentialStore,
     private readonly config: ConfigService,
     @Inject(SCALABLE_TRANSPORT) private readonly transport: TransportFactory,
+    private readonly recompute: RecomputeService,
   ) {}
 
   /** True when the Scalable source is connected. */
@@ -157,17 +159,29 @@ export class MarketDataService {
       if (targets.length === 0) return 0
       return await this.withClient(async (client) => {
         let stored = 0
+        const updated: string[] = []
+        let earliest: string | null = null
         for (const target of targets) {
           try {
             const { security } = payload<{ security?: { quote?: ScalableQuote } }>(
               await client.call('get_security_quote', { isin: target.isin }),
             )
-            if (this.storeQuote(target.id, security?.quote)) stored++
+            const day = this.storeQuote(target.id, security?.quote)
+            if (day) {
+              stored++
+              updated.push(target.id)
+              if (!earliest || day < earliest) earliest = day
+            }
           } catch (error) {
             this.logger.warn(
               `Quote for ${target.isin} failed: ${error instanceof Error ? error.message : error}`,
             )
           }
+        }
+        // Charts must end with the same value as positions and allocation (010 R3).
+        if (earliest && updated.length > 0) {
+          const from = earliest
+          this.db.transaction((tx) => this.recompute.recomputeHolders(tx, updated, from))
         }
         return stored
       })
@@ -224,10 +238,13 @@ export class MarketDataService {
       .all()
   }
 
-  /** Upserts the quote and today's price; false when the quote is unusable (not EUR, no price). */
-  private storeQuote(instrumentId: string, data: ScalableQuote | undefined): boolean {
+  /**
+   * Upserts the quote and today's price; returns the price date, or null when the quote is
+   * unusable (not EUR, no price).
+   */
+  private storeQuote(instrumentId: string, data: ScalableQuote | undefined): string | null {
     const mid = decimal(data?.midPrice)
-    if (!data || !mid || data.currency.toUpperCase() !== 'EUR') return false
+    if (!data || !mid || data.currency.toUpperCase() !== 'EUR') return null
     const intraday = data.performances?.find((item) => item.timeframe === 'INTRADAY')
     const values = {
       price: mid,
@@ -249,7 +266,7 @@ export class MarketDataService {
         set: { close: mid, source: 'scalable' },
       })
       .run()
-    return true
+    return berlinDate(data.timestampUtc)
   }
 
   /** Opens one MCP connection for `run`; a lost grant reports "nicht verbunden". */

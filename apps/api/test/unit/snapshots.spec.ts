@@ -4,6 +4,7 @@ import {
   computeCashSnapshots,
   computeDepotSnapshots,
   type PriceSeries,
+  referenceCashTxs,
 } from '../../src/domain/snapshots'
 
 const buy = (
@@ -106,5 +107,29 @@ describe('cash snapshots', () => {
     // 23737 now; the 10.11. booking is after the range → end of 03.11. = 24737
     expect(rows.map((row) => row.valueCents)).toEqual([109237, 109237, 24737])
     expect(rows.map((row) => row.externalFlowCents)).toEqual([164401, 0, -84500])
+  })
+})
+
+describe('broker reference account (010 T003)', () => {
+  const own = [{ bookingDate: '2026-11-01', amountCents: 100000, type: 'deposit' }]
+  const depot = [
+    { bookingDate: '2026-11-01', amountCents: -100000, type: 'buy' },
+    { bookingDate: '2026-11-05', amountCents: 110000, type: 'sell' },
+    { bookingDate: '2026-11-07', amountCents: -110000, type: 'buy' },
+    { bookingDate: '2026-11-08', amountCents: 25, type: 'interest' },
+    { bookingDate: '2026-11-08', amountCents: 0, type: 'transfer' },
+  ]
+
+  it('adds the depot cash legs, so sale proceeds stay in the value between sell and re-buy', () => {
+    const txs = referenceCashTxs(own, depot)
+    expect(txs).toHaveLength(5)
+    // Today's balance is 25 (the interest); the proceeds sit on the account on 05. and 06.
+    const rows = computeCashSnapshots('ref', 25, txs, '2026-11-04', '2026-11-08')
+    expect(rows.map((row) => row.valueCents)).toEqual([0, 110000, 110000, 0, 25])
+  })
+
+  it('keeps own trade bookings as they are (legs already booked there)', () => {
+    const withTrades = [...own, { bookingDate: '2026-11-05', amountCents: 110000, type: 'sell' }]
+    expect(referenceCashTxs(withTrades, depot)).toHaveLength(2)
   })
 })

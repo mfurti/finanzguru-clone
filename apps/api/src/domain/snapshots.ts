@@ -201,6 +201,27 @@ export function computeCashSnapshots(
   return result
 }
 
+/** Booking types that move money on a broker's cash account when booked in the depot. */
+const DEPOT_CASH_TYPES = new Set(['buy', 'sell', 'dividend', 'interest', 'tax', 'fee'])
+
+/**
+ * Cash bookings of a broker's reference account (010 R3): its own bookings plus the cash legs
+ * of the parent depot's trades, dividends, interest, taxes and fees – but only when the
+ * reference account books no trades itself (otherwise the legs are already there). Without
+ * the legs, the balance rebuilt backwards from today misses sale proceeds between a sell and
+ * a re-buy, and the value chart drops for those days.
+ */
+export function referenceCashTxs(
+  own: readonly (CashTx & { type?: string })[],
+  depot: readonly (CashTx & { type: string })[],
+): CashTx[] {
+  if (own.some((tx) => tx.type === 'buy' || tx.type === 'sell')) return [...own]
+  const legs = depot
+    .filter((tx) => DEPOT_CASH_TYPES.has(tx.type))
+    .map((tx) => ({ bookingDate: tx.bookingDate, amountCents: tx.amountCents }))
+  return [...own, ...legs]
+}
+
 /** First day a snapshot series needs: earliest booking, or `fallback`. */
 export function firstBookingDate(
   transactions: readonly { bookingDate: string }[],

@@ -73,6 +73,10 @@ Banks, brokers and merchants missing from the built-in sets (e.g. Scalable Capit
 
 Save this as `brands.json` next to the image files (PNG, JPEG, WebP or SVG without scripts, max. 256 KB each) and restart the API. `words` are matched as whole words against bank, broker and booking recipient names; local logos win over the built-in sets. Invalid entries are skipped with a warning in the API log. Logos appear on accounts, portfolios, bookings and in the logo picker.
 
+### After upgrading
+
+Some releases change how derived values are computed (e.g. 010: broker cash accounts include trade cash, so the value chart no longer drops between a sell and a re-buy). Rebuild them once with `pnpm --filter api recompute:all`.
+
 ## Setup
 
 Requires Node.js 26 and pnpm (`corepack enable`).
