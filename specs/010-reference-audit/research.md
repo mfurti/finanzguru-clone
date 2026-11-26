@@ -43,6 +43,7 @@ Status: T002 resolved 2026-11-26 with the owner's trade list (computed locally) 
 - **Observed**: unreviewed count differs by about 2 %; one month's bar differs by 100 €.
 - **Finding (T002)**: for the same accounts the app counts about 2 % fewer unreviewed bookings; the 100 € month difference is a single booking classified differently (income/expense vs. transfer).
 - **Decision**: T008 compares the counted types per account against the reference list (read only) and aligns the rule (likely: trades and broker cash bookings count as unreviewed too); the bar difference follows the R4 rule or is documented.
+- **Result (T008)**: both apps count every booking of the selected accounts (trades and broker cash bookings included); the difference is only which bookings were marked reviewed in each app (the owner reviewed different ones). No rule change. The single-month bar difference (100 €) has no matching booking on the app side; it stays listed in the quickstart until the reference's month detail is compared.
 
 ## R7 – Tables on phone and tablet
 
