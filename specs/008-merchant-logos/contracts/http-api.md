@@ -1,6 +1,6 @@
 # HTTP API: Merchant Logos (008)
 
-All routes need the owner session (existing guard). Errors are German `{ message }`.
+All routes need the owner session (existing guard). Errors are German `{ statusCode, statusMessage }` (existing filter).
 
 ## Changed
 

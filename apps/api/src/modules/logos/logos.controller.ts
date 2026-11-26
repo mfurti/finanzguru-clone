@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,11 +8,14 @@ import {
   HttpStatus,
   NotFoundException,
   Param,
+  PayloadTooLargeException,
+  Post,
   Put,
   Query,
+  Req,
   Res,
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiConsumes, ApiTags } from '@nestjs/swagger'
 import {
   brandSearchQuery,
   recipientKey,
@@ -19,9 +23,9 @@ import {
   type BrandSearchResult,
   type LogoRef,
 } from '@finance/shared'
-import type { FastifyReply } from 'fastify'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { createZodDto } from 'nestjs-zod'
-import { LogosService } from './logos.service'
+import { LogosService, MAX_LOGO_BYTES } from './logos.service'
 
 class BrandSearchDto extends createZodDto(brandSearchQuery) {}
 class RecipientLogoDto extends createZodDto(recipientLogoInput) {}
@@ -33,7 +37,7 @@ function keyParam(raw: string): string {
   return parsed.data
 }
 
-/** Merchant logos (008): built-in brand catalogue; choices and uploads follow in US2/US3. */
+/** Merchant logos (008): built-in brand catalogue, choice per recipient, own uploads. */
 @ApiTags('logos')
 @Controller('logos')
 export class LogosController {
@@ -60,6 +64,34 @@ export class LogosController {
   @Put('recipients/:key')
   setChoice(@Param('key') key: string, @Body() body: RecipientLogoDto): LogoRef {
     return this.logos.setChoice(keyParam(key), body)
+  }
+
+  /** Own logo for all bookings of a recipient (US3): PNG, JPEG or WebP up to 256 KB. */
+  @Post('recipients/:key/upload')
+  @ApiConsumes('multipart/form-data')
+  async upload(@Param('key') key: string, @Req() request: FastifyRequest): Promise<LogoRef> {
+    const recipient = keyParam(key)
+    if (!request.isMultipart()) throw new BadRequestException('Erwarte multipart/form-data')
+    const part = await request.file({ limits: { fileSize: MAX_LOGO_BYTES, files: 1 } })
+    if (!part) throw new BadRequestException('Keine Datei hochgeladen')
+    let file: Buffer
+    try {
+      file = await part.toBuffer()
+    } catch {
+      throw new PayloadTooLargeException('Bild zu groß (max. 256 KB)')
+    }
+    return this.logos.saveUpload(recipient, file)
+  }
+
+  /** Uploaded logo; only for the logged-in owner, never sniffed as another type. */
+  @Get('files/:name')
+  file(@Param('name') name: string, @Res({ passthrough: true }) reply: FastifyReply): Buffer {
+    const { body, contentType } = this.logos.readUpload(name)
+    void reply
+      .header('content-type', contentType)
+      .header('cache-control', 'private, max-age=86400')
+      .header('x-content-type-options', 'nosniff')
+    return body
   }
 
   /** Back to the automatic match. */
