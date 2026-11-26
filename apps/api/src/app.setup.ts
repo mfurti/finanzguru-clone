@@ -1,3 +1,4 @@
+import { FastifyAdapter } from '@nestjs/platform-fastify'
 import { createHash } from 'node:crypto'
 import helmet from '@fastify/helmet'
 import multipart from '@fastify/multipart'
@@ -64,4 +65,12 @@ export async function configureApp(app: NestFastifyApplication): Promise<void> {
     )
     SwaggerModule.setup('api/docs', app, cleanupOpenApiDoc(document))
   }
+}
+
+/**
+ * Fastify adapter with the app's server options. Recipient keys (008) are up to 200 characters
+ * and appear URL-encoded in paths (umlauts ×6), so params may be longer than Fastify's 100.
+ */
+export function createFastifyAdapter(): FastifyAdapter {
+  return new FastifyAdapter({ maxParamLength: 1300 })
 }

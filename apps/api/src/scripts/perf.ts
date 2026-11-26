@@ -1,3 +1,4 @@
+import { createFastifyAdapter } from '../app.setup'
 /**
  * Performance check (SC-002, T075): `pnpm --filter api perf`
  * 1. Seeds a temporary DB with 5 years of daily history and ~10k transactions.
@@ -8,7 +9,7 @@ import { mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { NestFactory } from '@nestjs/core'
-import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify'
+import type { NestFastifyApplication } from '@nestjs/platform-fastify'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
 import { runMigrations } from '../database/migrate'
 import { openDatabase } from '../database/open-database'
@@ -85,7 +86,7 @@ async function main(): Promise<void> {
   const { AppModule } = await import('../app.module.js')
   const { configureApp } = await import('../app.setup.js')
   const { AuthService } = await import('../modules/auth/auth.service.js')
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, createFastifyAdapter(), {
     logger: false,
   })
   await configureApp(app)

@@ -1,5 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common'
-import type { BrandSearchResult, LogoRef, LogoSource } from '@finance/shared'
+import { BadRequestException, Inject, Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { rmSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
+import { eq } from 'drizzle-orm'
+import type { BrandSearchResult, LogoRef, LogoSource, RecipientLogoInput } from '@finance/shared'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { recipientLogo } from '../../database/schema'
@@ -22,7 +26,54 @@ export interface BookingLogo {
 
 @Injectable()
 export class LogosService {
-  constructor(@Inject(DB) private readonly db: AppDatabase) {}
+  constructor(
+    @Inject(DB) private readonly db: AppDatabase,
+    private readonly config: ConfigService,
+  ) {}
+
+  /** Folder of uploaded logos: LOGOS_DIR, else `logos/` next to the database (git-ignored data). */
+  logosDir(): string {
+    const configured = this.config.get<string>('LOGOS_DIR')
+    if (configured) return resolve(configured)
+    return resolve(dirname(this.config.getOrThrow<string>('DATABASE_PATH')), 'logos')
+  }
+
+  private deleteFile(fileName: string | null | undefined): void {
+    if (fileName) rmSync(join(this.logosDir(), fileName), { force: true })
+  }
+
+  private stored(key: string) {
+    return this.db.select().from(recipientLogo).where(eq(recipientLogo.recipientKey, key)).get()
+  }
+
+  /** Saves a brand or "Kein Logo" for a recipient (US2); replaces an upload. */
+  setChoice(key: string, input: RecipientLogoInput): LogoRef {
+    const slug = input.mode === 'brand' ? (input.brandSlug ?? '') : null
+    if (slug !== null && !getBrand(slug)) {
+      throw new BadRequestException('Unbekannte Marke')
+    }
+    const previous = this.stored(key)
+    const values = {
+      mode: input.mode,
+      brandSlug: slug,
+      fileName: null,
+      updatedAt: new Date().toISOString(),
+    }
+    this.db
+      .insert(recipientLogo)
+      .values({ recipientKey: key, ...values })
+      .onConflictDoUpdate({ target: recipientLogo.recipientKey, set: values })
+      .run()
+    this.deleteFile(previous?.fileName)
+    return slug ? { kind: 'brand', ...this.toResult(getBrand(slug)!) } : null
+  }
+
+  /** Back to "Automatisch": removes the choice and an uploaded file. */
+  removeChoice(key: string): void {
+    const previous = this.stored(key)
+    this.db.delete(recipientLogo).where(eq(recipientLogo.recipientKey, key)).run()
+    this.deleteFile(previous?.fileName)
+  }
 
   /** All stored choices by recipient key (a few hundred rows at most), one query per list. */
   choices(): Map<string, LogoChoice> {

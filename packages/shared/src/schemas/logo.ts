@@ -27,10 +27,12 @@ export const logoSource = z.enum(['auto', 'manual']).nullable()
 export type LogoSource = z.infer<typeof logoSource>
 
 /** `PUT /api/logos/recipients/:key`: a brand, or "Kein Logo". */
-export const recipientLogoInput = z.discriminatedUnion('mode', [
-  z.object({ mode: z.literal('brand'), brandSlug }),
-  z.object({ mode: z.literal('none') }),
-])
+export const recipientLogoInput = z
+  .object({ mode: z.enum(['brand', 'none']), brandSlug: brandSlug.optional() })
+  .refine((input) => (input.mode === 'brand') === (input.brandSlug !== undefined), {
+    message: 'Marke nur bei mode "brand" angeben',
+    path: ['brandSlug'],
+  })
 export type RecipientLogoInput = z.infer<typeof recipientLogoInput>
 
 /** One hit of `GET /api/logos/brands?q=`. */

@@ -1,11 +1,37 @@
-import { Controller, Get, NotFoundException, Param, Query, Res } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  NotFoundException,
+  Param,
+  Put,
+  Query,
+  Res,
+} from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { brandSearchQuery, type BrandSearchResult } from '@finance/shared'
+import {
+  brandSearchQuery,
+  recipientKey,
+  recipientLogoInput,
+  type BrandSearchResult,
+  type LogoRef,
+} from '@finance/shared'
 import type { FastifyReply } from 'fastify'
 import { createZodDto } from 'nestjs-zod'
 import { LogosService } from './logos.service'
 
 class BrandSearchDto extends createZodDto(brandSearchQuery) {}
+class RecipientLogoDto extends createZodDto(recipientLogoInput) {}
+
+/** Recipient key from the URL: 1–200 characters (data-model.md). */
+function keyParam(raw: string): string {
+  const parsed = recipientKey.safeParse(raw)
+  if (!parsed.success) throw new NotFoundException('Unbekannter Empfänger')
+  return parsed.data
+}
 
 /** Merchant logos (008): built-in brand catalogue; choices and uploads follow in US2/US3. */
 @ApiTags('logos')
@@ -28,5 +54,18 @@ export class LogosController {
       .header('cache-control', 'public, max-age=31536000, immutable')
       .header('x-content-type-options', 'nosniff')
     return svg
+  }
+
+  /** Brand or "Kein Logo" for all bookings of a recipient (US2). */
+  @Put('recipients/:key')
+  setChoice(@Param('key') key: string, @Body() body: RecipientLogoDto): LogoRef {
+    return this.logos.setChoice(keyParam(key), body)
+  }
+
+  /** Back to the automatic match. */
+  @Delete('recipients/:key')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  removeChoice(@Param('key') key: string): void {
+    this.logos.removeChoice(keyParam(key))
   }
 }

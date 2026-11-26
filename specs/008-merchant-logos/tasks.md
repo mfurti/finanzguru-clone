@@ -48,7 +48,7 @@
 
 **Independent Test**: L3, L4 in quickstart.
 
-- [ ] T010 [US2] API `PUT /api/logos/recipients/:key` (body `recipientLogoInput`; unknown slug → 400 "Unbekannte Marke"; key 1–200 chars) and `DELETE /api/logos/recipients/:key` (204, deletes an uploaded file) in `logos.controller.ts`/`logos.service.ts`. E2E `apps/api/test/e2e/logos-recipients.e2e-spec.ts` (brand → list shows manual brand for all bookings of the key; none → null; delete → auto again).
+- [X] T010 [US2] API `PUT /api/logos/recipients/:key` (body `recipientLogoInput`; unknown slug → 400 "Unbekannte Marke"; key 1–200 chars) and `DELETE /api/logos/recipients/:key` (204, deletes an uploaded file) in `logos.controller.ts`/`logos.service.ts`. E2E `apps/api/test/e2e/logos-recipients.e2e-spec.ts` (brand → list shows manual brand for all bookings of the key; none → null; delete → auto again).
 - [ ] T011 [US2] `apps/web/app/components/transactions/LogoPicker.vue` (`UModal`): search field (debounced `GET /api/logos/brands?q=`), grid of logo tiles with names, current marked, buttons "Automatisch", "Kein Logo", "Eigenes Logo hochladen" slot for US3, note "Gilt für alle Buchungen von …"; opened by "Logo ändern" on the panel header logo in `BookingPanel.vue`; after save refresh the table. Component test `apps/web/tests/logo-picker.spec.ts`.
 - [ ] T012 [US2] Playwright `e2e/us-l2-logo-choice.spec.ts`: L3, L4 with invented recipients; reload keeps the choice; a new booking of the same recipient shows the chosen logo.
 

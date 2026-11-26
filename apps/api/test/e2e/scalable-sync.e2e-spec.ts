@@ -4,13 +4,13 @@ import { z } from 'zod'
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js'
-import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify'
+import type { NestFastifyApplication } from '@nestjs/platform-fastify'
 import { Test } from '@nestjs/testing'
 import type { DataSourceDto } from '@finance/shared'
 import { desc, eq } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { AppModule } from '../../src/app.module'
-import { configureApp } from '../../src/app.setup'
+import { configureApp, createFastifyAdapter } from '../../src/app.setup'
 import { DB } from '../../src/database/database.constants'
 import type { AppDatabase } from '../../src/database/drizzle.module'
 import { account, dataSource, importJob, transaction } from '../../src/database/schema'
@@ -112,7 +112,7 @@ describe('Scalable connection and source endpoints (004 US1)', () => {
       .overrideProvider(SCALABLE_TRANSPORT)
       .useValue(fakeTransport)
       .compile()
-    app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter())
+    app = moduleRef.createNestApplication<NestFastifyApplication>(createFastifyAdapter())
     await configureApp(app)
     await app.init()
     await app.getHttpAdapter().getInstance().ready()

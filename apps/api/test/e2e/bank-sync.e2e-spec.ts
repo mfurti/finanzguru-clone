@@ -2,13 +2,13 @@ import { generateKeyPairSync } from 'node:crypto'
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify'
+import type { NestFastifyApplication } from '@nestjs/platform-fastify'
 import { Test } from '@nestjs/testing'
 import type { DataSourceDto } from '@finance/shared'
 import { eq } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { AppModule } from '../../src/app.module'
-import { configureApp } from '../../src/app.setup'
+import { configureApp, createFastifyAdapter } from '../../src/app.setup'
 import { DB } from '../../src/database/database.constants'
 import type { AppDatabase } from '../../src/database/drizzle.module'
 import {
@@ -84,7 +84,7 @@ describe('bank connection and sync through Enable Banking (005 US1)', () => {
       .overrideProvider(ENABLE_BANKING_HTTP)
       .useValue(fakeHttp)
       .compile()
-    app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter())
+    app = moduleRef.createNestApplication<NestFastifyApplication>(createFastifyAdapter())
     await configureApp(app)
     await app.init()
     await app.getHttpAdapter().getInstance().ready()

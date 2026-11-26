@@ -3,13 +3,13 @@ import { join } from 'node:path'
 import { z } from 'zod'
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify'
+import type { NestFastifyApplication } from '@nestjs/platform-fastify'
 import { Test } from '@nestjs/testing'
 import type { QuoteDto, SecuritySearchResponse, WatchlistDto } from '@finance/shared'
 import { eq } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { AppModule } from '../../src/app.module'
-import { configureApp } from '../../src/app.setup'
+import { configureApp, createFastifyAdapter } from '../../src/app.setup'
 import { DB } from '../../src/database/database.constants'
 import type { AppDatabase } from '../../src/database/drizzle.module'
 import { dataSource, instrument, price } from '../../src/database/schema'
@@ -74,7 +74,7 @@ describe('market data through the Scalable connection (005 US4)', () => {
       .overrideProvider(SCALABLE_TRANSPORT)
       .useValue(fakeTransport)
       .compile()
-    app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter())
+    app = moduleRef.createNestApplication<NestFastifyApplication>(createFastifyAdapter())
     await configureApp(app)
     await app.init()
     await app.getHttpAdapter().getInstance().ready()
