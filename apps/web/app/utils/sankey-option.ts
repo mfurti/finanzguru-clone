@@ -51,7 +51,7 @@ const FALLBACK_THEME: SankeyTheme = {
  * colour such as `oklch(…)` breaks the hover animation (011 fix). Anything else falls back.
  */
 export function sankeySafeColor(color: string | undefined, fallback: string): string {
-  return color && /^(#[\da-f]{3,8}|rgba?\([^)]*\))$/i.test(color.trim()) ? color.trim() : fallback
+  return color && /^(?:#[\da-f]{3,8}|rgba?\([^)]*\))$/i.test(color.trim()) ? color.trim() : fallback
 }
 
 /** Escapes text for the HTML tooltip (category names are owner-defined). */
