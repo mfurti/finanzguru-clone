@@ -13,7 +13,7 @@ Owner amounts go only into `apps/api/data/audit-010-local.md` (git-ignored); thi
 | Q5 | US3 | Positionen, Buchungen, Steuern at 375 / 768 / 1440 px | Fit at 1440; sticky first column when scrolling |
 | Q6 | US4 | Any page | One dropdown height; figure boxes framed in dark and light; Analyse five figures in one row ≥ 1280 px |
 
-## Status (no amounts)
+## Status after the owner check T009 (2026-11-26, no amounts)
 
 | Figure | Status |
 |---|---|
