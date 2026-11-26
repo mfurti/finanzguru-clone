@@ -79,6 +79,8 @@ async function disconnect(): Promise<void> {
     busy.value = null
   }
 }
+/** Broker logo when the owner added one (009). */
+const { byInstitution } = await useAccountLogos()
 </script>
 
 <template>
@@ -86,7 +88,7 @@ async function disconnect(): Promise<void> {
     <template #header>
       <div class="flex flex-wrap items-center justify-between gap-2">
         <h2 class="flex items-center gap-2 font-semibold">
-          <Avatar name="Scalable Capital" size="sm" />
+          <MerchantLogo name="Scalable Capital" :logo="byInstitution('scalable')" size="sm" />
           {{ t('scalable.title') }}
         </h2>
         <UBadge :color="badge.color" variant="subtle" data-testid="scalable-status">

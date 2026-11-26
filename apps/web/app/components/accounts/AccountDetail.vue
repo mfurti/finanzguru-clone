@@ -48,6 +48,8 @@ const figures = computed(() =>
       ]
     : [],
 )
+/** Bank and broker logo (009). */
+const { byAccount } = await useAccountLogos()
 </script>
 
 <template>
@@ -68,11 +70,13 @@ const figures = computed(() =>
           to="/accounts"
           :aria-label="t('overview.views.accounts')"
         />
-        <Avatar
+        <MerchantLogo
           :name="
             data.account.institution === 'Manuell' ? data.account.name : data.account.institution
           "
+          :logo="byAccount(id)"
           size="lg"
+          data-testid="account-logo"
         />
         <div class="min-w-0">
           <h1 class="truncate text-xl font-bold">{{ data.account.name }}</h1>

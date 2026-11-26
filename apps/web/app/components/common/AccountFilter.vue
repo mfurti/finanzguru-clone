@@ -52,15 +52,20 @@ const label = computed(() => {
           <p v-if="visibleAccounts.length === 0" class="px-2 py-3 text-sm text-muted">
             {{ t('filter.noAccounts') }}
           </p>
-          <UCheckbox
+          <div
             v-for="account in visibleAccounts"
             :key="account.id"
-            class="px-2 py-1.5"
-            :model-value="selected.includes(account.id)"
-            :label="account.name"
-            :description="account.institutionName"
-            @update:model-value="toggle(account.id)"
-          />
+            class="flex items-center gap-2 px-2 py-1.5"
+          >
+            <UCheckbox
+              class="min-w-0 flex-1"
+              :model-value="selected.includes(account.id)"
+              :label="account.name"
+              :description="account.institutionName"
+              @update:model-value="toggle(account.id)"
+            />
+            <MerchantLogo :name="account.institutionName" :logo="account.logo" size="sm" />
+          </div>
         </div>
       </template>
     </UPopover>

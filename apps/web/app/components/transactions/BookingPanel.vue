@@ -62,6 +62,8 @@ function saveNote(): void {
   if (next === (props.item.note ?? '')) return
   void patch({ note: next })
 }
+/** Bank logo next to the account (009). */
+const { byAccount } = await useAccountLogos()
 </script>
 
 <template>
@@ -105,8 +107,17 @@ function saveNote(): void {
       <div class="space-y-5 text-sm" data-testid="booking-panel">
         <section class="space-y-1">
           <h3 class="text-xs font-medium text-muted uppercase">{{ t('panel.account') }}</h3>
-          <p>{{ item.accountName }}</p>
-          <p v-if="item.institutionName" class="text-muted">{{ item.institutionName }}</p>
+          <div class="flex items-center gap-2">
+            <MerchantLogo
+              :name="item.institutionName ?? item.accountName"
+              :logo="byAccount(item.accountId)"
+              size="sm"
+            />
+            <div class="min-w-0">
+              <p>{{ item.accountName }}</p>
+              <p v-if="item.institutionName" class="text-muted">{{ item.institutionName }}</p>
+            </div>
+          </div>
         </section>
 
         <section class="space-y-1">

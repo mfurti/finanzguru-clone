@@ -14,6 +14,8 @@ const collapsed = ref<Record<string, boolean>>({})
 const toggle = (type: string) => {
   collapsed.value = { ...collapsed.value, [type]: !collapsed.value[type] }
 }
+/** Bank and broker logos (009). */
+const { byAccount } = await useAccountLogos()
 </script>
 
 <template>
@@ -49,7 +51,8 @@ const toggle = (type: string) => {
         <ul v-show="!collapsed[group.type]" class="divide-y divide-default">
           <template v-for="item in group.items" :key="item.id">
             <li class="row-hover flex items-center justify-between gap-3 py-2 pl-7">
-              <span class="min-w-0">
+              <MerchantLogo :name="item.institution" :logo="byAccount(item.id)" size="sm" />
+              <span class="min-w-0 flex-1">
                 <NuxtLink
                   v-if="group.type === 'depots'"
                   :to="{ path: '/investments', query: { accounts: item.id } }"

@@ -114,6 +114,8 @@ async function disconnect(): Promise<void> {
     busy.value = null
   }
 }
+/** Logo of the connected bank (009). */
+const { byInstitution } = await useAccountLogos()
 </script>
 
 <template>
@@ -121,7 +123,11 @@ async function disconnect(): Promise<void> {
     <template #header>
       <div class="flex flex-wrap items-center justify-between gap-2">
         <h2 class="flex items-center gap-2 font-semibold">
-          <Avatar :name="source?.institution ?? 'Bank'" size="sm" />
+          <MerchantLogo
+            :name="source?.institution ?? 'Bank'"
+            :logo="byInstitution(source?.institution)"
+            size="sm"
+          />
           {{ source?.institution ?? t('bank.title') }}
         </h2>
         <UBadge :color="badge.color" variant="subtle" data-testid="bank-status">

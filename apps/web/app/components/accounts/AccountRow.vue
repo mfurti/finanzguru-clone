@@ -22,6 +22,8 @@ async function sync(): Promise<void> {
     syncing.value = false
   }
 }
+/** Bank and broker logo (009). */
+const { byAccount } = await useAccountLogos()
 </script>
 
 <template>
@@ -31,7 +33,10 @@ async function sync(): Promise<void> {
       class="grid grid-cols-[auto_1fr_auto] items-center gap-x-3 gap-y-1 px-4 py-3 sm:grid-cols-[auto_minmax(0,1.4fr)_minmax(0,1fr)_96px_auto] sm:px-6"
       :data-testid="`account-link-${row.id}`"
     >
-      <Avatar :name="row.institution === 'Manuell' ? row.name : row.institution" />
+      <MerchantLogo
+        :name="row.institution === 'Manuell' ? row.name : row.institution"
+        :logo="byAccount(row.id)"
+      />
       <span class="min-w-0">
         <span class="block truncate font-medium">{{ row.name }}</span>
         <span class="block truncate text-xs text-muted">{{ row.institution }}</span>
