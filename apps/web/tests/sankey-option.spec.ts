@@ -20,7 +20,13 @@ const links = [
   { source: 'main:wohnen', target: 'sub:strom', value: 100 },
   { source: 'income', target: 'main:leer', value: 0 },
 ]
-const theme = { text: '#eee', muted: '#999', tooltipBackground: '#111', tooltipBorder: '#333' }
+const theme = {
+  text: '#eee',
+  muted: '#999',
+  tooltipBackground: '#111',
+  tooltipBorder: '#333',
+  background: '#222',
+}
 const base = {
   nodes,
   links,

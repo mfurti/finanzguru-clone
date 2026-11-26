@@ -7,6 +7,8 @@ export interface SankeyTheme {
   muted: string
   tooltipBackground: string
   tooltipBorder: string
+  /** Card background: outline around label text so labels stay readable over flows. */
+  background: string
 }
 
 export interface SankeyOptionInput {
@@ -39,6 +41,26 @@ function escapeHtml(text: string): string {
     /[&<>"']/g,
     (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!,
   )
+}
+
+/**
+ * Width in px the labels of the last column need (name bold + amount), estimated from the
+ * longest one at 12 px text; used to reserve room right of the chart.
+ */
+export function sankeyLabelSpace(
+  input: Pick<SankeyOptionInput, 'nodes' | 'links' | 'unit' | 'incomeCents'>,
+): number {
+  const totals = sankeyNodeTotals(input.links.filter((link) => link.value > 0))
+  const last = input.nodes.filter((node) => node.kind === 'sub' && totals.has(node.id))
+  const format = (cents: number) =>
+    input.unit === 'eur'
+      ? formatEur(cents)
+      : formatPct(input.incomeCents > 0 ? cents / input.incomeCents : 0)
+  const longest = Math.max(
+    0,
+    ...last.map((node) => node.label.length * 7.2 + format(totals.get(node.id) ?? 0).length * 6.6),
+  )
+  return Math.round(longest + 30)
 }
 
 /** Amount of a block: its incoming flows, or its outgoing ones for the income block. */
@@ -135,11 +157,24 @@ export function buildSankeyOption(input: SankeyOptionInput) {
           distance: 8,
           color: input.theme.text,
           fontSize: 12,
+          textBorderColor: input.theme.background,
+          textBorderWidth: 3,
           formatter: (params: { name: string }) =>
             `{name|${labelOf.get(params.name) ?? ''}}  {value|${format(totals.get(params.name) ?? 0)}}`,
           rich: {
-            name: { color: input.theme.text, fontSize: 12, fontWeight: 600 },
-            value: { color: input.theme.muted, fontSize: 12 },
+            name: {
+              color: input.theme.text,
+              fontSize: 12,
+              fontWeight: 600,
+              textBorderColor: input.theme.background,
+              textBorderWidth: 3,
+            },
+            value: {
+              color: input.theme.muted,
+              fontSize: 12,
+              textBorderColor: input.theme.background,
+              textBorderWidth: 3,
+            },
           },
         },
         data: nodes.map((node) => ({

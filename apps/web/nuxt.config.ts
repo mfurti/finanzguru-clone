@@ -56,4 +56,17 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
   },
+  // Pre-bundle ECharts and vue-echarts together in dev, so both use one ECharts copy and the
+  // sankey/renderer registered in utils/echarts.ts is the one vue-echarts sees (011).
+  vite: {
+    optimizeDeps: {
+      include: [
+        'echarts/core',
+        'echarts/charts',
+        'echarts/components',
+        'echarts/renderers',
+        'vue-echarts',
+      ],
+    },
+  },
 })
