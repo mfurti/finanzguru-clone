@@ -199,6 +199,11 @@ export class PortfolioService {
             .all()
         : []
     const depotSet = new Set(depotIds)
+    // Broker cash accounts: taxes on capital gains arrive there as separate bookings (010 R2).
+    // Subscription fees booked there (e.g. a broker plan) are account costs, not trade costs.
+    const referenceSet = new Set(
+      accounts.filter((acc) => acc.type === 'reference').map((acc) => acc.id),
+    )
     let dividendsNet = 0
     let dividendsTax = 0
     let interestNet = 0
@@ -214,6 +219,9 @@ export class PortfolioService {
         interestTax += tx.taxCents
       } else if (depotSet.has(tx.accountId) && (tx.type === 'tax' || tx.type === 'fee')) {
         taxesFees += Math.abs(tx.amountCents)
+      } else if (referenceSet.has(tx.accountId) && tx.type === 'tax') {
+        // Paid taxes are negative, refunds positive.
+        taxesFees -= tx.amountCents
       }
       if (depotSet.has(tx.accountId)) {
         taxesFees += tx.feeCents + tx.taxCents

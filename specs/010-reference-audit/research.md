@@ -15,6 +15,7 @@ Status: T002 resolved 2026-11-26 with the owner's trade list (computed locally) 
 - **Observed**: reference shows realized gains brutto and netto (difference = taxes) and a separate "Steuern & Gebühren" line; the app shows brutto = netto and 0 taxes/fees.
 - **Finding (T002)**: all synced trades carry fee 0 and tax 0, so "Steuern & Gebühren" is 0 and netto = brutto. Realized gains of the last 12 months with moving-average cost come closer to the reference than FIFO but still differ; the reference evidently deducts taxes and counts fees.
 - **Decision**: realized gain per sell = proceeds − moving-average cost of the sold quantity − fees of the sell; netto = brutto − taxes of the sell. T005 first checks whether the broker data (sync recordings) contains fee and tax amounts and maps them into the existing trade fields; if the source has none, the gap is documented.
+- **Result (T005)**: the broker sync sends no fee or tax per trade; taxes arrive as separate cash bookings on the reference account, subscription fees too. Kennzahlen now count tax bookings of reference accounts (paid minus refunded) under Steuern & Gebühren; subscription fees stay out (the reference ignores them as well). Tax withheld on individual sells is not in the broker data, so netto = brutto for those sells remains a documented gap.
 
 ## R3 – Value series gaps
 
