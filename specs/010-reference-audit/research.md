@@ -1,22 +1,25 @@
 # Research: Figures, Calculations and Layout Checked Against the Reference (010)
 
-Status: initial findings from the audit on 2026-11-26; open points are resolved in task T002 and recorded here (definitions only, no owner amounts).
+Status: T002 resolved 2026-11-26 with the owner's trade list (computed locally) and the reference UI (read only). Definitions only, no owner amounts.
 
 ## R1 – Invested capital, entry value, price gain
 
 - **Observed**: the reference shows the same quantity but a lower average entry price for the open ETF position; its positions page shows Kursgewinn = current value − Einstiegswert of the open position; its Kennzahlen show a smaller period Kursgewinn (1 J) whose percentage base is larger than the entry value.
-- **Hypothesis**: Einstiegswert = cost of the remaining lots after FIFO matching of sells (app: average cost incl. earlier lots); period Kursgewinn = value change of holdings in the period minus net purchases.
-- **To decide in T002**: verify FIFO vs. average with the owner's trade list (locally) and with an invented fixture whose two methods give different results; document the period base.
+- **Finding (T002)**: the app matches sells FIFO (its entry value equals the FIFO result exactly). The reference's entry value equals the **moving average cost** (gleitender Durchschnittspreis: each sell removes cost at the current average, buys add their cost) within 0,5 %; the rest is buy fees that the synced trades do not carry (see R2).
+- **Decision**: cost basis = moving average cost for Einstiegswert, ⌀ Kaufpreis, Investiertes Kapital (sum over open positions) and the positions' Kursgewinn (= current value − moving-average cost). FIFO stays only where tax rules need it (exemption/Vorabpauschale are not affected).
+- **Period Kursgewinn (Kennzahlen, 1 J …)**: unrealized gain at period end minus unrealized gain at period start (positions held at the start are valued at the start date), so a period never shows gains earned before it. Remaining difference to the reference is documented in the quickstart if it persists after T004.
 
 ## R2 – Realized gains, taxes and fees
 
 - **Observed**: reference shows realized gains brutto and netto (difference = taxes) and a separate "Steuern & Gebühren" line; the app shows brutto = netto and 0 taxes/fees.
-- **To decide in T002**: where taxes/fees of imported trades are stored today (broker sync, CSV) and how the reference matches sells to lots (same as R1).
+- **Finding (T002)**: all synced trades carry fee 0 and tax 0, so "Steuern & Gebühren" is 0 and netto = brutto. Realized gains of the last 12 months with moving-average cost come closer to the reference than FIFO but still differ; the reference evidently deducts taxes and counts fees.
+- **Decision**: realized gain per sell = proceeds − moving-average cost of the sold quantity − fees of the sell; netto = brutto − taxes of the sell. T005 first checks whether the broker data (sync recordings) contains fee and tax amounts and maps them into the existing trade fields; if the source has none, the gap is documented.
 
 ## R3 – Value series gaps
 
 - **Observed**: one day between a full sell and a re-buy drops to a fraction of the value in the app.
-- **Decision (proposed)**: value on a day = holdings × last known quote + cash; a sell and re-buy on different days keeps the cash part of the depot (Referenzkonto) in the series, or the day is carried from the previous valuation when the cash leg is outside the selected accounts. Final rule in T002.
+- **Finding (T002)**: the drop happens on the day between a full sell and the re-buy: the proceeds sit on the broker's cash account, whose history has no balance (only today's balance is known), so the cash leg is missing for that day. Separately, the series' last point uses an older quote than the positions (chart total ≠ allocation total, A1).
+- **Decision**: (a) broker cash accounts without balance history get a daily balance reconstructed from their bookings (deposits, withdrawals, sells, buys, dividends, interest) anchored at today's balance; (b) the last point of every value series uses the same quotes as positions and allocation.
 
 ## R4 – Expenses, Gespart, Sparquote
 
@@ -31,7 +34,8 @@ Status: initial findings from the audit on 2026-11-26; open points are resolved 
 ## R6 – Unreviewed count and monthly bars
 
 - **Observed**: unreviewed count differs by about 2 %; one month's bar differs by 100 €.
-- **To decide in T002**: which bookings the reference counts (e.g. transfers, trades) and which booking causes the monthly difference.
+- **Finding (T002)**: for the same accounts the app counts about 2 % fewer unreviewed bookings; the 100 € month difference is a single booking classified differently (income/expense vs. transfer).
+- **Decision**: T008 compares the counted types per account against the reference list (read only) and aligns the rule (likely: trades and broker cash bookings count as unreviewed too); the bar difference follows the R4 rule or is documented.
 
 ## R7 – Tables on phone and tablet
 

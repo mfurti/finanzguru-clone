@@ -22,7 +22,7 @@
 
 ## Phase 2: Foundational
 
-- [ ] T002 Resolve research R1, R2, R3, R6 (reference UI read only, owner trades locally): decide FIFO vs. average cost, period Kursgewinn base, lot matching for realized gains, where trade taxes/fees live, value rule on gap days, unreviewed counting, the 100 € month difference; update `research.md` (definitions only) and, if needed, add follow-up tasks for missing data fields here before implementation continues.
+- [X] T002 Resolve research R1, R2, R3, R6 (reference UI read only, owner trades locally): decide FIFO vs. average cost, period Kursgewinn base, lot matching for realized gains, where trade taxes/fees live, value rule on gap days, unreviewed counting, the 100 € month difference; update `research.md` (definitions only) and, if needed, add follow-up tasks for missing data fields here before implementation continues.
 
 ---
 
