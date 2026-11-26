@@ -55,15 +55,15 @@ describe('logo choice per recipient (008 T010)', () => {
       method: 'PUT',
       url: `/api/logos/recipients/${key}`,
       headers: { cookie },
-      payload: { mode: 'brand', brandSlug: 'lidl' },
+      payload: { mode: 'brand', brandSlug: 'thesvg-color:lidl' },
     })
     expect(res.statusCode).toBe(200)
-    expect(res.json()).toMatchObject({ kind: 'brand', slug: 'simple-icons:lidl' })
+    expect(res.json()).toMatchObject({ kind: 'brand', slug: 'thesvg-color:lidl' })
     const items = await list()
     const lidl = items.filter((item) => item.recipientKey === 'lidl dienstleistung test')
     expect(lidl).toHaveLength(2)
     for (const item of lidl)
-      expect(item).toMatchObject({ logo: { slug: 'simple-icons:lidl' }, logoSource: 'manual' })
+      expect(item).toMatchObject({ logo: { slug: 'thesvg-color:lidl' }, logoSource: 'manual' })
     expect(items.find((item) => item.counterparty === 'REWE Wahltest')!.logoSource).toBe('auto')
   })
 
@@ -84,7 +84,7 @@ describe('logo choice per recipient (008 T010)', () => {
     })
     expect(del.statusCode).toBe(204)
     rewe = (await list()).find((item) => item.counterparty === 'REWE Wahltest')!
-    expect(rewe).toMatchObject({ logo: { slug: 'simple-icons:rewe' }, logoSource: 'auto' })
+    expect(rewe).toMatchObject({ logo: { slug: 'thesvg-color:rewe' }, logoSource: 'auto' })
   })
 
   it('validates brand and key', async () => {
@@ -96,7 +96,8 @@ describe('logo choice per recipient (008 T010)', () => {
     ).toBe(400)
     expect((await put(`/api/logos/recipients/${key}`, { mode: 'brand' })).statusCode).toBe(400)
     expect(
-      (await put(`/api/logos/recipients/${key}`, { mode: 'none', brandSlug: 'lidl' })).statusCode,
+      (await put(`/api/logos/recipients/${key}`, { mode: 'none', brandSlug: 'thesvg-color:lidl' }))
+        .statusCode,
     ).toBe(400)
     expect(
       (await put(`/api/logos/recipients/${'x'.repeat(201)}`, { mode: 'none' })).statusCode,

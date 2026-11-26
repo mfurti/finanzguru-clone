@@ -14,18 +14,20 @@ import type { BrandSearchResult, LogoRef, LogoSource, RecipientLogoInput } from 
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { recipientLogo } from '../../database/schema'
-import { BRAND_ALIASES, CURATED_SLUGS } from '../../domain/brands'
+import { BRAND_ALIASES } from '../../domain/brands'
 import { logoFor, recipientKey, type LogoChoice, type LogoTx } from '../../domain/logo'
 import { normalizeText } from '../../domain/dedupe'
 import { catalogVersions, getBrand, searchBrands, type Brand } from './brand-catalog'
 
-/** Curated aliases as extra search words per slug ("drogerie" finds dm). */
-const EXTRA_WORDS = new Map(
-  BRAND_ALIASES.map(({ slug, aliases }) => [
-    getBrand(slug)?.key ?? slug,
-    aliases.map((alias) => normalizeText(alias)),
-  ]),
-)
+/** Curated brands: the key shown (first in the catalogue) and its aliases as search words. */
+const CURATED = BRAND_ALIASES.flatMap(({ keys, aliases }) => {
+  const key = keys.find((candidate) => getBrand(candidate))
+  return key ? [{ key, words: aliases.map((alias) => normalizeText(alias)) }] : []
+})
+/** Extra search words per key ("drogerie" finds dm). */
+const EXTRA_WORDS = new Map(CURATED.map(({ key, words }) => [key, words]))
+/** Shown first in the picker, in curated order. */
+const CURATED_KEYS = CURATED.map(({ key }) => key)
 
 /** Upload limit (FR-007). */
 export const MAX_LOGO_BYTES = 256 * 1024
@@ -175,7 +177,7 @@ export class LogosService {
   }
 
   search(q: string, limit: number): BrandSearchResult[] {
-    return searchBrands(q, limit, EXTRA_WORDS, CURATED_SLUGS).map((brand) => this.toResult(brand))
+    return searchBrands(q, limit, EXTRA_WORDS, CURATED_KEYS).map((brand) => this.toResult(brand))
   }
 
   /** The brand logo as SVG, or null for an unknown set or name. */

@@ -64,7 +64,7 @@ describe('logos in the booking list (008 T007)', () => {
     const by = (name: string | null, type = 'expense') =>
       page.items.find((item) => item.counterparty === name && item.type === type)!
     expect(by('REWE Markt GmbH')).toMatchObject({
-      logo: { kind: 'brand', slug: 'simple-icons:rewe', title: 'REWE' },
+      logo: { kind: 'brand', slug: 'thesvg-color:rewe', title: 'REWE' },
       logoSource: 'auto',
       recipientKey: 'rewe markt gmbh',
     })
@@ -72,12 +72,12 @@ describe('logos in the booking list (008 T007)', () => {
       url: expect.stringMatching(/rewe\.svg\?v=/),
     })
     expect(by('PayPal (Europe) S.a.r.l. et Cie').logo).toMatchObject({
-      slug: 'simple-icons:paypal',
+      slug: 'thesvg-color:paypal',
     })
     expect(by('Bäckerei Logotest')).toMatchObject({ logo: null, logoSource: null })
     expect(by('PayPal (Europe) S.a.r.l. et Cie', 'transfer')).toMatchObject({ logo: null })
     expect(by(null)).toMatchObject({
-      logo: { kind: 'brand', slug: 'simple-icons:lidl' },
+      logo: { kind: 'brand', slug: 'thesvg-color:lidl' },
       recipientKey: 'purpose:lidl sagt danke',
     })
   })

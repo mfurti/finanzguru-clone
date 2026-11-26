@@ -67,9 +67,9 @@ describe('brand logos (008 T006)', () => {
       .inject({ url: '/api/logos/brands?limit=3', headers: { cookie } })
       .then((res) => res.json())) as BrandSearchResult[]
     expect(curated.map((hit) => hit.slug)).toEqual([
-      'simple-icons:rewe',
-      'simple-icons:lidl',
-      'simple-icons:aldisud',
+      'thesvg-color:rewe',
+      'thesvg-color:lidl',
+      'thesvg-color:aldi-sud',
     ])
     const bad = await app.inject({ url: '/api/logos/brands?limit=99', headers: { cookie } })
     expect(bad.statusCode).toBe(400)

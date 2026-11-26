@@ -64,8 +64,8 @@ function words(text: string): string[] {
 }
 
 /** Aliases as word lists, longest first so "aldi sud" wins over "aldi". */
-const ALIASES = BRAND_ALIASES.flatMap(({ slug, aliases }) =>
-  aliases.map((alias) => ({ slug, words: words(alias) })),
+const ALIASES = BRAND_ALIASES.flatMap(({ keys, aliases }) =>
+  aliases.map((alias) => ({ keys, words: words(alias) })),
 ).sort((a, b) => b.words.length - a.words.length)
 
 function containsWords(haystack: readonly string[], needle: readonly string[]): boolean {
@@ -75,17 +75,21 @@ function containsWords(haystack: readonly string[], needle: readonly string[]): 
   return false
 }
 
-/** Brand slug whose alias appears as whole consecutive words in `text`, or null. */
-export function matchBrand(text: string | null | undefined): string | null {
+/**
+ * Brand keys (in order of preference) whose alias appears as whole consecutive words in
+ * `text`, or null.
+ */
+export function matchBrand(text: string | null | undefined): readonly string[] | null {
   const tokens = words(text ?? '')
   if (tokens.length === 0) return null
-  return ALIASES.find((alias) => containsWords(tokens, alias.words))?.slug ?? null
+  return ALIASES.find((alias) => containsWords(tokens, alias.words))?.keys ?? null
 }
 
 /**
  * Logo of a booking (FR-004): own upload, else chosen brand, else nothing for "Kein Logo",
  * else the automatic match on counterparty (or purpose part), else null (initials).
- * `brandExists` guards against slugs that left the catalogue in a later version.
+ * `brandExists` guards against keys that left the catalogue in a later version; the first
+ * existing key of a match wins (coloured logo before glyph, 008 R8).
  */
 export function logoFor(
   tx: LogoTx,
@@ -100,7 +104,8 @@ export function logoFor(
     return { kind: 'brand', slug: choice.brandSlug, source: 'manual' }
   }
   if (choice?.mode === 'none') return null
-  const slug =
+  const keys =
     matchBrand(tx.counterparty) ?? (tx.counterparty ? null : matchBrand(purposePart(tx.purpose)))
-  return slug && brandExists(slug) ? { kind: 'brand', slug, source: 'auto' } : null
+  const slug = keys?.find((key) => brandExists(key))
+  return slug ? { kind: 'brand', slug, source: 'auto' } : null
 }
