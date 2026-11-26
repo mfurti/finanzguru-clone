@@ -13,7 +13,7 @@ const tx = (
   ...overrides,
 })
 
-describe('FIFO positions', () => {
+describe('positions with moving average cost (010 R1)', () => {
   const trades = [
     tx({
       type: 'buy',
@@ -40,21 +40,32 @@ describe('FIFO positions', () => {
     }),
   ]
 
-  it('consumes the oldest lots first and books realized gains', () => {
-    const summary = summarize(computePositions(trades).get('etf')!)
-    // cost: lot 1 = 10 × 100 + 1 € fee = 1001 €, 2 units of lot 2 = 220 € → 1221 €
-    // proceeds 12 × 120 = 1440 € → gross 219 €, net 218 € after the 1 € sell fee
-    expect(summary.realizedGrossCents).toBe(21900)
-    expect(summary.realizedNetCents).toBe(21800)
+  it('uses the average cost for sells, invested capital and the average price', () => {
+    const state = computePositions(trades).get('etf')!
+    const summary = summarize(state)
+    // cost: 10 × 100 + 1 € fee + 5 × 110 = 1551 € for 15 units → average 103,40 €
+    // sell 12: cost 12 × 103,40 = 1240,80 €; proceeds 12 × 120 = 1440 € → gross 199,20 €,
+    // net 198,20 € after the 1 € sell fee; 3 units left at 103,40 € = 310,20 €
+    expect(summary.realizedGrossCents).toBe(19920)
+    expect(summary.realizedNetCents).toBe(19820)
     expect(summary.quantity).toBe('3')
-    expect(summary.investedCents).toBe(33000)
-    expect(summary.avgPrice).toBe('110')
+    expect(summary.investedCents).toBe(31020)
+    expect(summary.avgPrice).toBe('103.4')
     expect(summary.sold).toBe(false)
+    // Lots stay FIFO for quantities and dates (tax rules): only the second lot is left.
+    expect(state.lots.map((lot) => [lot.openDate, lot.quantity.toString()])).toEqual([
+      ['2026-02-10', '3'],
+    ])
+  })
+
+  it('differs from FIFO when prices changed between buys', () => {
+    // FIFO would leave cost 3 × 110 = 330 €; the moving average leaves 310,20 €.
+    expect(summarize(computePositions(trades).get('etf')!).investedCents).not.toBe(33000)
   })
 
   it('sorts by booking date before applying', () => {
     const shuffled = [trades[2]!, trades[0]!, trades[1]!]
-    expect(summarize(computePositions(shuffled).get('etf')!).realizedGrossCents).toBe(21900)
+    expect(summarize(computePositions(shuffled).get('etf')!).realizedGrossCents).toBe(19920)
   })
 
   it('handles partial sells within one lot', () => {

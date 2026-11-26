@@ -11,7 +11,7 @@ import {
 } from '../../database/schema'
 import { computeInstrumentValues } from '../../domain/instrument-values'
 import { todayIso } from '../../domain/period'
-import { computePositions } from '../../domain/positions'
+import { averageCostOf, computePositions } from '../../domain/positions'
 import {
   computeCashSnapshots,
   type DailySnapshot,
@@ -101,7 +101,8 @@ export class RecomputeService {
             instrumentId: state.instrumentId,
             openDate: lot.openDate,
             quantityOpen: lot.quantity.toString(),
-            costPerUnit: lot.costPerUnit.toDecimalPlaces(10).toString(),
+            // Moving-average cost per unit for every open lot (010 R1).
+            costPerUnit: (averageCostOf(state) ?? lot.costPerUnit).toDecimalPlaces(10).toString(),
             closed: false,
           })),
         )

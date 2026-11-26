@@ -1,7 +1,10 @@
 /**
- * FIFO position accounting per depot (research R9).
- * Buys open lots (cost incl. fees), sells consume the oldest lots first,
- * splits scale open lots, dividends are collected per instrument.
+ * Position accounting per depot.
+ * Quantities and open dates: FIFO lots (research R9) – buys open lots, sells consume the oldest
+ * lots first, splits scale open lots; tax rules (Vorabpauschale) rely on these dates.
+ * Cost basis: moving average cost like the reference app (010 R1) – buys add their cost incl.
+ * fees, a sell removes the average cost of the sold quantity; invested capital, entry value,
+ * average price and realized gains all use it. Dividends are collected per instrument.
  */
 import { D, type DecimalValue, eurosToCents, valueCents } from './money'
 
@@ -29,6 +32,8 @@ export interface PositionState {
   realizedGrossCents: number
   realizedNetCents: number
   dividendsCents: number
+  /** Moving-average cost of the open quantity in EUR (010 R1). */
+  costEur: DecimalValue
   /** Last known trade price (fallback when no market price exists). */
   lastTradePrice: DecimalValue | null
   everHeld: boolean
@@ -56,6 +61,7 @@ export function newPosition(instrumentId: string): PositionState {
     realizedGrossCents: 0,
     realizedNetCents: 0,
     dividendsCents: 0,
+    costEur: new D(0),
     lastTradePrice: null,
     everHeld: false,
   }
@@ -71,10 +77,15 @@ export function quantityOf(state: PositionState): DecimalValue {
   return state.lots.reduce((sum, lot) => sum.plus(lot.quantity), new D(0))
 }
 
+/** Moving-average cost of the open quantity in cents (010 R1). */
 export function investedCentsOf(state: PositionState): number {
-  return eurosToCents(
-    state.lots.reduce((sum, lot) => sum.plus(lot.quantity.times(lot.costPerUnit)), new D(0)),
-  )
+  return quantityOf(state).gt(EPSILON) ? eurosToCents(state.costEur) : 0
+}
+
+/** Moving-average cost per unit in EUR, or null when nothing is open. */
+export function averageCostOf(state: PositionState): DecimalValue | null {
+  const quantity = quantityOf(state)
+  return quantity.gt(EPSILON) ? state.costEur.dividedBy(quantity) : null
 }
 
 /** Applies one transaction to the position state (mutates and returns it). */
@@ -84,6 +95,7 @@ export function applyPositionTx(state: PositionState, tx: PositionTx): PositionS
       const quantity = new D(tx.quantity ?? 0)
       if (quantity.lte(0)) throw new Error(`Buy without positive quantity on ${tx.bookingDate}`)
       const costCents = grossCents(tx, quantity) + tx.feeCents
+      state.costEur = state.costEur.plus(new D(costCents).dividedBy(100))
       state.lots.push({
         openDate: tx.bookingDate,
         quantity,
@@ -99,7 +111,7 @@ export function applyPositionTx(state: PositionState, tx: PositionTx): PositionS
       let remaining = new D(tx.quantity ?? 0)
       if (remaining.lte(0)) throw new Error(`Sell without positive quantity on ${tx.bookingDate}`)
       const soldQuantity = remaining
-      let costBasis = new D(0)
+      const heldBefore = quantityOf(state)
       while (remaining.gt(EPSILON)) {
         const lot = state.lots[0]
         if (!lot) {
@@ -108,11 +120,15 @@ export function applyPositionTx(state: PositionState, tx: PositionTx): PositionS
           )
         }
         const take = D.min(lot.quantity, remaining)
-        costBasis = costBasis.plus(take.times(lot.costPerUnit))
         lot.quantity = lot.quantity.minus(take)
         remaining = remaining.minus(take)
         if (lot.quantity.lte(EPSILON)) state.lots.shift()
       }
+      // Moving average: the sold quantity takes its share of the average cost (010 R1).
+      const costBasis = heldBefore.gt(EPSILON)
+        ? state.costEur.times(soldQuantity).dividedBy(heldBefore)
+        : new D(0)
+      state.costEur = quantityOf(state).gt(EPSILON) ? state.costEur.minus(costBasis) : new D(0)
       const proceedsCents = grossCents(tx, soldQuantity)
       const gross = proceedsCents - eurosToCents(costBasis)
       state.realizedGrossCents += gross
@@ -157,7 +173,7 @@ export function summarize(state: PositionState): PositionSummary {
 }
 
 /**
- * GuV of one security split like the reference app (005 R7): realized gain from sales (FIFO,
+ * GuV of one security split like the reference app (005 R7): realized gain from sales (moving average,
  * after fees and taxes) plus price gain on the shares still held. Dividends are not part of it.
  * The two parts add up to the total to the cent by construction.
  */

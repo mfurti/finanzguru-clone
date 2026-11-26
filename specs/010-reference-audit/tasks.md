@@ -31,7 +31,7 @@
 **Independent Test**: Q1, Q2 in quickstart.
 
 - [X] T003 [US1] Valuation consistency (FR-001) and gap days (FR-005) in `apps/api/src/domain/snapshots.ts` / `instrument-values.ts` and `overview.service.ts`: chart total = allocation total; no artificial drop between sell and re-buy or on missing quotes. Unit tests with invented fixtures (sell day, re-buy two days later, missing quote).
-- [ ] T004 [US1] Cost basis, Einstiegswert, Investiertes Kapital and Kursgewinn per R1 in `apps/api/src/domain/positions.ts` and `period-returns.ts`; positions and Kennzahlen use them. Unit tests where FIFO and average differ; API e2e for `/api/investments/positions` and `/api/overview/kpis`.
+- [X] T004 [US1] Cost basis, Einstiegswert, Investiertes Kapital and Kursgewinn per R1 in `apps/api/src/domain/positions.ts` and `period-returns.ts`; positions and Kennzahlen use them. Unit tests where FIFO and average differ; API e2e for `/api/investments/positions` and `/api/overview/kpis`.
 - [ ] T005 [US1] Realized gains brutto/netto and Steuern & Gebühren per R2 in `positions.ts` / `portfolio.service.ts`. Unit tests with partial sells, fees and taxes.
 - [ ] T006 [US1] Gesamtertrag, TWROR, IZF, Realrendite (FR-004) from the corrected inputs in `returns.ts` / `portfolio.service.ts`; Realrendite null when the reference shows none; ⓘ texts updated in `de.json`. Unit tests.
 - [ ] T007 [US1] "Sparen und Anlegen" as expense and Gespart, Saldo and Sparquote = Gespart ÷ Einnahmen (FR-006, R4) in `apps/api/src/domain/cashflow.ts`; ⓘ texts. Unit tests and e2e for `/api/cashflow/summary`.

@@ -8,6 +8,7 @@ Status: T002 resolved 2026-11-26 with the owner's trade list (computed locally) 
 - **Finding (T002)**: the app matches sells FIFO (its entry value equals the FIFO result exactly). The reference's entry value equals the **moving average cost** (gleitender Durchschnittspreis: each sell removes cost at the current average, buys add their cost) within 0,5 %; the rest is buy fees that the synced trades do not carry (see R2).
 - **Decision**: cost basis = moving average cost for Einstiegswert, ⌀ Kaufpreis, Investiertes Kapital (sum over open positions) and the positions' Kursgewinn (= current value − moving-average cost). FIFO stays only where tax rules need it (exemption/Vorabpauschale are not affected).
 - **Period Kursgewinn (Kennzahlen, 1 J …)**: unrealized gain at period end minus unrealized gain at period start (positions held at the start are valued at the start date), so a period never shows gains earned before it. Remaining difference to the reference is documented in the quickstart if it persists after T004.
+- **Result (T004)**: with the moving average, invested capital and entry value are within 0,5 % of the reference. The reference's period Kursgewinn and realized gains still differ markedly; its Gesamtertrag does not equal its own period Gewinn, so its Kennzahlen use a base that its UI does not reveal. The app keeps the documented definition (Δ unrealized gain in the period; realized = proceeds − moving-average cost) and lists the gap in the quickstart.
 
 ## R2 – Realized gains, taxes and fees
 
