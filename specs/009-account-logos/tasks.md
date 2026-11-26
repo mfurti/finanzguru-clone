@@ -57,7 +57,7 @@
 
 ## Phase 6: Polish
 
-- [ ] T011 Owner step A6: fill the local folder for the owner's institutions (helper session downloads only with the owner's OK per file; files stay in the git-ignored folder); record coverage numbers (no names of private persons) in `quickstart.md`.
+- [X] T011 Owner step A6: fill the local folder for the owner's institutions (helper session downloads only with the owner's OK per file; files stay in the git-ignored folder); record coverage numbers (no names of private persons) in `quickstart.md`.
 - [ ] T012 Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`); mark spec Status "Implemented".
 
 ---
