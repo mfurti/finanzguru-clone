@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { formatEur, formatPct, type SankeyResponse } from '@finance/shared'
 import type { SankeyLinkIn, SankeyNodeIn } from '~/utils/sankey-order'
+import type { SankeyTheme } from '~/utils/sankey-option'
 
 /**
  * Income → categories → sub categories (US5 scenario 3), drawn with Apache ECharts (011):
@@ -68,24 +69,50 @@ const labelSpace = computed(() =>
 /** One colour per category (research R9): main blocks in the category colour, subs lighter. */
 const { colorOf: categoryColor, shade } = await useCategoryAppearance()
 const kindOf = computed(() => new Map(nodesIn.value.map((node) => [node.id, node.kind])))
-function colorOf(id: string): string {
+function cssColorOf(id: string): string {
   const kind = kindOf.value.get(id)
   if (!kind || kind === 'income') return '#7fdcb5'
   if (kind === 'balance') return '#82c3f0'
   const categoryId = id.replace(/^(main|sub):/, '')
   return kind === 'sub' ? shade(categoryId, 1) : categoryColor(categoryId)
 }
+/** Block colours as rgb (sub categories are `color-mix(…)`, which ECharts cannot animate). */
+const rgbCache = new Map<string, string>()
+function colorOf(id: string): string {
+  const css = cssColorOf(id)
+  if (import.meta.server) return css
+  let rgb = rgbCache.get(css)
+  if (!rgb) rgbCache.set(css, (rgb = toRgb(css)))
+  return rgb
+}
 
 /** Text and tooltip colours from the app tokens; read again when the colour mode changes. */
-const theme = ref({
+const theme = ref<SankeyTheme>({
   text: '#e5e7eb',
   muted: '#9ca3af',
   tooltipBackground: '#1f2937',
   tooltipBorder: '#374151',
+  background: '#24272e',
 })
+/**
+ * Turns any CSS colour (tokens may be `oklch(…)`) into `rgb(…)`/`rgba(…)` by painting one
+ * pixel, because ECharts can only animate hex and rgb colours.
+ */
+let probe: CanvasRenderingContext2D | null | undefined
+function toRgb(color: string): string {
+  probe ??= document.createElement('canvas').getContext('2d', { willReadFrequently: true })
+  if (!probe || !color) return color
+  probe.clearRect(0, 0, 1, 1)
+  probe.fillStyle = '#000'
+  probe.fillStyle = color
+  probe.fillRect(0, 0, 1, 1)
+  const [r, g, b, a] = probe.getImageData(0, 0, 1, 1).data
+  return a === 255 ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${(a! / 255).toFixed(3)})`
+}
 function readTheme(): void {
   const style = getComputedStyle(document.documentElement)
-  const token = (name: string, fallback: string) => style.getPropertyValue(name).trim() || fallback
+  const token = (name: string, fallback: string) =>
+    toRgb(style.getPropertyValue(name).trim()) || fallback
   theme.value = {
     text: token('--ui-text-highlighted', theme.value.text),
     muted: token('--ui-text-muted', theme.value.muted),
