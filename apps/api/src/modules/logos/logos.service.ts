@@ -226,20 +226,41 @@ export class LogosService {
    */
   forBooking(tx: LogoTx, choices: ReadonlyMap<string, LogoChoice>): BookingLogo {
     const key = recipientKey(tx)
-    const decision = logoFor(tx, key ? choices.get(key) : undefined, (slug) => !!getBrand(slug))
-    if (!decision) return { logo: null, logoSource: null, recipientKey: key }
+    return { ...this.decide(tx, key ? choices.get(key) : undefined), recipientKey: key }
+  }
+
+  /** Logo and its source for a text (recipient or institution) and a stored choice. */
+  private decide(
+    tx: LogoTx,
+    choice: LogoChoice | undefined,
+  ): { logo: LogoRef; logoSource: LogoSource } {
+    const decision = logoFor(tx, choice, (slug) => !!getBrand(slug))
+    if (!decision) return { logo: null, logoSource: null }
     if (decision.kind === 'upload') {
       return {
         logo: { kind: 'upload', url: this.fileUrl(decision.fileName) },
         logoSource: 'manual',
-        recipientKey: key,
       }
     }
     const brand = getBrand(decision.slug)!
-    return {
-      logo: { kind: 'brand', ...this.toResult(brand) },
-      logoSource: decision.source,
-      recipientKey: key,
-    }
+    return { logo: { kind: 'brand', ...this.toResult(brand) }, logoSource: decision.source }
+  }
+
+  /**
+   * Logo of a bank or broker (009): same rule as for bookings with the institution name as
+   * text and the choice stored under `institution:<id>`. "Manuell" never gets a logo.
+   */
+  forInstitution(
+    institutionId: string,
+    name: string,
+    choices: ReadonlyMap<string, LogoChoice>,
+  ): { logo: LogoRef; logoSource: LogoSource; logoKey: string | null } {
+    if (name === 'Manuell') return { logo: null, logoSource: null, logoKey: null }
+    const logoKey = `institution:${institutionId}`
+    const { logo, logoSource } = this.decide(
+      { type: 'expense', counterparty: name },
+      choices.get(logoKey),
+    )
+    return { logo, logoSource, logoKey }
   }
 }

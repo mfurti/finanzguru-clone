@@ -5,6 +5,7 @@ import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { account, institution } from '../../database/schema'
 import { todayIso } from '../../domain/period'
+import { LogosService } from '../logos/logos.service'
 import { OverviewService } from '../overview/overview.service'
 
 @Injectable()
@@ -12,31 +13,34 @@ export class AccountsService {
   constructor(
     @Inject(DB) private readonly db: AppDatabase,
     private readonly overview: OverviewService,
+    private readonly logos: LogosService,
   ) {}
 
   list(): AccountDto[] {
-    return (
-      this.db
-        .select({
-          id: account.id,
-          institutionId: account.institutionId,
-          institutionName: institution.name,
-          name: account.name,
-          type: account.type,
-          iban: account.iban,
-          parentAccountId: account.parentAccountId,
-          balanceCents: account.balanceCents,
-          isHidden: account.isHidden,
-          sortOrder: account.sortOrder,
-          lastSyncedAt: account.lastSyncedAt,
-        })
-        .from(account)
-        .innerJoin(institution, eq(institution.id, account.institutionId))
-        .orderBy(asc(account.sortOrder), asc(account.name))
-        .all()
-        // Logos follow in 009 T005.
-        .map((row) => ({ ...row, logo: null, logoSource: null, logoKey: null }))
-    )
+    const choices = this.logos.choices()
+    return this.db
+      .select({
+        id: account.id,
+        institutionId: account.institutionId,
+        institutionName: institution.name,
+        name: account.name,
+        type: account.type,
+        iban: account.iban,
+        parentAccountId: account.parentAccountId,
+        balanceCents: account.balanceCents,
+        isHidden: account.isHidden,
+        sortOrder: account.sortOrder,
+        lastSyncedAt: account.lastSyncedAt,
+      })
+      .from(account)
+      .innerJoin(institution, eq(institution.id, account.institutionId))
+      .orderBy(asc(account.sortOrder), asc(account.name))
+      .all()
+      .map((row) => ({
+        ...row,
+        // Bank or broker logo (009).
+        ...this.logos.forInstitution(row.institutionId, row.institutionName, choices),
+      }))
   }
 
   /** Current value per account: latest snapshot (depot market value, cash balance). */
