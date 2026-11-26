@@ -65,13 +65,12 @@ test.describe('003 US1 transactions workspace', () => {
 
   test('W4: export has the visible columns and filtered rows only', async ({ page }) => {
     await page.goto('/transactions?types=expense&from=2026-10-01&to=2026-10-31')
-    // Since 007 Konto is an optional column and off by default.
+    // Since 012 the table has no Konto column; the export always carries it.
     const href = await page.getByTestId('transactions-export').getAttribute('href')
     expect(href).toContain('types=expense')
-    expect(href).not.toContain('account')
     const csv = await (await page.request.get(href!)).text()
     const lines = csv.slice(1).trim().split('\r\n')
-    expect(lines[0]).toBe('Datum;Name;Verwendungszweck;Kategorie;Tags;Betrag')
+    expect(lines[0]).toBe('Datum;Name;Verwendungszweck;Kategorie;Betrag;Konto')
     const total = Number(
       (await page.getByTestId('rows-label').textContent())!.match(/von (\d+)/)![1],
     )

@@ -146,6 +146,7 @@ export class TransactionsReviewService {
         institutionName: institution.name,
         bookingDate: transaction.bookingDate,
         amountCents: transaction.amountCents,
+        taxCents: transaction.taxCents,
         type: transaction.type,
         counterparty: transaction.counterparty,
         counterpartyIban: transaction.counterpartyIban,

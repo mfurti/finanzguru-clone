@@ -625,10 +625,17 @@
       "name": "Name",
       "date": "Datum",
       "category": "Kategorie",
-      "tags": "Eigenschaften",
+      "tags": "Tags",
+      "properties": "Eigenschaften",
       "account": "Konto",
       "amount": "Betrag",
+      "taxes": "Steuern",
       "purpose": "Verwendungszweck"
+    },
+    "props": {
+      "transfer": "Kontentransfer",
+      "note": "Notiz",
+      "manualCategory": "Kategorie von dir gesetzt"
     },
     "filters": {
       "title": "Filter",
