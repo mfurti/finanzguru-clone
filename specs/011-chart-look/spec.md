@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-26
 
-**Status**: Draft
+**Status**: Implemented
 
 **Input**: User description: "Für das Sankey Diagramm schaust du bitte mal bei Apache ECharts nach, das aktuelle ist pothässlich. Des Weiteren sind noch nicht alle Donut Diagramme gleich, orientiere dich an dem aus dem Dashboard."
 
