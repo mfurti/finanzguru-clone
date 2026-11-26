@@ -37,6 +37,23 @@ const PADDING = 8
 
 const DEPTH: Record<SankeyNodeIn['kind'], number> = { income: 0, main: 1, balance: 1, sub: 2 }
 
+const FALLBACK_NODE_COLOR = '#9ca3af'
+const FALLBACK_THEME: SankeyTheme = {
+  text: '#e5e7eb',
+  muted: '#9ca3af',
+  tooltipBackground: '#1f2937',
+  tooltipBorder: '#374151',
+  background: '#24272e',
+}
+
+/**
+ * ECharts animates colours on hover and can only interpolate hex and rgb(a) colours; a CSS
+ * colour such as `oklch(…)` breaks the hover animation (011 fix). Anything else falls back.
+ */
+export function sankeySafeColor(color: string | undefined, fallback: string): string {
+  return color && /^(?:#[\da-f]{3,8}|rgba?\([^)]*\))$/i.test(color.trim()) ? color.trim() : fallback
+}
+
 /** Escapes text for the HTML tooltip (category names are owner-defined). */
 function escapeHtml(text: string): string {
   return text.replace(
@@ -86,6 +103,16 @@ export function sankeyNodeTotals(links: readonly SankeyLinkIn[]): Map<string, nu
  * too small to hold one), adjacency focus on hover and a German tooltip with amount and share.
  */
 export function buildSankeyOption(input: SankeyOptionInput) {
+  const theme: SankeyTheme = {
+    text: sankeySafeColor(input.theme.text, FALLBACK_THEME.text),
+    muted: sankeySafeColor(input.theme.muted, FALLBACK_THEME.muted),
+    tooltipBackground: sankeySafeColor(
+      input.theme.tooltipBackground,
+      FALLBACK_THEME.tooltipBackground,
+    ),
+    tooltipBorder: sankeySafeColor(input.theme.tooltipBorder, FALLBACK_THEME.tooltipBorder),
+    background: sankeySafeColor(input.theme.background, FALLBACK_THEME.background),
+  }
   const links = input.links.filter((link) => link.value > 0)
   const used = new Set(links.flatMap((link) => [link.source, link.target]))
   const { rank } = sankeyOrder(input.nodes, links)
@@ -128,9 +155,9 @@ export function buildSankeyOption(input: SankeyOptionInput) {
     tooltip: {
       trigger: 'item' as const,
       confine: true,
-      backgroundColor: input.theme.tooltipBackground,
-      borderColor: input.theme.tooltipBorder,
-      textStyle: { color: input.theme.text, fontSize: 12 },
+      backgroundColor: theme.tooltipBackground,
+      borderColor: theme.tooltipBorder,
+      textStyle: { color: theme.text, fontSize: 12 },
       formatter: (params: {
         dataType?: string
         name?: string
@@ -164,24 +191,24 @@ export function buildSankeyOption(input: SankeyOptionInput) {
         label: {
           position: 'right' as const,
           distance: 8,
-          color: input.theme.text,
+          color: theme.text,
           fontSize: 12,
-          textBorderColor: input.theme.background,
+          textBorderColor: theme.background,
           textBorderWidth: 2,
           formatter: (params: { name: string }) =>
             `{name|${labelOf.get(params.name) ?? ''}}  {value|${format(totals.get(params.name) ?? 0)}}`,
           rich: {
             name: {
-              color: input.theme.text,
+              color: theme.text,
               fontSize: 12,
               fontWeight: 600,
-              textBorderColor: input.theme.background,
+              textBorderColor: theme.background,
               textBorderWidth: 2,
             },
             value: {
-              color: input.theme.muted,
+              color: theme.muted,
               fontSize: 12,
-              textBorderColor: input.theme.background,
+              textBorderColor: theme.background,
               textBorderWidth: 2,
             },
           },
@@ -191,9 +218,9 @@ export function buildSankeyOption(input: SankeyOptionInput) {
           depth: DEPTH[node.kind],
           value: totals.get(node.id) ?? 0,
           itemStyle: {
-            color: input.colorOf(node.id),
+            color: sankeySafeColor(input.colorOf(node.id), FALLBACK_NODE_COLOR),
             ...(input.selectedNodeId === node.id
-              ? { borderColor: input.theme.text, borderWidth: 2 }
+              ? { borderColor: theme.text, borderWidth: 2 }
               : {}),
           },
           label: {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildSankeyOption, sankeyNodeTotals } from '~/utils/sankey-option'
+import { buildSankeyOption, sankeyNodeTotals, sankeySafeColor } from '~/utils/sankey-option'
 
 const nodes = [
   { id: 'income', label: 'Einnahmen', kind: 'income' as const },
@@ -32,7 +32,8 @@ const base = {
   links,
   incomeCents: 150000,
   unit: 'eur' as const,
-  colorOf: (id: string) => `color-${id}`,
+  colorOf: (id: string) =>
+    id === 'sub:essen' ? 'color-mix(in oklab, #f00 80%, white)' : '#123456',
   theme,
   height: 420,
 }
@@ -63,7 +64,9 @@ describe('buildSankeyOption (011 T002)', () => {
 
   it('uses category colours, gradient flows and slim rounded blocks', () => {
     const option = buildSankeyOption(base)
-    expect(node(option, 'main:wohnen').itemStyle.color).toBe('color-main:wohnen')
+    expect(node(option, 'main:wohnen').itemStyle.color).toBe('#123456')
+    // color-mix(…) cannot be animated by ECharts and falls back.
+    expect(node(option, 'sub:essen').itemStyle.color).toBe('#9ca3af')
     expect(series(option).lineStyle.color).toBe('gradient')
     expect(series(option).itemStyle.borderRadius).toBeGreaterThan(0)
     expect(series(option).emphasis.focus).toBe('adjacency')
@@ -104,6 +107,14 @@ describe('buildSankeyOption (011 T002)', () => {
     const option = buildSankeyOption({ ...base, width: 560, labelSpace: 200 })
     expect(node(option, 'main:wohnen').label).toMatchObject({ overflow: 'truncate', width: 142 })
     expect(node(option, 'sub:miete').label).not.toHaveProperty('overflow')
+  })
+
+  it('passes only colours ECharts can animate (oklch broke the hover animation)', () => {
+    expect(sankeySafeColor('rgb(1, 2, 3)', '#fff')).toBe('rgb(1, 2, 3)')
+    expect(sankeySafeColor('#24272e', '#fff')).toBe('#24272e')
+    expect(sankeySafeColor('oklch(70.5% 0.015 286.067)', '#fff')).toBe('#fff')
+    const option = buildSankeyOption({ ...base, theme: { ...theme, muted: 'oklch(70% 0 0)' } })
+    expect(series(option).label.rich.value.color).toBe('#9ca3af')
   })
 
   it('totals a block by its incoming flows, the income block by its outgoing ones', () => {
