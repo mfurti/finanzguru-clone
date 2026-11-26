@@ -126,7 +126,7 @@ const UCheckbox = resolveComponent('UCheckbox')
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 const Money = resolveComponent('Money')
-const Avatar = resolveComponent('Avatar')
+const MerchantLogo = resolveComponent('MerchantLogo')
 const CategoryIcon = resolveComponent('CategoryIcon')
 const SortHeader = resolveComponent('SortHeader')
 
@@ -175,7 +175,7 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
       const item = row.original
       const name = item.counterparty ?? item.purpose ?? t(`transactionTypes.${item.type}`)
       return h('div', { class: 'flex min-w-48 items-center gap-3' }, [
-        h(Avatar, { name, size: 'sm' }),
+        h(MerchantLogo, { name, logo: item.logo, size: 'sm' }),
         h('div', { class: 'min-w-0' }, [
           h('div', { class: 'flex items-center gap-1.5 font-medium' }, [
             isOpen(item)

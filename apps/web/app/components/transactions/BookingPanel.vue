@@ -71,7 +71,7 @@ function saveNote(): void {
   >
     <template #header>
       <div class="flex w-full items-start gap-3" data-testid="booking-panel-header">
-        <Avatar :name="name" size="lg" />
+        <MerchantLogo :name="name" :logo="item.logo" size="lg" />
         <div class="min-w-0 flex-1">
           <h2 class="truncate font-semibold" :title="name">{{ name }}</h2>
           <p class="text-sm text-muted">{{ formatDate(item.bookingDate) }}</p>
