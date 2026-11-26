@@ -44,7 +44,7 @@
 
 **Independent Test**: Q3 in quickstart.
 
-- [ ] T010 [US2] Extend built-in default rules (generic merchant words → reference categories: marketplaces, payment providers, streaming, telecom, supermarkets, drugstores, fuel, public transport) in `apps/api/src/domain/categorize.ts` / seed; owner rules and manual categories keep priority; data migration only if T002 decided so. Unit tests per merchant group.
+- [X] T010 [US2] Extend built-in default rules (generic merchant words → reference categories: marketplaces, payment providers, streaming, telecom, supermarkets, drugstores, fuel, public transport) in `apps/api/src/domain/categorize.ts` / seed; owner rules and manual categories keep priority; data migration only if T002 decided so. Unit tests per merchant group.
 - [ ] T011 [US2] Apply the defaults to existing uncategorized bookings (one-time on start or via "Regeln anwenden"), never overwriting manual or owner-rule categories; e2e test; owner check Q3 recorded.
 
 ---

@@ -20,6 +20,7 @@ import { findBankMatch, MATCH_WINDOW_DAYS } from '../../domain/bank-match'
 import { fingerprintBatch } from '../../domain/dedupe'
 import { D } from '../../domain/money'
 import type { NormalizedAccount, SyncBatch } from '../sources/data-source.interface'
+import { loadDefaultRules } from '../categories/default-rules.query'
 import { RecomputeService } from './recompute.service'
 
 /** Row errors kept per job (data-model.md). */
@@ -134,11 +135,15 @@ export class ImportPipeline {
         .run()
     }
 
-    const rules = tx
-      .select()
-      .from(categorizationRule)
-      .orderBy(asc(categorizationRule.priority))
-      .all() as Rule[]
+    // Owner rules first, then the built-in merchant rules (010 R5).
+    const rules = [
+      ...(tx
+        .select()
+        .from(categorizationRule)
+        .orderBy(asc(categorizationRule.priority))
+        .all() as Rule[]),
+      ...loadDefaultRules(tx),
+    ]
     const ownIbans = new Set(
       tx
         .select({ iban: account.iban })

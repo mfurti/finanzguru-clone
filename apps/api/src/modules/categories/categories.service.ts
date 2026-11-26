@@ -31,6 +31,7 @@ import {
   type Rule,
   wouldChange,
 } from '../../domain/categorize'
+import { loadDefaultRules } from './default-rules.query'
 
 type CategoryRow = typeof category.$inferSelect
 
@@ -254,7 +255,8 @@ export class CategoriesService {
 
   /** Re-runs all rules on unreviewed bookings that have no manual category. */
   applyRules(): { updated: number } {
-    const rules = this.rules() as Rule[]
+    // Owner rules first, then the built-in merchant rules (010 R5).
+    const rules = [...(this.rules() as Rule[]), ...loadDefaultRules(this.db)]
     return this.db.transaction((tx) => {
       const rows = tx
         .select()
