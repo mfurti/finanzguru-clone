@@ -24,8 +24,8 @@ describe('Budget › Analyse (007 T015)', () => {
     )
   })
 
-  it('draws the category donut without gaps', async () => {
+  it('draws the category donut in the dashboard look (011 supersedes the no-gap donut)', async () => {
     const wrapper = await mount('expense')
-    expect(wrapper.findComponent(DonutChart).props('gaps')).toBe(false)
+    expect(wrapper.findComponent(DonutChart).props()).toMatchObject({ size: 176, thickness: 22 })
   })
 })

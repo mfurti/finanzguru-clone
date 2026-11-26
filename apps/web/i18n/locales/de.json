@@ -380,6 +380,7 @@
     "incomeTotal": "Einnahmen gesamt",
     "noData": "Keine Buchungen in diesem Zeitraum",
     "sankey": "Geldfluss",
+    "sankeyBlocks": "Kategorien im Geldfluss (zum Filtern auswählen)",
     "budgets": {
       "title": "Budgets",
       "create": "Budget anlegen",
@@ -513,6 +514,7 @@
     "empty": "Noch keine Positionen für eine Analyse"
   },
   "dividends": {
+    "splitTotal": "Dividenden gesamt",
     "title": "Dividenden",
     "last12": "Letzte 12 Monate",
     "avgMonth": "Ø pro Monat",
