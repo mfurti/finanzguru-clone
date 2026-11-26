@@ -8,7 +8,7 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 Local dividend audit: extend `apps/api/src/scripts/audit-figures.ts` with dividends per year for `--accounts` and record the owner's comparison in git-ignored `apps/api/data/audit-012-local.md`; write the anonymized cause into `specs/012-owner-review/research.md` R4.
+- [X] T001 Local dividend audit: extend `apps/api/src/scripts/audit-figures.ts` with dividends per year for `--accounts` and record the owner's comparison in git-ignored `apps/api/data/audit-012-local.md`; write the anonymized cause into `specs/012-owner-review/research.md` R4.
 
 ## Phase 2: User Story 1 – Navigation and tables (P1)
 

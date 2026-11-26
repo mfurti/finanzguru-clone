@@ -16,7 +16,8 @@
 
 ## R4 – Dividend difference (P6)
 
-- **Decision**: compare per year with the owner's real accounts only (demo accounts excluded via the account filter) using the local audit script; fix the cause in the dividend domain (likely candidates: demo/other accounts included, gross vs. net, reinvested or accumulated distributions, pay date vs. ex date). Values stay in `apps/api/data/audit-012-local.md` (git-ignored).
+- **Decision**: compare per year with the owner's real accounts only, using the local audit script (`audit:figures`, rows D1–D3); values stay in `apps/api/data/audit-012-local.md` (git-ignored).
+- **Result (T001)**: with the same (real) accounts selected, the app's yearly dividends equal the reference exactly. The gap the owner saw comes from the demo accounts, which are part of "Alle Konten" in the app (the demo depot holds a distributing fund with payouts in 2024–2026). No calculation change; T008 documents this and keeps the rule under test.
 
 ## R5 – Dividend cards and currencies (P7, P8)
 
