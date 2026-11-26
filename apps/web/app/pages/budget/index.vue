@@ -26,7 +26,7 @@ const route = useRoute()
         class="mb-4"
         @select="setAnchor"
       />
-      <SummaryTiles :summary="summary" />
+      <SummaryTiles :summary="summary" wide />
     </UCard>
     <UCard v-if="summary && graph && graph.links.length > 0" data-testid="sankey-card">
       <template #header>

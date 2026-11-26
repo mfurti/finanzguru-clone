@@ -65,7 +65,7 @@
 **Independent Test**: Q6 in quickstart.
 
 - [X] T016 [P] [US4] One control size: `apps/web/app/app.config.ts` defaults (`select`, `selectMenu`, `input`, toolbar buttons) and removal of explicit `size="xs|sm"` on dropdown triggers; layout guard extended (one trigger height per page).
-- [ ] T017 [P] [US4] Figure boxes in `apps/web/app/components/budget/SummaryTiles.vue`: visible border in both themes, darker surface, Gespart/Sparquote as label-left/value-right rows with ⓘ, five-in-a-row variant on Budget › Analyse from 1280 px; component test `apps/web/tests/summary-tiles.spec.ts`.
+- [X] T017 [P] [US4] Figure boxes in `apps/web/app/components/budget/SummaryTiles.vue`: visible border in both themes, darker surface, Gespart/Sparquote as label-left/value-right rows with ⓘ, five-in-a-row variant on Budget › Analyse from 1280 px; component test `apps/web/tests/summary-tiles.spec.ts`.
 
 ---
 
