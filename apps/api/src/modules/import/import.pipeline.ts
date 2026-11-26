@@ -14,12 +14,13 @@ import {
   price,
   transaction,
 } from '../../database/schema'
-import { categorize, type Rule } from '../../domain/categorize'
+import type { Rule } from '../../domain/categorize'
 import { addDays } from '../../domain/period'
 import { findBankMatch, MATCH_WINDOW_DAYS } from '../../domain/bank-match'
 import { fingerprintBatch } from '../../domain/dedupe'
 import { D } from '../../domain/money'
 import type { NormalizedAccount, SyncBatch } from '../sources/data-source.interface'
+import { categorizeWithDefaults } from '../../domain/default-rules'
 import { loadDefaultRules } from '../categories/default-rules.query'
 import { RecomputeService } from './recompute.service'
 
@@ -135,15 +136,13 @@ export class ImportPipeline {
         .run()
     }
 
-    // Owner rules first, then the built-in merchant rules (010 R5).
-    const rules = [
-      ...(tx
-        .select()
-        .from(categorizationRule)
-        .orderBy(asc(categorizationRule.priority))
-        .all() as Rule[]),
-      ...loadDefaultRules(tx),
-    ]
+    const rules = tx
+      .select()
+      .from(categorizationRule)
+      .orderBy(asc(categorizationRule.priority))
+      .all() as Rule[]
+    // Built-in merchant rules fill only what owner rules and the import left empty (010 R5).
+    const defaults = loadDefaultRules(tx)
     const ownIbans = new Set(
       tx
         .select({ iban: account.iban })
@@ -218,7 +217,7 @@ export class ImportPipeline {
         }
         const instrumentId = item.isin ? instrumentIds.get(item.isin) : undefined
         if (item.isin && !instrumentId) throw new Error(`Unknown instrument ${item.isin}`)
-        const category = categorize(item, rules, ownIbans)
+        const category = categorizeWithDefaults(item, rules, defaults, ownIbans)
         tx.insert(transaction)
           .values({
             accountId,

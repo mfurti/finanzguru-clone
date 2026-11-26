@@ -255,8 +255,9 @@ export class CategoriesService {
 
   /** Re-runs all rules on unreviewed bookings that have no manual category. */
   applyRules(): { updated: number } {
-    // Owner rules first, then the built-in merchant rules (010 R5).
-    const rules = [...(this.rules() as Rule[]), ...loadDefaultRules(this.db)]
+    const rules = this.rules() as Rule[]
+    // Built-in merchant rules fill only bookings without any category (010 R5).
+    const defaults = loadDefaultRules(this.db)
     return this.db.transaction((tx) => {
       const rows = tx
         .select()
@@ -270,11 +271,15 @@ export class CategoriesService {
         .all()
       let updated = 0
       for (const row of rows) {
-        const result = categorize(
+        const owner = categorize(
           { ...row, categoryId: null, categorySource: null },
           rules,
           new Set(),
         )
+        const result =
+          owner.categoryId || row.categoryId
+            ? owner
+            : categorize({ ...row, categoryId: null, categorySource: null }, defaults, new Set())
         if (result.categorySource !== 'rule' || result.categoryId === row.categoryId) continue
         tx.update(transaction)
           .set({ categoryId: result.categoryId, categorySource: 'rule' })

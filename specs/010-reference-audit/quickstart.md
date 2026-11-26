@@ -26,5 +26,6 @@ Owner amounts go only into `apps/api/data/audit-010-local.md` (git-ignored); thi
 | A11 Wertverlauf ohne Einbruch | fixed (T003) |
 | A12–A14 Ausgaben, Gespart, Saldo | fixed, equal to reference (T007) |
 | A15 Sparquote | shown with documented formula (reference: PLUS) |
+| A16 Nicht kategorisiert | fixed: 5 expenses left in the audited month (was 27); five main categories now equal the reference (T010, T011) |
 | A17 Ungeprüfte | same rule; difference = different review marks (T008) |
 | A18 Monatsbalken | open: 100 € in one month, cause not found on app side |

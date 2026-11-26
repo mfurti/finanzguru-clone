@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { categorize, type Rule } from '../../src/domain/categorize'
-import { DEFAULT_RULES, defaultRulesFor } from '../../src/domain/default-rules'
+import {
+  categorizeWithDefaults,
+  DEFAULT_RULES,
+  defaultRulesFor,
+} from '../../src/domain/default-rules'
 import { DEFAULT_CATEGORIES } from '../../src/database/seed'
 
 /** Every path of the default tree mapped to itself as id. */
@@ -75,5 +79,22 @@ describe('built-in merchant rules (010 T010)', () => {
       new Set(),
     )
     expect(manual.categoryId).toBe('mine')
+  })
+})
+
+describe('defaults only fill empty categories (010 T011)', () => {
+  it('keeps an imported category and uses defaults only for empty ones', () => {
+    const imported = categorizeWithDefaults(
+      { ...expense('PayPal'), categoryId: 'bank-category', categorySource: 'import' as const },
+      [],
+      defaults,
+      new Set(),
+    )
+    expect(imported.categoryId).toBe('bank-category')
+    const empty = categorizeWithDefaults(expense('PayPal'), [], defaults, new Set())
+    expect(empty).toMatchObject({
+      categoryId: 'Shopping und Unterhaltung',
+      categorySource: 'rule',
+    })
   })
 })

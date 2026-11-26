@@ -5,7 +5,7 @@
  * so "dm" does not match "Admiral". Only generic merchant names live here, never names from
  * the owner's bookings.
  */
-import type { Rule } from './categorize'
+import { categorize, type CategorizableTx, type CategorizeResult, type Rule } from './categorize'
 
 export interface DefaultRule {
   /** Words matched as whole words (regex alternatives, lower case, no anchors). */
@@ -119,4 +119,20 @@ export function categoryPaths(
   return new Map(
     rows.map((row) => [row.parentName ? `${row.parentName} › ${row.name}` : row.name, row.id]),
   )
+}
+
+/**
+ * Owner rules first; the built-in merchant rules only fill a booking that still has no
+ * category afterwards (they never replace a manual, owner-rule or imported category).
+ */
+export function categorizeWithDefaults(
+  tx: CategorizableTx,
+  ownerRules: readonly Rule[],
+  defaults: readonly Rule[],
+  ownIbans: ReadonlySet<string>,
+): CategorizeResult {
+  const result = categorize(tx, ownerRules, ownIbans)
+  if (result.categoryId || result.categorySource === 'manual') return result
+  const fallback = categorize({ ...tx, type: result.type }, defaults, ownIbans)
+  return fallback.categoryId ? fallback : result
 }
