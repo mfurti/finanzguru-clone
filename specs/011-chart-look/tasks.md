@@ -8,7 +8,7 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 Add `echarts` 6.1.0 and `vue-echarts` 8.3.2 (exact pins) to `apps/web/package.json`, install, and register a tree-shaken setup (`echarts/core` + `SankeyChart`, `TooltipComponent`, `SVGRenderer`) in `apps/web/app/utils/echarts.ts`; verify `pnpm --filter web build` and that the chunk is only loaded on pages with a Sankey.
+- [X] T001 Add `echarts` 6.1.0 and `vue-echarts` 8.3.2 (exact pins) to `apps/web/package.json`, install, and register a tree-shaken setup (`echarts/core` + `SankeyChart`, `TooltipComponent`, `SVGRenderer`) in `apps/web/app/utils/echarts.ts`; verify `pnpm --filter web build` and that the chunk is only loaded on pages with a Sankey.
 
 ## Phase 2: Foundational
 
