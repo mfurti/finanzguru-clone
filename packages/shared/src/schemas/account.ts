@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { ACCOUNT_TYPES } from '../enums.js'
 import { cents } from './common.js'
+import { logoRef, logoSource } from './logo.js'
 
 export const accountType = z.enum(ACCOUNT_TYPES)
 
@@ -16,6 +17,11 @@ export const accountDto = z.object({
   isHidden: z.boolean(),
   sortOrder: z.number().int(),
   lastSyncedAt: z.string().nullable(),
+  /** Bank or broker logo (009): brand, local or upload; null = initials. */
+  logo: logoRef,
+  logoSource,
+  /** Key the institution's logo choice is stored under (`institution:<id>`); null for "Manuell". */
+  logoKey: z.string().max(200).nullable(),
 })
 export type AccountDto = z.infer<typeof accountDto>
 

@@ -15,24 +15,28 @@ export class AccountsService {
   ) {}
 
   list(): AccountDto[] {
-    return this.db
-      .select({
-        id: account.id,
-        institutionId: account.institutionId,
-        institutionName: institution.name,
-        name: account.name,
-        type: account.type,
-        iban: account.iban,
-        parentAccountId: account.parentAccountId,
-        balanceCents: account.balanceCents,
-        isHidden: account.isHidden,
-        sortOrder: account.sortOrder,
-        lastSyncedAt: account.lastSyncedAt,
-      })
-      .from(account)
-      .innerJoin(institution, eq(institution.id, account.institutionId))
-      .orderBy(asc(account.sortOrder), asc(account.name))
-      .all()
+    return (
+      this.db
+        .select({
+          id: account.id,
+          institutionId: account.institutionId,
+          institutionName: institution.name,
+          name: account.name,
+          type: account.type,
+          iban: account.iban,
+          parentAccountId: account.parentAccountId,
+          balanceCents: account.balanceCents,
+          isHidden: account.isHidden,
+          sortOrder: account.sortOrder,
+          lastSyncedAt: account.lastSyncedAt,
+        })
+        .from(account)
+        .innerJoin(institution, eq(institution.id, account.institutionId))
+        .orderBy(asc(account.sortOrder), asc(account.name))
+        .all()
+        // Logos follow in 009 T005.
+        .map((row) => ({ ...row, logo: null, logoSource: null, logoKey: null }))
+    )
   }
 
   /** Current value per account: latest snapshot (depot market value, cash balance). */
