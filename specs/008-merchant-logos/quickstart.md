@@ -19,3 +19,9 @@ Local only (web 3100, API 3101). Gates: `pnpm lint`, `pnpm format:check`, `pnpm 
 - **SC-004 met:** no wrong automatic match among the 30 most frequent recipients.
 - Aliases added after the check (generic brand words only): Deutsche Post, DHL, Commerzbank, Zara, MediaMarkt, Saturn, easyJet.
 - Way to close the gap without online services: own upload per recipient (US3). A follow-up could let one upload cover several recipients of the same brand (e.g. all Amazon spellings).
+
+## T021 result (2026-11-26, after the colour set)
+
+- Expense bookings of the last 3 months: 234. With logo: 118 (50.4 %); automatic 108 (46.2 %, all of them coloured logos), chosen by the owner 10.
+- **SC-001: 50 % reached including the owner's choices; automatic alone 46.2 %** (was 38.9 %). Amazon (17 bookings) is now covered. The rest without logo are local shops, canteens, pharmacies and private persons.
+- **SC-004 met again:** no wrong automatic match among the 30 most frequent recipients.

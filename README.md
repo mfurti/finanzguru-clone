@@ -54,7 +54,7 @@ The consent lasts about 90 days. From 14 days before it ends the app shows a not
 
 ### Merchant logos
 
-Bookings show the logo of well-known merchants (Rewe, Lidl, PayPal, …) next to the recipient. The logos come from [Simple Icons](https://simpleicons.org) (CC0), installed with the API; nothing is loaded from the internet. In the booking side panel, "Logo ändern" picks another brand, "Kein Logo" or an own image (PNG, JPEG or WebP, max. 256 KB). Own images are stored in `logos/` next to the database (or `LOGOS_DIR`), inside the git-ignored `data` directory. Brand logos remain trademarks of their owners.
+Bookings show the logo of well-known merchants (Rewe, Lidl, PayPal, …) next to the recipient. The logos come from two sets installed with the API: coloured logos from [theSVG](https://github.com/glincker/thesvg) (MIT, via the Iconify package `@iconify-json/thesvg-color`) and, where a brand is missing there, single-colour glyphs from [Simple Icons](https://simpleicons.org) (CC0). Nothing is loaded from the internet, also not from the Iconify web service. In the booking side panel, "Logo ändern" picks another brand, "Kein Logo" or an own image (PNG, JPEG or WebP, max. 256 KB). Own images are stored in `logos/` next to the database (or `LOGOS_DIR`), inside the git-ignored `data` directory. Brand logos remain trademarks of their owners.
 
 ## Setup
 
