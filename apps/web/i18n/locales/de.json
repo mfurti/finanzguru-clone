@@ -380,6 +380,7 @@
     "incomeTotal": "Einnahmen gesamt",
     "noData": "Keine Buchungen in diesem Zeitraum",
     "sankey": "Geldfluss",
+    "sankeyBlocks": "Kategorien im Geldfluss (zum Filtern auswählen)",
     "budgets": {
       "title": "Budgets",
       "create": "Budget anlegen",

@@ -16,7 +16,9 @@ test.describe('003 US3 budget area', () => {
     const wohnen = page.locator('[data-testid="sankey-node"][data-node^="main:"]').filter({
       hasText: 'Wohnen',
     })
-    await wohnen.click()
+    // The chart is drawn by ECharts; its blocks are selected via the keyboard block list (011).
+    await wohnen.focus()
+    await wohnen.press('Enter')
     const table = page.getByTestId('transactions-table')
     await expect(table.locator('tbody tr').first()).toBeVisible()
     const dates = await table.locator('tbody tr td:nth-child(3)').allTextContents()
@@ -24,8 +26,8 @@ test.describe('003 US3 budget area', () => {
     const categories = await table.locator('tbody tr td:nth-child(4)').allTextContents()
     expect(categories.every((c) => /Miete|Strom|Wohn/.test(c))).toBe(true)
 
-    // Clicking again clears the filter.
-    await wohnen.click()
+    // Selecting again clears the filter.
+    await wohnen.press('Enter')
     await expect
       .poll(async () => (await table.locator('tbody tr td:nth-child(4)').allTextContents()).join())
       .not.toMatch(/^(Miete|Strom|Wohn)[^,]*(,(Miete|Strom|Wohn)[^,]*)*$/)

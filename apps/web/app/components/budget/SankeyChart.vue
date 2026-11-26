@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatEur, type SankeyResponse } from '@finance/shared'
+import { formatEur, formatPct, type SankeyResponse } from '@finance/shared'
 import type { SankeyLinkIn, SankeyNodeIn } from '~/utils/sankey-order'
 
 /**
@@ -139,6 +139,24 @@ function onChartClick(params: { dataType?: string; name?: string }): void {
 }
 
 const totals = computed(() => sankeyNodeTotals(linksIn.value))
+/**
+ * Category blocks in chart order for the keyboard list (011 R5): ECharts draws plain SVG,
+ * so this list gives keyboard users (and tests) the same way to select a block.
+ */
+const blocks = computed(() => {
+  const { rank } = sankeyOrder(nodesIn.value, linksIn.value)
+  return nodesIn.value
+    .filter((node) => (node.kind === 'main' || node.kind === 'sub') && totals.value.has(node.id))
+    .sort(
+      (a, b) =>
+        Number(a.kind === 'sub') - Number(b.kind === 'sub') ||
+        (rank.get(a.id) ?? 0) - (rank.get(b.id) ?? 0),
+    )
+})
+const blockValue = (id: string) =>
+  props.unit === 'eur'
+    ? formatEur(totals.value.get(id) ?? 0)
+    : formatPct(props.incomeCents > 0 ? (totals.value.get(id) ?? 0) / props.incomeCents : 0)
 const ariaLabel = computed(() =>
   nodesIn.value
     .filter((node) => node.kind !== 'income' && totals.value.has(node.id))
@@ -168,5 +186,23 @@ const ariaLabel = computed(() =>
         </ClientOnly>
       </div>
     </div>
+    <ul
+      v-if="linksIn.length > 0"
+      class="sr-only flex-wrap gap-2 pt-3 focus-within:not-sr-only focus-within:flex"
+      :aria-label="t('budget.sankeyBlocks')"
+    >
+      <li v-for="node in blocks" :key="node.id">
+        <button
+          type="button"
+          class="rounded-md border border-default px-2 py-1 text-xs focus-visible:outline-2 focus-visible:outline-(--ui-primary)"
+          :aria-pressed="selectedNodeId === node.id"
+          data-testid="sankey-node"
+          :data-node="node.id"
+          @click="selectNode(node.id)"
+        >
+          {{ node.label }}: {{ blockValue(node.id) }}
+        </button>
+      </li>
+    </ul>
   </div>
 </template>
