@@ -2,7 +2,8 @@
 import type { CashflowCategories } from '@finance/shared'
 
 /**
- * Category pie chart next to the category list (US7). Like the reference: the
+ * Category pie chart next to the category list (US7), in the one donut look of the app
+ * (dashboard Aufteilung, 011). Like the reference: the
  * ring sweeps in, a hovered slice (or hovered list row) lights up with a halo
  * and the center shows that category's amount and name; clicking a slice
  * selects the category like the list does.
@@ -37,17 +38,14 @@ const donutItems = computed(() =>
       v-else
       v-model:hovered="hovered"
       :items="donutItems"
-      :size="260"
-      :thickness="30"
-      :gaps="false"
       @select="(key) => emit('select', key)"
     >
       <template #center="{ item }">
-        <span class="text-2xl font-semibold">
+        <span class="font-semibold">
           <Money v-if="item" :cents="sign * item.value" />
           <Money v-else :cents="sign * totalCents" animate />
         </span>
-        <span class="line-clamp-2 text-sm text-muted" data-testid="donut-center-label">
+        <span class="line-clamp-2 text-xs text-muted" data-testid="donut-center-label">
           {{
             item
               ? item.label

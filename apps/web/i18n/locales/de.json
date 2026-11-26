@@ -514,6 +514,7 @@
     "empty": "Noch keine Positionen für eine Analyse"
   },
   "dividends": {
+    "splitTotal": "Dividenden gesamt",
     "title": "Dividenden",
     "last12": "Letzte 12 Monate",
     "avgMonth": "Ø pro Monat",

@@ -33,6 +33,7 @@ const donut = computed(() =>
     label: row.label,
   })),
 )
+const totalCents = computed(() => rows.value.reduce((sum, row) => sum + row.cents, 0))
 const tabs = computed(() => [
   { value: 'security' as const, label: t('refine.bySecurity') },
   { value: 'region' as const, label: t('refine.byRegion') },
@@ -67,36 +68,48 @@ const tabs = computed(() => [
       </div>
     </template>
     <p v-if="rows.length === 0" class="text-sm text-muted">{{ t('dividends.empty') }}</p>
-    <div v-else class="grid items-center gap-4 sm:grid-cols-[auto_1fr]">
-      <DonutChart v-model:hovered="hovered" :items="donut" :size="160" :thickness="20" />
-      <ul
-        class="divide-y divide-default text-sm"
-        :data-testid="by === 'security' ? 'dividends-by-security' : `dividends-by-${by}`"
-      >
-        <li
-          v-for="row in rows"
-          :key="row.key"
-          class="row-hover flex items-center justify-between gap-3 py-2"
-          :class="{ 'bg-(--app-card-hover)': hovered === row.key }"
-          @mouseenter="hovered = row.key"
-          @mouseleave="hovered = null"
+    <div v-else class="@container">
+      <div class="flex flex-col items-center gap-4 @lg:flex-row">
+        <DonutChart v-model:hovered="hovered" :items="donut">
+          <template #center="{ item }">
+            <span class="font-semibold">
+              <Money v-if="item" :cents="item.value" />
+              <Money v-else :cents="totalCents" animate />
+            </span>
+            <span class="line-clamp-2 text-xs text-muted" data-testid="dividend-split-center">
+              {{ item ? item.label : t('dividends.splitTotal') }}
+            </span>
+          </template>
+        </DonutChart>
+        <ul
+          class="w-full min-w-0 divide-y divide-default text-sm"
+          :data-testid="by === 'security' ? 'dividends-by-security' : `dividends-by-${by}`"
         >
-          <span class="flex min-w-0 items-center gap-2">
-            <span
-              class="size-2.5 shrink-0 rounded-full"
-              :style="{ backgroundColor: colorOf(row.key, row.label) }"
-            />
-            <NuxtLink v-if="row.to" :to="row.to" class="link-hover truncate">{{
-              row.label
-            }}</NuxtLink>
-            <span v-else class="truncate">{{ row.label }}</span>
-          </span>
-          <span class="flex shrink-0 gap-3">
-            <Percent :value="row.pct" class="text-muted" />
-            <Money :cents="row.cents" />
-          </span>
-        </li>
-      </ul>
+          <li
+            v-for="row in rows"
+            :key="row.key"
+            class="row-hover flex items-center justify-between gap-3 py-2"
+            :class="{ 'bg-(--app-card-hover)': hovered === row.key }"
+            @mouseenter="hovered = row.key"
+            @mouseleave="hovered = null"
+          >
+            <span class="flex min-w-0 items-center gap-2">
+              <span
+                class="size-2.5 shrink-0 rounded-full"
+                :style="{ backgroundColor: colorOf(row.key, row.label) }"
+              />
+              <NuxtLink v-if="row.to" :to="row.to" class="link-hover truncate">{{
+                row.label
+              }}</NuxtLink>
+              <span v-else class="truncate">{{ row.label }}</span>
+            </span>
+            <span class="flex shrink-0 gap-3">
+              <Percent :value="row.pct" class="text-muted" />
+              <Money :cents="row.cents" />
+            </span>
+          </li>
+        </ul>
+      </div>
     </div>
   </UCard>
 </template>

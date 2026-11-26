@@ -27,7 +27,7 @@
 
 **Goal**: one donut look. **Independent test**: quickstart Q5.
 
-- [ ] T007 [P] [US2] Single look in `apps/web/app/components/common/DonutChart.vue`: remove the `gaps` prop (always gaps and rounded ends); `apps/web/app/components/budget/CategoryDonut.vue` drops `size`, `thickness`, `gaps` and uses the dashboard centre style (amount `font-semibold`, label `text-xs`, keeping `data-testid="donut-center-label"`); `apps/web/app/components/dividends/DividendSplit.vue` drops `size`/`thickness` and gets the centre slot (total + label, hovered item amount + name); component test `apps/web/tests/donut-look.spec.ts` (same rendered size/ring for the three callers, centre text on Dividenden).
+- [X] T007 [P] [US2] Single look in `apps/web/app/components/common/DonutChart.vue`: remove the `gaps` prop (always gaps and rounded ends); `apps/web/app/components/budget/CategoryDonut.vue` drops `size`, `thickness`, `gaps` and uses the dashboard centre style (amount `font-semibold`, label `text-xs`, keeping `data-testid="donut-center-label"`); `apps/web/app/components/dividends/DividendSplit.vue` drops `size`/`thickness` and gets the centre slot (total + label, hovered item amount + name); component test `apps/web/tests/donut-look.spec.ts` (same rendered size/ring for the three callers, centre text on Dividenden).
 
 ## Phase 5: User Story 3 – Works on every screen size (P3)
 
