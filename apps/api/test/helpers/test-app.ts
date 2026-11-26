@@ -13,6 +13,8 @@ export function setTestEnv(overrides: Record<string, string> = {}): void {
     NODE_ENV: 'test',
     DATABASE_PATH: ':memory:',
     LOGOS_DIR: mkdtempSync(join(tmpdir(), 'logos-')),
+    // Empty unless a test passes its own folder: never pick up the owner's local logos.
+    BRAND_LOGOS_DIR: mkdtempSync(join(tmpdir(), 'brand-logos-')),
     API_SESSION_SECRET: 'test-session-secret-0123456789abcdef',
     API_ENCRYPTION_KEY: Buffer.alloc(32, 1).toString('base64'),
     COOKIE_SECURE: 'false',

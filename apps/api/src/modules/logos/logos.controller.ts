@@ -25,7 +25,8 @@ import {
 } from '@finance/shared'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { createZodDto } from 'nestjs-zod'
-import { LogosService, MAX_LOGO_BYTES } from './logos.service'
+import { MAX_LOGO_BYTES } from './image-type'
+import { LogosService } from './logos.service'
 
 class BrandSearchDto extends createZodDto(brandSearchQuery) {}
 class RecipientLogoDto extends createZodDto(recipientLogoInput) {}

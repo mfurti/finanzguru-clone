@@ -63,10 +63,34 @@ function words(text: string): string[] {
     .filter(Boolean)
 }
 
-/** Aliases as word lists, longest first so "aldi sud" wins over "aldi". */
-const ALIASES = BRAND_ALIASES.flatMap(({ keys, aliases }) =>
-  aliases.map((alias) => ({ keys, words: words(alias) })),
-).sort((a, b) => b.words.length - a.words.length)
+interface Alias {
+  keys: readonly string[]
+  words: string[]
+  local: boolean
+}
+
+const BUILT_IN: Alias[] = BRAND_ALIASES.flatMap(({ keys, aliases }) =>
+  aliases.map((alias) => ({ keys, words: words(alias), local: false })),
+)
+
+/** Aliases as word lists, longest first ("aldi sud" before "aldi"), local before built-in. */
+let ALIASES: Alias[] = sortAliases(BUILT_IN)
+
+function sortAliases(list: Alias[]): Alias[] {
+  return [...list].sort(
+    (a, b) => b.words.length - a.words.length || Number(b.local) - Number(a.local),
+  )
+}
+
+/** The owner's local logos (009 R3): their words match ahead of built-in aliases. */
+export function setLocalAliases(
+  entries: readonly { key: string; words: readonly string[] }[],
+): void {
+  const local = entries.flatMap(({ key, words: list }) =>
+    list.map((alias) => ({ keys: [key], words: words(alias), local: true })),
+  )
+  ALIASES = sortAliases([...local, ...BUILT_IN].filter((alias) => alias.words.length > 0))
+}
 
 function containsWords(haystack: readonly string[], needle: readonly string[]): boolean {
   for (let start = 0; start + needle.length <= haystack.length; start++) {

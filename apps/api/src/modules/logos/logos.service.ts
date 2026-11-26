@@ -2,11 +2,12 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
   UnsupportedMediaTypeException,
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { eq } from 'drizzle-orm'
@@ -15,9 +16,23 @@ import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { recipientLogo } from '../../database/schema'
 import { BRAND_ALIASES } from '../../domain/brands'
-import { logoFor, recipientKey, type LogoChoice, type LogoTx } from '../../domain/logo'
+import {
+  logoFor,
+  recipientKey,
+  setLocalAliases,
+  type LogoChoice,
+  type LogoTx,
+} from '../../domain/logo'
 import { normalizeText } from '../../domain/dedupe'
-import { catalogVersions, getBrand, searchBrands, type Brand } from './brand-catalog'
+import {
+  catalogVersions,
+  getBrand,
+  searchBrands,
+  setLocalBrands,
+  type Brand,
+} from './brand-catalog'
+import { CONTENT_TYPES, imageType, type RasterType } from './image-type'
+import { loadLocalBrands } from './local-brands'
 
 /** Curated brands: the key shown (first in the catalogue) and its aliases as search words. */
 const CURATED = BRAND_ALIASES.flatMap(({ keys, aliases }) => {
@@ -29,31 +44,8 @@ const EXTRA_WORDS = new Map(CURATED.map(({ key, words }) => [key, words]))
 /** Shown first in the picker, in curated order. */
 const CURATED_KEYS = CURATED.map(({ key }) => key)
 
-/** Upload limit (FR-007). */
-export const MAX_LOGO_BYTES = 256 * 1024
-
 /** Generated upload names only: uuid plus extension, so no path can be smuggled in. */
 const UPLOAD_NAME = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(png|jpg|webp)$/
-const CONTENT_TYPES: Record<string, string> = {
-  png: 'image/png',
-  jpg: 'image/jpeg',
-  webp: 'image/webp',
-}
-
-/** Image type by content (magic bytes), not by name or declared type; SVG is never accepted. */
-export function imageType(file: Buffer): 'png' | 'jpg' | 'webp' | null {
-  if (file.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) {
-    return 'png'
-  }
-  if (file[0] === 0xff && file[1] === 0xd8 && file[2] === 0xff) return 'jpg'
-  if (
-    file.subarray(0, 4).toString('latin1') === 'RIFF' &&
-    file.subarray(8, 12).toString('latin1') === 'WEBP'
-  ) {
-    return 'webp'
-  }
-  return null
-}
 
 /** Logo fields of one booking in the list (contracts/http-api.md). */
 export interface BookingLogo {
@@ -64,10 +56,46 @@ export interface BookingLogo {
 
 @Injectable()
 export class LogosService {
+  private readonly logger = new Logger(LogosService.name)
+  /** Local brands' match words by key, for the picker search (009). */
+  private localWords = new Map<string, string[]>()
+  private localKeys: string[] = []
+
   constructor(
     @Inject(DB) private readonly db: AppDatabase,
     private readonly config: ConfigService,
-  ) {}
+  ) {
+    this.loadLocal()
+  }
+
+  /** Folder of the owner's local logos: BRAND_LOGOS_DIR, else `brand-logos/` next to the DB. */
+  brandLogosDir(): string {
+    const configured = this.config.get<string>('BRAND_LOGOS_DIR')
+    if (configured) return resolve(configured)
+    return resolve(dirname(this.config.getOrThrow<string>('DATABASE_PATH')), 'brand-logos')
+  }
+
+  /** Reads the local logo folder (009 R2); invalid entries are skipped with a warning. */
+  loadLocal(): void {
+    const brands = loadLocalBrands(this.brandLogosDir(), (message) => this.logger.warn(message))
+    const version = createHash('sha256')
+      .update(brands.map((brand) => `${brand.key}:${brand.body.length}`).join('|'))
+      .update(Buffer.concat(brands.map((brand) => brand.body)))
+      .digest('hex')
+      .slice(0, 12)
+    setLocalBrands(brands, version)
+    setLocalAliases(brands.map((brand) => ({ key: `local:${brand.key}`, words: brand.words })))
+    this.localKeys = brands.map((brand) => `local:${brand.key}`)
+    this.localWords = new Map(
+      brands.map((brand) => [`local:${brand.key}`, brand.words.map((word) => normalizeText(word))]),
+    )
+    if (brands.length > 0) this.logger.log(`Lokale Logos geladen: ${brands.length}`)
+  }
+
+  /** A local logo file by its key, or null. */
+  localFile(key: string): { body: Buffer; contentType: string } | null {
+    return getBrand(`local:${key}`)?.file ?? null
+  }
 
   /** Folder of uploaded logos: LOGOS_DIR, else `logos/` next to the database (git-ignored data). */
   logosDir(): string {
@@ -136,7 +164,7 @@ export class LogosService {
     try {
       return {
         body: readFileSync(join(this.logosDir(), name)),
-        contentType: CONTENT_TYPES[match[1]!]!,
+        contentType: CONTENT_TYPES[match[1] as RasterType],
       }
     } catch {
       throw new NotFoundException('Logo nicht gefunden')
@@ -165,6 +193,9 @@ export class LogosService {
   }
 
   brandUrl(brand: Brand): string {
+    if (brand.set === 'local') {
+      return `/api/logos/brands/local/${brand.name}?v=${catalogVersions.local}`
+    }
     return `/api/logos/brands/${brand.set}/${brand.name}.svg?v=${catalogVersions[brand.set]}`
   }
 
@@ -177,11 +208,15 @@ export class LogosService {
   }
 
   search(q: string, limit: number): BrandSearchResult[] {
-    return searchBrands(q, limit, EXTRA_WORDS, CURATED_KEYS).map((brand) => this.toResult(brand))
+    const words = new Map([...EXTRA_WORDS, ...this.localWords])
+    return searchBrands(q, limit, words, [...this.localKeys, ...CURATED_KEYS]).map((brand) =>
+      this.toResult(brand),
+    )
   }
 
   /** The brand logo as SVG, or null for an unknown set or name. */
   svg(set: string, name: string): string | null {
+    if (set === 'local') return null
     return getBrand(`${set}:${name}`)?.svg ?? null
   }
 

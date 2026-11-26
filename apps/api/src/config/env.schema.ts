@@ -16,6 +16,8 @@ export const envSchema = z.object({
   DATABASE_PATH: z.string().min(1).default('./data/app.db'),
   /** Uploaded merchant logos (008); default: `logos/` next to the database file. */
   LOGOS_DIR: z.string().min(1).optional(),
+  /** Local brand logos of the owner (009); default: `brand-logos/` next to the database. */
+  BRAND_LOGOS_DIR: z.string().min(1).optional(),
   COOKIE_SECURE: booleanFromString.default(true),
   /** Scalable Capital MCP server (read-only sync, US3). */
   SCALABLE_MCP_URL: z.string().url().default('https://mcp.scalable.capital/mcp'),

@@ -4,7 +4,7 @@ import * as simpleIcons from 'simple-icons'
 import { normalizeText } from '../../domain/dedupe'
 
 /** Built-in logo sets (008 R1, R8): coloured theSVG logos first, Simple Icons glyphs as fallback. */
-export type BrandSet = 'thesvg-color' | 'simple-icons'
+export type BrandSet = 'local' | 'thesvg-color' | 'simple-icons'
 
 /** One built-in brand logo. `key` is `<set>:<name>`. */
 export interface Brand {
@@ -14,8 +14,10 @@ export interface Brand {
   title: string
   /** Brand colour of a single-colour glyph (6 hex digits, no "#"); null for coloured logos. */
   hex: string | null
-  /** Complete standalone SVG document. */
-  svg: string
+  /** Complete standalone SVG document (built-in sets). */
+  svg: string | null
+  /** Raster or SVG file of a local brand (009). */
+  file?: { body: Buffer; contentType: string }
 }
 
 function packageVersion(entry: string): string {
@@ -24,7 +26,8 @@ function packageVersion(entry: string): string {
 }
 
 /** Package versions, part of the image URLs so browsers may cache them forever (008 R2). */
-export const catalogVersions: Readonly<Record<BrandSet, string>> = {
+export const catalogVersions: Record<BrandSet, string> = {
+  local: '0',
   'simple-icons': packageVersion('simple-icons'),
   'thesvg-color': packageVersion('@iconify-json/thesvg-color/icons.json'),
 }
@@ -100,16 +103,50 @@ const colour = new Map<string, Brand>()
   }
 }
 
-const SETS: Record<BrandSet, ReadonlyMap<string, Brand>> = {
-  'thesvg-color': colour,
-  'simple-icons': simple,
+/** Local brands of the owner (009), replaced at API start. */
+let local = new Map<string, Brand>()
+
+const SETS: Record<BrandSet, () => ReadonlyMap<string, Brand>> = {
+  local: () => local,
+  'thesvg-color': () => colour,
+  'simple-icons': () => simple,
+}
+
+/**
+ * Registers the owner's local logos (009 R1); they win over built-in brands in search and
+ * matching. `version` changes the image URLs so browsers fetch replaced files.
+ */
+export function setLocalBrands(
+  brands: readonly { key: string; title: string; body: Buffer; contentType: string }[],
+  version: string,
+): void {
+  local = new Map(
+    brands.map((brand) => [
+      brand.key,
+      {
+        key: `local:${brand.key}`,
+        set: 'local' as const,
+        name: brand.key,
+        title: brand.title,
+        hex: null,
+        svg: null,
+        file: { body: brand.body, contentType: brand.contentType },
+      },
+    ]),
+  )
+  catalogVersions.local = version
+  for (const brand of local.values())
+    SEARCH_TEXT.set(brand.key, normalizeText(`${brand.title} ${brand.name}`))
 }
 
 /** Brand by key `<set>:<name>`; a key without set is a Simple Icons slug (stored before R8). */
 export function getBrand(key: string): Brand | undefined {
   const [set, name] = key.includes(':') ? key.split(':', 2) : ['simple-icons', key]
-  return SETS[set as BrandSet]?.get(name!)
+  return SETS[set as BrandSet]?.().get(name!)
 }
+
+/** Local first, then coloured, then glyphs (009 R3). */
+const SET_ORDER: Record<BrandSet, number> = { local: 0, 'thesvg-color': 1, 'simple-icons': 2 }
 
 /** Search text per key: title and name, normalized like recipient names. */
 const ALL: readonly Brand[] = [...colour.values(), ...simple.values()]
@@ -135,11 +172,9 @@ export function searchBrands(
     .map((key) => getBrand(key))
     .filter((brand): brand is Brand => !!brand && matches(brand))
   const rest = text
-    ? ALL.filter((brand) => matches(brand)).sort(
-        (a, b) =>
-          a.title.localeCompare(b.title, 'de') ||
-          (a.set === b.set ? 0 : a.set === 'thesvg-color' ? -1 : 1),
-      )
+    ? [...local.values(), ...ALL]
+        .filter((brand) => matches(brand))
+        .sort((a, b) => a.title.localeCompare(b.title, 'de') || SET_ORDER[a.set] - SET_ORDER[b.set])
     : []
   const seen = new Set<string>()
   const out: Brand[] = []
