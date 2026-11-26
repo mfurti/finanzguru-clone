@@ -52,6 +52,10 @@ Browser ──> web (Nuxt, :3000) ──/api/**──> api (Nest, :3001) ──>
 
 The consent lasts about 90 days. From 14 days before it ends the app shows a notice with "Zugang erneuern". "Trennen" deletes the access; accounts and bookings stay.
 
+### Merchant logos
+
+Bookings show the logo of well-known merchants (Rewe, Lidl, PayPal, …) next to the recipient. The logos come from [Simple Icons](https://simpleicons.org) (CC0), installed with the API; nothing is loaded from the internet. In the booking side panel, "Logo ändern" picks another brand, "Kein Logo" or an own image (PNG, JPEG or WebP, max. 256 KB). Own images are stored in `logos/` next to the database (or `LOGOS_DIR`), inside the git-ignored `data` directory. Brand logos remain trademarks of their owners.
+
 ## Setup
 
 Requires Node.js 26 and pnpm (`corepack enable`).

@@ -119,5 +119,8 @@ const statusColor = (status: DataSourceDto['status']) =>
         </li>
       </ul>
     </UCard>
+
+    <!-- Licence of the built-in brand logos (008 FR-011). -->
+    <p class="px-1 text-xs text-muted" data-testid="logo-licence">{{ t('logo.licence') }}</p>
   </section>
 </template>
