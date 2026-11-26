@@ -37,3 +37,12 @@ Owner amounts go only into `apps/api/data/audit-010-local.md` (git-ignored); thi
 | B4 Steuern › Vorabpauschale | scrolls on phones with a sticky first column (T014) |
 | B5 Dropdowns | fixed: one height (32 px, Nuxt UI size md) on every page, checked by the layout guard (T016) |
 | B6 Kennzahl-Kästen | fixed: framed Einnahmen/Ausgaben/Saldo and Gespart/Sparquote boxes (label left, value right), all five in one row from 1280 px on Budget › Analyse; checked dark/light (T017) |
+
+## Success criteria after T018 (2026-11-26, no amounts)
+
+| Criterion | Status |
+|---|---|
+| SC-001 A1–A15 within ±1 € | partly met: A1, A3, A10–A14 match; A2, A4, A5 open (reference period base unknown, sell taxes missing in broker data), A6–A9 follow them |
+| SC-002 ≤ 5 uncategorized expenses | met: 5 (was 27) |
+| SC-003 no sideways page scroll, amount visible | met: layout guard green at 375 / 768 / 1440 px; spot check dark and light |
+| SC-004 one dropdown height | met: 32 px on all 15 pages (layout guard) |

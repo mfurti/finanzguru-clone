@@ -71,7 +71,7 @@
 
 ## Phase 7: Polish
 
-- [ ] T018 Owner check SC-001–SC-004 at 375/768/1440 px, dark and light; status in `quickstart.md` (no amounts).
+- [X] T018 Owner check SC-001–SC-004 at 375/768/1440 px, dark and light; status in `quickstart.md` (no amounts).
 - [ ] T019 Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`), reading the e2e log for failures; mark spec Status "Implemented".
 
 ---
