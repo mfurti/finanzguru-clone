@@ -31,3 +31,4 @@ Owner amounts go only into `apps/api/data/audit-010-local.md` (git-ignored); thi
 | A18 Monatsbalken | open: 100 € in one month, cause not found on app side |
 
 | B1 Transaktionen on phones | fixed: fits at 360/375 px, amount visible (T012); no date grouping, toolbar stays a row (reference: date groups, ⋮ menu) |
+| B1 Transaktionen on tablets | fixed: short year ("24.11.26") below 1024 px, phone layout up to 767 px; fits at 360, 640, 700, 768, 1024, 1440 px (T013) |

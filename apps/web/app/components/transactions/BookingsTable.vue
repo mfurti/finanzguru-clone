@@ -131,6 +131,9 @@ const UIcon = resolveComponent('UIcon')
 const CategoryIcon = resolveComponent('CategoryIcon')
 const SortHeader = resolveComponent('SortHeader')
 
+/** "24.11.2026" → "24.11.26". */
+const shortDate = (date: string) => date.replace(/\.(\d{2})(\d{2})$/, '.$2')
+
 const sortable =
   (id: BookingQueryState['sort'], label: string, align: 'left' | 'right' = 'left') =>
   () =>
@@ -176,7 +179,7 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
       const item = row.original
       const name = item.counterparty ?? item.purpose ?? t(`transactionTypes.${item.type}`)
       // Phones (010 US3): narrower name, date below it, so Betrag stays in view.
-      return h('div', { class: 'flex min-w-0 items-center gap-3 sm:min-w-48' }, [
+      return h('div', { class: 'flex min-w-0 items-center gap-3 md:min-w-48' }, [
         h(MerchantLogo, { name, logo: item.logo, size: 'sm' }),
         h('div', { class: 'min-w-0' }, [
           h('div', { class: 'flex items-center gap-1.5 font-medium' }, [
@@ -187,7 +190,7 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
                   'data-testid': 'unreviewed-dot',
                 })
               : null,
-            h('span', { class: 'max-w-22 truncate sm:max-w-40 xl:max-w-56', title: name }, name),
+            h('span', { class: 'max-w-22 truncate md:max-w-40 xl:max-w-56', title: name }, name),
           ]),
           // Purpose line only on wide screens and when it has no column of its own.
           item.counterparty && item.purpose && columnVisibility.value.purpose === false
@@ -207,7 +210,7 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
               class:
                 columnVisibility.value.date === false
                   ? 'text-xs text-muted'
-                  : 'text-xs text-muted sm:hidden',
+                  : 'text-xs text-muted md:hidden',
             },
             formatDate(item.bookingDate),
           ),
@@ -219,15 +222,21 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
     id: 'date',
     header: sortable('date', t('txws.col.date')),
     // Phones show the date under the name instead (010 US3).
-    meta: { class: { th: 'hidden sm:table-cell', td: 'hidden sm:table-cell' } },
-    cell: ({ row }) =>
-      h('span', { class: 'whitespace-nowrap' }, formatDate(row.original.bookingDate)),
+    meta: { class: { th: 'hidden md:table-cell', td: 'hidden md:table-cell' } },
+    // Tablets: short year ("24.11.26") like the reference, so Betrag fits (010 US3).
+    cell: ({ row }) => {
+      const full = formatDate(row.original.bookingDate)
+      return h('span', { class: 'whitespace-nowrap', title: full }, [
+        h('span', { class: 'lg:hidden' }, shortDate(full)),
+        h('span', { class: 'hidden lg:inline' }, full),
+      ])
+    },
   },
   {
     id: 'category',
     // Phones: chip icon only, so the header text gives way too (010 US3).
     header: () =>
-      h('span', { class: 'hidden sm:inline-flex' }, [
+      h('span', { class: 'hidden md:inline-flex' }, [
         sortable('category', t('txws.col.category'))(),
       ]),
     cell: ({ row }) =>
@@ -253,11 +262,11 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
                 class: 'size-4! rounded-full',
               }),
               // Phones: icon only, the name is in the accessible label (010 US3).
-              h('span', { class: 'hidden truncate sm:inline' }, row.original.categoryName),
+              h('span', { class: 'hidden truncate md:inline' }, row.original.categoryName),
             ]
           : [
-              h(UIcon, { name: 'i-lucide-tag', class: 'size-4 text-muted sm:hidden' }),
-              h('span', { class: 'hidden text-muted sm:inline' }, t('rules.category')),
+              h(UIcon, { name: 'i-lucide-tag', class: 'size-4 text-muted md:hidden' }),
+              h('span', { class: 'hidden text-muted md:inline' }, t('rules.category')),
             ],
       ),
   },
@@ -311,7 +320,7 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
           color: 'neutral',
           // Phones delete from the side panel; the hover button would only take room.
           class:
-            'hidden opacity-0 transition-opacity group-hover/row:opacity-100 focus-visible:opacity-100 sm:inline-flex',
+            'hidden opacity-0 transition-opacity group-hover/row:opacity-100 focus-visible:opacity-100 md:inline-flex',
           'aria-label': t('txws.delete'),
           'data-testid': 'delete-row',
           onClick: () => remove([row.original.id]),
@@ -553,7 +562,7 @@ const rangeLabel = computed(() => {
       :columns="columns"
       :get-row-id="(row: TransactionListItem) => row.id"
       :loading="status === 'pending'"
-      :ui="{ tr: 'group/row cursor-pointer', td: 'px-2 py-2.5 sm:px-4', th: 'px-2 sm:px-4' }"
+      :ui="{ tr: 'group/row cursor-pointer', td: 'px-2 py-2.5 md:px-4', th: 'px-2 md:px-4' }"
       data-testid="transactions-table"
       @select="openPanel"
     />
