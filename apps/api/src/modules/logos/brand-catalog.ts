@@ -3,45 +3,122 @@ import { dirname, join } from 'node:path'
 import * as simpleIcons from 'simple-icons'
 import { normalizeText } from '../../domain/dedupe'
 
-/** One built-in brand logo (Simple Icons, CC0): single-colour 24×24 glyph and brand colour. */
+/** Built-in logo sets (008 R1, R8): coloured theSVG logos first, Simple Icons glyphs as fallback. */
+export type BrandSet = 'thesvg-color' | 'simple-icons'
+
+/** One built-in brand logo. `key` is `<set>:<name>`. */
 export interface Brand {
-  slug: string
+  key: string
+  set: BrandSet
+  name: string
   title: string
-  /** Brand colour, 6 hex digits without "#". */
-  hex: string
-  /** SVG path data of the 24×24 glyph. */
-  path: string
+  /** Brand colour of a single-colour glyph (6 hex digits, no "#"); null for coloured logos. */
+  hex: string | null
+  /** Complete standalone SVG document. */
+  svg: string
 }
 
-/** Package version, part of the image URLs so browsers can cache them forever (008 R2). */
-export const catalogVersion: string = (
-  JSON.parse(
-    readFileSync(join(dirname(require.resolve('simple-icons')), 'package.json'), 'utf8'),
-  ) as { version: string }
-).version
+function packageVersion(entry: string): string {
+  const file = join(dirname(require.resolve(entry)), 'package.json')
+  return (JSON.parse(readFileSync(file, 'utf8')) as { version: string }).version
+}
 
-/** All brands by slug, loaded once (≈ 3 400 entries, a few MB in memory). */
-const BRANDS: ReadonlyMap<string, Brand> = new Map(
-  Object.values(simpleIcons)
-    .filter((icon): icon is simpleIcons.SimpleIcon => typeof icon === 'object' && 'slug' in icon)
-    .map((icon) => [
-      icon.slug,
-      { slug: icon.slug, title: icon.title, hex: icon.hex.toUpperCase(), path: icon.path },
-    ]),
-)
+/** Package versions, part of the image URLs so browsers may cache them forever (008 R2). */
+export const catalogVersions: Readonly<Record<BrandSet, string>> = {
+  'simple-icons': packageVersion('simple-icons'),
+  'thesvg-color': packageVersion('@iconify-json/thesvg-color/icons.json'),
+}
 
-/** Search text per slug: title and slug, normalized like recipient names. */
-const SEARCH_TEXT = new Map(
-  [...BRANDS.values()].map((b) => [b.slug, normalizeText(`${b.title} ${b.slug}`)]),
-)
-
-export function getBrand(slug: string): Brand | undefined {
-  return BRANDS.get(slug)
+function escapeXml(value: string): string {
+  return value.replace(/[<>&"']/g, (char) => `&#${char.charCodeAt(0)};`)
 }
 
 /**
- * Brands whose title, slug or extra words (curated aliases) contain `query`. `preferred` slugs
- * come first; with an empty query only the preferred brands are returned.
+ * Third-party SVG markup may only draw: no scripts, no event handlers, no javascript: URLs and
+ * no references to other documents (008 R8). Unsafe icons are left out of the catalogue.
+ */
+export function isSafeSvgBody(body: string): boolean {
+  return !/<script|<foreignObject|\son[a-z]+\s*=|javascript:|(?:xlink:)?href\s*=\s*["'](?!#)/i.test(
+    body,
+  )
+}
+
+/** Single-colour glyph in brand colour (Simple Icons). */
+export function glyphSvg(title: string, hex: string, path: string): string {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img"><title>${escapeXml(title)}</title><path fill="#${hex}" d="${path}"/></svg>`
+}
+
+const simple = new Map<string, Brand>()
+for (const icon of Object.values(simpleIcons)) {
+  if (typeof icon !== 'object' || !('slug' in icon)) continue
+  const hex = icon.hex.toUpperCase()
+  simple.set(icon.slug, {
+    key: `simple-icons:${icon.slug}`,
+    set: 'simple-icons',
+    name: icon.slug,
+    title: icon.title,
+    hex,
+    svg: glyphSvg(icon.title, hex, icon.path),
+  })
+}
+
+/** "deutsche-bahn" → "Deutsche Bahn"; the Simple Icons title when it has the brand ("REWE"). */
+function titleFor(name: string): string {
+  const known = simple.get(name.replace(/-/g, ''))
+  if (known) return known.title
+  return name
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
+
+interface IconifyJson {
+  width?: number
+  height?: number
+  icons: Record<string, { body: string; width?: number; height?: number }>
+}
+
+const colour = new Map<string, Brand>()
+{
+  const json = JSON.parse(
+    readFileSync(require.resolve('@iconify-json/thesvg-color/icons.json'), 'utf8'),
+  ) as IconifyJson
+  for (const [name, icon] of Object.entries(json.icons)) {
+    // "-dark" variants are white logos for dark backgrounds: invisible on the white tile.
+    if (name.endsWith('-dark') || !isSafeSvgBody(icon.body)) continue
+    const width = icon.width ?? json.width ?? 24
+    const height = icon.height ?? json.height ?? 24
+    const title = titleFor(name.replace(/-light$/, ''))
+    colour.set(name, {
+      key: `thesvg-color:${name}`,
+      set: 'thesvg-color',
+      name,
+      title,
+      hex: null,
+      svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" role="img"><title>${escapeXml(title)}</title>${icon.body}</svg>`,
+    })
+  }
+}
+
+const SETS: Record<BrandSet, ReadonlyMap<string, Brand>> = {
+  'thesvg-color': colour,
+  'simple-icons': simple,
+}
+
+/** Brand by key `<set>:<name>`; a key without set is a Simple Icons slug (stored before R8). */
+export function getBrand(key: string): Brand | undefined {
+  const [set, name] = key.includes(':') ? key.split(':', 2) : ['simple-icons', key]
+  return SETS[set as BrandSet]?.get(name!)
+}
+
+/** Search text per key: title and name, normalized like recipient names. */
+const ALL: readonly Brand[] = [...colour.values(), ...simple.values()]
+const SEARCH_TEXT = new Map(ALL.map((b) => [b.key, normalizeText(`${b.title} ${b.name}`)]))
+
+/**
+ * Brands whose title, name or extra words (curated aliases, by key) contain `query`.
+ * `preferred` keys come first; with an empty query only those are returned. A brand that
+ * exists in both sets is listed once, the coloured one first.
  */
 export function searchBrands(
   query: string,
@@ -50,24 +127,29 @@ export function searchBrands(
   preferred: readonly string[] = [],
 ): Brand[] {
   const text = normalizeText(query)
-  const matches = (slug: string) =>
+  const matches = (brand: Brand) =>
     !text ||
-    (SEARCH_TEXT.get(slug) ?? '').includes(text) ||
-    (extraWords.get(slug) ?? []).some((word) => word.includes(text))
-  const first = preferred.filter((slug) => BRANDS.has(slug) && matches(slug))
+    (SEARCH_TEXT.get(brand.key) ?? '').includes(text) ||
+    (extraWords.get(brand.key) ?? []).some((word) => word.includes(text))
+  const first = preferred
+    .map((key) => getBrand(key))
+    .filter((brand): brand is Brand => !!brand && matches(brand))
   const rest = text
-    ? [...BRANDS.keys()]
-        .filter((slug) => !first.includes(slug) && matches(slug))
-        .sort((a, b) => BRANDS.get(a)!.title.localeCompare(BRANDS.get(b)!.title, 'de'))
+    ? ALL.filter((brand) => matches(brand)).sort(
+        (a, b) =>
+          a.title.localeCompare(b.title, 'de') ||
+          (a.set === b.set ? 0 : a.set === 'thesvg-color' ? -1 : 1),
+      )
     : []
-  return [...first, ...rest].slice(0, limit).map((slug) => BRANDS.get(slug)!)
-}
-
-/** The glyph as a standalone SVG in brand colour (served as an image, cannot run scripts). */
-export function brandSvg(brand: Brand): string {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img"><title>${escapeXml(brand.title)}</title><path fill="#${brand.hex}" d="${brand.path}"/></svg>`
-}
-
-function escapeXml(value: string): string {
-  return value.replace(/[<>&"']/g, (char) => `&#${char.charCodeAt(0)};`)
+  const seen = new Set<string>()
+  const out: Brand[] = []
+  for (const brand of [...first, ...rest]) {
+    const id = normalizeText(brand.title)
+    if (seen.has(brand.key) || seen.has(id)) continue
+    seen.add(brand.key)
+    seen.add(id)
+    out.push(brand)
+    if (out.length === limit) break
+  }
+  return out
 }

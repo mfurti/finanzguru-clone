@@ -214,6 +214,9 @@ importers:
       '@finance/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@iconify-json/thesvg-color':
+        specifier: 1.2.25
+        version: 1.2.25
       '@modelcontextprotocol/sdk':
         specifier: ^1.32.2
         version: 1.32.2(supports-color@8.1.1)(zod@4.6.7)
@@ -1240,6 +1243,9 @@ packages:
 
   '@iconify-json/lucide@1.2.158':
     resolution: {integrity: sha512-odd13G5/Jv4W+yomId3BjCQ/a1k7QemC0mi+CBvvpl18JBO+sQajKl4F3WtPvFHMnkOQ4d3/BFKShTmBlbG0dg==}
+
+  '@iconify-json/thesvg-color@1.2.25':
+    resolution: {integrity: sha512-tj61S4oecP5Covh9xBHZMbtxLutudIJRZmGey+OgnkktY7bxiggAkOny9TusNGYLvMkW+fxjoVej0148pP3vYA==}
 
   '@iconify/collections@1.0.768':
     resolution: {integrity: sha512-udBsNOj5OEEW7XUWh7lFdG9iVnN6g++VQbPCIp/L73Cdih6Gjt+NjYXQFVSepxjgSjtWNpy972QoAq3dyOJDwQ==}
@@ -8765,6 +8771,10 @@ snapshots:
   '@humanwhocodes/retry@0.4.3': {}
 
   '@iconify-json/lucide@1.2.158':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/thesvg-color@1.2.25':
     dependencies:
       '@iconify/types': 2.0.0
 

@@ -48,15 +48,37 @@ export class LogosController {
     return this.logos.search(query.q, query.limit)
   }
 
-  /** Glyph in brand colour; versioned URL, so browsers may cache it for a year. */
+  /** Coloured logo or glyph; versioned URL, so browsers may cache it for a year. */
+  @Get('brands/:set/:name.svg')
+  brand(
+    @Param('set') set: string,
+    @Param('name') name: string,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ): string {
+    return this.sendSvg(reply, set, name)
+  }
+
+  /** Before 008 R8 the URL held only a Simple Icons slug. */
   @Get('brands/:slug.svg')
-  brand(@Param('slug') slug: string, @Res({ passthrough: true }) reply: FastifyReply): string {
-    const svg = /^[a-z0-9]{1,60}$/.test(slug) ? this.logos.svg(slug) : null
+  legacyBrand(
+    @Param('slug') slug: string,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ): string {
+    return this.sendSvg(reply, 'simple-icons', slug)
+  }
+
+  private sendSvg(reply: FastifyReply, set: string, name: string): string {
+    const svg = /^[a-z0-9-]{1,80}$/.test(name) ? this.logos.svg(set, name) : null
     if (!svg) throw new NotFoundException('Unbekannte Marke')
     void reply
       .header('content-type', 'image/svg+xml; charset=utf-8')
       .header('cache-control', 'public, max-age=31536000, immutable')
       .header('x-content-type-options', 'nosniff')
+      // Even opened directly, a logo may not run scripts or load anything (008 R8).
+      .header(
+        'content-security-policy',
+        "default-src 'none'; style-src 'unsafe-inline'; img-src data:",
+      )
     return svg
   }
 

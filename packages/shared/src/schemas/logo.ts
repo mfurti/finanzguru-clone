@@ -1,7 +1,10 @@
 import { z } from 'zod'
 
-/** Brand slug of the built-in catalogue (Simple Icons): lower case letters and digits. */
-export const brandSlug = z.string().regex(/^[a-z0-9]{1,60}$/)
+/**
+ * Brand key of the built-in catalogue: `<set>:<name>` (008 R8), or a Simple Icons slug
+ * without set as stored before.
+ */
+export const brandSlug = z.string().regex(/^(?:[a-z0-9-]{1,30}:)?[a-z0-9-]{1,80}$/)
 
 /** Normalized recipient key (008 R5): counterparty, else `iban:…`, else `purpose:…`. */
 export const recipientKey = z.string().min(1).max(200)
@@ -13,8 +16,11 @@ export const logoRef = z
       kind: z.literal('brand'),
       slug: brandSlug,
       title: z.string(),
-      /** Brand colour, 6 hex digits without "#". */
-      hex: z.string().regex(/^[0-9A-F]{6}$/),
+      /** Brand colour of a glyph, 6 hex digits without "#"; null for coloured logos. */
+      hex: z
+        .string()
+        .regex(/^[0-9A-F]{6}$/)
+        .nullable(),
       url: z.string(),
     }),
     z.object({ kind: z.literal('upload'), url: z.string() }),
@@ -39,7 +45,7 @@ export type RecipientLogoInput = z.infer<typeof recipientLogoInput>
 export const brandSearchResult = z.object({
   slug: brandSlug,
   title: z.string(),
-  hex: z.string(),
+  hex: z.string().nullable(),
   url: z.string(),
 })
 export type BrandSearchResult = z.infer<typeof brandSearchResult>

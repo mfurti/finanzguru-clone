@@ -17,11 +17,14 @@ import { recipientLogo } from '../../database/schema'
 import { BRAND_ALIASES, CURATED_SLUGS } from '../../domain/brands'
 import { logoFor, recipientKey, type LogoChoice, type LogoTx } from '../../domain/logo'
 import { normalizeText } from '../../domain/dedupe'
-import { brandSvg, catalogVersion, getBrand, searchBrands, type Brand } from './brand-catalog'
+import { catalogVersions, getBrand, searchBrands, type Brand } from './brand-catalog'
 
 /** Curated aliases as extra search words per slug ("drogerie" finds dm). */
 const EXTRA_WORDS = new Map(
-  BRAND_ALIASES.map(({ slug, aliases }) => [slug, aliases.map((alias) => normalizeText(alias))]),
+  BRAND_ALIASES.map(({ slug, aliases }) => [
+    getBrand(slug)?.key ?? slug,
+    aliases.map((alias) => normalizeText(alias)),
+  ]),
 )
 
 /** Upload limit (FR-007). */
@@ -81,14 +84,14 @@ export class LogosService {
 
   /** Saves a brand or "Kein Logo" for a recipient (US2); replaces an upload. */
   setChoice(key: string, input: RecipientLogoInput): LogoRef {
-    const slug = input.mode === 'brand' ? (input.brandSlug ?? '') : null
-    if (slug !== null && !getBrand(slug)) {
+    const brand = input.mode === 'brand' ? getBrand(input.brandSlug ?? '') : null
+    if (brand === undefined) {
       throw new BadRequestException('Unbekannte Marke')
     }
     const previous = this.stored(key)
     const values = {
       mode: input.mode,
-      brandSlug: slug,
+      brandSlug: brand?.key ?? null,
       fileName: null,
       updatedAt: new Date().toISOString(),
     }
@@ -98,7 +101,7 @@ export class LogosService {
       .onConflictDoUpdate({ target: recipientLogo.recipientKey, set: values })
       .run()
     this.deleteFile(previous?.fileName)
-    return slug ? { kind: 'brand', ...this.toResult(getBrand(slug)!) } : null
+    return brand ? { kind: 'brand', ...this.toResult(brand) } : null
   }
 
   /** Stores an own logo for a recipient (US3); replaces a previous upload. */
@@ -159,8 +162,8 @@ export class LogosService {
     )
   }
 
-  brandUrl(slug: string): string {
-    return `/api/logos/brands/${slug}.svg?v=${catalogVersion}`
+  brandUrl(brand: Brand): string {
+    return `/api/logos/brands/${brand.set}/${brand.name}.svg?v=${catalogVersions[brand.set]}`
   }
 
   fileUrl(fileName: string): string {
@@ -168,17 +171,16 @@ export class LogosService {
   }
 
   private toResult(brand: Brand): BrandSearchResult {
-    return { slug: brand.slug, title: brand.title, hex: brand.hex, url: this.brandUrl(brand.slug) }
+    return { slug: brand.key, title: brand.title, hex: brand.hex, url: this.brandUrl(brand) }
   }
 
   search(q: string, limit: number): BrandSearchResult[] {
     return searchBrands(q, limit, EXTRA_WORDS, CURATED_SLUGS).map((brand) => this.toResult(brand))
   }
 
-  /** The brand glyph as SVG, or null for an unknown slug. */
-  svg(slug: string): string | null {
-    const brand = getBrand(slug)
-    return brand ? brandSvg(brand) : null
+  /** The brand logo as SVG, or null for an unknown set or name. */
+  svg(set: string, name: string): string | null {
+    return getBrand(`${set}:${name}`)?.svg ?? null
   }
 
   /**

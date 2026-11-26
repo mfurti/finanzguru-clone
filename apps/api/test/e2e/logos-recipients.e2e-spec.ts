@@ -58,12 +58,12 @@ describe('logo choice per recipient (008 T010)', () => {
       payload: { mode: 'brand', brandSlug: 'lidl' },
     })
     expect(res.statusCode).toBe(200)
-    expect(res.json()).toMatchObject({ kind: 'brand', slug: 'lidl' })
+    expect(res.json()).toMatchObject({ kind: 'brand', slug: 'simple-icons:lidl' })
     const items = await list()
     const lidl = items.filter((item) => item.recipientKey === 'lidl dienstleistung test')
     expect(lidl).toHaveLength(2)
     for (const item of lidl)
-      expect(item).toMatchObject({ logo: { slug: 'lidl' }, logoSource: 'manual' })
+      expect(item).toMatchObject({ logo: { slug: 'simple-icons:lidl' }, logoSource: 'manual' })
     expect(items.find((item) => item.counterparty === 'REWE Wahltest')!.logoSource).toBe('auto')
   })
 
@@ -84,7 +84,7 @@ describe('logo choice per recipient (008 T010)', () => {
     })
     expect(del.statusCode).toBe(204)
     rewe = (await list()).find((item) => item.counterparty === 'REWE Wahltest')!
-    expect(rewe).toMatchObject({ logo: { slug: 'rewe' }, logoSource: 'auto' })
+    expect(rewe).toMatchObject({ logo: { slug: 'simple-icons:rewe' }, logoSource: 'auto' })
   })
 
   it('validates brand and key', async () => {
