@@ -33,6 +33,10 @@ Status: T002 resolved 2026-11-26 with the owner's trade list (computed locally) 
 - **Observed**: the reference categorizes all bookings (provider categories); the app's defaults leave many common merchants uncategorized.
 - **Decision**: extend default rules with generic merchant words (marketplaces, payment providers, streaming, telecom, supermarkets, drugstores, fuel, public transport) mapped to the reference category tree; owner rules and manual categories keep priority; applied to uncategorized bookings only.
 
+## R9 – Return figures (T006)
+
+- Gesamtertrag, TWROR, IZF and Realrendite need no own change: they are derived from the corrected inputs (R1–R3, R5). Realrendite = (1 + TWROR) ÷ (1 + Inflation) − 1 stays visible; the reference leaves it empty like other PLUS figures (Sparquote). The ⓘ texts now state each definition (Investiertes Kapital, Kursgewinn, Realisierte Gewinne, Steuern & Gebühren, Realrendite).
+
 ## R6 – Unreviewed count and monthly bars
 
 - **Observed**: unreviewed count differs by about 2 %; one month's bar differs by 100 €.
