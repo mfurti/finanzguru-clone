@@ -84,8 +84,9 @@ const selectedIds = computed(() =>
 watch(listQuery, () => (rowSelection.value = {}), { deep: true })
 
 // ---- Columns ---------------------------------------------------------------
-type ColumnId = 'name' | 'date' | 'category' | 'tags' | 'account' | 'purpose' | 'amount'
-const HIDEABLE: ColumnId[] = ['date', 'category', 'tags', 'account', 'purpose']
+type ColumnId = 'name' | 'date' | 'category' | 'tags' | 'properties' | 'taxes' | 'amount'
+/** Chooser like the reference (012 P1): Datum, Kategorie, Tags, Eigenschaften, Betrag, Steuern. */
+const HIDEABLE: ColumnId[] = ['date', 'category', 'tags', 'properties', 'amount', 'taxes']
 const STORAGE_KEY = 'vk.bookings.columns'
 const columnVisibility = ref<Record<string, boolean>>(initialColumnVisibility(null))
 onMounted(() => {
@@ -107,7 +108,7 @@ watch(
   { deep: true },
 )
 const visibleColumns = computed(() =>
-  (['name', 'date', 'category', 'tags', 'account', 'purpose', 'amount'] as ColumnId[]).filter(
+  (['name', 'date', 'category', 'tags', 'properties', 'taxes', 'amount'] as ColumnId[]).filter(
     (id) => columnVisibility.value[id] !== false,
   ),
 )
@@ -197,7 +198,7 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
             ),
           ]),
           // Purpose line only on wide screens and when it has no column of its own.
-          item.counterparty && item.purpose && columnVisibility.value.purpose === false
+          item.counterparty && item.purpose
             ? h(
                 'div',
                 {
@@ -295,20 +296,41 @@ const columns = computed<TableColumn<TransactionListItem>[]>(() => [
       ),
   },
   {
-    id: 'account',
-    header: sortable('account', t('txws.col.account')),
-    cell: ({ row }) =>
-      h('span', { class: 'whitespace-nowrap text-muted' }, row.original.accountName),
+    id: 'properties',
+    header: t('txws.col.properties'),
+    // Small icons like the reference: transfer, note, category set by the owner. From 1280 px,
+    // so Betrag still fits on 1024 px tablets.
+    meta: { class: { th: 'hidden xl:table-cell', td: 'hidden xl:table-cell' } },
+    cell: ({ row }) => {
+      const item = row.original
+      const icons: [string, string][] = []
+      if (item.type === 'transfer') icons.push(['i-lucide-arrow-left-right', 'transfer'])
+      if (item.note) icons.push(['i-lucide-sticky-note', 'note'])
+      if (item.categorySource === 'manual') icons.push(['i-lucide-user-check', 'manualCategory'])
+      return h(
+        'div',
+        { class: 'flex items-center gap-1.5 text-muted', 'data-testid': 'booking-properties' },
+        icons.map(([icon, key]) =>
+          h(UIcon, {
+            name: icon,
+            class: 'size-4',
+            title: t(`txws.props.${key}`),
+            'aria-label': t(`txws.props.${key}`),
+          }),
+        ),
+      )
+    },
   },
   {
-    id: 'purpose',
-    header: t('txws.col.purpose'),
+    id: 'taxes',
+    header: t('txws.col.taxes'),
+    meta: {
+      class: { th: 'hidden text-right md:table-cell', td: 'hidden text-right md:table-cell' },
+    },
     cell: ({ row }) =>
-      h(
-        'span',
-        { class: 'block max-w-64 truncate text-muted', title: row.original.purpose ?? '' },
-        row.original.purpose ?? '–',
-      ),
+      row.original.taxCents
+        ? h(Money, { cents: -row.original.taxCents, class: 'whitespace-nowrap text-muted' })
+        : h('span', { class: 'text-muted' }, '–'),
   },
   {
     id: 'amount',
@@ -436,13 +458,16 @@ const exportUrl = computed(() => {
     date: ['date'],
     category: ['category'],
     tags: ['tags'],
-    account: ['account'],
-    // The purpose is already part of the name in the export.
-    purpose: [],
+    // Konto is always exported; properties and taxes have no CSV column.
+    properties: [],
+    taxes: [],
     amount: ['amount'],
   }
-  const ordered: ColumnId[] = ['date', 'name', 'category', 'tags', 'account', 'purpose', 'amount']
-  const cols = ordered.filter((id) => visibleColumns.value.includes(id)).flatMap((id) => map[id])
+  const ordered: ColumnId[] = ['date', 'name', 'category', 'tags', 'properties', 'taxes', 'amount']
+  const cols = [
+    ...ordered.filter((id) => visibleColumns.value.includes(id)).flatMap((id) => map[id]),
+    'account' as const,
+  ]
   const params = new URLSearchParams({
     ...filter.value,
     sort: state.value.sort,

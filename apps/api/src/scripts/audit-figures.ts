@@ -1,5 +1,5 @@
 /**
- * Owner audit (010 T001): `pnpm --filter api audit:figures -- --accounts <id,id,…> [--period 1Y]`
+ * Owner audit (010 T001, dividends 012 T001): `pnpm --filter api audit:figures -- --accounts <id,id,…> [--period 1Y]`
  *
  * Boots the API in-process against the local database (DATABASE_PATH from `.env`), logs in
  * with the local dev password (`AUDIT_PASSWORD` or `data/dev-login.txt`) and prints the figures
@@ -107,6 +107,12 @@ async function main(): Promise<void> {
     `/api/cashflow/categories?${q}&granularity=month&kind=expense`,
   )
   const unreviewed = await get<{ count: number }>(`/api/transactions/unreviewed/count?${q}`)
+  type Dividends = {
+    last12Cents: number
+    years: { year: number; cents: number; changePct: string | null }[]
+    bySecurity: { name: string; cents: number }[]
+  }
+  const dividends = await get<Dividends>(`/api/dividends/summary?${q}`)
 
   const rows: [string, string][] = [
     ['A1 Gesamtvermögen (Chart)', euro(netWorth.totalCents)],
@@ -140,6 +146,12 @@ async function main(): Promise<void> {
       String(categories.items.find((item) => item.name === 'Nicht kategorisiert')?.count ?? 0),
     ],
     ['A17 Ungeprüfte Transaktionen', String(unreviewed.count)],
+    ['D1 Dividenden letzte 12 Monate', euro(dividends.last12Cents)],
+    ...dividends.years.map((y): [string, string] => [
+      `D2 Dividenden ${y.year}`,
+      `${euro(y.cents)} (${pct(y.changePct)})`,
+    ]),
+    ...dividends.bySecurity.map((row): [string, string] => [`D3 ${row.name}`, euro(row.cents)]),
   ]
   const width = Math.max(...rows.map(([label]) => label.length))
   for (const [label, value] of rows) console.log(`${label.padEnd(width)}  ${value}`)

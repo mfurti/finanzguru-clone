@@ -72,21 +72,53 @@ async function saved(): Promise<void> {
 <template>
   <section class="space-y-4">
     <h1 class="sr-only">{{ t('budget.budgets.title') }}</h1>
-    <UCard>
-      <PeriodSwitcher :label="summary?.period.label ?? ''" />
-    </UCard>
-
+    <!--
+      No budgets yet: one card like the reference (012 P13) – period header with "Hinzufügen",
+      the month chart faded behind, an own illustration and a large call to action.
+    -->
     <UCard v-if="(data?.rows.length ?? 0) === 0" data-testid="budget-list">
-      <EmptyState
-        :title="t('budgetsPage.empty')"
-        :description="t('budgetsPage.emptyInfo')"
-        icon="i-lucide-piggy-bank"
-        :action-label="t('budgetsPage.add')"
-        data-testid="budget-empty"
-        @action="add"
-      />
+      <PeriodSwitcher :label="summary?.period.label ?? ''">
+        <template #actions>
+          <UButton
+            icon="i-lucide-plus"
+            variant="soft"
+            color="neutral"
+            :label="t('budgetsPage.add')"
+            data-testid="budget-add-header"
+            @click="add"
+          />
+        </template>
+      </PeriodSwitcher>
+      <div class="relative mt-4 min-h-80">
+        <div class="pointer-events-none opacity-20" aria-hidden="true">
+          <MonthBars
+            :months="chart.months"
+            :series="chart.series"
+            :current-index="chart.months.length - 1"
+          />
+        </div>
+        <div
+          class="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center"
+          data-testid="budget-empty"
+        >
+          <div class="flex size-24 items-center justify-center rounded-full bg-primary/15">
+            <UIcon name="i-lucide-piggy-bank" class="size-12 text-primary" />
+          </div>
+          <p class="text-lg font-semibold">{{ t('budgetsPage.emptyTitle') }}</p>
+          <UButton
+            size="lg"
+            icon="i-lucide-plus"
+            :label="t('budgetsPage.add')"
+            class="min-w-56 justify-center"
+            @click="add"
+          />
+        </div>
+      </div>
     </UCard>
     <template v-else>
+      <UCard>
+        <PeriodSwitcher :label="summary?.period.label ?? ''" />
+      </UCard>
       <UCard data-testid="budget-chart">
         <template #header>
           <div class="flex flex-wrap items-center justify-between gap-2">

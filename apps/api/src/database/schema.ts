@@ -420,6 +420,16 @@ export const insuranceContract = sqliteTable(
   ],
 )
 
+/** Insurance suggestions the owner dismissed (012 P14); key = counterparty + interval. */
+export const insuranceSuggestionDismissal = sqliteTable(
+  'insurance_suggestion_dismissal',
+  {
+    key: text('key').primaryKey(),
+    dismissedAt: text('dismissed_at').notNull().default(nowIso),
+  },
+  (t) => [check('insurance_dismissal_key_len', sql`length(${t.key}) BETWEEN 1 AND 200`)],
+)
+
 // --- Feature 002: investment analysis, dividends, taxes, watchlists ---
 
 /** Weighted region/sector/currency share of an instrument; Σ per dimension <= 1. */
@@ -784,6 +794,7 @@ export const schema = {
   categorizationRule,
   budget,
   insuranceContract,
+  insuranceSuggestionDismissal,
   instrumentWeight,
   customGrouping,
   customGroup,

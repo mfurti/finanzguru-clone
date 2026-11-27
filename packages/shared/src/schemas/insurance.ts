@@ -35,3 +35,16 @@ export const insuranceDto = z.object({
   yearlyCostCents: cents,
 })
 export type InsuranceDto = z.infer<typeof insuranceDto>
+
+/** Contract suggested from recurring bookings in the Versicherung categories (012 P14). */
+export const insuranceSuggestionDto = z.object({
+  key: z.string().min(1).max(200),
+  counterparty: z.string(),
+  amountCents: cents,
+  interval: z.enum(PREMIUM_INTERVALS),
+  type: z.enum(INSURANCE_TYPES),
+  count: z.number().int(),
+  firstDate: isoDate,
+  lastDate: isoDate,
+})
+export type InsuranceSuggestionDto = z.infer<typeof insuranceSuggestionDto>

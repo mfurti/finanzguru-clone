@@ -19,6 +19,11 @@ const props = withDefaults(
   defineProps<{
     items: DonutItem[]
     size?: number
+    /**
+     * Grow with the container (012 P12): the diameter follows the available width up to
+     * this many pixels, never below `size`; ring and centre text scale along.
+     */
+    maxSize?: number
     thickness?: number
     duration?: number
   }>(),
@@ -29,10 +34,32 @@ const emit = defineEmits<{ select: [key: string] }>()
 defineSlots<{ center(props: { item: DonutItem | null }): unknown }>()
 
 const HALO = 8
-const box = computed(() => props.size + HALO * 2)
+const host = useTemplateRef<HTMLDivElement>('host')
+const available = ref(0)
+let resize: ResizeObserver | undefined
+onMounted(() => {
+  if (!props.maxSize || !host.value) return
+  resize = new ResizeObserver(([entry]) => {
+    available.value = Math.floor(entry!.contentRect.width)
+  })
+  resize.observe(host.value)
+})
+onBeforeUnmount(() => resize?.disconnect())
+/** Diameter: fixed, or from the container between `size` and `maxSize`. */
+const diameter = computed(() =>
+  props.maxSize
+    ? Math.max(props.size, Math.min(props.maxSize, available.value - HALO * 2))
+    : props.size,
+)
+/** Ring keeps the dashboard proportion (22 px at 176 px) when the donut grows. */
+const ring = computed(() =>
+  props.maxSize ? Math.round((diameter.value * props.thickness) / props.size) : props.thickness,
+)
+const large = computed(() => diameter.value >= 300)
+const box = computed(() => diameter.value + HALO * 2)
 const center = computed(() => box.value / 2)
-const outer = computed(() => props.size / 2)
-const inner = computed(() => outer.value - props.thickness)
+const outer = computed(() => diameter.value / 2)
+const inner = computed(() => outer.value - ring.value)
 
 const visible = computed(() => props.items.filter((item) => item.value > 0))
 const total = computed(() => visible.value.reduce((sum, item) => sum + item.value, 0))
@@ -109,46 +136,49 @@ const ariaLabel = computed(() =>
 </script>
 
 <template>
-  <div class="relative shrink-0" :style="{ width: `${box}px`, height: `${box}px` }">
-    <svg
-      :viewBox="`0 0 ${box} ${box}`"
-      :width="box"
-      :height="box"
-      role="img"
-      :aria-label="ariaLabel"
-      class="donut"
-      data-testid="donut-chart"
-    >
-      <g
-        v-for="slice in slices"
-        :key="slice.item.key"
-        :transform="`translate(${center} ${center})`"
+  <div ref="host" :class="maxSize ? 'flex w-full justify-center' : 'contents'">
+    <div class="relative shrink-0" :style="{ width: `${box}px`, height: `${box}px` }">
+      <svg
+        :viewBox="`0 0 ${box} ${box}`"
+        :width="box"
+        :height="box"
+        role="img"
+        :aria-label="ariaLabel"
+        class="donut"
+        data-testid="donut-chart"
       >
-        <path
-          :d="slice.halo"
-          :fill="slice.item.color"
-          class="donut-halo"
-          :class="{ 'is-active': hovered === slice.item.key }"
-        />
-        <path
-          :d="slice.path"
-          :fill="slice.item.color"
-          class="donut-slice"
-          :class="{ 'is-active': hovered === slice.item.key }"
-          data-testid="donut-slice"
-          :data-key="slice.item.key"
-          @mouseenter="hovered = slice.item.key"
-          @mouseleave="hovered = null"
-          @click="emit('select', slice.item.key)"
+        <g
+          v-for="slice in slices"
+          :key="slice.item.key"
+          :transform="`translate(${center} ${center})`"
         >
-          <title>{{ slice.item.label }}</title>
-        </path>
-      </g>
-    </svg>
-    <div
-      class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-8 text-center"
-    >
-      <slot name="center" :item="hoveredItem" />
+          <path
+            :d="slice.halo"
+            :fill="slice.item.color"
+            class="donut-halo"
+            :class="{ 'is-active': hovered === slice.item.key }"
+          />
+          <path
+            :d="slice.path"
+            :fill="slice.item.color"
+            class="donut-slice"
+            :class="{ 'is-active': hovered === slice.item.key }"
+            data-testid="donut-slice"
+            :data-key="slice.item.key"
+            @mouseenter="hovered = slice.item.key"
+            @mouseleave="hovered = null"
+            @click="emit('select', slice.item.key)"
+          >
+            <title>{{ slice.item.label }}</title>
+          </path>
+        </g>
+      </svg>
+      <div
+        class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-8 text-center"
+        :class="{ 'text-2xl [&_.text-xs]:text-sm': large }"
+      >
+        <slot name="center" :item="hoveredItem" />
+      </div>
     </div>
   </div>
 </template>

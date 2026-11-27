@@ -140,6 +140,7 @@ export class InvestmentsService {
     const total = holdings.reduce((sum, holding) => sum + holding.valueCents, 0)
     const meta = this.instrumentMeta(holdings.map((holding) => holding.instrumentId))
     const dividends = this.dividends(depots)
+    const trades = this.tradeFacts(depots)
     return holdings
       .map((holding) => {
         const gainCents = holding.valueCents - holding.investedCents
@@ -167,6 +168,8 @@ export class InvestmentsService {
           gainPct: ratio(gainCents, holding.investedCents, 6),
           allocationPct: ratio(holding.valueCents, total, 6),
           dividendsCents: dividends.get(holding.instrumentId) ?? 0,
+          realizedCents: trades.realized.get(holding.instrumentId) ?? 0,
+          transactionCount: trades.count.get(holding.instrumentId) ?? 0,
         }
       })
       .sort((a, b) => b.valueCents - a.valueCents)
@@ -201,8 +204,31 @@ export class InvestmentsService {
         allocationPct: null,
         dividendsCents: dividends.get(state.instrumentId) ?? 0,
         realizedCents: state.realizedGrossCents,
+        transactionCount: txs.filter(
+          (tx) =>
+            tx.instrumentId === state.instrumentId && (tx.type === 'buy' || tx.type === 'sell'),
+        ).length,
       }
     })
+  }
+
+  /** Realized result (gross) and number of buys/sells per instrument in the depots (012 P2). */
+  private tradeFacts(depots: string[]) {
+    const realized = new Map<string, number>()
+    const count = new Map<string, number>()
+    if (depots.length === 0) return { realized, count }
+    const txs = this.db
+      .select()
+      .from(transaction)
+      .where(inArray(transaction.accountId, depots))
+      .all()
+    for (const state of computePositions(txs).values())
+      realized.set(state.instrumentId, summarize(state).realizedGrossCents)
+    for (const tx of txs) {
+      if (!tx.instrumentId || (tx.type !== 'buy' && tx.type !== 'sell')) continue
+      count.set(tx.instrumentId, (count.get(tx.instrumentId) ?? 0) + 1)
+    }
+    return { realized, count }
   }
 
   private instrumentMeta(ids: string[]) {

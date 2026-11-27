@@ -10,7 +10,7 @@ import {
   Post,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { type InsuranceDto, insuranceInput } from '@finance/shared'
+import { type InsuranceDto, type InsuranceSuggestionDto, insuranceInput } from '@finance/shared'
 import { createZodDto } from 'nestjs-zod'
 import { InsuranceService } from './insurance.service'
 
@@ -24,6 +24,18 @@ export class InsuranceController {
   @Get()
   list(): InsuranceDto[] {
     return this.insurance.list()
+  }
+
+  /** Contracts suggested from recurring insurance bookings (012 P14). */
+  @Get('suggestions')
+  suggestions(): InsuranceSuggestionDto[] {
+    return this.insurance.suggestions()
+  }
+
+  @Post('suggestions/:key/dismiss')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  dismiss(@Param('key') key: string): void {
+    this.insurance.dismissSuggestion(key)
   }
 
   @Post()

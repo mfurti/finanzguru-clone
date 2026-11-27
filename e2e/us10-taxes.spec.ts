@@ -8,7 +8,7 @@ test.describe('002 US4 Steuern', () => {
   test('W10: a second order above the allowance shows the warning', async ({ page }) => {
     await page.goto('/investments/taxes')
     const orders = page.getByTestId('exemption-orders')
-    await expect(orders.getByTestId('order-list')).toContainText('Demo Broker')
+    await expect(orders.getByTestId('provider-table')).toContainText('Demo Broker')
     await expect(orders.getByTestId('allowance-warning')).toBeHidden()
 
     await orders.getByTestId('order-add').click()
@@ -21,15 +21,40 @@ test.describe('002 US4 Steuern', () => {
     await expect(orders.getByTestId('allowance-warning')).toContainText(
       'Sparerpauschbetrag überschritten',
     )
-    await expect(orders.getByTestId('order-list')).toContainText('Demo Bank')
+    await expect(orders.getByTestId('provider-table')).toContainText('Demo Bank')
 
     // Clean up: remove the added order again.
     await orders
-      .getByRole('listitem')
+      .getByTestId('provider-row')
       .filter({ hasText: 'Demo Bank' })
       .getByTestId('order-delete')
       .click()
     await expect(orders.getByTestId('allowance-warning')).toBeHidden()
+  })
+
+  test('012 P9: the assigned amount is edited in the provider row', async ({ page }) => {
+    await page.goto('/investments/taxes')
+    const row = page.getByTestId('provider-row').filter({ hasText: 'Demo Broker' })
+    const input = row.getByTestId('provider-amount')
+    const before = await input.inputValue()
+    await input.fill('500')
+    await input.press('Enter')
+    await expect(row.getByTestId('provider-available')).not.toContainText('–')
+    await expect(page.getByTestId('allowance-used')).toContainText('1.000,00')
+    await page.reload()
+    await expect(
+      page
+        .getByTestId('provider-row')
+        .filter({ hasText: 'Demo Broker' })
+        .getByTestId('provider-amount'),
+    ).toHaveValue(/500/)
+    // Restore the demo order.
+    const again = page
+      .getByTestId('provider-row')
+      .filter({ hasText: 'Demo Broker' })
+      .getByTestId('provider-amount')
+    await again.fill(before.replace(/[^\d,]/g, '').replace(',', '.'))
+    await again.press('Enter')
   })
 
   test('W11: the Vorabpauschale is shown as an estimate per fund', async ({ page }) => {

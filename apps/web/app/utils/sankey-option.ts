@@ -82,6 +82,47 @@ export function sankeyLabelSpace(
   return Math.round(longest + 30)
 }
 
+const FILLER = 'filler:'
+/** Invisible filler blocks keep flows straight or downwards (012 P11). */
+export const isFiller = (id: string) => id.startsWith(FILLER)
+
+/**
+ * A main category whose sub categories add up to less than the main block gets an invisible
+ * filler sub block with the rest, placed after its last sub category. Then every main block
+ * is fully split and, with mains ordered by `sankeyOrder`, no sub block starts above its main
+ * block (012 P11).
+ */
+export function sankeyFillers(
+  nodes: readonly SankeyNodeIn[],
+  links: readonly SankeyLinkIn[],
+  rank: ReadonlyMap<string, number>,
+): { nodes: SankeyNodeIn[]; links: SankeyLinkIn[]; rank: Map<string, number> } {
+  const kind = new Map(nodes.map((node) => [node.id, node.kind]))
+  const incoming = new Map<string, number>()
+  const toSubs = new Map<string, number>()
+  const lastSubRank = new Map<string, number>()
+  for (const link of links) {
+    incoming.set(link.target, (incoming.get(link.target) ?? 0) + link.value)
+    if (kind.get(link.source) === 'main' && kind.get(link.target) === 'sub') {
+      toSubs.set(link.source, (toSubs.get(link.source) ?? 0) + link.value)
+      lastSubRank.set(
+        link.source,
+        Math.max(lastSubRank.get(link.source) ?? -1, rank.get(link.target) ?? 0),
+      )
+    }
+  }
+  const result = { nodes: [] as SankeyNodeIn[], links: [] as SankeyLinkIn[], rank: new Map() }
+  for (const [main, subCents] of toSubs) {
+    const rest = (incoming.get(main) ?? 0) - subCents
+    if (rest <= 0) continue
+    const id = `${FILLER}${main}`
+    result.nodes.push({ id, label: '', kind: 'sub' })
+    result.links.push({ source: main, target: id, value: rest })
+    result.rank.set(id, (lastSubRank.get(main) ?? 0) + 0.5)
+  }
+  return result
+}
+
 /** Amount of a block: its incoming flows, or its outgoing ones for the income block. */
 export function sankeyNodeTotals(links: readonly SankeyLinkIn[]): Map<string, number> {
   const incoming = new Map<string, number>()
@@ -113,13 +154,19 @@ export function buildSankeyOption(input: SankeyOptionInput) {
     tooltipBorder: sankeySafeColor(input.theme.tooltipBorder, FALLBACK_THEME.tooltipBorder),
     background: sankeySafeColor(input.theme.background, FALLBACK_THEME.background),
   }
-  const links = input.links.filter((link) => link.value > 0)
+  const realLinks = input.links.filter((link) => link.value > 0)
+  const { rank } = sankeyOrder(input.nodes, realLinks)
+  const fillers = sankeyFillers(input.nodes, realLinks, rank)
+  const links = [...realLinks, ...fillers.links]
   const used = new Set(links.flatMap((link) => [link.source, link.target]))
-  const { rank } = sankeyOrder(input.nodes, links)
-  const nodes = input.nodes
+  const nodes = [...input.nodes, ...fillers.nodes]
     .filter((node) => used.has(node.id))
-    .slice()
-    .sort((a, b) => DEPTH[a.kind] - DEPTH[b.kind] || (rank.get(a.id) ?? 0) - (rank.get(b.id) ?? 0))
+    .sort(
+      (a, b) =>
+        DEPTH[a.kind] - DEPTH[b.kind] ||
+        (rank.get(a.id) ?? fillers.rank.get(a.id) ?? 0) -
+          (rank.get(b.id) ?? fillers.rank.get(b.id) ?? 0),
+    )
   const totals = sankeyNodeTotals(links)
   const labelOf = new Map(nodes.map((node) => [node.id, node.label]))
 
@@ -165,6 +212,8 @@ export function buildSankeyOption(input: SankeyOptionInput) {
         value?: number
       }) => {
         const cents = Number(params.value ?? 0)
+        const id = params.dataType === 'edge' ? (params.data?.target ?? '') : (params.name ?? '')
+        if (isFiller(id)) return ''
         const title =
           params.dataType === 'edge'
             ? `${escapeHtml(labelOf.get(params.data?.source ?? '') ?? '')} → ${escapeHtml(labelOf.get(params.data?.target ?? '') ?? '')}`
@@ -213,28 +262,49 @@ export function buildSankeyOption(input: SankeyOptionInput) {
             },
           },
         },
-        data: nodes.map((node) => ({
-          name: node.id,
-          depth: DEPTH[node.kind],
-          value: totals.get(node.id) ?? 0,
-          itemStyle: {
-            color: sankeySafeColor(input.colorOf(node.id), FALLBACK_NODE_COLOR),
-            ...(input.selectedNodeId === node.id
-              ? { borderColor: theme.text, borderWidth: 2 }
-              : {}),
-          },
-          label: {
-            show: (pixels.get(node.id) ?? 0) >= SANKEY_MIN_LABEL_PX,
-            ...(DEPTH[node.kind] < 2 && Number.isFinite(columnGap)
-              ? { width: innerLabelWidth, overflow: 'truncate' as const, ellipsis: '…' }
-              : {}),
-          },
-        })),
-        links: links.map((link) => ({
-          source: link.source,
-          target: link.target,
-          value: link.value,
-        })),
+        data: nodes.map((node) =>
+          isFiller(node.id)
+            ? {
+                name: node.id,
+                depth: DEPTH[node.kind],
+                value: totals.get(node.id) ?? 0,
+                itemStyle: { color: 'rgba(0, 0, 0, 0)', opacity: 0 },
+                label: { show: false },
+                emphasis: { disabled: true },
+                blur: { itemStyle: { opacity: 0 } },
+                tooltip: { show: false },
+              }
+            : {
+                name: node.id,
+                depth: DEPTH[node.kind],
+                value: totals.get(node.id) ?? 0,
+                itemStyle: {
+                  color: sankeySafeColor(input.colorOf(node.id), FALLBACK_NODE_COLOR),
+                  ...(input.selectedNodeId === node.id
+                    ? { borderColor: theme.text, borderWidth: 2 }
+                    : {}),
+                },
+                label: {
+                  show: (pixels.get(node.id) ?? 0) >= SANKEY_MIN_LABEL_PX,
+                  ...(DEPTH[node.kind] < 2 && Number.isFinite(columnGap)
+                    ? { width: innerLabelWidth, overflow: 'truncate' as const, ellipsis: '…' }
+                    : {}),
+                },
+              },
+        ),
+        links: links.map((link) =>
+          isFiller(link.target)
+            ? {
+                source: link.source,
+                target: link.target,
+                value: link.value,
+                lineStyle: { opacity: 0 },
+                emphasis: { disabled: true },
+                blur: { lineStyle: { opacity: 0 } },
+                tooltip: { show: false },
+              }
+            : { source: link.source, target: link.target, value: link.value },
+        ),
       },
     ],
   }

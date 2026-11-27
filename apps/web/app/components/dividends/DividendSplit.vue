@@ -7,7 +7,7 @@ import type { DividendSummary } from '@finance/shared'
  */
 const props = defineProps<{ summary: DividendSummary }>()
 const { t } = useI18n()
-const by = ref<'security' | 'region' | 'sector'>('security')
+const by = ref<'security' | 'region' | 'sector' | 'currency'>('security')
 const hovered = ref<string | null>(null)
 
 const rows = computed(() => {
@@ -20,7 +20,12 @@ const rows = computed(() => {
       to: `/investments/${row.instrumentId}`,
     }))
   }
-  const list = by.value === 'region' ? props.summary.byRegion : props.summary.bySector
+  const list =
+    by.value === 'region'
+      ? props.summary.byRegion
+      : by.value === 'sector'
+        ? props.summary.bySector
+        : props.summary.byCurrency
   return list.map((row) => ({ ...row, to: null as string | null }))
 })
 const colorOf = (key: string, label: string) =>
@@ -38,6 +43,7 @@ const tabs = computed(() => [
   { value: 'security' as const, label: t('refine.bySecurity') },
   { value: 'region' as const, label: t('refine.byRegion') },
   { value: 'sector' as const, label: t('refine.bySector') },
+  { value: 'currency' as const, label: t('refine.byCurrency') },
 ])
 </script>
 

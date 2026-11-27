@@ -21,6 +21,10 @@ export const dividendSummary = z.object({
   /** Split by the instruments' region/sector weights (003 US5, FR-016); sums to the total. */
   byRegion: z.array(dividendBucket),
   bySector: z.array(dividendBucket),
+  /** Split by currency weights, else the security's own currency (012 P7). */
+  byCurrency: z.array(dividendBucket),
+  /** Current value of the selected depots, for the "Investments" card (012 P8). */
+  portfolioValueCents: cents,
 })
 export type DividendSummary = z.infer<typeof dividendSummary>
 
@@ -87,12 +91,28 @@ export const exemptionOrderDto = z.object({
 })
 export type ExemptionOrderDto = z.infer<typeof exemptionOrderDto>
 
+/**
+ * One row per provider like the reference (012 P9): every institution with a depot or an
+ * exemption order; orderId null = no order yet (assigned 0, can be entered inline).
+ */
+export const exemptionProviderDto = z.object({
+  institutionId: z.string(),
+  institutionName: z.string(),
+  orderId: z.string().nullable(),
+  amountCents: cents,
+  usedCents: cents,
+  remainingCents: cents,
+  taxableIncomeCents: cents,
+})
+export type ExemptionProviderDto = z.infer<typeof exemptionProviderDto>
+
 export const taxYearDto = z.object({
   year: z.number().int(),
   assessment: z.enum(ASSESSMENTS),
   allowanceCents: cents,
   baseRate: decimalString.nullable(),
   orders: z.array(exemptionOrderDto),
+  providers: z.array(exemptionProviderDto),
   totalCents: cents,
   usedCents: cents,
   exceedsAllowance: z.boolean(),

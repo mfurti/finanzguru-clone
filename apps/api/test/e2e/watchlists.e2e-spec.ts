@@ -92,3 +92,15 @@ describe('Watchlists (US6)', () => {
     ).toBe(404)
   })
 })
+
+describe('Watchlist default (012 T014)', () => {
+  it('creates a first "Watchlist" when the owner has none', async () => {
+    const app = await createTestApp()
+    const cookie = await loginCookie(app)
+    const res = await app.inject({ method: 'GET', url: '/api/watchlists', headers: { cookie } })
+    expect((res.json() as WatchlistSummary[]).map((w) => w.name)).toEqual(['Watchlist'])
+    const again = await app.inject({ method: 'GET', url: '/api/watchlists', headers: { cookie } })
+    expect(again.json()).toHaveLength(1)
+    await app.close()
+  })
+})

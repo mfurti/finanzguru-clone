@@ -19,6 +19,8 @@
     "allAccounts": "Alle Konten",
     "oneAccount": "1 Konto",
     "nAccounts": "{n} Konten",
+    "allPortfolios": "Alle Portfolios",
+    "nPortfolios": "{n} Portfolios",
     "noAccounts": "Noch keine Konten vorhanden."
   },
   "login": {
@@ -284,6 +286,13 @@
     "deposit": "Einzahlung",
     "withdrawal": "Auszahlung"
   },
+  "columnsPanel": {
+    "title": "Spalten",
+    "selectAll": "Alle auswählen",
+    "save": "Speichern",
+    "up": "{name} nach oben",
+    "down": "{name} nach unten"
+  },
   "investments": {
     "value": "Wert",
     "invested": "Investiertes Kapital",
@@ -299,17 +308,19 @@
     "views": {
       "positions": "Positionen",
       "assetClasses": "Assetklassen",
-      "transactions": "Transaktionen",
+      "transactions": "Buchungen",
       "analysis": "Analyse",
       "dividends": "Dividenden",
       "taxes": "Steuern",
-      "watchlists": "Watchlists"
+      "watchlists": "Watchlist"
     },
     "columns": {
       "name": "Name",
       "price": "Aktueller Kurs",
       "value": "Aktueller Wert",
       "entryValue": "Einstiegswert",
+      "realized": "Realisiert €",
+      "transactions": "Transaktionen",
       "gain": "Kursgewinn",
       "allocation": "Allokation",
       "dividends": "Dividende"
@@ -436,6 +447,13 @@
     "total": "Gesamtkosten pro Jahr",
     "emptyTitle": "Noch keine Versicherungen",
     "emptyDescription": "Erfasse deine Verträge, um Beiträge und Laufzeiten im Blick zu behalten.",
+    "suggestions": {
+      "title": "Gefundene Verträge",
+      "hint": "Aus regelmäßigen Abbuchungen in der Kategorie Versicherung erkannt",
+      "payments": "{n} Zahlungen",
+      "accept": "Übernehmen",
+      "dismiss": "Ausblenden"
+    },
     "deleteTitle": "Vertrag löschen?",
     "deleteText": "Der Vertrag bei {name} wird gelöscht.",
     "types": {
@@ -515,6 +533,14 @@
   },
   "dividends": {
     "splitTotal": "Dividenden gesamt",
+    "cards": {
+      "investments": "Investments",
+      "portfolioValue": "Portfoliowert",
+      "yearDividends": "Dividenden {year}",
+      "income": "Dividendenerträge",
+      "yield": "Dividendenrendite",
+      "ytd": "{year} YTD"
+    },
     "title": "Dividenden",
     "last12": "Letzte 12 Monate",
     "avgMonth": "Ø pro Monat",
@@ -540,6 +566,11 @@
     "viewGrid": "Kalender"
   },
   "taxes": {
+    "provider": "Anbieter",
+    "assigned": "Zugeteilt",
+    "usedCol": "Ausgeschöpft",
+    "availableCol": "Verfügbar",
+    "assignedFor": "Zugeteilt für {name}",
     "title": "Steuern",
     "allowance": "Freibetrag",
     "available": "{amount} noch verfügbar",
@@ -583,6 +614,11 @@
     "invalidIsin": "Ungültige ISIN",
     "empty": "Noch nichts hinzugefügt",
     "emptyLists": "Noch keine Watchlist",
+    "emptyHint": "Füge Elemente hinzu, um immer auf dem neuesten Stand zu bleiben",
+    "addFirst": "Erstes Wertpapier hinzufügen",
+    "addButton": "Hinzufügen",
+    "menu": "Watchlist-Menü",
+    "deleteList": "Löschen",
     "noPrices": "Keine Kurse",
     "importPrices": "Kurse importieren",
     "count": "{n} Wertpapiere",
@@ -625,10 +661,17 @@
       "name": "Name",
       "date": "Datum",
       "category": "Kategorie",
-      "tags": "Eigenschaften",
+      "tags": "Tags",
+      "properties": "Eigenschaften",
       "account": "Konto",
       "amount": "Betrag",
+      "taxes": "Steuern",
       "purpose": "Verwendungszweck"
+    },
+    "props": {
+      "transfer": "Kontentransfer",
+      "note": "Notiz",
+      "manualCategory": "Kategorie von dir gesetzt"
     },
     "filters": {
       "title": "Filter",
@@ -700,6 +743,7 @@
     "delete": "Löschen",
     "deleteConfirm": "Budget „{name}“ löschen?",
     "empty": "Noch keine Budgets",
+    "emptyTitle": "Leg dein erstes Budget an",
     "emptyInfo": "Lege ein Budget an, um Ausgaben je Kategorie zu begrenzen."
   },
   "categoryDetail": {
@@ -728,6 +772,7 @@
     "bySecurity": "Wertpapiere",
     "byRegion": "Regionen",
     "bySector": "Branchen",
+    "byCurrency": "Währungen",
     "broker": "Broker",
     "subtotal": "Zwischensumme",
     "allAssets": "Alle",

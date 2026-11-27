@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { buildSankeyOption, sankeyNodeTotals, sankeySafeColor } from '~/utils/sankey-option'
+import {
+  buildSankeyOption,
+  isFiller,
+  sankeyNodeTotals,
+  sankeySafeColor,
+} from '~/utils/sankey-option'
 
 const nodes = [
   { id: 'income', label: 'Einnahmen', kind: 'income' as const },
@@ -121,5 +126,58 @@ describe('buildSankeyOption (011 T002)', () => {
     const totals = sankeyNodeTotals(links)
     expect(totals.get('income')).toBe(150000)
     expect(totals.get('main:wohnen')).toBe(90000)
+  })
+
+  it('puts categories without sub categories and the balance at the bottom (012 P11)', () => {
+    const option = buildSankeyOption({
+      ...base,
+      nodes: [...nodes, { id: 'main:none', label: 'Nicht kategorisiert', kind: 'main' as const }],
+      links: [...links, { source: 'income', target: 'main:none', value: 95000 }],
+    })
+    const mains = series(option)
+      .data.filter((item) => item.depth === 1)
+      .map((item) => item.name)
+    expect(mains).toEqual(['main:wohnen', 'main:leben', 'main:none', 'balance'])
+  })
+
+  it('fills a partly split main with an invisible block so no flow goes up (012 P11)', () => {
+    const partly = [
+      ...links.filter((link) => link.target !== 'sub:strom'),
+      // Wohnen 900 € but its subs only 899 € → 1 € filler after Miete.
+    ]
+    const option = buildSankeyOption({ ...base, links: partly })
+    const data = series(option).data
+    const filler = data.find((item) => isFiller(item.name))!
+    expect(filler).toMatchObject({ depth: 2, value: 100, label: { show: false } })
+    expect(data.map((item) => item.name).indexOf(filler.name)).toBe(
+      data.map((item) => item.name).indexOf('sub:miete') + 1,
+    )
+    const link = series(option).links.find((item) => isFiller(item.target))!
+    expect(link).toMatchObject({ source: 'main:wohnen', value: 100, lineStyle: { opacity: 0 } })
+    expect(series(option).tooltip).toBeUndefined()
+    expect(option.tooltip.formatter({ dataType: 'node', name: filler.name, value: 100 })).toBe('')
+  })
+
+  it('stacks every sub block at or below its main block (no upward flow)', () => {
+    const option = buildSankeyOption({
+      ...base,
+      nodes: [...nodes, { id: 'main:none', label: 'Nicht kategorisiert', kind: 'main' as const }],
+      links: [
+        ...links.filter((link) => link.target !== 'sub:strom'),
+        { source: 'income', target: 'main:none', value: 95000 },
+      ],
+    })
+    // ECharts with layout iterations 0 stacks each column from the top in data order.
+    const gap = 12
+    const top = new Map<string, number>()
+    for (const depth of [1, 2]) {
+      let y = 0
+      for (const item of series(option).data.filter((row) => row.depth === depth)) {
+        top.set(item.name, y)
+        y += item.value + gap
+      }
+    }
+    for (const link of series(option).links.filter((row) => !row.source.startsWith('income')))
+      expect(top.get(link.target)!).toBeGreaterThanOrEqual(top.get(link.source)!)
   })
 })

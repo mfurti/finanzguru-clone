@@ -56,7 +56,7 @@ const logoAccount = computed(() => accounts.value?.find((acc) => acc.id === prop
 </script>
 
 <template>
-  <OverviewSection>
+  <div>
     <EmptyState
       v-if="error || !data"
       :title="t('accountsOverview.notFound')"
@@ -153,7 +153,7 @@ const logoAccount = computed(() => accounts.value?.find((acc) => acc.id === prop
 
       <slot :account="data.account" />
     </section>
-  </OverviewSection>
+  </div>
 </template>
 
 <style scoped>

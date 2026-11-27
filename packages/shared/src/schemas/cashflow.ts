@@ -71,6 +71,8 @@ export const transactionListItem = z.object({
   institutionName: z.string().nullable(),
   bookingDate: isoDate,
   amountCents: cents,
+  /** Tax withheld on the booking, 0 when none (012 P1, Steuern column). */
+  taxCents: cents,
   type: z.string(),
   counterparty: z.string().nullable(),
   counterpartyIban: z.string().nullable(),

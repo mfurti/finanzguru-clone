@@ -15,9 +15,10 @@ test.describe('US4 investments', () => {
   })
 
   test('hides a column and exports only visible columns', async ({ page, request }) => {
+    // 012 P2: the "Spalten" side panel; changes apply on "Speichern".
     await page.getByTestId('columns-menu').click()
-    await page.getByRole('menuitemcheckbox', { name: 'Dividende' }).click()
-    await page.keyboard.press('Escape')
+    await page.getByTestId('columns-toggle-dividends').click()
+    await page.getByTestId('columns-save').click()
     await expect(page.getByTestId('positions-table').locator('th')).not.toContainText(['Dividende'])
 
     const href = await page.getByTestId('positions-export').getAttribute('href')
