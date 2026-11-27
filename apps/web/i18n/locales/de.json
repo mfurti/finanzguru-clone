@@ -101,6 +101,15 @@
       "restorePending": "Wiederherstellung bereit – Neustart nötig",
       "restorePendingText": "Die Sicherung vom {date} wird beim nächsten Start der App eingespielt. Starte die App jetzt neu.",
       "restoreCancel": "Abbrechen"
+    },
+    "refresh": {
+      "title": "Automatisch aktualisieren",
+      "hint": "Ruft Bank, Broker und Kurse selbstständig ab – wie „Aktualisieren“ in der Übersicht. Läuft nur, solange die App läuft.",
+      "off": "Aus",
+      "daily": "Täglich um …",
+      "interval": "Regelmäßig",
+      "time": "Uhrzeit",
+      "everyHours": "Jede Stunde | Alle {n} Stunden"
     }
   },
   "overview": {
