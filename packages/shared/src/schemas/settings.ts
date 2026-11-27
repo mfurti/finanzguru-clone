@@ -66,3 +66,21 @@ export type OwnerSettingsPatch = z.infer<typeof ownerSettingsPatch>
 /** Church tax rate on the capital-gains tax: 8 % in Bavaria and Baden-Württemberg, else 9 %. */
 export const churchTaxRate = (state: OwnerSettings['churchTax']): string =>
   state === 'none' ? '0' : state === 'BY' || state === 'BW' ? '0.08' : '0.09'
+
+/** One owner login (014 US4), `GET /api/auth/sessions`. */
+export const ownerSessionDto = z.object({
+  id: z.string(),
+  createdAt: z.string(),
+  lastSeenAt: z.string(),
+  userAgent: z.string().max(200).nullable(),
+  /** The session of this request. */
+  current: z.boolean(),
+})
+export type OwnerSessionDto = z.infer<typeof ownerSessionDto>
+
+/** `POST /api/auth/password`. */
+export const passwordChangeInput = z.object({
+  current: z.string().min(1).max(200),
+  next: z.string().min(12, 'Mindestens 12 Zeichen').max(200),
+})
+export type PasswordChangeInput = z.infer<typeof passwordChangeInput>

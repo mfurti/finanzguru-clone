@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -14,15 +15,20 @@ import { ThrottlerGuard } from '@nestjs/throttler'
 import type { FastifyRequest } from 'fastify'
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
+import type { OwnerSessionDto } from '@finance/shared'
 import { Public } from '../../common/decorators/public.decorator'
 import { AuthService } from './auth.service'
+import { SessionsService } from './sessions.service'
 
 class LoginDto extends createZodDto(z.object({ password: z.string().min(1).max(200) })) {}
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly auth: AuthService) {}
+  constructor(
+    private readonly auth: AuthService,
+    private readonly sessions: SessionsService,
+  ) {}
 
   @Public()
   @UseGuards(ThrottlerGuard)
@@ -34,12 +40,28 @@ export class AuthController {
     }
     request.session.regenerate()
     request.session.set('owner', true)
+    request.session.set('sid', this.sessions.create(request.headers['user-agent']))
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   logout(@Req() request: FastifyRequest): void {
+    const sid = request.session.get('sid')
+    if (typeof sid === 'string') this.sessions.end(sid)
     request.session.delete()
+  }
+
+  /** Active logins of the owner, newest first (014 US4). */
+  @Get('sessions')
+  listSessions(@Req() request: FastifyRequest): OwnerSessionDto[] {
+    return this.sessions.list(request.session.get('sid'))
+  }
+
+  /** "Überall abmelden": ends every session except this one. */
+  @Delete('sessions')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  endOtherSessions(@Req() request: FastifyRequest): void {
+    this.sessions.endOthers(request.session.get('sid')!)
   }
 
   @Get('session')

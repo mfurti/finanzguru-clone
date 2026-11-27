@@ -34,7 +34,7 @@
 
 ## Phase 6: User Story 4 – Security and about (P3)
 
-- [ ] T012 [US4] Sessions: login creates a `session` row, guard checks/touches it (≤ once a minute), idle logout after `autoLogoutMinutes`, `GET/DELETE /api/auth/sessions`; API e2e (second session listed and ended, idle expiry with fake clock).
+- [X] T012 [US4] Sessions: login creates a `session` row, guard checks/touches it (≤ once a minute), idle logout after `autoLogoutMinutes`, `GET/DELETE /api/auth/sessions`; API e2e (second session listed and ended, idle expiry with fake clock).
 - [ ] T013 [US4] Sicherheit page: change password (`POST /api/auth/password`, current required, other sessions ended), sessions list with "Überall abmelden", auto logout select; also update the local dev login note in the README; component test + API e2e.
 - [ ] T014 [US4] Über die App: `GET /api/about` (version, database size, sources from the 013 state) and page; API e2e.
 
