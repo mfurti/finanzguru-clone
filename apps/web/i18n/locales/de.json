@@ -526,6 +526,14 @@
   },
   "dividends": {
     "splitTotal": "Dividenden gesamt",
+    "cards": {
+      "investments": "Investments",
+      "portfolioValue": "Portfoliowert",
+      "yearDividends": "Dividenden {year}",
+      "income": "Dividendenerträge",
+      "yield": "Dividendenrendite",
+      "ytd": "{year} YTD"
+    },
     "title": "Dividenden",
     "last12": "Letzte 12 Monate",
     "avgMonth": "Ø pro Monat",
@@ -746,6 +754,7 @@
     "bySecurity": "Wertpapiere",
     "byRegion": "Regionen",
     "bySector": "Branchen",
+    "byCurrency": "Währungen",
     "broker": "Broker",
     "subtotal": "Zwischensumme",
     "allAssets": "Alle",
