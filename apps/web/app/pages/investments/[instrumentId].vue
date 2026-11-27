@@ -11,7 +11,7 @@ import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@uno
 const { t } = useI18n()
 const route = useRoute()
 const { accountsParam } = useAccountFilter()
-const period = ref<Period>('1Y')
+const period = ref<Period>(useDefaultPeriod())
 
 interface Detail {
   instrument: { id: string; name: string; isin: string; wkn: string | null; assetClass: string }

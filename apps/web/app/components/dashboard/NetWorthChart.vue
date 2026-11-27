@@ -17,7 +17,7 @@ import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@uno
 const { t } = useI18n()
 const { accountsParam } = useAccountFilter()
 
-const period = ref<Period>('1Y')
+const period = ref<Period>(useDefaultPeriod())
 const mode = ref<'value' | 'return'>('value')
 
 /** Custom range from the calendar (003 US6); overrides the period tabs while set. */

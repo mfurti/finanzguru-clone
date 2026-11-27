@@ -14,5 +14,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
     }
   }
   // Owner settings (014) once per app instance: start page, privacy mode, density, …
-  await useSettings().load()
+  const { settings, load } = useSettings()
+  await load()
+
+  // The first page of a visit opens the owner's start page instead of the Übersicht.
+  const firstVisit = useState<boolean>('start-page-applied', () => false)
+  if (firstVisit.value) return
+  firstVisit.value = true
+  const target = startPageRedirect(to.path, settings.value.startPage)
+  if (target) return navigateTo({ path: target, query: to.query })
 })

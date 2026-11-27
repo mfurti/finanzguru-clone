@@ -110,6 +110,27 @@
       "interval": "Regelmäßig",
       "time": "Uhrzeit",
       "everyHours": "Jede Stunde | Alle {n} Stunden"
+    },
+    "display": "Anzeige",
+    "displayPage": {
+      "startPage": "Startseite",
+      "start": {
+        "dashboard": "Übersicht",
+        "transactions": "Transaktionen",
+        "budget": "Budget"
+      },
+      "defaultPeriod": "Zeitraum der Diagramme",
+      "colorMode": "Farbmodus",
+      "color": {
+        "system": "Wie das Gerät",
+        "light": "Hell",
+        "dark": "Dunkel"
+      },
+      "densityLabel": "Tabellendichte",
+      "density": {
+        "normal": "Normal",
+        "compact": "Kompakt"
+      }
     }
   },
   "overview": {

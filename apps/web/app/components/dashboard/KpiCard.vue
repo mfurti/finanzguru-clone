@@ -4,7 +4,7 @@ import type { KpiResponse, Period } from '@finance/shared'
 /** "Kennzahlen" for a period (US1 scenario 6). */
 const { t, te } = useI18n()
 const { accountsParam } = useAccountFilter()
-const period = ref<Period>('1Y')
+const period = ref<Period>(useDefaultPeriod(['1M', 'YTD', '1Y', '3Y', '5Y', 'ALL']))
 
 const periodItems = computed(() =>
   (['1M', 'YTD', '1Y', '3Y', '5Y', 'ALL'] as const).map((value) => ({

@@ -10,7 +10,7 @@ import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@uno
 
 /** Portfoliovergleich: TWROR of several depots from a common start (US1). */
 const { t } = useI18n()
-const period = ref<Period>('1Y')
+const period = ref<Period>(useDefaultPeriod())
 
 const { data: accounts } = await useApi<AccountDto[]>('/api/accounts', {
   key: 'accounts',

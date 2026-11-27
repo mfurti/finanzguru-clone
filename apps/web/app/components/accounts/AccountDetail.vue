@@ -15,7 +15,7 @@ import {
  */
 const props = defineProps<{ id: string }>()
 const { t } = useI18n()
-const period = ref<Period>('1Y')
+const period = ref<Period>(useDefaultPeriod())
 const { data, error } = await useApi<AccountDetail>(() => `/api/accounts/${props.id}/detail`, {
   query: { period },
 })

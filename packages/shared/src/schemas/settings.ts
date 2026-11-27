@@ -1,8 +1,8 @@
 import { z } from 'zod'
+import { PERIODS } from '../enums.js'
 
 /** Owner preferences (014). Every field has a default, so a fresh install needs no rows. */
 export const START_PAGES = ['dashboard', 'transactions', 'budget'] as const
-export const DEFAULT_PERIODS = ['1M', 'YTD', '1Y', '3Y', '5Y', 'MAX'] as const
 export const COLOR_MODES = ['light', 'dark', 'system'] as const
 export const DENSITIES = ['compact', 'normal'] as const
 export const CHURCH_TAX_STATES = ['none', 'BY', 'BW', 'other'] as const
@@ -24,7 +24,8 @@ export type RefreshSchedule = z.infer<typeof refreshSchedule>
 export const ownerSettings = z
   .object({
     startPage: z.enum(START_PAGES),
-    defaultPeriod: z.enum(DEFAULT_PERIODS),
+    /** Period the charts open with. */
+    defaultPeriod: z.enum(PERIODS),
     colorMode: z.enum(COLOR_MODES),
     privacyMode: z.boolean(),
     density: z.enum(DENSITIES),

@@ -18,7 +18,7 @@ import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@uno
  */
 const { t } = useI18n()
 const { accountsParam } = useAccountFilter()
-const period = ref<Period>('1Y')
+const period = ref<Period>(useDefaultPeriod())
 const unit = ref<'eur' | 'pct'>('eur')
 const query = computed(() => ({ period: period.value, accounts: accountsParam.value }))
 
