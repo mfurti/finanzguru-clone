@@ -22,3 +22,7 @@ Local only (web 3100, API 3101). Gates: `pnpm lint`, `pnpm format:check`, `pnpm 
 ## Status after T011 (2026-11-27)
 
 Layout guard (375 / 768 / 1440 px), hydration, Sankey hover, data refresh, chart hover, dashboard hover, Übersicht navigation and donut size e2e green on desktop and mobile. On phones "Aktualisieren" and "Anpassen" show only their icons so the action row fits at 375 px. Owner's visual check in the dev server pending (local login needed).
+
+## Gates after T012 (2026-11-27)
+
+Lint, format check, typecheck green; unit tests api 552, web 147, shared 12 passed; e2e 148 passed, 0 failed.

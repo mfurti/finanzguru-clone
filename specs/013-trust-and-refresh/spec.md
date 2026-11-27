@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-27
 
-**Status**: Draft
+**Status**: Implemented
 
 **Input**: Owner review on 2026-11-27 (second round): "Der Balken, der sich mit der Maus bewegt, hat viel Delay", "Dashboard-Kacheln haben eine Hervorhebung beim Drübergehen, sonst nirgends – entfernen", "Button zum Konten aktualisieren links neben Anpassen", "Datum und Uhrzeit des aktuellen Stands", "Die Zahlen müssen stimmen, ich muss mich drauf verlassen können".
 

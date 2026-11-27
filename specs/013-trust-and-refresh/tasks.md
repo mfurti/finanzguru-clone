@@ -37,7 +37,7 @@
 ## Phase 5: Polish
 
 - [X] T011 Layout guard, hydration, Sankey hover green at 375/768/1440; owner check Q1–Q5 dark and light; status in `quickstart.md`.
-- [ ] T012 Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`), reading the e2e log for failures; mark spec Status "Implemented".
+- [X] T012 Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`), reading the e2e log for failures; mark spec Status "Implemented".
 
 ## Dependencies
 
