@@ -2,7 +2,7 @@
 
 | Table | Change | Rule |
 |---|---|---|
-| `account` | `position` integer, default 0 | order in lists and filters |
+| `account` | existing `sort_order` (no new column) | order in lists and filters |
 | `account` | `archived_at` text, nullable | archived accounts hidden from lists; sums optional by setting |
 | `session` (new) | `id` text PK, `created_at`, `last_seen_at`, `user_agent` (≤ 200 chars) | one row per login |
 | `user_setting` (existing) | keys `settings.*`, JSON values | see OwnerSettings |

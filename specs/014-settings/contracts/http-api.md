@@ -4,7 +4,7 @@
 |---|---|
 | `GET /api/settings` | merged OwnerSettings with defaults |
 | `PATCH /api/settings` | partial OwnerSettings, validated; returns merged |
-| `PATCH /api/accounts/:id` (existing) | adds `archived`, `position` |
+| `PATCH /api/accounts/:id` (existing) | adds `archived`, `sortOrder` (existing) |
 | `POST /api/accounts/order` | `{ ids: string[] }` sets positions |
 | `GET /api/backup` | zip download (db snapshot, logos, manifest) |
 | `POST /api/backup/restore` | multipart zip; 202 staged, 400 invalid/newer |

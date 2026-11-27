@@ -8,16 +8,16 @@
 
 ## Phase 1: Setup
 
-- [X] T001 Migration `0015_*`: `account.position` ("integer, default 0"), `account.archived_at` ("text, nullable"), table `session` ("id text PK, created_at, last_seen_at, user_agent ≤ 200 chars") in `apps/api/src/database/schema.ts`; add `fflate` (exact pin) to `apps/api/package.json`.
+- [X] T001 Migration `0015_*`: `account.archived_at` ("text, nullable"), table `session` ("id text PK, created_at, last_seen_at, user_agent ≤ 200 chars") in `apps/api/src/database/schema.ts`; add `fflate` (exact pin) to `apps/api/package.json`.
 
 ## Phase 2: Foundational
 
-- [ ] T002 Shared `OwnerSettings` zod schema with defaults (data-model) in `packages/shared/src/schemas/settings.ts`; `GET/PATCH /api/settings` on `user_setting` (`settings.*` JSON) in `apps/api/src/modules/settings/`; unit + API e2e (defaults, partial update, validation errors).
+- [X] T002 Shared `OwnerSettings` zod schema with defaults (data-model) in `packages/shared/src/schemas/settings.ts`; `GET/PATCH /api/settings` on `user_setting` (`settings.*` JSON) in `apps/api/src/modules/settings/`; unit + API e2e (defaults, partial update, validation errors).
 - [ ] T003 Settings frame: `pages/settings.vue` parent with side navigation (Konten & Daten, Anzeige, Finanzen & Steuern, Sicherheit, Datenquellen, Kategorien & Regeln, Inflation, Über die App), existing pages as children, header gear opens it; `useSettings()` composable (load once, optimistic PATCH); Playwright navigation test.
 
 ## Phase 3: User Story 1 – Accounts and data (P1) 🎯 MVP
 
-- [ ] T004 [US1] Konten page: rename, hide, archive, reorder (drag + arrows) via `PATCH /api/accounts/:id` and `POST /api/accounts/order`; lists and account filter use `position`, leave archived out; sums include archived only with `archivedInSums`; API e2e + component test.
+- [ ] T004 [US1] Konten page: rename, hide, archive, reorder (drag + arrows) via `PATCH /api/accounts/:id` and `POST /api/accounts/order`; lists and account filter use `sort_order`, leave archived out; sums include archived only with `archivedInSums`; API e2e + component test.
 - [ ] T005 [US1] Daten page: demo removal card (moved from Datenquellen), CSV export of all bookings, backup download `GET /api/backup` (zip: `VACUUM INTO` snapshot, logo folder, manifest) – API e2e opens the zip and checks the snapshot.
 - [ ] T006 [US1] Restore: `POST /api/backup/restore` (manifest/version check, staged in `data/restore/`), applied on API start before migrations; confirmation dialog and "Neustart nötig" notice; e2e round trip (backup → change data → restore → restart helper → counts and sums equal).
 - [ ] T007 [US1] Automatic refresh: `refreshSchedule` setting re-plans the scheduler and calls refresh-all (013); bank consent notice from 14 days before expiry in `apps/web/app/components/import/BankConsentNotice.vue`; unit test for next-run computation, component test for the notice.
