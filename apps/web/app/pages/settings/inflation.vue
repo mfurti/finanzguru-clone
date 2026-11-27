@@ -50,16 +50,7 @@ async function save(): Promise<void> {
 
 <template>
   <section class="space-y-4">
-    <div class="flex items-center justify-between gap-2">
-      <h1 class="text-xl font-semibold">{{ t('settings.inflation') }}</h1>
-      <UButton
-        to="/settings/sources"
-        variant="soft"
-        color="neutral"
-        icon="i-lucide-database"
-        :label="t('settings.sources')"
-      />
-    </div>
+    <h1 class="text-xl font-semibold">{{ t('settings.inflation') }}</h1>
     <UCard>
       <div class="space-y-2" data-testid="inflation-rows">
         <div v-for="(row, index) in rows" :key="index" class="flex items-center gap-2">

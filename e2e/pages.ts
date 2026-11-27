@@ -15,4 +15,5 @@ export const PAGES = [
   '/insurance',
   '/settings/sources',
   '/settings/categories',
+  '/settings/inflation',
 ]

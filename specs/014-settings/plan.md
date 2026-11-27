@@ -7,7 +7,7 @@
 ## Summary
 
 1. **Settings foundation**: typed owner settings (shared zod schema with defaults) stored in the existing `user_setting` key-value table; `GET/PATCH /api/settings`; `useSettings()` composable; settings area with a side navigation (Konten & Daten, Anzeige, Finanzen & Steuern, Sicherheit, Datenquellen, Kategorien & Regeln, Inflation, Über die App) reusing the section layout.
-2. **Konten & Daten (US1)**: account list with rename, hide, archive and drag/arrow reorder (new `account.position`, `account.archived_at`); demo removal moves here (013 card); automatic refresh schedule (off / daily at HH:MM / every n hours) driving the existing sync scheduler and the 013 refresh-all; bank consent notice from 14 days before expiry; backup download (zip: SQLite snapshot via `VACUUM INTO` + logo folder), restore (upload → validated → staged, applied on the next API start, with confirmation and the app showing "Neustart nötig"), CSV export of all bookings.
+2. **Konten & Daten (US1)**: account list with rename, hide, archive and drag/arrow reorder (existing `account.sort_order`, new `account.archived_at`); demo removal moves here (013 card); automatic refresh schedule (off / daily at HH:MM / every n hours) driving the existing sync scheduler and the 013 refresh-all; bank consent notice from 14 days before expiry; backup download (zip: SQLite snapshot via `VACUUM INTO` + logo folder), restore (upload → validated → staged, applied on the next API start, with confirmation and the app showing "Neustart nötig"), CSV export of all bookings.
 3. **Anzeige (US2)**: start page redirect, default chart period (PeriodTabs default), colour mode (stored server-side, applied on load; system default), privacy mode (`Money`/`Percent` mask amounts, header toggle), table density (compact padding via a root class).
 4. **Finanzen & Steuern (US3)**: default assessment for new tax years; church tax (Bundesland → 8 % BY/BW, else 9 %) in the tax estimates; "Wertpapierkäufe zählen als gespart" switch in the cash-flow domain; budget month start day (1–28) applied to cash-flow and budget periods; display rounding (cents / whole euros).
 5. **Sicherheit (US4)**: change password (verify current, scrypt hash as today), sessions table (id in the encrypted cookie; guard checks and touches it), list with device hint and "Überall abmelden", automatic logout after n idle minutes (guard compares last seen).
@@ -19,7 +19,7 @@
 
 **Primary Dependencies**: `fflate` (MIT) for the backup zip – only new dependency.
 
-**Storage**: migration: `account.position` integer, `account.archived_at` text; new table `session` (id, created_at, last_seen_at, user_agent); settings in `user_setting` (keys `settings.*`, JSON values).
+**Storage**: migration: `account.archived_at` text (order reuses `sort_order`); new table `session` (id, created_at, last_seen_at, user_agent); settings in `user_setting` (keys `settings.*`, JSON values).
 
 **Testing**: domain unit (church tax, budget month start periods, saved rule, rounding), API e2e (settings CRUD with validation, accounts management, backup round trip with equal counts and sums, password change, sessions and idle logout), component (settings forms, privacy masking), Playwright (each group, start page redirect, layout guard incl. settings pages).
 

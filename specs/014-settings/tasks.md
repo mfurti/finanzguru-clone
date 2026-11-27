@@ -13,7 +13,7 @@
 ## Phase 2: Foundational
 
 - [X] T002 Shared `OwnerSettings` zod schema with defaults (data-model) in `packages/shared/src/schemas/settings.ts`; `GET/PATCH /api/settings` on `user_setting` (`settings.*` JSON) in `apps/api/src/modules/settings/`; unit + API e2e (defaults, partial update, validation errors).
-- [ ] T003 Settings frame: `pages/settings.vue` parent with side navigation (Konten & Daten, Anzeige, Finanzen & Steuern, Sicherheit, Datenquellen, Kategorien & Regeln, Inflation, Über die App), existing pages as children, header gear opens it; `useSettings()` composable (load once, optimistic PATCH); Playwright navigation test.
+- [X] T003 Settings frame: `pages/settings.vue` parent with side navigation (Konten & Daten, Anzeige, Finanzen & Steuern, Sicherheit, Datenquellen, Kategorien & Regeln, Inflation, Über die App), existing pages as children, header gear opens it; `useSettings()` composable (load once, optimistic PATCH); Playwright navigation test.
 
 ## Phase 3: User Story 1 – Accounts and data (P1) 🎯 MVP
 

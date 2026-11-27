@@ -59,7 +59,7 @@ const tabs = computed<NavigationMenuItem[]>(() => [
           icon="i-lucide-settings"
           color="neutral"
           variant="ghost"
-          to="/settings/sources"
+          to="/settings"
           :aria-label="t('header.settings')"
         />
         <UButton

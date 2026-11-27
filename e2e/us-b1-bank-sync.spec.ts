@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { openSettingsGroup } from './helpers'
 
 /** 005 US1: bank card and consent notice with a mocked API (the real bank login needs the owner, T016). */
 const csv = {
@@ -33,8 +34,7 @@ async function mockSources(page: Page, bank: Record<string, unknown> | null) {
 async function openSettings(page: Page) {
   await page.goto('/')
   await expect(page.getByTestId('networth-card')).toBeVisible()
-  await page.locator('a[href="/settings/sources"]').first().click()
-  await expect(page).toHaveURL(/\/settings\/sources/)
+  await openSettingsGroup(page, 'sources', 'Datenquellen')
 }
 
 test.describe('005 US1 bank card', () => {

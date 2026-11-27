@@ -15,7 +15,10 @@ export interface SectionNavItem {
   active: boolean
 }
 
-const props = defineProps<{ items: SectionNavItem[]; label: string }>()
+const props = withDefaults(
+  defineProps<{ items: SectionNavItem[]; label: string; add?: boolean }>(),
+  { add: true },
+)
 defineSlots<{ default(): unknown; actions(): unknown }>()
 
 const current = computed(() => props.items.find((item) => item.active) ?? props.items[0])
@@ -70,7 +73,7 @@ const menuItems = computed(() =>
         </div>
         <div class="ml-auto flex items-center gap-1 sm:gap-2">
           <slot name="actions" />
-          <AddWindow />
+          <AddWindow v-if="add" />
         </div>
       </div>
       <slot />

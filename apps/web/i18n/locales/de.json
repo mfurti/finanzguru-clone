@@ -67,7 +67,9 @@
   "settings": {
     "sources": "Datenquellen",
     "categories": "Kategorien & Regeln",
-    "inflation": "Inflation"
+    "inflation": "Inflation",
+    "title": "Einstellungen",
+    "saveFailed": "Einstellung konnte nicht gespeichert werden."
   },
   "overview": {
     "netWorth": {
