@@ -28,6 +28,12 @@ export class AuthService {
       .get()?.displayName
   }
 
+  /** New password for the existing owner (014 Einstellungen › Sicherheit). */
+  async changePassword(password: string): Promise<void> {
+    const passwordHash = await hashPassword(password)
+    this.db.update(owner).set({ passwordHash }).where(eq(owner.id, 'owner')).run()
+  }
+
   /** Creates or replaces the single owner (CLI `owner:set-password`). */
   async setOwner(displayName: string, password: string): Promise<void> {
     const passwordHash = await hashPassword(password)

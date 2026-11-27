@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { formatEur, formatEurSigned, signTone } from '@finance/shared'
+import { signTone } from '@finance/shared'
+import { formatEur, formatEurSigned } from '~/utils/privacy'
 
 /**
  * Euro amount from integer cents in de-DE format (FR-004).

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { openSettingsGroup } from './helpers'
 
 /** 004 US1: Scalable card states with a mocked API (the real login needs the owner, T006/T012). */
 const base = {
@@ -13,8 +14,7 @@ const base = {
 async function openSettings(page: Page) {
   await page.goto('/')
   await expect(page.getByTestId('networth-card')).toBeVisible()
-  await page.locator('a[href="/settings/sources"]').first().click()
-  await expect(page).toHaveURL(/\/settings\/sources/)
+  await openSettingsGroup(page, 'sources', 'Datenquellen')
 }
 
 async function mockSources(page: Page, scalable: Record<string, unknown> | null) {

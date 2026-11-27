@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { type AllocationResponse, formatEur, formatPct } from '@finance/shared'
+import type { AllocationResponse } from '@finance/shared'
+import { formatEur, formatPct } from '~/utils/privacy'
 
 /** "Aufteilung": net worth by asset class plus cash, € or %. */
 const { t } = useI18n()

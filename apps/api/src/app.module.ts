@@ -29,6 +29,9 @@ import { RefreshModule } from './modules/refresh/refresh.module'
 import { TagsModule } from './modules/tags/tags.module'
 import { SearchModule } from './modules/search/search.module'
 import { SyncModule } from './modules/sources/sync.module'
+import { SettingsModule } from './modules/settings/settings.module'
+import { BackupModule } from './modules/backup/backup.module'
+import { AboutModule } from './modules/about/about.module'
 
 @Module({
   imports: [
@@ -71,6 +74,7 @@ import { SyncModule } from './modules/sources/sync.module'
     CommonModule,
     DrizzleModule,
     HealthModule,
+    SettingsModule,
     AuthModule,
     OverviewModule,
     AccountsModule,
@@ -78,6 +82,8 @@ import { SyncModule } from './modules/sources/sync.module'
     TagsModule,
     LogosModule,
     DemoModule,
+    BackupModule,
+    AboutModule,
     RefreshModule,
     SearchModule,
     SyncModule,

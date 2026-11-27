@@ -13,13 +13,14 @@ export interface AxisLabels {
  * "Q1"…"Q4", years only the year (no second line, no divider).
  */
 export function monthAxis(
-  bars: readonly { from: string }[],
+  bars: readonly { from: string; to?: string }[],
   granularity: 'month' | 'quarter' | 'year' = 'month',
 ): AxisLabels {
   const labels: string[] = []
   const dividers: number[] = []
   bars.forEach((bar, index) => {
-    const date = new Date(`${bar.from}T00:00:00Z`)
+    // The labelled month is the one a period ends in (a budget month may start on the 25th, 014).
+    const date = new Date(`${bar.to ?? bar.from}T00:00:00Z`)
     const year = String(date.getUTCFullYear())
     const month = date.getUTCMonth()
     if (granularity === 'year') {

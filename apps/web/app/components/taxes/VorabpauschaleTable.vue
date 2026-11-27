@@ -85,6 +85,18 @@ const { t } = useI18n()
               <Money :cents="result.totalTaxableCents" />
             </td>
           </tr>
+          <tr>
+            <td colspan="4" class="py-2 text-right text-muted">
+              {{
+                Number(result.churchTaxRate) > 0
+                  ? t('taxes.estimatedTaxChurch', { rate: Number(result.churchTaxRate) * 100 })
+                  : t('taxes.estimatedTax')
+              }}
+            </td>
+            <td class="py-2 text-right font-semibold" data-testid="vorab-tax">
+              <Money :cents="result.estimatedTaxCents" />
+            </td>
+          </tr>
         </tfoot>
       </table>
     </div>

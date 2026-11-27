@@ -1,0 +1,10 @@
+{
+  "app": "vermoegenskompass",
+  "format": 1,
+  "appVersion": "0.0.0",
+  "migration": {
+    "idx": 15,
+    "tag": "0015_settings"
+  },
+  "createdAt": "2026-11-27T16:13:36.212Z"
+}

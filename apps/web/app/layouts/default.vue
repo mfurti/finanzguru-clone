@@ -4,6 +4,7 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 const { t } = useI18n()
 const route = useRoute()
 const session = useState<{ displayName: string } | null>('session')
+const { settings, update } = useSettings()
 
 async function logout(): Promise<void> {
   await $fetch('/api/auth/logout', { method: 'POST' }).catch(() => undefined)
@@ -54,12 +55,21 @@ const tabs = computed<NavigationMenuItem[]>(() => [
         </NuxtLink>
         <slot name="header-actions" />
         <GlobalSearch />
+        <UButton
+          :icon="settings.privacyMode ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+          color="neutral"
+          variant="ghost"
+          :aria-label="settings.privacyMode ? t('header.privacyOff') : t('header.privacyOn')"
+          :aria-pressed="settings.privacyMode"
+          data-testid="privacy-toggle"
+          @click="update({ privacyMode: !settings.privacyMode })"
+        />
         <UColorModeButton />
         <UButton
           icon="i-lucide-settings"
           color="neutral"
           variant="ghost"
-          to="/settings/sources"
+          to="/settings"
           :aria-label="t('header.settings')"
         />
         <UButton

@@ -4,10 +4,9 @@ import {
   type BreakdownBucket,
   type BreakdownDimension,
   type BreakdownResponse,
-  formatEur,
-  formatPct,
   type GroupingDto,
 } from '@finance/shared'
+import { formatEur, formatPct } from '~/utils/privacy'
 
 /** Portfolio split by asset class, region, sector, … or an own grouping (US1). */
 const { t } = useI18n()

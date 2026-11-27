@@ -5,11 +5,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import type {
-  ExemptionOrderInput,
-  TaxYearDto,
-  TaxYearInput,
-  VorabpauschaleResponse,
+import {
+  churchTaxRate,
+  type ExemptionOrderInput,
+  type TaxYearDto,
+  type TaxYearInput,
+  type VorabpauschaleResponse,
 } from '@finance/shared'
 import { and, asc, desc, eq, gte, inArray, lte } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
@@ -23,11 +24,13 @@ import {
   taxYear,
   transaction,
 } from '../../database/schema'
+import { capitalGainsTax } from '../../domain/capital-gains-tax'
 import { allowanceCheck, orderUsage, taxableIncome } from '../../domain/exemption'
 import { computePositions } from '../../domain/positions'
 import { todayIso } from '../../domain/period'
 import { vorabpauschale } from '../../domain/vorabpauschale'
 import { OverviewService } from '../overview/overview.service'
+import { SettingsService } from '../settings/settings.service'
 
 type Tx = typeof transaction.$inferSelect
 
@@ -37,13 +40,15 @@ export class TaxesService {
   constructor(
     @Inject(DB) private readonly db: AppDatabase,
     private readonly overview: OverviewService,
+    private readonly ownerSettings: SettingsService,
   ) {}
 
   private settings(year: number) {
     return (
       this.db.select().from(taxYear).where(eq(taxYear.year, year)).get() ?? {
         year,
-        assessment: 'single' as const,
+        // Years without own settings use the owner's default (014).
+        assessment: this.ownerSettings.get().assessmentDefault,
         baseRate: null,
       }
     )
@@ -298,12 +303,16 @@ export class TaxesService {
       }
     })
 
+    const totalTaxableCents = rows.reduce((sum, row) => sum + row.taxableCents, 0)
+    const church = churchTaxRate(this.ownerSettings.get().churchTax)
     return {
       year,
       baseRate,
       rows,
       brokers: groups,
-      totalTaxableCents: rows.reduce((sum, row) => sum + row.taxableCents, 0),
+      totalTaxableCents,
+      estimatedTaxCents: capitalGainsTax(totalTaxableCents, church).totalCents,
+      churchTaxRate: church,
       estimate: true,
     }
   }

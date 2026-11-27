@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import {
-  type AccountDto,
-  type CompareResponse,
-  formatDate,
-  formatPctSigned,
-  type Period,
-} from '@finance/shared'
+import { type AccountDto, type CompareResponse, formatDate, type Period } from '@finance/shared'
+import { formatPctSigned } from '~/utils/privacy'
 import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
 
 /** Portfoliovergleich: TWROR of several depots from a common start (US1). */
 const { t } = useI18n()
-const period = ref<Period>('1Y')
+const period = ref<Period>(useDefaultPeriod())
 
 const { data: accounts } = await useApi<AccountDto[]>('/api/accounts', {
   key: 'accounts',

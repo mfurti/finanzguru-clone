@@ -129,6 +129,8 @@ export const account = sqliteTable(
     balanceDiffCents: integer('balance_diff_cents'),
     isHidden: integer('is_hidden', { mode: 'boolean' }).notNull().default(false),
     sortOrder: integer('sort_order').notNull().default(0),
+    /** Archived accounts leave lists and filters; sums keep them only by setting (014). */
+    archivedAt: text('archived_at'),
     lastSyncedAt: text('last_synced_at'),
   },
   (t) => [
@@ -609,6 +611,20 @@ export const watchlistEntry = sqliteTable(
 )
 
 /** Allowlisted key/value settings (chart benchmarks). */
+/** One row per owner login; the id lives in the encrypted session cookie (014 US4). */
+export const ownerSession = sqliteTable(
+  'session',
+  {
+    id: id(),
+    createdAt: text('created_at').notNull().default(nowIso),
+    lastSeenAt: text('last_seen_at').notNull().default(nowIso),
+    userAgent: text('user_agent'),
+  },
+  (t) => [
+    check('session_user_agent_len', sql`${t.userAgent} IS NULL OR length(${t.userAgent}) <= 200`),
+  ],
+)
+
 export const userSetting = sqliteTable('user_setting', {
   key: text('key').primaryKey(),
   value: text('value'),
@@ -816,6 +832,7 @@ export const schema = {
   watchlist,
   watchlistEntry,
   userSetting,
+  ownerSession,
   tag,
   transactionTag,
   deletedImportMarker,

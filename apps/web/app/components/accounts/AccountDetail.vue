@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { VisArea, VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
-import {
-  formatDate,
-  formatEur,
-  formatEurCompact,
-  type AccountDetail,
-  type Period,
-} from '@finance/shared'
+import { formatDate, type AccountDetail, type Period } from '@finance/shared'
+import { formatEur, formatEurCompact } from '~/utils/privacy'
 
 /**
  * Detail page of one account or depot (003 US2, FR-009): header, balance
@@ -15,7 +10,7 @@ import {
  */
 const props = defineProps<{ id: string }>()
 const { t } = useI18n()
-const period = ref<Period>('1Y')
+const period = ref<Period>(useDefaultPeriod())
 const { data, error } = await useApi<AccountDetail>(() => `/api/accounts/${props.id}/detail`, {
   query: { period },
 })

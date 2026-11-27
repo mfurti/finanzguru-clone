@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { formatDate, formatPctSigned, type Period, type ReturnsResponse } from '@finance/shared'
+import { formatDate, type Period, type ReturnsResponse } from '@finance/shared'
+import { formatPctSigned } from '~/utils/privacy'
 import {
   VisAxis,
   VisCrosshair,

@@ -24,7 +24,7 @@ function select(id: string): void {
   void router.replace({ query: { ...route.query, id } })
 }
 
-const period = ref<Period>('1Y')
+const period = ref<Period>(useDefaultPeriod())
 const { data: detail, refresh: refreshDetail } = await useApi<WatchlistDto | null>(
   () => (activeId.value ? `/api/watchlists/${activeId.value}` : ''),
   { query: { period }, default: () => null, watch: [activeId] },

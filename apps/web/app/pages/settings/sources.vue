@@ -58,27 +58,7 @@ const statusColor = (status: DataSourceDto['status']) =>
 
 <template>
   <section class="space-y-4">
-    <div class="flex flex-wrap items-center justify-between gap-2">
-      <h1 class="text-xl font-semibold">{{ t('settings.sources') }}</h1>
-      <div class="flex flex-wrap gap-2">
-        <UButton
-          to="/settings/inflation"
-          variant="soft"
-          color="neutral"
-          icon="i-lucide-percent"
-          :label="t('settings.inflation')"
-        />
-        <UButton
-          to="/settings/categories"
-          variant="soft"
-          color="neutral"
-          icon="i-lucide-tags"
-          :label="t('settings.categories')"
-        />
-      </div>
-    </div>
-
-    <DemoDataCard />
+    <h1 class="text-xl font-semibold">{{ t('settings.sources') }}</h1>
 
     <UCard id="csv" class="scroll-mt-20">
       <template #header>

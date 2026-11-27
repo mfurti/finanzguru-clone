@@ -13,7 +13,9 @@
   "header": {
     "search": "Suche",
     "settings": "Einstellungen",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "privacyOn": "Beträge verbergen",
+    "privacyOff": "Beträge anzeigen"
   },
   "filter": {
     "allAccounts": "Alle Konten",
@@ -67,7 +69,133 @@
   "settings": {
     "sources": "Datenquellen",
     "categories": "Kategorien & Regeln",
-    "inflation": "Inflation"
+    "inflation": "Inflation",
+    "title": "Einstellungen",
+    "saveFailed": "Einstellung konnte nicht gespeichert werden.",
+    "accounts": "Konten",
+    "accountsPage": {
+      "active": "Deine Konten",
+      "hint": "Umbenennen, ausblenden, archivieren und per Ziehen oder Pfeilen sortieren. Ausgeblendete Konten zählen nicht in „Alle Konten“.",
+      "name": "Kontoname",
+      "up": "Nach oben",
+      "down": "Nach unten",
+      "hide": "Ausblenden",
+      "show": "Einblenden",
+      "archive": "Archivieren",
+      "archived": "Archivierte Konten",
+      "noneArchived": "Keine archivierten Konten.",
+      "restore": "Wiederherstellen",
+      "archivedInSums": "Archivierte Konten in Summen mitzählen"
+    },
+    "data": "Daten",
+    "dataPage": {
+      "backupTitle": "Sicherung",
+      "backupHint": "Lädt alle Daten der App als ZIP-Datei herunter: Datenbank, eigene Logos und eine Beschreibung der Version. Bewahre die Datei sicher auf – sie enthält deine Finanzdaten.",
+      "backupDownload": "Sicherung herunterladen",
+      "csvExport": "Alle Buchungen als CSV",
+      "restoreTitle": "Wiederherstellen",
+      "restoreHint": "Spielt eine Sicherung dieser App zurück. Alle aktuellen Daten werden beim nächsten Start der App ersetzt.",
+      "restoreChoose": "Sicherung auswählen …",
+      "restoreConfirmTitle": "Sicherung wiederherstellen?",
+      "restoreConfirmText": "Alle aktuellen Daten (Konten, Buchungen, Einstellungen, Logos) werden durch die Sicherung ersetzt. Die bisherige Datenbank bleibt als Kopie im Datenordner erhalten.",
+      "restoreConfirm": "Wiederherstellen",
+      "restoreFailed": "Die Sicherung konnte nicht geprüft werden.",
+      "restorePending": "Wiederherstellung bereit – Neustart nötig",
+      "restorePendingText": "Die Sicherung vom {date} wird beim nächsten Start der App eingespielt. Starte die App jetzt neu.",
+      "restoreCancel": "Abbrechen"
+    },
+    "refresh": {
+      "title": "Automatisch aktualisieren",
+      "hint": "Ruft Bank, Broker und Kurse selbstständig ab – wie „Aktualisieren“ in der Übersicht. Läuft nur, solange die App läuft.",
+      "off": "Aus",
+      "daily": "Täglich um …",
+      "interval": "Regelmäßig",
+      "time": "Uhrzeit",
+      "everyHours": "Jede Stunde | Alle {n} Stunden"
+    },
+    "display": "Anzeige",
+    "displayPage": {
+      "startPage": "Startseite",
+      "start": {
+        "dashboard": "Übersicht",
+        "transactions": "Transaktionen",
+        "budget": "Budget"
+      },
+      "defaultPeriod": "Zeitraum der Diagramme",
+      "colorMode": "Farbmodus",
+      "color": {
+        "system": "Wie das Gerät",
+        "light": "Hell",
+        "dark": "Dunkel"
+      },
+      "densityLabel": "Tabellendichte",
+      "density": {
+        "normal": "Normal",
+        "compact": "Kompakt"
+      },
+      "privacy": "Privatsphäre-Modus",
+      "privacyHint": "Verbirgt alle Beträge und Prozente, z. B. wenn jemand mitschaut. Auch über das Auge oben rechts."
+    },
+    "finance": "Finanzen & Steuern",
+    "financePage": {
+      "taxes": "Steuern",
+      "assessmentLabel": "Veranlagung für neue Steuerjahre",
+      "assessmentHelp": "Bestimmt den Sparerpauschbetrag (1.000 € / 2.000 €), solange ein Jahr nicht eigens eingestellt ist.",
+      "assessment": {
+        "single": "Einzelveranlagung",
+        "joint": "Zusammenveranlagung"
+      },
+      "churchLabel": "Kirchensteuer",
+      "churchHelp": "Fließt in die geschätzte Steuer ein: 8 % in Bayern und Baden-Württemberg, sonst 9 %.",
+      "church": {
+        "none": "Keine",
+        "BY": "Bayern (8 %)",
+        "BW": "Baden-Württemberg (8 %)",
+        "other": "Anderes Bundesland (9 %)"
+      },
+      "budget": "Budget & Anzeige",
+      "monthStart": "Budgetmonat beginnt am",
+      "monthStartHelp": "Zum Beispiel der Tag, an dem das Gehalt kommt.",
+      "roundingLabel": "Beträge anzeigen",
+      "rounding": {
+        "cents": "Mit Cent",
+        "euros": "Auf volle Euro gerundet"
+      },
+      "purchases": "Wertpapierkäufe zählen als gespart",
+      "purchasesHelp": "Käufe vom Verrechnungskonto erscheinen unter „Sparen und Anlegen“ und in „Gespart“. Aus: Käufe bleiben ganz aus dem Budget."
+    },
+    "securityTitle": "Sicherheit",
+    "security": {
+      "passwordTitle": "Passwort ändern",
+      "passwordHint": "Nach der Änderung werden alle anderen Geräte abgemeldet.",
+      "current": "Aktuelles Passwort",
+      "next": "Neues Passwort",
+      "nextHelp": "Mindestens 12 Zeichen.",
+      "repeat": "Neues Passwort wiederholen",
+      "mismatch": "Die Passwörter stimmen nicht überein.",
+      "change": "Passwort ändern",
+      "passwordChanged": "Passwort geändert. Andere Geräte wurden abgemeldet.",
+      "sessionsTitle": "Angemeldete Geräte",
+      "endOthers": "Überall sonst abmelden",
+      "endedOthers": "Alle anderen Geräte wurden abgemeldet.",
+      "thisDevice": "Dieses Gerät",
+      "lastSeen": "Zuletzt aktiv: {date}",
+      "unknownDevice": "Unbekanntes Gerät",
+      "autoLogout": "Automatisch abmelden",
+      "autoLogoutHelp": "Nach dieser Zeit ohne Aktivität ist eine neue Anmeldung nötig.",
+      "never": "Nie",
+      "afterMinutes": "Nach {n} Minuten"
+    },
+    "about": "Über die App",
+    "aboutPage": {
+      "version": "Version",
+      "schema": "Datenbankstand",
+      "database": "Größe der Datenbank",
+      "sources": "Datenquellen",
+      "noSources": "Keine Quelle verbunden.",
+      "lastFetch": "Zuletzt abgerufen: {date}",
+      "never": "noch nie"
+    }
   },
   "overview": {
     "netWorth": {
@@ -617,7 +745,9 @@
     "taxable": "Steuerpflichtig",
     "fundType": "Fondsart",
     "noFunds": "Keine Fonds im Bestand",
-    "deleteOrder": "Freistellungsauftrag löschen?"
+    "deleteOrder": "Freistellungsauftrag löschen?",
+    "estimatedTax": "Geschätzte Steuer (25 % + Soli)",
+    "estimatedTaxChurch": "Geschätzte Steuer (25 % + Soli + {rate} % Kirchensteuer)"
   },
   "benchmark": {
     "compare": "Vergleichen mit",

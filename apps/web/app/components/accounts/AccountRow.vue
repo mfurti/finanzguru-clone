@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { formatDate, formatEur, formatEurSigned, type AccountOverviewRow } from '@finance/shared'
+import { formatDate, type AccountOverviewRow } from '@finance/shared'
+import { formatEur, formatEurSigned } from '~/utils/privacy'
 
 /**
  * One account or depot in Portfolios & Konten (003 US2, FR-008): avatar,

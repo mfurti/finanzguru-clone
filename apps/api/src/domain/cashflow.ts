@@ -114,8 +114,9 @@ export function bars(
   anchor: string,
   today: string,
   count = 12,
+  startDay = 1,
 ): Bar[] {
-  return lastPeriods(granularity, anchor, count).map((period: PeriodBounds) => {
+  return lastPeriods(granularity, anchor, count, startDay).map((period: PeriodBounds) => {
     const inPeriod = txs.filter(
       (tx) => tx.bookingDate >= period.from && tx.bookingDate <= period.to,
     )

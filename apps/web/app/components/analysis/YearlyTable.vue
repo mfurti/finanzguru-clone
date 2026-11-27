@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { formatPct, formatPctSigned, type ReturnsResponse } from '@finance/shared'
+import type { ReturnsResponse } from '@finance/shared'
+import { formatPct, formatPctSigned } from '~/utils/privacy'
 
 /**
  * Wertentwicklung: IZF, inflation and real return per calendar year (US1), or

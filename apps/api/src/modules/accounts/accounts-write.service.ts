@@ -12,7 +12,7 @@ import {
   normalizeIban,
   type UpdateAccountInput,
 } from '@finance/shared'
-import { count, eq } from 'drizzle-orm'
+import { count, eq, inArray, sql } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { account, institution, transaction } from '../../database/schema'
@@ -74,6 +74,9 @@ export class AccountsWriteService {
           ...(input.balanceCents !== undefined && { balanceCents: input.balanceCents }),
           ...(input.isHidden !== undefined && { isHidden: input.isHidden }),
           ...(input.sortOrder !== undefined && { sortOrder: input.sortOrder }),
+          ...(input.archived !== undefined && {
+            archivedAt: input.archived ? sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))` : null,
+          }),
           ...(input.parentAccountId !== undefined && { parentAccountId: input.parentAccountId }),
         })
         .where(eq(account.id, id))
@@ -82,6 +85,26 @@ export class AccountsWriteService {
         this.recompute.recompute(tx, [id])
     })
     return this.get(id)
+  }
+
+  /** Sets the order of all accounts (014): position in `ids` becomes the sort order. */
+  order(ids: readonly string[]): AccountDto[] {
+    if (new Set(ids).size !== ids.length) throw new BadRequestException('Doppelte Konten')
+    const found = this.db
+      .select({ id: account.id })
+      .from(account)
+      .where(inArray(account.id, [...ids]))
+      .all().length
+    const total = this.db.select({ n: count() }).from(account).get()?.n ?? 0
+    if (found !== ids.length || total !== ids.length) {
+      throw new BadRequestException('Die Reihenfolge muss alle Konten enthalten')
+    }
+    this.db.transaction((tx) => {
+      ids.forEach((accountId, index) =>
+        tx.update(account).set({ sortOrder: index }).where(eq(account.id, accountId)).run(),
+      )
+    })
+    return this.accounts.list()
   }
 
   remove(id: string, force: boolean): void {

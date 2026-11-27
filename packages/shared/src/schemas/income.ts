@@ -142,6 +142,10 @@ export const vorabpauschaleResponse = z.object({
     z.object({ broker: z.string(), rows: z.array(vorabpauschaleRow), subtotalCents: cents }),
   ),
   totalTaxableCents: cents,
+  /** Abgeltungsteuer + Soli (+ church tax by owner setting, 014) on the taxable total. */
+  estimatedTaxCents: cents,
+  /** Church tax rate used ("0" = none). */
+  churchTaxRate: decimalString,
   estimate: z.literal(true),
 })
 export type VorabpauschaleResponse = z.infer<typeof vorabpauschaleResponse>

@@ -7,6 +7,7 @@
 defineProps<{ label: string }>()
 const { t } = useI18n()
 const { granularity, anchor, isCurrent, previous, next, reset, setAnchor } = useBudgetPeriod()
+const { settings } = useSettings()
 const items = computed(() => [
   { label: t('budget.month'), value: 'month' },
   { label: t('budget.quarter'), value: 'quarter' },
@@ -14,7 +15,7 @@ const items = computed(() => [
 ])
 
 const pad = (n: number) => String(n).padStart(2, '0')
-/** First and last day of the selected period. */
+/** First and last day of the selected period; a budget month may start on day 2–28 (014). */
 const range = computed(() => {
   const year = Number(anchor.value.slice(0, 4))
   const month = Number(anchor.value.slice(5, 7)) - 1
@@ -25,8 +26,9 @@ const range = computed(() => {
         ? Math.floor(month / 3) * 3
         : 0
   const span = granularity.value === 'month' ? 1 : granularity.value === 'quarter' ? 3 : 12
-  const from = new Date(Date.UTC(year, start, 1))
-  const to = new Date(Date.UTC(year, start + span, 0))
+  const day = settings.value.budgetMonthStart
+  const from = new Date(Date.UTC(year, day > 1 ? start - 1 : start, day))
+  const to = new Date(Date.UTC(year, day > 1 ? start + span - 1 : start + span, day - 1))
   const short = (date: Date) => `${pad(date.getUTCDate())}.${pad(date.getUTCMonth() + 1)}.`
   return t('periodPicker.range', { from: short(from), to: short(to) })
 })

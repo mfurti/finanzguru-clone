@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CashflowCategories } from '@finance/shared'
-import { formatEur, formatPct } from '@finance/shared'
+import { formatEur, formatPct } from '~/utils/privacy'
 
 /** Expense/income categories of the period with counts, totals and pie chart (US5/US7); rows open the detail page (003 US3). */
 const { t } = useI18n()

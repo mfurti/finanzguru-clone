@@ -21,3 +21,20 @@ export async function chooseCategory(page: Page, label: string): Promise<Locator
   await dialog.getByRole('option', { name, exact: true }).click()
   return dialog
 }
+
+/**
+ * Opens a settings group client-side (014): header gear, then the group in the settings
+ * navigation (sidebar from 1024 px, dropdown below). Client-side, so mocked API routes apply.
+ */
+export async function openSettingsGroup(page: Page, key: string, label: string): Promise<void> {
+  await page.locator('a[href="/settings"]').first().click()
+  await expect(page).toHaveURL(/\/settings\//)
+  // The sidebar shows from 1024 px (SectionNav `lg`), the dropdown below.
+  if ((page.viewportSize()?.width ?? 0) >= 1024) {
+    await page.getByTestId(`section-nav-${key}`).click()
+  } else {
+    await page.getByTestId('section-nav-menu').click()
+    await page.getByRole('menuitem', { name: label, exact: true }).click()
+  }
+  await expect(page).toHaveURL(new RegExp(`/settings/${key}`))
+}

@@ -1,17 +1,12 @@
 <script setup lang="ts">
-import {
-  formatDate,
-  formatEur,
-  type GainSplit,
-  type Period,
-  type PositionDto,
-} from '@finance/shared'
+import { formatDate, type GainSplit, type Period, type PositionDto } from '@finance/shared'
+import { formatEur } from '~/utils/privacy'
 import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
 
 const { t } = useI18n()
 const route = useRoute()
 const { accountsParam } = useAccountFilter()
-const period = ref<Period>('1Y')
+const period = ref<Period>(useDefaultPeriod())
 
 interface Detail {
   instrument: { id: string; name: string; isin: string; wkn: string | null; assetClass: string }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { formatEur, formatPct, type SankeyResponse } from '@finance/shared'
+import type { SankeyResponse } from '@finance/shared'
+import { formatEur, formatPct } from '~/utils/privacy'
 import type { SankeyLinkIn, SankeyNodeIn } from '~/utils/sankey-order'
 import type { SankeyTheme } from '~/utils/sankey-option'
 

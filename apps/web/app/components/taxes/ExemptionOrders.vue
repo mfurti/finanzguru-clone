@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { type AccountDto, formatEur, type TaxYearDto } from '@finance/shared'
+import type { AccountDto, TaxYearDto } from '@finance/shared'
+import { formatEur } from '~/utils/privacy'
 import type { FetchError } from 'ofetch'
 
 /**

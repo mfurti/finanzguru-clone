@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { formatPct, formatPctSigned, signTone } from '@finance/shared'
+import { signTone } from '@finance/shared'
+import { formatPct, formatPctSigned } from '~/utils/privacy'
 
 /** Ratio (0.0815 = 8,15 %) as decimal string or number; `null` renders a dash. */
 const props = withDefaults(

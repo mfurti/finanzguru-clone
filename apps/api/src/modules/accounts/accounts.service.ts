@@ -30,6 +30,7 @@ export class AccountsService {
         balanceCents: account.balanceCents,
         isHidden: account.isHidden,
         sortOrder: account.sortOrder,
+        archivedAt: account.archivedAt,
         lastSyncedAt: account.lastSyncedAt,
       })
       .from(account)
