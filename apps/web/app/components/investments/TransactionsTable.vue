@@ -62,6 +62,7 @@ function toggleSort(column: InvestmentTxSort): void {
 const Money = resolveComponent('Money')
 const NuxtLink = resolveComponent('NuxtLink')
 const UButton = resolveComponent('UButton')
+const ArtBadge = resolveComponent('ArtBadge')
 const money = (cents: number, signed = false) => h(Money, { cents, signed })
 const number = (value: string | null, digits = 6) =>
   value === null ? '–' : Number(value).toLocaleString('de-DE', { maximumFractionDigits: digits })
@@ -93,7 +94,8 @@ const columns = computed<TableColumn<InvestmentTransactionRow>[]>(() => [
   {
     id: 'type',
     header: sortHeader('type', t('investments.tx.type')),
-    cell: ({ row }) => t(`transactionTypes.${row.original.type}`),
+    // Coloured badge like the reference: Kauf green, Verkauf blue (012 P4).
+    cell: ({ row }) => h(ArtBadge, { type: row.original.type }),
   },
   {
     id: 'name',
@@ -286,7 +288,8 @@ const exportUrl = computed(() => {
           <span class="min-w-0">
             <span class="block truncate font-medium">{{ row.instrumentName ?? '–' }}</span>
             <span class="text-xs text-muted">
-              {{ formatDate(row.bookingDate) }} · {{ t(`transactionTypes.${row.type}`) }}
+              <ArtBadge :type="row.type" class="mr-1" />
+              {{ formatDate(row.bookingDate) }}
               <template v-if="row.quantity">
                 · {{ number(row.quantity) }} {{ t('investments.pieces') }}</template
               >
