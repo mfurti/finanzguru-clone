@@ -1,6 +1,20 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 import type { ImportJobDto, RowError, TransactionSource } from '@finance/shared'
-import { and, asc, eq, gt, gte, inArray, isNotNull, isNull, lte, ne, or, sum } from 'drizzle-orm'
+import {
+  and,
+  asc,
+  eq,
+  gt,
+  gte,
+  inArray,
+  isNotNull,
+  isNull,
+  lte,
+  ne,
+  or,
+  sql,
+  sum,
+} from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import {
@@ -481,7 +495,11 @@ export class ImportPipeline {
    * or doubled (or still pending at the bank).
    */
   private balanceCheck(tx: Tx, accountId: string, reportedCents: number) {
-    const now = new Date().toISOString()
+    // Database clock, same as `transaction.created_at`, so "imported since" compares exactly
+    // (a JS timestamp can be a fraction earlier than the rows just inserted).
+    const now = tx.get<{ now: string }>(
+      sql`SELECT strftime('%Y-%m-%dT%H:%M:%fZ', 'now') AS now`,
+    ).now
     const previous = tx
       .select({ cents: account.sourceBalanceCents, at: account.sourceBalanceDate })
       .from(account)

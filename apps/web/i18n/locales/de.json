@@ -43,6 +43,18 @@
     "title": "Diese Ansicht folgt",
     "description": "Die Daten dafür sind vorbereitet; die Oberfläche kommt in einem der nächsten Schritte."
   },
+  "dataState": {
+    "label": "Stand: {time}",
+    "lastBooking": "Letzte Buchung: {date}",
+    "never": "Noch nicht abgerufen",
+    "neverShort": "noch nie",
+    "refresh": "Aktualisieren",
+    "noSource": "Keine verbundene Quelle – unter Einstellungen › Datenquellen verbinden",
+    "done": "Alle Quellen aktualisiert",
+    "partly": "Nicht alle Quellen aktualisiert",
+    "ok": "aktualisiert",
+    "failed": "Aktualisieren fehlgeschlagen"
+  },
   "demoData": {
     "title": "Demo-Daten",
     "hint": "Die Beispieldaten (Demo-Bank, Demo-Depot, Demo-Buchungen) fließen in alle Summen ein. Entferne sie, damit nur deine eigenen Konten zählen.",

@@ -15,15 +15,18 @@ const customizing = useDashboardCustomizing()
   <DefaultLayout>
     <OverviewSection>
       <template #actions>
+        <DataRefresh />
         <UButton
           v-if="route.path === '/'"
           icon="i-lucide-layout-dashboard"
           variant="ghost"
           color="neutral"
-          :label="t('overview.customize.button')"
+          :aria-label="t('overview.customize.button')"
           data-testid="customize-open"
           @click="customizing = true"
-        />
+        >
+          <span class="hidden sm:inline">{{ t('overview.customize.button') }}</span>
+        </UButton>
       </template>
       <slot />
     </OverviewSection>

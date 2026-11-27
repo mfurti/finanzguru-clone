@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { desc, inArray } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
-import { dataSource, quote } from '../../database/schema'
+import { dataSource, quote, transaction } from '../../database/schema'
 import { MarketDataService } from '../market-data/market-data.service'
 import { SyncService } from '../sources/sync.service'
 
@@ -26,6 +26,8 @@ export interface DataState {
   oldestSuccessAt: string | null
   outdated: boolean
   sources: SourceState[]
+  /** Newest booking date: the state when no source is connected (CSV only). */
+  newestBookingDate: string | null
 }
 
 const PULL_KINDS = ['enable_banking', 'scalable_mcp'] as const
@@ -130,10 +132,17 @@ export class RefreshService {
     const outdated =
       sources.length > 0 &&
       (known.length < sources.length || now - Date.parse(oldestSuccessAt!) > OUTDATED_MS)
+    const newest = this.db
+      .select({ date: transaction.bookingDate })
+      .from(transaction)
+      .orderBy(desc(transaction.bookingDate))
+      .limit(1)
+      .get()
     return {
       oldestSuccessAt,
       outdated,
       sources,
+      newestBookingDate: newest?.date ?? null,
     }
   }
 }
