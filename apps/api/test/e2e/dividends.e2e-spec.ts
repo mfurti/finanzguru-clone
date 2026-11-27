@@ -51,6 +51,15 @@ describe('Dividenden (US2)', () => {
     expect(all.years).toEqual(demo.years)
   })
 
+  it('splits by currency and reports the portfolio value (012 T009)', async () => {
+    const summary = await get<DividendSummary>(`/api/dividends/summary?accounts=${depotId}`)
+    const total = summary.bySecurity.reduce((sum, row) => sum + row.cents, 0)
+    expect(summary.byCurrency.reduce((sum, row) => sum + row.cents, 0)).toBe(total)
+    expect(summary.byCurrency.length).toBeGreaterThan(0)
+    expect(summary.byCurrency.every((row) => row.label.length > 0)).toBe(true)
+    expect(summary.portfolioValueCents).toBeGreaterThan(0)
+  })
+
   it('sums the last 12 months to the cent (SC-003)', async () => {
     const today = todayIso()
     const from = addMonths(today, -12)

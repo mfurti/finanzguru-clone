@@ -84,13 +84,15 @@ export class DividendsService {
       bySecurity: bySecurity.map((row) => ({ ...row, name: names.get(row.instrumentId) ?? '' })),
       byRegion: this.split(bySecurity, 'region', total),
       bySector: this.split(bySecurity, 'sector', total),
+      byCurrency: this.split(bySecurity, 'currency', total),
+      portfolioValueCents: totals.at(-1)?.depotValueCents ?? 0,
     }
   }
 
   /** Dividends split by instrument weights (003 FR-016); remainder is "Nicht zugeordnet". */
   private split(
     rows: readonly { instrumentId: string; cents: number }[],
-    dimension: 'region' | 'sector',
+    dimension: 'region' | 'sector' | 'currency',
     total: number,
   ) {
     const ids = rows.map((row) => row.instrumentId)
@@ -108,14 +110,30 @@ export class DividendsService {
             )
             .all()
     const labels = DIMENSION_LABELS[dimension]
+    // Currency without weights: the security's own trading currency (012 P7).
+    const ownCurrency =
+      dimension === 'currency' && ids.length > 0
+        ? new Map(
+            this.db
+              .select({ id: instrument.id, currency: instrument.currency })
+              .from(instrument)
+              .where(inArray(instrument.id, ids))
+              .all()
+              .map((row) => [row.id, row.currency]),
+          )
+        : new Map<string, string>()
     return weightedBreakdown(
-      rows.map((row) => ({
-        instrumentId: row.instrumentId,
-        valueCents: row.cents,
-        weights: weights
+      rows.map((row) => {
+        const own = weights
           .filter((w) => w.instrumentId === row.instrumentId)
-          .map((w) => ({ key: w.key, weight: w.weight })),
-      })),
+          .map((w) => ({ key: w.key, weight: w.weight }))
+        const fallback = ownCurrency.get(row.instrumentId)
+        return {
+          instrumentId: row.instrumentId,
+          valueCents: row.cents,
+          weights: own.length === 0 && fallback ? [{ key: fallback, weight: '1' }] : own,
+        }
+      }),
     ).map((bucket) => ({
       key: bucket.key,
       label: bucket.key === UNASSIGNED_KEY ? UNASSIGNED_LABEL : (labels[bucket.key] ?? bucket.key),

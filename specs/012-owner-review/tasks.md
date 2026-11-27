@@ -26,7 +26,7 @@
 **Goal**: P6–P9. **Independent test**: quickstart Q4–Q5.
 
 - [X] T008 [US2] Fix the dividend yearly figures per R4 in `apps/api/src/domain/` / `modules/investments` with fixture unit tests encoding the rule (no owner amounts).
-- [ ] T009 [US2] Dividend summary `portfolioValueCents`, `yearCents`, `byCurrency` (shared schema, API, unit + e2e test).
+- [X] T009 [US2] Dividend summary `portfolioValueCents`, `yearCents`, `byCurrency` (shared schema, API, unit + e2e test).
 - [ ] T010 [US2] Dividenden page: three cards (Investments, Dividendenerträge, Dividendenrendite) and Aufteilung tab Währungen in `apps/web/app/pages/investments/dividends.vue`, `components/dividends/*`; component tests.
 - [ ] T011 [US2] Exemption providers: `GET /api/taxes/exemption-providers` (domain used-per-institution + e2e) and provider rows with inline edit in the Freistellungsaufträge card (`apps/web/app/components/taxes/*`); component test.
 
