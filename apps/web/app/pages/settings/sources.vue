@@ -60,8 +60,6 @@ const statusColor = (status: DataSourceDto['status']) =>
   <section class="space-y-4">
     <h1 class="text-xl font-semibold">{{ t('settings.sources') }}</h1>
 
-    <DemoDataCard />
-
     <UCard id="csv" class="scroll-mt-20">
       <template #header>
         <h2 class="font-semibold">{{ t('import.title') }}</h2>

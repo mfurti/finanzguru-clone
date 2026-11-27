@@ -30,6 +30,7 @@ import { TagsModule } from './modules/tags/tags.module'
 import { SearchModule } from './modules/search/search.module'
 import { SyncModule } from './modules/sources/sync.module'
 import { SettingsModule } from './modules/settings/settings.module'
+import { BackupModule } from './modules/backup/backup.module'
 
 @Module({
   imports: [
@@ -80,6 +81,7 @@ import { SettingsModule } from './modules/settings/settings.module'
     TagsModule,
     LogosModule,
     DemoModule,
+    BackupModule,
     RefreshModule,
     SearchModule,
     SyncModule,

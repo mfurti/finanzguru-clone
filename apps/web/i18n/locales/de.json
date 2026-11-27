@@ -84,6 +84,13 @@
       "noneArchived": "Keine archivierten Konten.",
       "restore": "Wiederherstellen",
       "archivedInSums": "Archivierte Konten in Summen mitzählen"
+    },
+    "data": "Daten",
+    "dataPage": {
+      "backupTitle": "Sicherung",
+      "backupHint": "Lädt alle Daten der App als ZIP-Datei herunter: Datenbank, eigene Logos und eine Beschreibung der Version. Bewahre die Datei sicher auf – sie enthält deine Finanzdaten.",
+      "backupDownload": "Sicherung herunterladen",
+      "csvExport": "Alle Buchungen als CSV"
     }
   },
   "overview": {
