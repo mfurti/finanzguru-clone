@@ -121,10 +121,19 @@ export function resolveRange(
   return resolvePeriod(query.period, today, firstDataDate)
 }
 
-/** Month / quarter / year containing `anchor`, with a German label. */
-export function periodBounds(granularity: Granularity, anchor: string): PeriodBounds {
-  const year = Number(anchor.slice(0, 4))
-  const month = Number(anchor.slice(5, 7)) - 1
+/**
+ * Month / quarter / year containing `anchor`, with a German label.
+ *
+ * `startDay` (014 budget month start, 1–28): a budget month starts on that day of the previous
+ * calendar month, so with 25 "November" covers 25.10.–24.11.; quarters and years shift the
+ * same way. A date on or after the start day belongs to the next month. The label names the
+ * month the period ends in.
+ */
+export function periodBounds(granularity: Granularity, anchor: string, startDay = 1): PeriodBounds {
+  const shifted = startDay > 1 && Number(anchor.slice(8, 10)) >= startDay
+  const effective = shifted ? addMonths(`${anchor.slice(0, 7)}-01`, 1) : anchor
+  const year = Number(effective.slice(0, 4))
+  const month = Number(effective.slice(5, 7)) - 1
   let startMonth: number
   let months: number
   let label: string
@@ -145,16 +154,31 @@ export function periodBounds(granularity: Granularity, anchor: string): PeriodBo
       label = String(year)
       break
   }
+  if (startDay > 1) {
+    const from = toIsoDate(new Date(Date.UTC(year, startMonth - 1, startDay)))
+    const to = toIsoDate(new Date(Date.UTC(year, startMonth + months - 1, startDay - 1)))
+    return { from, to, label }
+  }
   const from = toIsoDate(new Date(Date.UTC(year, startMonth, 1)))
   const to = toIsoDate(new Date(Date.UTC(year, startMonth + months, 0)))
   return { from, to, label }
 }
 
 /** Moves the anchor by `steps` periods (negative = back) and returns that period. */
-export function shiftPeriod(granularity: Granularity, anchor: string, steps: number): PeriodBounds {
+export function shiftPeriod(
+  granularity: Granularity,
+  anchor: string,
+  steps: number,
+  startDay = 1,
+): PeriodBounds {
   const monthsPerStep = granularity === 'month' ? 1 : granularity === 'quarter' ? 3 : 12
-  const start = periodBounds(granularity, anchor).from
-  return periodBounds(granularity, addMonths(start, steps * monthsPerStep))
+  // The last day always lies in the period's labelled month, also with a shifted start.
+  const end = periodBounds(granularity, anchor, startDay).to
+  return periodBounds(
+    granularity,
+    addMonths(`${end.slice(0, 7)}-01`, steps * monthsPerStep - (monthsPerStep - 1)),
+    startDay,
+  )
 }
 
 /** The `count` periods ending with the one containing `anchor`, oldest first. */
@@ -162,8 +186,9 @@ export function lastPeriods(
   granularity: Granularity,
   anchor: string,
   count: number,
+  startDay = 1,
 ): PeriodBounds[] {
   return Array.from({ length: count }, (_, index) =>
-    shiftPeriod(granularity, anchor, index - (count - 1)),
+    shiftPeriod(granularity, anchor, index - (count - 1), startDay),
   )
 }

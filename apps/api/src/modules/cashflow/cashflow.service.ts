@@ -98,10 +98,15 @@ export class CashflowService {
     )
   }
 
+  /** Day the budget month starts on (014 owner setting). */
+  private startDay(): number {
+    return this.settings.get().budgetMonthStart
+  }
+
   summary(query: CashflowQuery, today = todayIso()): CashflowSummary {
     const anchor = query.anchor ?? today
-    const period = periodBounds(query.granularity, anchor)
-    const span = lastPeriods(query.granularity, anchor, 12)
+    const period = periodBounds(query.granularity, anchor, this.startDay())
+    const span = lastPeriods(query.granularity, anchor, 12, this.startDay())
     const categories = this.categories()
     const txs = this.load(this.cashAccountIds(query.accounts), span[0]!.from, period.to)
     const inPeriod = txs.filter(
@@ -110,12 +115,12 @@ export class CashflowService {
     return {
       period,
       ...totals(inPeriod, categories),
-      bars: bars(txs, categories, query.granularity, anchor, today),
+      bars: bars(txs, categories, query.granularity, anchor, today, 12, this.startDay()),
     }
   }
 
   sankey(query: CashflowQuery, today = todayIso()): SankeyResponse {
-    const period = periodBounds(query.granularity, query.anchor ?? today)
+    const period = periodBounds(query.granularity, query.anchor ?? today, this.startDay())
     return sankey(
       this.load(this.cashAccountIds(query.accounts), period.from, period.to),
       this.categories(),
@@ -126,7 +131,7 @@ export class CashflowService {
     query: CashflowQuery & { kind: 'expense' | 'income' },
     today = todayIso(),
   ): CashflowCategories {
-    const period = periodBounds(query.granularity, query.anchor ?? today)
+    const period = periodBounds(query.granularity, query.anchor ?? today, this.startDay())
     return categoryTotals(
       this.load(this.cashAccountIds(query.accounts), period.from, period.to),
       this.categories(),
@@ -147,8 +152,8 @@ export class CashflowService {
       ...[...categories.values()].filter((c) => c.parentId === id).map((c) => c.id),
     ])
     const anchor = query.anchor ?? today
-    const period = periodBounds(query.granularity, anchor)
-    const months = lastPeriods('month', anchor, 12)
+    const period = periodBounds(query.granularity, anchor, this.startDay())
+    const months = lastPeriods('month', anchor, 12, this.startDay())
     const from = months[0]!.from < period.from ? months[0]!.from : period.from
     const to = months.at(-1)!.to > period.to ? months.at(-1)!.to : period.to
     const txs = this.load(this.cashAccountIds(query.accounts), from, to).filter(
@@ -170,7 +175,7 @@ export class CashflowService {
       parentId: row.parentId,
       totalCents: sumIn(period.from, period.to),
       history: months.map((month) => ({
-        month: month.from.slice(0, 7),
+        month: month.to.slice(0, 7),
         cents: sumIn(month.from, month.to),
       })),
     }

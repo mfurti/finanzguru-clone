@@ -12,13 +12,22 @@ import type { AppDatabase } from '../../database/drizzle.module'
 import { account, budget, category, transaction } from '../../database/schema'
 import { budgetSeries, figures } from '../../domain/budget-history'
 import { lastPeriods, periodBounds, todayIso } from '../../domain/period'
+import { SettingsService } from '../settings/settings.service'
 
 @Injectable()
 export class BudgetsService {
-  constructor(@Inject(DB) private readonly db: AppDatabase) {}
+  constructor(
+    @Inject(DB) private readonly db: AppDatabase,
+    private readonly settings: SettingsService,
+  ) {}
+
+  /** Day the budget month starts on (014 owner setting). */
+  private startDay(): number {
+    return this.settings.get().budgetMonthStart
+  }
 
   list(today = todayIso()): BudgetDto[] {
-    const month = periodBounds('month', today)
+    const month = periodBounds('month', today, this.startDay())
     const rows = this.db
       .select({
         id: budget.id,
@@ -42,7 +51,7 @@ export class BudgetsService {
    */
   overview(period?: string, today = todayIso()): BudgetsOverview {
     const anchor = period ? `${period}-01` : today
-    const month = periodBounds('month', anchor)
+    const month = periodBounds('month', anchor, this.startDay())
     const rows = this.db
       .select({
         id: budget.id,
@@ -57,18 +66,19 @@ export class BudgetsService {
       .innerJoin(category, eq(category.id, budget.categoryId))
       .orderBy(category.name)
       .all()
-    const months = lastPeriods('month', anchor, 12)
+    const months = lastPeriods('month', anchor, 12, this.startDay())
     const cache = new Map<string, number>()
     const spentIn = (budgetId: string, monthKey: string) => {
       const key = `${budgetId}|${monthKey}`
       if (!cache.has(key)) {
         const row = rows.find((item) => item.id === budgetId)!
-        const bounds = months.find((m) => m.from.startsWith(monthKey)) ?? month
+        const bounds = months.find((m) => m.to.startsWith(monthKey)) ?? month
         cache.set(key, this.spent(row.categoryId, bounds.from, bounds.to))
       }
       return cache.get(key)!
     }
-    const monthKey = month.from.slice(0, 7)
+    // The labelled month: with a shifted start the period ends in it (014).
+    const monthKey = month.to.slice(0, 7)
     const tableRows = rows.map((row) => ({
       id: row.id,
       categoryId: row.categoryId,
@@ -89,7 +99,7 @@ export class BudgetsService {
           limitCents: row.limitCents,
           createdMonth: row.createdAt.slice(0, 7),
         })),
-        months.map((m) => m.from.slice(0, 7)),
+        months.map((m) => m.to.slice(0, 7)),
         spentIn,
       ),
     }
