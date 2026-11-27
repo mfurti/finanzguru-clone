@@ -736,6 +736,7 @@
     "delete": "Löschen",
     "deleteConfirm": "Budget „{name}“ löschen?",
     "empty": "Noch keine Budgets",
+    "emptyTitle": "Leg dein erstes Budget an",
     "emptyInfo": "Lege ein Budget an, um Ausgaben je Kategorie zu begrenzen."
   },
   "categoryDetail": {

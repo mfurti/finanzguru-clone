@@ -135,6 +135,7 @@ const currentLabel = computed(() =>
         size="sm"
         data-testid="granularity"
       />
+      <slot name="actions" />
     </div>
   </div>
 </template>

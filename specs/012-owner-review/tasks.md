@@ -42,7 +42,7 @@
 **Goal**: P10, P13, P14. **Independent test**: quickstart Q7.
 
 - [X] T014 [US4] Watchlist like the reference (R9): tabs, default watchlist, header with count, period switch, Hinzufügen, ⋮ rename/delete, empty state in `apps/web/app/pages/investments/watchlists/*`; API default creation if needed; tests.
-- [ ] T015 [US4] Budgets empty state as one card (R10) and table columns in `apps/web/app/pages/budget/budgets.vue`; component test.
+- [X] T015 [US4] Budgets empty state as one card (R10) and table columns in `apps/web/app/pages/budget/budgets.vue`; component test.
 - [ ] T016 [US4] Insurance suggestions (R11): migration for `insurance_suggestion_dismissal` ("key text PK 1–200 chars, dismissed_at not null"), domain detection with unit tests, endpoints + e2e, UI list with accept/dismiss in `apps/web/app/pages/insurance/*`.
 
 ## Phase 6: Polish
