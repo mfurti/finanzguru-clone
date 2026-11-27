@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatDate, type AccountOverviewRow } from '@finance/shared'
+import { formatDate, formatEur, formatEurSigned, type AccountOverviewRow } from '@finance/shared'
 
 /**
  * One account or depot in Portfolios & Konten (003 US2, FR-008): avatar,
@@ -61,7 +61,25 @@ const { byAccount } = await useAccountLogos()
         </span>
       </span>
       <Sparkline :values="row.sparkline" class="hidden sm:block" />
-      <Money :cents="row.balanceCents" class="text-right font-semibold" />
+      <span class="flex items-center justify-end gap-1.5">
+        <UTooltip
+          v-if="row.balanceCheck && row.balanceCheck.differenceCents !== 0"
+          :text="
+            t('accountsOverview.balanceDiff', {
+              source: formatEur(row.balanceCheck.sourceCents),
+              diff: formatEurSigned(row.balanceCheck.differenceCents),
+            })
+          "
+        >
+          <UIcon
+            name="i-lucide-triangle-alert"
+            class="size-4 text-warning"
+            :aria-label="t('accountsOverview.balanceDiffShort')"
+            data-testid="balance-diff"
+          />
+        </UTooltip>
+        <Money :cents="row.balanceCents" class="text-right font-semibold" />
+      </span>
     </NuxtLink>
     <UButton
       v-if="row.canSync"

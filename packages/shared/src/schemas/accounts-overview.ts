@@ -15,6 +15,11 @@ export const accountOverviewRow = z.object({
   lastUpdateKind: z.enum(['sync', 'import']).nullable(),
   canSync: z.boolean(),
   balanceCents: cents,
+  /**
+   * Balance check (013): the source's last balance and the difference to "previous balance +
+   * bookings since"; null = nothing to compare (manual, CSV or first sync).
+   */
+  balanceCheck: z.object({ sourceCents: cents, at: z.string(), differenceCents: cents }).nullable(),
 })
 export type AccountOverviewRow = z.infer<typeof accountOverviewRow>
 

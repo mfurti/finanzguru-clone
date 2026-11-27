@@ -43,6 +43,27 @@
     "title": "Diese Ansicht folgt",
     "description": "Die Daten dafür sind vorbereitet; die Oberfläche kommt in einem der nächsten Schritte."
   },
+  "dataState": {
+    "label": "Stand: {time}",
+    "lastBooking": "Letzte Buchung: {date}",
+    "never": "Noch nicht abgerufen",
+    "neverShort": "noch nie",
+    "refresh": "Aktualisieren",
+    "noSource": "Keine verbundene Quelle – unter Einstellungen › Datenquellen verbinden",
+    "done": "Alle Quellen aktualisiert",
+    "partly": "Nicht alle Quellen aktualisiert",
+    "ok": "aktualisiert",
+    "failed": "Aktualisieren fehlgeschlagen"
+  },
+  "demoData": {
+    "title": "Demo-Daten",
+    "hint": "Die Beispieldaten (Demo-Bank, Demo-Depot, Demo-Buchungen) fließen in alle Summen ein. Entferne sie, damit nur deine eigenen Konten zählen.",
+    "remove": "Demo-Daten entfernen",
+    "confirmTitle": "Demo-Daten endgültig entfernen?",
+    "confirmText": "Entfernt werden die Demo-Banken mit ihren Konten und Buchungen, Wertpapiere, die nur die Demo nutzt, die Watchlist „Beobachten“ und die Demo-Gruppierung. Deine eigenen Konten und Buchungen bleiben unverändert. Das lässt sich nicht rückgängig machen.",
+    "removed": "Demo-Daten entfernt: {accounts} Konten, {bookings} Buchungen",
+    "failed": "Demo-Daten konnten nicht entfernt werden"
+  },
   "settings": {
     "sources": "Datenquellen",
     "categories": "Kategorien & Regeln",
@@ -84,8 +105,8 @@
       "inflation": "Inflation",
       "realReturn": "Realrendite",
       "info": {
-        "priceGain": "Veränderung der nicht realisierten Gewinne im Zeitraum (Kurswert minus Durchschnittseinstandswert), ohne realisierte Gewinne und Handelskosten.",
-        "realized": "Gewinne aus Verkäufen im Zeitraum: Verkaufserlös minus Durchschnittseinstandswert der verkauften Stücke; netto nach Gebühren und Steuern.",
+        "priceGain": "Veränderung der nicht realisierten Gewinne im Zeitraum (Kurswert minus Durchschnittseinstandswert), ohne realisierte Gewinne und Handelskosten. Finanzfluss nutzt für den Zeitraum eine andere, nicht offengelegte Basis; Abweichungen sind möglich.",
+        "realized": "Gewinne aus Verkäufen im Zeitraum: Verkaufserlös minus Durchschnittseinstandswert der verkauften Stücke; netto nach Gebühren und Steuern. Die beim Verkauf einbehaltene Steuer liefert der Broker-Abruf nicht, deshalb ist netto hier gleich brutto.",
         "otherGains": "Sonstige Erträge, z. B. aus Kapitalmaßnahmen.",
         "twror": "Zeitgewichtete Rendite: misst die Anlageentscheidung unabhängig vom Zeitpunkt der Ein- und Auszahlungen.",
         "irr": "Interner Zinsfuß (geldgewichtet, p. a.): berücksichtigt Zeitpunkt und Höhe deiner Ein- und Auszahlungen.",
@@ -383,6 +404,8 @@
     "expenses": "Ausgaben",
     "balance": "Saldo",
     "saved": "Gespart",
+    "incomeInfo": "Eingänge auf deinen Konten im Zeitraum. Überträge zwischen deinen eigenen Konten (z. B. aufs Verrechnungskonto des Brokers) zählen nicht – Finanzfluss zählt sie als Einnahme und Ausgabe.",
+    "expensesInfo": "Ausgänge im Zeitraum inklusive Wertpapierkäufen; Überträge zwischen deinen eigenen Konten zählen nicht.",
     "savedInfo": "Ausgaben in „Sparen und Anlegen“, inklusive Wertpapierkäufen, die vom Referenzkonto des Brokers bezahlt werden.",
     "savingsRate": "Sparquote",
     "savingsRateInfo": "Gespart geteilt durch Einnahmen im Zeitraum.",
@@ -702,6 +725,8 @@
     "deleteConfirm": "Tag „{name}“ löschen? Die Buchungen bleiben erhalten."
   },
   "accountsOverview": {
+    "balanceDiff": "Abweichung zur Quelle: Die Bank meldet {source}, aus den Buchungen seit dem letzten Abruf folgt ein anderer Stand ({diff}). Fehlt eine Buchung, ist sie doppelt oder noch vorgemerkt?",
+    "balanceDiffShort": "Kontostand weicht von der Quelle ab",
     "depots": "Depots",
     "accounts": "Konten",
     "lastImport": "Letzter Import: {date}",
@@ -958,7 +983,7 @@
   },
   "info": {
     "netWorth": "Summe aller Konten und Depots zum letzten Tag des Zeitraums.",
-    "gain": "Veränderung im Zeitraum ohne Ein- und Auszahlungen."
+    "gain": "Veränderung im Zeitraum ohne Ein- und Auszahlungen. Finanzfluss rechnet den Zeitraumgewinn auf einer anderen, nicht offengelegten Basis; die Werte können deshalb abweichen."
   },
   "addWindow": {
     "title": "Was möchtest du hinzufügen?",

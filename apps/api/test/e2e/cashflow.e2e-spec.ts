@@ -52,10 +52,11 @@ describe('cash-flow and transaction review API', () => {
   it('builds a Sankey graph and category totals that match the expenses', async () => {
     const summary = await call<CashflowSummary>('GET', '/api/cashflow/summary?anchor=2026-10-15')
     const graph = await call<SankeyResponse>('GET', '/api/cashflow/sankey?anchor=2026-10-15')
-    const fromIncome = graph.links
-      .filter((link) => link.source === 'income' && link.target !== 'rest')
+    // All category blocks together = expenses; since 013 part of it may come from "Fehlbetrag".
+    const intoCategories = graph.links
+      .filter((link) => link.target.startsWith('main:'))
       .reduce((sum, link) => sum + link.valueCents, 0)
-    expect(fromIncome).toBe(summary.expenseCents)
+    expect(intoCategories).toBe(summary.expenseCents)
     const categories = await call<CashflowCategories>(
       'GET',
       '/api/cashflow/categories?anchor=2026-10-15&kind=expense',

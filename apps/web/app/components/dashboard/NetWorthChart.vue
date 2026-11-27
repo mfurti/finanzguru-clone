@@ -228,7 +228,7 @@ const tooltip = (point: Point) => {
         </template>
         <VisAxis type="x" :tick-format="tickDate" :num-ticks="4" :grid-line="false" />
         <VisAxis type="y" :tick-format="tickY" :num-ticks="4" />
-        <VisCrosshair :template="tooltip" color="var(--ui-primary)" />
+        <VisCrosshair :duration="0" :template="tooltip" color="var(--ui-primary)" />
         <VisTooltip />
       </VisXYContainer>
       <template #fallback>

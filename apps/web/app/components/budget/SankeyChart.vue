@@ -73,6 +73,7 @@ function cssColorOf(id: string): string {
   const kind = kindOf.value.get(id)
   if (!kind || kind === 'income') return '#7fdcb5'
   if (kind === 'balance') return '#82c3f0'
+  if (kind === 'deficit') return '#f29c9c'
   const categoryId = id.replace(/^(main|sub):/, '')
   return kind === 'sub' ? shade(categoryId, 1) : categoryColor(categoryId)
 }

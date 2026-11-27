@@ -215,7 +215,7 @@ export function categoryTotals(
 export interface SankeyNode {
   id: string
   label: string
-  kind: 'income' | 'main' | 'sub' | 'balance'
+  kind: 'income' | 'deficit' | 'main' | 'sub' | 'balance'
 }
 
 export interface SankeyLink {
@@ -233,9 +233,30 @@ export function sankey(
   const expenses = categoryTotals(txs, categories, 'expense')
   const nodes: SankeyNode[] = [{ id: 'income', label: 'Einnahmen', kind: 'income' }]
   const links: SankeyLink[] = []
-  for (const main of expenses.items) {
+  // Income pays the categories in order; what it cannot cover comes from "Fehlbetrag", so the
+  // Einnahmen block never shows more than the real income (013).
+  let incomeLeft = Math.max(0, sums.incomeCents)
+  let deficitCents = 0
+  // Same order as the drawing (web utils/sankey-order.ts): categories with sub categories
+  // first, each group by amount – so Einnahmen fills the top blocks and no flow crosses.
+  const ordered = [...expenses.items].sort(
+    (a, b) =>
+      Number(b.children.length > 0) - Number(a.children.length > 0) || b.totalCents - a.totalCents,
+  )
+  for (const main of ordered) {
     nodes.push({ id: `main:${main.categoryId}`, label: main.name, kind: 'main' })
-    links.push({ source: 'income', target: `main:${main.categoryId}`, valueCents: main.totalCents })
+    const fromIncome = Math.min(incomeLeft, main.totalCents)
+    incomeLeft -= fromIncome
+    if (fromIncome > 0)
+      links.push({ source: 'income', target: `main:${main.categoryId}`, valueCents: fromIncome })
+    if (main.totalCents > fromIncome) {
+      deficitCents += main.totalCents - fromIncome
+      links.push({
+        source: 'deficit',
+        target: `main:${main.categoryId}`,
+        valueCents: main.totalCents - fromIncome,
+      })
+    }
     for (const child of main.children) {
       nodes.push({ id: `sub:${child.categoryId}`, label: child.name, kind: 'sub' })
       links.push({
@@ -245,6 +266,7 @@ export function sankey(
       })
     }
   }
+  if (deficitCents > 0) nodes.splice(1, 0, { id: 'deficit', label: 'Fehlbetrag', kind: 'deficit' })
   if (sums.balanceCents > 0) {
     nodes.push({ id: 'rest', label: 'Übrig', kind: 'balance' })
     links.push({ source: 'income', target: 'rest', valueCents: sums.balanceCents })

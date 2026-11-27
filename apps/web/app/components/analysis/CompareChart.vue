@@ -97,7 +97,7 @@ const tooltip = (row: Row) =>
           <VisLine :x="x" :y="ys" :color="colors" :line-width="2" />
           <VisAxis type="x" :tick-format="tickDate" :num-ticks="4" :grid-line="false" />
           <VisAxis type="y" :tick-format="(v: number) => `${v.toFixed(0)} %`" :num-ticks="4" />
-          <VisCrosshair :template="tooltip" />
+          <VisCrosshair :duration="0" :template="tooltip" />
           <VisTooltip />
         </VisXYContainer>
         <template #fallback><USkeleton class="h-[220px] w-full" /></template>

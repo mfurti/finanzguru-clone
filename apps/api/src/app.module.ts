@@ -24,6 +24,8 @@ import { InvestmentsModule } from './modules/investments/investments.module'
 import { OverviewModule } from './modules/overview/overview.module'
 import { TransactionsModule } from './modules/transactions/transactions.module'
 import { LogosModule } from './modules/logos/logos.module'
+import { DemoModule } from './modules/demo/demo.module'
+import { RefreshModule } from './modules/refresh/refresh.module'
 import { TagsModule } from './modules/tags/tags.module'
 import { SearchModule } from './modules/search/search.module'
 import { SyncModule } from './modules/sources/sync.module'
@@ -75,6 +77,8 @@ import { SyncModule } from './modules/sources/sync.module'
     TransactionsModule,
     TagsModule,
     LogosModule,
+    DemoModule,
+    RefreshModule,
     SearchModule,
     SyncModule,
     ImportModule,

@@ -35,7 +35,13 @@ export const SANKEY_NODE_GAP = 12
 export const SANKEY_MIN_LABEL_PX = 10
 const PADDING = 8
 
-const DEPTH: Record<SankeyNodeIn['kind'], number> = { income: 0, main: 1, balance: 1, sub: 2 }
+const DEPTH: Record<SankeyNodeIn['kind'], number> = {
+  income: 0,
+  deficit: 0,
+  main: 1,
+  balance: 1,
+  sub: 2,
+}
 
 const FALLBACK_NODE_COLOR = '#9ca3af'
 const FALLBACK_THEME: SankeyTheme = {
