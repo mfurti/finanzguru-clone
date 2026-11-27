@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-27
 
-**Status**: Draft
+**Status**: Implemented
 
 **Input**: Owner review on 2026-11-27: 15 points collected by selecting elements in the app ("Spalten wie Finanzfluss", "Übersicht lädt beim Seitenwechsel alles neu", "Kauf/Verkauf farblich", "Buchungen statt Transaktionen", "Dividenden: Werte prüfen, Währungen, Investments und Dividendenerträge fehlen", "Anbieterblock fehlt", "Watchlist näher an Finanzfluss", "Sankey: keine Bögen nach oben, Nicht kategorisiert ganz unten", "Donut größer", "Budget-Block näher an Finanzfluss", "Versicherung – geht das?", "Investments: nur Portfolios wählbar").
 

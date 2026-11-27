@@ -49,7 +49,7 @@
 
 - [X] T017 Layout guard, hydration and Sankey hover e2e at 375/768/1440 green; fix regressions.
 - [X] T018 Owner check Q1–Q8 in dark and light; status (no amounts) in `specs/012-owner-review/quickstart.md`.
-- [ ] T019 Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`), reading the e2e log for failures; mark spec Status "Implemented".
+- [X] T019 Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`), reading the e2e log for failures; mark spec Status "Implemented".
 
 ## Dependencies
 

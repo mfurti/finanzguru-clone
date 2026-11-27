@@ -44,6 +44,8 @@ test.describe('005 US4 watchlist search', () => {
     await page.route('**/api/market-data/chart/**', (route) => route.fulfill({ json: [] }))
 
     await page.goto(`/investments/watchlists/${id}`)
+    // The old link redirects to the Watchlist tab; wait until the page is interactive (012).
+    await page.waitForLoadState('networkidle')
     await page.getByTestId('asset-search-open').click()
     await page.getByTestId('asset-search-input').fill('Apple')
     await expect(page.getByTestId('asset-search-group-stock')).toContainText('US0378331005')
@@ -73,6 +75,8 @@ test.describe('005 US4 watchlist search', () => {
       route.fulfill({ json: { available: false, groups: [] } }),
     )
     await page.goto(`/investments/watchlists/${id}`)
+    // The old link redirects to the Watchlist tab; wait until the page is interactive (012).
+    await page.waitForLoadState('networkidle')
     await page.getByTestId('asset-search-open').click()
     await page.getByTestId('asset-search-input').fill('Apple')
     await expect(page.getByTestId('asset-search-unavailable')).toContainText('Scalable')

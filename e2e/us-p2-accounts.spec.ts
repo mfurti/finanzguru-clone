@@ -26,16 +26,14 @@ test.describe('003 US2 accounts', () => {
     await expect(page).toHaveURL(/\/accounts\/[\w-]+$/)
     await expect(page.getByTestId('account-detail')).toContainText('Demo Girokonto')
     await expect(page.getByTestId('account-figures')).not.toContainText('NaN')
-    const accounts = page.getByTestId('transactions-table').locator('tbody tr td:nth-child(6)')
-    if (test.info().project.name === 'desktop') {
-      // Since 007 Konto is an optional column, off by default.
-      await page.getByTestId('columns-menu').click()
-      await page.getByRole('menuitemcheckbox', { name: 'Konto' }).click()
-      await page.keyboard.press('Escape')
-      await expect(accounts.first()).toHaveText('Demo Girokonto')
-      const texts = await accounts.allTextContents()
-      expect(new Set(texts)).toEqual(new Set(['Demo Girokonto']))
+    // Since 012 the table has no Konto column: the detail lists exactly this account's bookings.
+    const id = page.url().split('/').pop()!
+    const own = (await (
+      await page.request.get(`/api/transactions?accounts=${id}&pageSize=1`)
+    ).json()) as {
+      total: number
     }
+    await expect(page.getByTestId('rows-label')).toContainText(`von ${own.total}`)
   })
 
   test('depot detail shows positions of that depot', async ({ page }) => {

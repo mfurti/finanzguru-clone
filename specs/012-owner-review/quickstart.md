@@ -31,3 +31,7 @@ Layout guard (375 / 768 / 1440 px), hydration check, Sankey hover, Übersicht na
 | Q8 | Layout guard, hydration, Sankey hover green |
 
 Checked in dark and light mode.
+
+## Gates after T019 (2026-11-27)
+
+Lint, format check, typecheck green; unit tests api 542, web 142, shared 12 passed. Full e2e: first run found two tests still using the old Konto column and a click before hydration on the watchlist redirect (fixed); rerun 143 passed, 1 timeout in the CSV import V3 test, which passes on its own (2 of 2) and in the first run – load-related flakiness, unrelated to 012.
