@@ -18,12 +18,22 @@ import { STALE_AFTER_DAYS } from '../../domain/snapshots'
 import { InstrumentsService } from '../instruments/instruments.service'
 
 /** Watchlists (US6): lists of securities with price change per period. */
+const DEFAULT_WATCHLIST = 'Watchlist'
+
 @Injectable()
 export class WatchlistsService {
   constructor(
     @Inject(DB) private readonly db: AppDatabase,
     private readonly instruments: InstrumentsService,
   ) {}
+
+  /** Watchlists for the page: like the reference a first "Watchlist" exists from the start (012 P10). */
+  listForPage(): WatchlistSummary[] {
+    if (!this.db.select({ id: watchlist.id }).from(watchlist).limit(1).get()) {
+      this.db.insert(watchlist).values({ name: DEFAULT_WATCHLIST, position: 0 }).run()
+    }
+    return this.list()
+  }
 
   list(): WatchlistSummary[] {
     return this.db

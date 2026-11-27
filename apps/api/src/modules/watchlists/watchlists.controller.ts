@@ -33,7 +33,7 @@ export class WatchlistsController {
 
   @Get()
   list(): WatchlistSummary[] {
-    return this.watchlists.list()
+    return this.watchlists.listForPage()
   }
 
   @Post()

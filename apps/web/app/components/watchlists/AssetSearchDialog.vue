@@ -1,13 +1,18 @@
 <script setup lang="ts">
-/** Button and dialog around the "Asset suchen" panel (005 US4). */
-defineProps<{ watchlistId: string }>()
+/**
+ * Button and dialog around the "Asset suchen" panel (005 US4). The open state is a v-model,
+ * so the watchlist header and empty state can open it too (012 P10); `trigger: false` hides
+ * the own button.
+ */
+withDefaults(defineProps<{ watchlistId: string; trigger?: boolean }>(), { trigger: true })
 const emit = defineEmits<{ added: [] }>()
+const open = defineModel<boolean>('open', { default: false })
 const { t } = useI18n()
-const open = ref(false)
 </script>
 
 <template>
   <UButton
+    v-if="trigger"
     icon="i-lucide-search"
     :label="t('marketData.search')"
     data-testid="asset-search-open"
