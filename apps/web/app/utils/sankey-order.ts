@@ -7,7 +7,7 @@
 export interface SankeyNodeIn {
   id: string
   label: string
-  kind: 'income' | 'main' | 'sub' | 'balance'
+  kind: 'income' | 'deficit' | 'main' | 'sub' | 'balance'
 }
 export interface SankeyLinkIn {
   source: string
@@ -49,7 +49,11 @@ export function sankeyOrder(
 
   const rank = new Map<string, number>()
   const groupOf = new Map<string, string>()
-  nodes.filter((node) => node.kind === 'income').forEach((node, i) => rank.set(node.id, i))
+  // Left column: Einnahmen on top, Fehlbetrag (spending beyond income) below it.
+  nodes
+    .filter((node) => node.kind === 'income' || node.kind === 'deficit')
+    .sort((a, b) => Number(a.kind === 'deficit') - Number(b.kind === 'deficit'))
+    .forEach((node, i) => rank.set(node.id, i))
   mains.forEach((id, i) => {
     rank.set(id, i)
     groupOf.set(id, id)

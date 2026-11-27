@@ -39,7 +39,8 @@ export const sankeyResponse = z.object({
     z.object({
       id: z.string(),
       label: z.string(),
-      kind: z.enum(['income', 'main', 'sub', 'balance']),
+      /** `deficit`: spending beyond income in the period (013), shown left below Einnahmen. */
+      kind: z.enum(['income', 'deficit', 'main', 'sub', 'balance']),
     }),
   ),
   links: z.array(z.object({ source: z.string(), target: z.string(), valueCents: cents })),

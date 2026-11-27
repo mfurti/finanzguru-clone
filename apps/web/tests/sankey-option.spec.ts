@@ -180,4 +180,23 @@ describe('buildSankeyOption (011 T002)', () => {
     for (const link of series(option).links.filter((row) => !row.source.startsWith('income')))
       expect(top.get(link.target)!).toBeGreaterThanOrEqual(top.get(link.source)!)
   })
+
+  it('puts Fehlbetrag below Einnahmen in the first column (013)', () => {
+    const option = buildSankeyOption({
+      ...base,
+      incomeCents: 100000,
+      nodes: [...nodes, { id: 'deficit', label: 'Fehlbetrag', kind: 'deficit' as const }],
+      links: [
+        { source: 'income', target: 'main:wohnen', value: 90000 },
+        { source: 'income', target: 'main:leben', value: 10000 },
+        { source: 'deficit', target: 'main:leben', value: 30000 },
+        { source: 'main:wohnen', target: 'sub:miete', value: 90000 },
+        { source: 'main:leben', target: 'sub:essen', value: 40000 },
+      ],
+    })
+    const first = series(option)
+      .data.filter((item) => item.depth === 0)
+      .map((item) => item.name)
+    expect(first).toEqual(['income', 'deficit'])
+  })
 })

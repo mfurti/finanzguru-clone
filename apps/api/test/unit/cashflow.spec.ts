@@ -99,8 +99,22 @@ describe('sankey', () => {
       valueCents: 75000,
     })
     expect(graph.nodes.find((node) => node.id === 'rest')).toBeUndefined()
-    const fromIncome = graph.links.filter((link) => link.source === 'income')
-    expect(fromIncome.reduce((sum, link) => sum + link.valueCents, 0)).toBe(177824)
+    // 013: Einnahmen carries only the real income (1.644,01 €); the 134,23 € spent beyond
+    // it come from "Fehlbetrag" (before, Einnahmen showed all 1.778,24 € of expenses).
+    const sum = (source: string) =>
+      graph.links
+        .filter((link) => link.source === source)
+        .reduce((total, link) => total + link.valueCents, 0)
+    expect(sum('income')).toBe(164401)
+    expect(sum('deficit')).toBe(13423)
+    expect(graph.nodes[1]).toEqual({ id: 'deficit', label: 'Fehlbetrag', kind: 'deficit' })
+    // Categories with sub categories are paid first; the rest of "Nicht kategorisiert" is
+    // the deficit, so no flow crosses.
+    expect(graph.links).toContainEqual({
+      source: 'deficit',
+      target: expect.stringMatching(/^main:/),
+      valueCents: 13423,
+    })
   })
 
   it('adds the unspent rest when income exceeds expenses', () => {
