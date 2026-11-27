@@ -8,7 +8,7 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 Migration `0015_*`: `account.position` ("integer, default 0"), `account.archived_at` ("text, nullable"), table `session` ("id text PK, created_at, last_seen_at, user_agent ≤ 200 chars") in `apps/api/src/database/schema.ts`; add `fflate` (exact pin) to `apps/api/package.json`.
+- [X] T001 Migration `0015_*`: `account.position` ("integer, default 0"), `account.archived_at` ("text, nullable"), table `session` ("id text PK, created_at, last_seen_at, user_agent ≤ 200 chars") in `apps/api/src/database/schema.ts`; add `fflate` (exact pin) to `apps/api/package.json`.
 
 ## Phase 2: Foundational
 
