@@ -8,7 +8,7 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 Migration `0013_*`: `institution.is_demo` ("integer boolean, default 0"), `account.source_balance_cents` ("integer, nullable"), `account.source_balance_date` ("text ISO date, nullable"); mark the seeded "Demo Broker"/"Demo Bank" institutions; demo seed sets `is_demo` in `apps/api/src/database/demo.ts`; schema in `apps/api/src/database/schema.ts`.
+- [X] T001 Migration `0013_*`: `institution.is_demo` ("integer boolean, default 0"), `account.source_balance_cents` ("integer, nullable"), `account.source_balance_date` ("text ISO date, nullable"); mark the seeded "Demo Broker"/"Demo Bank" institutions; demo seed sets `is_demo` in `apps/api/src/database/demo.ts`; schema in `apps/api/src/database/schema.ts`.
 
 ## Phase 2: User Story 1 – Figures the owner can rely on (P1) 🎯 MVP
 

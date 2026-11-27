@@ -135,14 +135,14 @@ export function seedDemo(db: Db, today = todayIso()): DemoResult {
     const broker =
       tx
         .insert(institution)
-        .values({ name: 'Demo Broker' })
+        .values({ name: 'Demo Broker', isDemo: true })
         .onConflictDoNothing()
         .returning()
         .get() ?? tx.select().from(institution).where(eq(institution.name, 'Demo Broker')).get()!
     const bank =
       tx
         .insert(institution)
-        .values({ name: 'Demo Bank' })
+        .values({ name: 'Demo Bank', isDemo: true })
         .onConflictDoNothing()
         .returning()
         .get() ?? tx.select().from(institution).where(eq(institution.name, 'Demo Bank')).get()!

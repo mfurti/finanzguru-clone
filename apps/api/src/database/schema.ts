@@ -80,6 +80,8 @@ export const institution = sqliteTable(
     name: text('name').notNull().unique(),
     bic: text('bic'),
     logoKey: text('logo_key'),
+    /** Created by the demo seed (013): removable in one step, never the owner's data. */
+    isDemo: integer('is_demo', { mode: 'boolean' }).notNull().default(false),
   },
   (t) => [check('institution_bic_len', sql`${t.bic} IS NULL OR length(${t.bic}) IN (8, 11)`)],
 )
@@ -117,6 +119,9 @@ export const account = sqliteTable(
     parentAccountId: text('parent_account_id').references((): AnySQLiteColumn => account.id),
     sourceId: text('source_id').references(() => dataSource.id),
     balanceCents: integer('balance_cents').notNull().default(0),
+    /** Balance reported by the source (bank/broker sync) and its date, for the check (013). */
+    sourceBalanceCents: integer('source_balance_cents'),
+    sourceBalanceDate: text('source_balance_date'),
     isHidden: integer('is_hidden', { mode: 'boolean' }).notNull().default(false),
     sortOrder: integer('sort_order').notNull().default(0),
     lastSyncedAt: text('last_synced_at'),

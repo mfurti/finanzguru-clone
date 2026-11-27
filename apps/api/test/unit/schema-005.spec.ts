@@ -7,10 +7,8 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { MIGRATIONS_FOLDER, runMigrations } from '../../src/database/migrate'
 import {
-  account,
   bankConsent,
   dataSource,
-  institution,
   instrument,
   quote,
   syncRun,
@@ -90,16 +88,11 @@ describe('feature 005 schema (migration 0008)', () => {
       .values({ id: 'scalable_mcp', kind: 'scalable_mcp', status: 'active', displayName: 'S' })
       .run()
     db.insert(syncRun).values({ sourceId: 'scalable_mcp', status: 'succeeded' }).run()
-    db.insert(institution).values({ id: 'in1', name: 'Bank' }).run()
-    db.insert(account)
-      .values({
-        id: 'a1',
-        institutionId: 'in1',
-        name: 'Giro',
-        type: 'checking',
-        sourceId: 'scalable_mcp',
-      })
-      .run()
+    // Plain SQL: the current tables have columns a 0007 database does not (013: is_demo,
+    // source_balance_*).
+    sqlite.exec(`INSERT INTO institution (id, name) VALUES ('in1', 'Bank')`)
+    sqlite.exec(`INSERT INTO account (id, institution_id, name, type, source_id)
+      VALUES ('a1', 'in1', 'Giro', 'checking', 'scalable_mcp')`)
     // Plain SQL: the current table definition has columns a 0007 database does not (e.g. note).
     sqlite.exec(`INSERT INTO transactions (id, account_id, booking_date, amount_cents, type, source, fingerprint)
       VALUES ('t1', 'a1', '2026-11-01', -500, 'expense', 'csv', 'f1')`)
