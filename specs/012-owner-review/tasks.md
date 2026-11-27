@@ -34,7 +34,7 @@
 
 **Goal**: P11, P12. **Independent test**: quickstart Q6.
 
-- [ ] T012 [US3] Sankey order without upward flows (R7): mains with subs first, mains without subs then balance at the bottom, invisible filler subs in `apps/web/app/utils/sankey-order.ts` / `sankey-option.ts` (filler hidden from labels, tooltip, block list); unit tests (order, filler, no sub above its main).
+- [X] T012 [US3] Sankey order without upward flows (R7): mains with subs first, mains without subs then balance at the bottom, invisible filler subs in `apps/web/app/utils/sankey-order.ts` / `sankey-option.ts` (filler hidden from labels, tooltip, block list); unit tests (order, filler, no sub above its main).
 - [ ] T013 [US3] Responsive donut (R8) in `apps/web/app/components/common/DonutChart.vue`, used by `CategoryDonut.vue`; component test.
 
 ## Phase 5: User Story 4 – Watchlist, budgets, insurance (P3)

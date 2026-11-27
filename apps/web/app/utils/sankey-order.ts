@@ -35,21 +35,24 @@ export function sankeyOrder(
   const kind = new Map(nodes.map((node) => [node.id, node.kind]))
   const byAmount = (a: string, b: string) => (total.get(b) ?? 0) - (total.get(a) ?? 0)
 
+  // Main categories that split into sub categories first, then those without (e.g. "Nicht
+  // kategorisiert"), the balance last: every sub block then starts at or below its main
+  // block, so no flow bends upwards (012 P11, like the reference).
+  const hasSubs = new Set(
+    nodes.filter((node) => node.kind === 'sub').map((node) => parent.get(node.id)),
+  )
+  const group = (id: string) => (kind.get(id) === 'balance' ? 2 : hasSubs.has(id) ? 0 : 1)
   const mains = nodes
     .filter((node) => node.kind === 'main' || node.kind === 'balance')
     .map((node) => node.id)
-    .sort((a, b) => {
-      // Balance ("Gespart"/"Saldo") always at the bottom of its column.
-      const balance = Number(kind.get(a) === 'balance') - Number(kind.get(b) === 'balance')
-      return balance || byAmount(a, b)
-    })
+    .sort((a, b) => group(a) - group(b) || byAmount(a, b))
 
   const rank = new Map<string, number>()
-  const group = new Map<string, string>()
+  const groupOf = new Map<string, string>()
   nodes.filter((node) => node.kind === 'income').forEach((node, i) => rank.set(node.id, i))
   mains.forEach((id, i) => {
     rank.set(id, i)
-    group.set(id, id)
+    groupOf.set(id, id)
   })
 
   let position = 0
@@ -60,10 +63,10 @@ export function sankeyOrder(
       .sort(byAmount)
     for (const child of children) {
       rank.set(child, position++)
-      group.set(child, main)
+      groupOf.set(child, main)
     }
   }
   // Sub nodes without a known parent go last.
   for (const node of nodes) if (!rank.has(node.id)) rank.set(node.id, position++)
-  return { rank, group }
+  return { rank, group: groupOf }
 }
