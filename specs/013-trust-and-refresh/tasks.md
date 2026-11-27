@@ -31,7 +31,7 @@
 
 **Goal**: R1, R2. **Independent test**: quickstart Q5.
 
-- [ ] T009 [P] [US3] Crosshair/tooltip without transition in all charts with a hover line (`NetWorthChart`, `PerformanceChart`, `CashflowBars`, `DividendHistory`, `CompareChart`, `ReturnViews`, `AccountDetail`, instrument page); Playwright check that the line moves within one frame.
+- [X] T009 [P] [US3] Crosshair/tooltip without transition in all charts with a hover line (`NetWorthChart`, `PerformanceChart`, `CashflowBars`, `DividendHistory`, `CompareChart`, `ReturnViews`, `AccountDetail`, instrument page); Playwright check that the line moves within one frame.
 - [ ] T010 [P] [US3] Remove the dashboard card hover (`card-hover`) in `apps/web/app/pages/index.vue` and the utility if unused (`apps/web/app/assets/css/main.css`); Playwright check that a card keeps its background on hover.
 
 ## Phase 5: Polish

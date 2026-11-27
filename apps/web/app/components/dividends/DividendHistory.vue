@@ -32,7 +32,7 @@ const tooltip = (bar: Bar) =>
           :tick-format="(v: number) => formatEurCompact(Math.round(v * 100))"
           :num-ticks="3"
         />
-        <VisCrosshair :template="tooltip" />
+        <VisCrosshair :duration="0" :template="tooltip" />
         <VisTooltip />
       </VisXYContainer>
       <template #fallback><USkeleton class="h-[200px] w-full" /></template>

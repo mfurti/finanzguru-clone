@@ -89,7 +89,7 @@ const tooltip = (point: Point) =>
               :grid-line="false"
             />
             <VisAxis type="y" :num-ticks="4" />
-            <VisCrosshair :template="tooltip" />
+            <VisCrosshair :duration="0" :template="tooltip" />
             <VisTooltip />
           </VisXYContainer>
         </ClientOnly>

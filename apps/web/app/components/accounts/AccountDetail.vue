@@ -144,7 +144,7 @@ const logoAccount = computed(() => accounts.value?.find((acc) => acc.id === prop
               :tick-format="(value: number) => formatEurCompact(Math.round(value * 100))"
               :num-ticks="4"
             />
-            <VisCrosshair :template="tooltip" color="var(--ui-primary)" />
+            <VisCrosshair :duration="0" :template="tooltip" color="var(--ui-primary)" />
             <VisTooltip />
           </VisXYContainer>
           <template #fallback><USkeleton class="h-[220px] w-full" /></template>

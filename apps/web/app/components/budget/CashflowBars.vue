@@ -34,6 +34,12 @@ const hatch = (series: number) => `url(#hatch-${uid}-${series})`
 
 /** Period under the mouse (crosshair), null when the pointer is outside. */
 const hovered = ref<number | null>(null)
+/**
+ * Bars animate in on load; once the pointer is over the chart the highlight switches at once
+ * (013 R1) – a 600 ms colour transition made it lag behind the pointer.
+ */
+const pointerActive = ref(false)
+const barDuration = computed(() => (pointerActive.value ? 0 : 600))
 /** New accessor per hover state so Unovis re-renders the bar colors. */
 const color = computed(() => {
   const active = hovered.value
@@ -73,7 +79,12 @@ const barEvents = { [GroupedBar.selectors.bar]: { click: (bar: Bar) => emit('sel
 </script>
 
 <template>
-  <div data-testid="cashflow-bars" @pointermove="onPointerMove" @pointerleave="hovered = null">
+  <div
+    data-testid="cashflow-bars"
+    @pointerenter="pointerActive = true"
+    @pointermove="onPointerMove"
+    @pointerleave="hovered = null"
+  >
     <!-- Diagonal hatching for the current period, one pattern per series. -->
     <svg width="0" height="0" class="absolute" aria-hidden="true">
       <defs>
@@ -113,6 +124,7 @@ const barEvents = { [GroupedBar.selectors.bar]: { click: (bar: Bar) => emit('sel
           :bar-padding="0.15"
           :group-max-width="26"
           :events="barEvents"
+          :duration="barDuration"
         />
         <VisAxis
           type="x"
@@ -138,6 +150,7 @@ const barEvents = { [GroupedBar.selectors.bar]: { click: (bar: Bar) => emit('sel
           :num-ticks="3"
         />
         <VisCrosshair
+          :duration="0"
           :template="tooltip"
           color="transparent"
           stroke-color="transparent"

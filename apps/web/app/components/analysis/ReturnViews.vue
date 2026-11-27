@@ -81,7 +81,7 @@ const barTooltip = (p: BarPoint) =>
             <VisLine :x="lineX" :y="lineY" color="var(--ui-primary)" :line-width="2" />
             <VisAxis type="x" :tick-format="tickDate" :num-ticks="4" :grid-line="false" />
             <VisAxis type="y" :tick-format="tickPct" :num-ticks="4" />
-            <VisCrosshair :template="lineTooltip" color="var(--ui-primary)" />
+            <VisCrosshair :duration="0" :template="lineTooltip" color="var(--ui-primary)" />
             <VisTooltip />
           </VisXYContainer>
           <template #fallback><USkeleton class="h-[240px] w-full" /></template>
@@ -98,7 +98,7 @@ const barTooltip = (p: BarPoint) =>
             :grid-line="false"
           />
           <VisAxis type="y" :tick-format="tickPct" :num-ticks="4" />
-          <VisCrosshair :template="barTooltip" />
+          <VisCrosshair :duration="0" :template="barTooltip" />
           <VisTooltip />
         </VisXYContainer>
         <template #fallback><USkeleton class="h-[220px] w-full" /></template>
