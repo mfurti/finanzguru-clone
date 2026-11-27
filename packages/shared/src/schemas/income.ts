@@ -91,12 +91,28 @@ export const exemptionOrderDto = z.object({
 })
 export type ExemptionOrderDto = z.infer<typeof exemptionOrderDto>
 
+/**
+ * One row per provider like the reference (012 P9): every institution with a depot or an
+ * exemption order; orderId null = no order yet (assigned 0, can be entered inline).
+ */
+export const exemptionProviderDto = z.object({
+  institutionId: z.string(),
+  institutionName: z.string(),
+  orderId: z.string().nullable(),
+  amountCents: cents,
+  usedCents: cents,
+  remainingCents: cents,
+  taxableIncomeCents: cents,
+})
+export type ExemptionProviderDto = z.infer<typeof exemptionProviderDto>
+
 export const taxYearDto = z.object({
   year: z.number().int(),
   assessment: z.enum(ASSESSMENTS),
   allowanceCents: cents,
   baseRate: decimalString.nullable(),
   orders: z.array(exemptionOrderDto),
+  providers: z.array(exemptionProviderDto),
   totalCents: cents,
   usedCents: cents,
   exceedsAllowance: z.boolean(),

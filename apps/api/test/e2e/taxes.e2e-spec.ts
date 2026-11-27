@@ -50,6 +50,18 @@ describe('Steuern (US4)', () => {
     expect((await call('GET', '/api/taxes/abc')).statusCode).toBe(400)
   })
 
+  it('lists one provider per depot institution, also without an order (012 T011)', async () => {
+    const empty = (await call('GET', '/api/taxes/2021')).json() as TaxYearDto
+    expect(empty.providers).toEqual([
+      expect.objectContaining({ institutionId: brokerId, orderId: null, amountCents: 0 }),
+    ])
+    const current = (await call('GET', `/api/taxes/${year}`)).json() as TaxYearDto
+    const broker = current.providers.find((p) => p.institutionId === brokerId)!
+    expect(broker.orderId).toBe(current.orders[0]!.id)
+    expect(broker.amountCents).toBe(current.orders[0]!.amountCents)
+    expect(current.providers.some((p) => p.institutionId === bankId)).toBe(false)
+  })
+
   it('warns when orders exceed the allowance and counts used income per broker (W10)', async () => {
     const start = (await call('GET', `/api/taxes/${year}`)).json() as TaxYearDto
     expect(start.orders).toHaveLength(1)

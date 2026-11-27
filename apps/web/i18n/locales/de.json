@@ -559,6 +559,11 @@
     "viewGrid": "Kalender"
   },
   "taxes": {
+    "provider": "Anbieter",
+    "assigned": "Zugeteilt",
+    "usedCol": "Ausgeschöpft",
+    "availableCol": "Verfügbar",
+    "assignedFor": "Zugeteilt für {name}",
     "title": "Steuern",
     "allowance": "Freibetrag",
     "available": "{amount} noch verfügbar",

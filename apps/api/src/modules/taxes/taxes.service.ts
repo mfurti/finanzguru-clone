@@ -111,11 +111,43 @@ export class TaxesService {
       settings.assessment,
       orders.map((o) => o.amountCents),
     )
+    // Providers (012 P9): every institution with a depot, plus those with an order.
+    const depotInstitutions = this.db
+      .selectDistinct({ id: institution.id, name: institution.name })
+      .from(account)
+      .innerJoin(institution, eq(institution.id, account.institutionId))
+      .where(eq(account.type, 'depot'))
+      .all()
+    const providers = [
+      ...orders.map((order) => ({
+        institutionId: order.institutionId,
+        institutionName: order.institutionName,
+        orderId: order.id,
+        amountCents: order.amountCents,
+        usedCents: order.usedCents,
+        remainingCents: order.remainingCents,
+        taxableIncomeCents: order.taxableIncomeCents,
+      })),
+      ...depotInstitutions
+        .filter((inst) => !orders.some((order) => order.institutionId === inst.id))
+        .map((inst) => {
+          const income = this.incomeOf(inst.id, year)
+          return {
+            institutionId: inst.id,
+            institutionName: inst.name,
+            orderId: null,
+            amountCents: 0,
+            ...orderUsage(0, income),
+            taxableIncomeCents: income,
+          }
+        }),
+    ].sort((a, b) => a.institutionName.localeCompare(b.institutionName, 'de'))
     return {
       year,
       assessment: settings.assessment,
       baseRate: settings.baseRate,
       orders,
+      providers,
       usedCents: orders.reduce((sum, o) => sum + o.usedCents, 0),
       ...check,
     }
