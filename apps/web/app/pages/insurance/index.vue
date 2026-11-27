@@ -42,6 +42,7 @@ async function confirmDelete(): Promise<void> {
         @click="add"
       />
     </div>
+    <InsuranceSuggestions @changed="refresh()" />
     <UCard>
       <EmptyState
         v-if="contracts!.length === 0"

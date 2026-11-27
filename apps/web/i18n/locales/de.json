@@ -447,6 +447,13 @@
     "total": "Gesamtkosten pro Jahr",
     "emptyTitle": "Noch keine Versicherungen",
     "emptyDescription": "Erfasse deine Verträge, um Beiträge und Laufzeiten im Blick zu behalten.",
+    "suggestions": {
+      "title": "Gefundene Verträge",
+      "hint": "Aus regelmäßigen Abbuchungen in der Kategorie Versicherung erkannt",
+      "payments": "{n} Zahlungen",
+      "accept": "Übernehmen",
+      "dismiss": "Ausblenden"
+    },
     "deleteTitle": "Vertrag löschen?",
     "deleteText": "Der Vertrag bei {name} wird gelöscht.",
     "types": {

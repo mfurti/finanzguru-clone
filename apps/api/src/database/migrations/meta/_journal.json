@@ -85,6 +85,13 @@
       "when": 1795650651848,
       "tag": "0011_recipient_logo",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1795740122447,
+      "tag": "0012_insurance_suggestion_dismissal",
+      "breakpoints": true
     }
   ]
 }
