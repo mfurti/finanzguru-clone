@@ -16,3 +16,18 @@ Local only (web 3100, API 3101). Gates: `pnpm lint`, `pnpm format:check`, `pnpm 
 ## Status after T017 (2026-11-27)
 
 Layout guard (375 / 768 / 1440 px), hydration check, Sankey hover, Übersicht navigation and donut size e2e green. Layout guard found the provider table scrolling without a fixed first column on phones; fixed (provider column sticky).
+
+## Status after T018 (2026-11-27, no amounts)
+
+| # | Status |
+|---|---|
+| Q1 | Übersicht keeps its side navigation (e2e); Investments shows "Buchungen" and "Watchlist" |
+| Q2 | Transaktionen columns Datum, Kategorie, Tags, Eigenschaften, Betrag, Steuern; Positionen "Spalten" panel with select all, reorder and save, kept after reload |
+| Q3 | Kauf green, Verkauf blue badge; filter offers only portfolios in Investments ("Alle Portfolios") |
+| Q4 | Yearly dividends equal the reference for the same (real) accounts; the gap came from the demo accounts under "Alle Konten". Cards Investments / Dividendenerträge / Dividendenrendite; Aufteilung › Währungen |
+| Q5 | One row per provider (every depot institution), assigned amount edited in place, used with bar, available |
+| Q6 | Sankey: no upward flows, categories without sub categories and "Nicht kategorisiert" at the bottom; categories donut 400 px at 1440 px |
+| Q7 | Watchlist tabs with default list, header menu, reference empty state; Budgets empty state as one card; insurance suggestions with accept/dismiss |
+| Q8 | Layout guard, hydration, Sankey hover green |
+
+Checked in dark and light mode.
