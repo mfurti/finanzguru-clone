@@ -18,3 +18,7 @@ Local only (web 3100, API 3101). Gates: `pnpm lint`, `pnpm format:check`, `pnpm 
 | A2/A4 (period gain, price gain) | Reference period base still not derivable from its UI; ⓘ notes state the app's definition and that values can differ. |
 | A5 (realized net) | Broker sync delivers no tax per sell; ⓘ note says net = gross for sells. |
 | New in T004 | Sankey showed Einnahmen larger than the real income in months with a deficit; fixed ("Fehlbetrag" block), covered by the consistency tests. |
+
+## Status after T011 (2026-11-27)
+
+Layout guard (375 / 768 / 1440 px), hydration, Sankey hover, data refresh, chart hover, dashboard hover, Übersicht navigation and donut size e2e green on desktop and mobile. On phones "Aktualisieren" and "Anpassen" show only their icons so the action row fits at 375 px. Owner's visual check in the dev server pending (local login needed).
