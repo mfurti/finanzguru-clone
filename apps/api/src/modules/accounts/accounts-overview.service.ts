@@ -101,6 +101,9 @@ export class AccountsOverviewService {
         institution: institution.name,
         isHidden: account.isHidden,
         lastSyncedAt: account.lastSyncedAt,
+        sourceBalanceCents: account.sourceBalanceCents,
+        sourceBalanceDate: account.sourceBalanceDate,
+        balanceDiffCents: account.balanceDiffCents,
         sourceId: dataSource.id,
         sourceKind: dataSource.kind,
         sourceStatus: dataSource.status,
@@ -155,6 +158,16 @@ export class AccountsOverviewService {
       ...lastUpdate,
       canSync,
       balanceCents: series.at(-1) ?? 0,
+      balanceCheck:
+        row.balanceDiffCents !== null &&
+        row.sourceBalanceCents !== null &&
+        row.sourceBalanceDate !== null
+          ? {
+              sourceCents: row.sourceBalanceCents,
+              at: row.sourceBalanceDate,
+              differenceCents: row.balanceDiffCents,
+            }
+          : null,
     } satisfies AccountOverviewRow
   }
 

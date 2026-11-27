@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 import type { ImportJobDto, RowError, TransactionSource } from '@finance/shared'
-import { and, asc, eq, gte, inArray, isNotNull, isNull, lte, ne, or } from 'drizzle-orm'
+import { and, asc, eq, gt, gte, inArray, isNotNull, isNull, lte, ne, or, sum } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import {
@@ -255,7 +255,10 @@ export class ImportPipeline {
       const accountId = accountIds.byRef.get(normalized.externalRef)!
       if (normalized.balanceCents !== undefined) {
         tx.update(account)
-          .set({ balanceCents: normalized.balanceCents })
+          .set({
+            balanceCents: normalized.balanceCents,
+            ...this.balanceCheck(tx, accountId, normalized.balanceCents),
+          })
           .where(eq(account.id, accountId))
           .run()
       } else if (createdAccounts.has(accountId) && normalized.type !== 'depot') {
@@ -470,5 +473,29 @@ export class ImportPipeline {
       ids.set(item.isin, id)
     }
     return ids
+  }
+
+  /**
+   * Balance check (013 US1): the previous source balance plus every booking imported since
+   * must equal the balance the source reports now; a difference means bookings are missing
+   * or doubled (or still pending at the bank).
+   */
+  private balanceCheck(tx: Tx, accountId: string, reportedCents: number) {
+    const now = new Date().toISOString()
+    const previous = tx
+      .select({ cents: account.sourceBalanceCents, at: account.sourceBalanceDate })
+      .from(account)
+      .where(eq(account.id, accountId))
+      .get()
+    let balanceDiffCents: number | null = null
+    if (previous?.cents !== null && previous?.cents !== undefined && previous.at) {
+      const since = tx
+        .select({ cents: sum(transaction.amountCents) })
+        .from(transaction)
+        .where(and(eq(transaction.accountId, accountId), gt(transaction.createdAt, previous.at)))
+        .get()
+      balanceDiffCents = reportedCents - (previous.cents + Number(since?.cents ?? 0))
+    }
+    return { sourceBalanceCents: reportedCents, sourceBalanceDate: now, balanceDiffCents }
   }
 }

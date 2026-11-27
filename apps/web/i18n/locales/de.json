@@ -711,6 +711,8 @@
     "deleteConfirm": "Tag „{name}“ löschen? Die Buchungen bleiben erhalten."
   },
   "accountsOverview": {
+    "balanceDiff": "Abweichung zur Quelle: Die Bank meldet {source}, aus den Buchungen seit dem letzten Abruf folgt ein anderer Stand ({diff}). Fehlt eine Buchung, ist sie doppelt oder noch vorgemerkt?",
+    "balanceDiffShort": "Kontostand weicht von der Quelle ab",
     "depots": "Depots",
     "accounts": "Konten",
     "lastImport": "Letzter Import: {date}",

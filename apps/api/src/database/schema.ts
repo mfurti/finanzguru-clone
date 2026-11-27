@@ -119,9 +119,14 @@ export const account = sqliteTable(
     parentAccountId: text('parent_account_id').references((): AnySQLiteColumn => account.id),
     sourceId: text('source_id').references(() => dataSource.id),
     balanceCents: integer('balance_cents').notNull().default(0),
-    /** Balance reported by the source (bank/broker sync) and its date, for the check (013). */
+    /**
+     * Balance reported by the source (bank/broker sync), when it was reported (ISO time) and
+     * the difference to "previous source balance + bookings imported since" (013 balance
+     * check; null = nothing to compare yet, 0 = consistent).
+     */
     sourceBalanceCents: integer('source_balance_cents'),
     sourceBalanceDate: text('source_balance_date'),
+    balanceDiffCents: integer('balance_diff_cents'),
     isHidden: integer('is_hidden', { mode: 'boolean' }).notNull().default(false),
     sortOrder: integer('sort_order').notNull().default(0),
     lastSyncedAt: text('last_synced_at'),
