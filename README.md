@@ -112,6 +112,7 @@ Images are built by GitHub Actions and published to GHCR (`ghcr.io/mfurti/finanz
 ## Privacy and security
 
 - Single owner, password login (scrypt hash), sealed httpOnly session cookie, login rate limit.
+- Change the password, see the active sessions, sign out everywhere and set an automatic logout under Einstellungen › Sicherheit. `owner:set-password` still resets a forgotten password from the server.
 - Everything is stored in one local SQLite file. Nothing is sent to third parties except the data sources you connect.
 - Data source credentials are encrypted with AES-256-GCM (`API_ENCRYPTION_KEY`) and never returned by the API or written to logs.
 - Scalable Capital access is read-only by design; the app cannot place orders or move money.

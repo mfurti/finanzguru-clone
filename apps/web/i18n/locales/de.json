@@ -163,6 +163,28 @@
       },
       "purchases": "Wertpapierkäufe zählen als gespart",
       "purchasesHelp": "Käufe vom Verrechnungskonto erscheinen unter „Sparen und Anlegen“ und in „Gespart“. Aus: Käufe bleiben ganz aus dem Budget."
+    },
+    "securityTitle": "Sicherheit",
+    "security": {
+      "passwordTitle": "Passwort ändern",
+      "passwordHint": "Nach der Änderung werden alle anderen Geräte abgemeldet.",
+      "current": "Aktuelles Passwort",
+      "next": "Neues Passwort",
+      "nextHelp": "Mindestens 12 Zeichen.",
+      "repeat": "Neues Passwort wiederholen",
+      "mismatch": "Die Passwörter stimmen nicht überein.",
+      "change": "Passwort ändern",
+      "passwordChanged": "Passwort geändert. Andere Geräte wurden abgemeldet.",
+      "sessionsTitle": "Angemeldete Geräte",
+      "endOthers": "Überall sonst abmelden",
+      "endedOthers": "Alle anderen Geräte wurden abgemeldet.",
+      "thisDevice": "Dieses Gerät",
+      "lastSeen": "Zuletzt aktiv: {date}",
+      "unknownDevice": "Unbekanntes Gerät",
+      "autoLogout": "Automatisch abmelden",
+      "autoLogoutHelp": "Nach dieser Zeit ohne Aktivität ist eine neue Anmeldung nötig.",
+      "never": "Nie",
+      "afterMinutes": "Nach {n} Minuten"
     }
   },
   "overview": {

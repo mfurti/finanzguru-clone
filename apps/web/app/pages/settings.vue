@@ -11,6 +11,7 @@ const GROUPS = [
   'data',
   'display',
   'finance',
+  'security',
   'sources',
   'categories',
   'inflation',
@@ -19,7 +20,7 @@ const GROUPS = [
 const items = computed<SectionNavItem[]>(() =>
   GROUPS.map((key) => ({
     key,
-    label: t(`settings.${key}`),
+    label: t(key === 'security' ? 'settings.securityTitle' : `settings.${key}`),
     to: `/settings/${key}`,
     active: route.path.startsWith(`/settings/${key}`),
   })),

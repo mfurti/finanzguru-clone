@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -15,12 +16,13 @@ import { ThrottlerGuard } from '@nestjs/throttler'
 import type { FastifyRequest } from 'fastify'
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
-import type { OwnerSessionDto } from '@finance/shared'
+import { type OwnerSessionDto, passwordChangeInput } from '@finance/shared'
 import { Public } from '../../common/decorators/public.decorator'
 import { AuthService } from './auth.service'
 import { SessionsService } from './sessions.service'
 
 class LoginDto extends createZodDto(z.object({ password: z.string().min(1).max(200) })) {}
+class PasswordChangeDto extends createZodDto(passwordChangeInput) {}
 
 @ApiTags('auth')
 @Controller('auth')
@@ -49,6 +51,24 @@ export class AuthController {
     const sid = request.session.get('sid')
     if (typeof sid === 'string') this.sessions.end(sid)
     request.session.delete()
+  }
+
+  /**
+   * Change the password (014 US4): needs the current one; every other session ends, this one
+   * stays logged in. Rate-limited like the login.
+   */
+  @UseGuards(ThrottlerGuard)
+  @Post('password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async changePassword(
+    @Body() body: PasswordChangeDto,
+    @Req() request: FastifyRequest,
+  ): Promise<void> {
+    if (!(await this.auth.verify(body.current))) {
+      throw new BadRequestException('Aktuelles Passwort ist falsch')
+    }
+    await this.auth.changePassword(body.next)
+    this.sessions.endOthers(request.session.get('sid')!)
   }
 
   /** Active logins of the owner, newest first (014 US4). */
