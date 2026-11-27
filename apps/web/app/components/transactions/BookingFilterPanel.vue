@@ -113,7 +113,7 @@ function clear(): void {
 
 const accountItems = computed(() =>
   (accounts.value ?? [])
-    .filter((account) => !account.isHidden)
+    .filter((account) => !account.isHidden && !account.archivedAt)
     .map((account) => ({ label: account.name, value: account.id })),
 )
 const reviewItems = computed(() => [

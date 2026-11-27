@@ -21,6 +21,7 @@ import {
   period,
   createAccountInput,
   updateAccountInput,
+  accountOrderInput,
 } from '@finance/shared'
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
@@ -40,6 +41,7 @@ class DetailQueryDto extends createZodDto(
 ) {}
 class CreateAccountDto extends createZodDto(createAccountInput) {}
 class UpdateAccountDto extends createZodDto(updateAccountInput) {}
+class AccountOrderDto extends createZodDto(accountOrderInput) {}
 class DeleteQueryDto extends createZodDto(
   z.object({ force: z.enum(['true', 'false']).optional() }),
 ) {}
@@ -84,6 +86,13 @@ export class AccountsController {
   @Post()
   create(@Body() body: CreateAccountDto): AccountDto {
     return this.writer.create(body)
+  }
+
+  /** Settings › Konten: new order of all accounts (014). */
+  @Post('order')
+  @HttpCode(HttpStatus.OK)
+  order(@Body() body: AccountOrderDto): AccountDto[] {
+    return this.writer.order(body.ids)
   }
 
   @Patch(':id')

@@ -4,6 +4,7 @@ import type { AccountDto } from '@finance/shared'
 /** "Kontostand": sum of the selected (or all visible) cash accounts (US1). */
 const { t } = useI18n()
 const { selected } = useAccountFilter()
+const { settings } = useSettings()
 const { data: accounts } = await useApi<AccountDto[]>('/api/accounts', {
   key: 'accounts',
   default: () => [],
@@ -11,7 +12,11 @@ const { data: accounts } = await useApi<AccountDto[]>('/api/accounts', {
 const total = computed(() =>
   (accounts.value ?? [])
     .filter((acc) => acc.type !== 'depot')
-    .filter((acc) => (selected.value.length ? selected.value.includes(acc.id) : !acc.isHidden))
+    .filter((acc) =>
+      selected.value.length
+        ? selected.value.includes(acc.id)
+        : !acc.isHidden && (!acc.archivedAt || settings.value.archivedInSums),
+    )
     .reduce((sum, acc) => sum + acc.balanceCents, 0),
 )
 </script>

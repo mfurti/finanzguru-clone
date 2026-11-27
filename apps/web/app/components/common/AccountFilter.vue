@@ -14,7 +14,10 @@ const route = useRoute()
 const portfoliosOnly = computed(() => route.path.startsWith('/investments'))
 const visibleAccounts = computed(() =>
   (accounts.value ?? []).filter(
-    (account) => !account.isHidden && (!portfoliosOnly.value || account.type === 'depot'),
+    (account) =>
+      !account.isHidden &&
+      !account.archivedAt &&
+      (!portfoliosOnly.value || account.type === 'depot'),
   ),
 )
 const shownSelection = computed(() =>

@@ -69,7 +69,22 @@
     "categories": "Kategorien & Regeln",
     "inflation": "Inflation",
     "title": "Einstellungen",
-    "saveFailed": "Einstellung konnte nicht gespeichert werden."
+    "saveFailed": "Einstellung konnte nicht gespeichert werden.",
+    "accounts": "Konten",
+    "accountsPage": {
+      "active": "Deine Konten",
+      "hint": "Umbenennen, ausblenden, archivieren und per Ziehen oder Pfeilen sortieren. Ausgeblendete Konten zählen nicht in „Alle Konten“.",
+      "name": "Kontoname",
+      "up": "Nach oben",
+      "down": "Nach unten",
+      "hide": "Ausblenden",
+      "show": "Einblenden",
+      "archive": "Archivieren",
+      "archived": "Archivierte Konten",
+      "noneArchived": "Keine archivierten Konten.",
+      "restore": "Wiederherstellen",
+      "archivedInSums": "Archivierte Konten in Summen mitzählen"
+    }
   },
   "overview": {
     "netWorth": {

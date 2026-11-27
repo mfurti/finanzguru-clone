@@ -16,6 +16,8 @@ export const accountDto = z.object({
   balanceCents: cents,
   isHidden: z.boolean(),
   sortOrder: z.number().int(),
+  /** Archived (014): out of lists and filters; in sums only by setting. */
+  archivedAt: z.string().nullable(),
   lastSyncedAt: z.string().nullable(),
   /** Bank or broker logo (009): brand, local or upload; null = initials. */
   logo: logoRef,
@@ -51,8 +53,17 @@ export const updateAccountInput = z
   .object(accountFields)
   .omit({ institutionName: true })
   .partial()
-  .extend({ isHidden: z.boolean().optional(), sortOrder: z.number().int().optional() })
+  .extend({
+    isHidden: z.boolean().optional(),
+    sortOrder: z.number().int().optional(),
+    /** true archives the account now, false brings it back (014). */
+    archived: z.boolean().optional(),
+  })
 export type UpdateAccountInput = z.infer<typeof updateAccountInput>
+
+/** `POST /api/accounts/order`: every account id in the new order (014). */
+export const accountOrderInput = z.object({ ids: z.array(z.string().min(1)).min(1).max(500) })
+export type AccountOrderInput = z.infer<typeof accountOrderInput>
 
 /** Node of `GET /api/accounts/tree`. */
 export interface AccountTreeItem {

@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common'
 import type { NetWorthQuery, NetWorthResponse, Period } from '@finance/shared'
-import { and, asc, eq, gte, inArray, lt, lte, min, sql } from 'drizzle-orm'
+import { and, asc, eq, gte, inArray, isNull, lt, lte, min, sql } from 'drizzle-orm'
 import { DB } from '../../database/database.constants'
 import type { AppDatabase } from '../../database/drizzle.module'
 import { account, netWorthSnapshot } from '../../database/schema'
 import { ratio } from '../../domain/money'
 import { eachDay, type DateRange, resolveRange, todayIso } from '../../domain/period'
+import { SettingsService } from '../settings/settings.service'
 
 /** Max points per chart series (research R13). */
 export const MAX_POINTS = 400
@@ -36,14 +37,26 @@ export function downsample<T>(points: readonly T[], max = MAX_POINTS): T[] {
 
 @Injectable()
 export class OverviewService {
-  constructor(@Inject(DB) private readonly db: AppDatabase) {}
+  constructor(
+    @Inject(DB) private readonly db: AppDatabase,
+    private readonly settings: SettingsService,
+  ) {}
 
-  /** Selected accounts, or all visible accounts when the filter is empty. */
+  /**
+   * Selected accounts, or all visible accounts when the filter is empty. Archived accounts
+   * (014) count only when the owner keeps them in the sums.
+   */
   resolveAccounts(ids?: readonly string[]): AccountRef[] {
     const query = this.db.select({ id: account.id, type: account.type }).from(account)
     return ids && ids.length > 0
       ? query.where(inArray(account.id, [...ids])).all()
-      : query.where(eq(account.isHidden, false)).all()
+      : query
+          .where(
+            this.settings.get().archivedInSums
+              ? eq(account.isHidden, false)
+              : and(eq(account.isHidden, false), isNull(account.archivedAt)),
+          )
+          .all()
   }
 
   firstSnapshotDate(accountIds: readonly string[]): string | undefined {
