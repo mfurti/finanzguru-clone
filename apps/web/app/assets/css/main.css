@@ -67,20 +67,6 @@ html {
   }
 }
 
-/* Dashboard widgets: border and shadow lift on hover. */
-@utility card-hover {
-  transition:
-    box-shadow 200ms var(--ease-out-soft),
-    translate 200ms var(--ease-out-soft),
-    --tw-ring-color 200ms ease;
-  &:hover {
-    --tw-ring-color: var(--ui-border-accented);
-    box-shadow:
-      0 0 0 1px var(--tw-ring-color),
-      0 8px 24px -12px rgb(0 0 0 / 0.25);
-  }
-}
-
 @keyframes fade-up {
   from {
     opacity: 0;
@@ -113,10 +99,6 @@ html {
     /* backwards, not both: a held end state would block the hover translate. */
     animation: fade-up 320ms var(--ease-out-soft) backwards;
     animation-delay: calc(var(--i, 0) * 45ms);
-  }
-
-  .card-hover:hover {
-    translate: 0 -2px;
   }
 
   /*

@@ -71,7 +71,7 @@ async function saveLayout(next: WidgetLayoutItem[]): Promise<void> {
         :is="WIDGETS[item.widgetKey]"
         v-for="item in top"
         :key="item.widgetKey"
-        class="reveal card-hover"
+        class="reveal"
         :style="{ '--i': rank(item) }"
       />
       <div class="flex flex-col gap-3 lg:grid lg:grid-cols-2 lg:items-start">
@@ -85,7 +85,7 @@ async function saveLayout(next: WidgetLayoutItem[]): Promise<void> {
             :is="WIDGETS[item.widgetKey]"
             v-for="item in column"
             :key="item.widgetKey"
-            class="reveal card-hover"
+            class="reveal"
             :style="{ '--i': rank(item), order: rank(item) }"
           />
         </div>
