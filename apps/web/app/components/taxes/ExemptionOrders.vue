@@ -170,7 +170,9 @@ async function remove(id: string): Promise<void> {
       <table class="w-full min-w-[560px] text-sm" data-testid="provider-table">
         <thead>
           <tr class="text-left text-xs text-muted">
-            <th class="py-2 font-medium">{{ t('taxes.provider') }}</th>
+            <th class="sticky left-0 z-10 bg-(--app-card) py-2 font-medium">
+              {{ t('taxes.provider') }}
+            </th>
             <th class="w-36 py-2 text-right font-medium">{{ t('taxes.assigned') }}</th>
             <th class="w-48 py-2 text-right font-medium">{{ t('taxes.usedCol') }}</th>
             <th class="w-28 py-2 text-right font-medium">{{ t('taxes.availableCol') }}</th>
@@ -184,7 +186,7 @@ async function remove(id: string): Promise<void> {
             :data-institution="provider.institutionId"
             data-testid="provider-row"
           >
-            <td class="py-2">
+            <td class="sticky left-0 z-10 bg-(--app-card) py-2 pr-3">
               <span class="flex items-center gap-2">
                 <MerchantLogo
                   :name="provider.institutionName"

@@ -32,12 +32,13 @@ const donutItems = computed(() =>
 </script>
 
 <template>
-  <div class="mx-auto flex shrink-0 justify-center" data-testid="category-donut">
+  <div class="mx-auto flex w-full justify-center" data-testid="category-donut">
     <EmptyState v-if="items.length === 0" :title="t('budget.noData')" icon="i-lucide-chart-pie" />
     <DonutChart
       v-else
       v-model:hovered="hovered"
       :items="donutItems"
+      :max-size="400"
       @select="(key) => emit('select', key)"
     >
       <template #center="{ item }">
