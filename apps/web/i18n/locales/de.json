@@ -93,8 +93,8 @@
       "inflation": "Inflation",
       "realReturn": "Realrendite",
       "info": {
-        "priceGain": "Veränderung der nicht realisierten Gewinne im Zeitraum (Kurswert minus Durchschnittseinstandswert), ohne realisierte Gewinne und Handelskosten.",
-        "realized": "Gewinne aus Verkäufen im Zeitraum: Verkaufserlös minus Durchschnittseinstandswert der verkauften Stücke; netto nach Gebühren und Steuern.",
+        "priceGain": "Veränderung der nicht realisierten Gewinne im Zeitraum (Kurswert minus Durchschnittseinstandswert), ohne realisierte Gewinne und Handelskosten. Finanzfluss nutzt für den Zeitraum eine andere, nicht offengelegte Basis; Abweichungen sind möglich.",
+        "realized": "Gewinne aus Verkäufen im Zeitraum: Verkaufserlös minus Durchschnittseinstandswert der verkauften Stücke; netto nach Gebühren und Steuern. Die beim Verkauf einbehaltene Steuer liefert der Broker-Abruf nicht, deshalb ist netto hier gleich brutto.",
         "otherGains": "Sonstige Erträge, z. B. aus Kapitalmaßnahmen.",
         "twror": "Zeitgewichtete Rendite: misst die Anlageentscheidung unabhängig vom Zeitpunkt der Ein- und Auszahlungen.",
         "irr": "Interner Zinsfuß (geldgewichtet, p. a.): berücksichtigt Zeitpunkt und Höhe deiner Ein- und Auszahlungen.",
@@ -392,6 +392,8 @@
     "expenses": "Ausgaben",
     "balance": "Saldo",
     "saved": "Gespart",
+    "incomeInfo": "Eingänge auf deinen Konten im Zeitraum. Überträge zwischen deinen eigenen Konten (z. B. aufs Verrechnungskonto des Brokers) zählen nicht – Finanzfluss zählt sie als Einnahme und Ausgabe.",
+    "expensesInfo": "Ausgänge im Zeitraum inklusive Wertpapierkäufen; Überträge zwischen deinen eigenen Konten zählen nicht.",
     "savedInfo": "Ausgaben in „Sparen und Anlegen“, inklusive Wertpapierkäufen, die vom Referenzkonto des Brokers bezahlt werden.",
     "savingsRate": "Sparquote",
     "savingsRateInfo": "Gespart geteilt durch Einnahmen im Zeitraum.",
@@ -969,7 +971,7 @@
   },
   "info": {
     "netWorth": "Summe aller Konten und Depots zum letzten Tag des Zeitraums.",
-    "gain": "Veränderung im Zeitraum ohne Ein- und Auszahlungen."
+    "gain": "Veränderung im Zeitraum ohne Ein- und Auszahlungen. Finanzfluss rechnet den Zeitraumgewinn auf einer anderen, nicht offengelegten Basis; die Werte können deshalb abweichen."
   },
   "addWindow": {
     "title": "Was möchtest du hinzufügen?",

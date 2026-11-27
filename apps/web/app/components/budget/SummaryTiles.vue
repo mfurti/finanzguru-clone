@@ -22,13 +22,17 @@ const { t } = useI18n()
       class="grid grid-cols-3 divide-x divide-accented rounded-xl border border-accented bg-(--app-page) text-center"
     >
       <div class="p-3">
-        <div class="text-xs text-muted">{{ t('budget.income') }}</div>
+        <div class="flex items-center justify-center gap-1 text-xs text-muted">
+          {{ t('budget.income') }} <InfoTooltip :text="t('budget.incomeInfo')" />
+        </div>
         <div class="font-semibold text-success" data-testid="tile-income">
           <Money :cents="summary.incomeCents" animate />
         </div>
       </div>
       <div class="p-3">
-        <div class="text-xs text-muted">{{ t('budget.expenses') }}</div>
+        <div class="flex items-center justify-center gap-1 text-xs text-muted">
+          {{ t('budget.expenses') }} <InfoTooltip :text="t('budget.expensesInfo')" />
+        </div>
         <div class="font-semibold text-error" data-testid="tile-expenses">
           <Money :cents="-summary.expenseCents" animate />
         </div>

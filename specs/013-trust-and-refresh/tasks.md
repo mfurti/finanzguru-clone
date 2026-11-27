@@ -18,7 +18,7 @@
 - [X] T003 [US1] Confirmed "Demo-Daten entfernen" button on `apps/web/app/pages/settings/sources.vue` (shown only while demo data exists), refreshes all data afterwards; component test.
 - [X] T004 [US1] Consistency e2e `apps/api/test/e2e/consistency.e2e-spec.ts`: net worth = allocation = Σ accounts overview; Sankey income/expenses = cash-flow summary; Σ categories = Ausgaben gesamt; for 3 periods × (all, one depot, one giro) selections; fix any mismatch found.
 - [X] T005 [US1] Balance check: bank and broker sync store source balance + date; `GET /api/accounts` returns `balanceCheck`; warning in account rows/detail (`apps/web/app/components/accounts/*`); unit test for the comparison, API e2e, component test.
-- [ ] T006 [US1] Owner re-audit after demo removal (local, git-ignored `apps/api/data/audit-013-local.md`): A2/A4, A5, A18; fix derivable rules with fixture tests, otherwise ⓘ texts in `apps/web/i18n/locales/de.json` stating the definition; status (no amounts) in `quickstart.md`.
+- [X] T006 [US1] Owner re-audit after demo removal (local, git-ignored `apps/api/data/audit-013-local.md`): A2/A4, A5, A18; fix derivable rules with fixture tests, otherwise ⓘ texts in `apps/web/i18n/locales/de.json` stating the definition; status (no amounts) in `quickstart.md`.
 
 ## Phase 3: User Story 2 – Refresh and data state (P2)
 
