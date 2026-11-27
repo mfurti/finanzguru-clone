@@ -19,6 +19,8 @@
     "allAccounts": "Alle Konten",
     "oneAccount": "1 Konto",
     "nAccounts": "{n} Konten",
+    "allPortfolios": "Alle Portfolios",
+    "nPortfolios": "{n} Portfolios",
     "noAccounts": "Noch keine Konten vorhanden."
   },
   "login": {

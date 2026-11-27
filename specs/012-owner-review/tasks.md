@@ -19,7 +19,7 @@
 - [X] T004 [US1] Booking columns (R2): chooser Datum, Kategorie, Tags, Eigenschaften (icons), Betrag, Steuern; stored-choice migration in `apps/web/app/utils/booking-columns.ts`; `BookingsTable.vue` columns; unit test for the migration, component test for the chooser.
 - [X] T005 [US1] `ColumnsPanel.vue` slideover (select all, checkbox rows, drag + move buttons, Speichern) and Positionen columns incl. Realisiert € and Transaktionen, stored order/visibility (`vk.positions.columns`) in `apps/web/app/components/investments/PositionsTable.vue`; component test.
 - [X] T006 [P] [US1] `ArtBadge.vue` (Kauf green, Verkauf blue, others neutral) above the date in `apps/web/app/components/investments/TransactionsTable.vue` (table and phone cards); component test.
-- [ ] T007 [P] [US1] Account filter in Investments lists only depot accounts (`apps/web/app/components/common/AccountFilter.vue` by route section); component test.
+- [X] T007 [P] [US1] Account filter in Investments lists only depot accounts (`apps/web/app/components/common/AccountFilter.vue` by route section); component test.
 
 ## Phase 3: User Story 2 – Dividends and taxes (P1)
 

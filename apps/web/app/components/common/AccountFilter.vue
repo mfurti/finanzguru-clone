@@ -9,19 +9,30 @@ const { data: accounts } = useApi<AccountDto[]>('/api/accounts', {
   default: () => [],
 })
 
+/** Investments offer only portfolios (depots), like the reference's "Alle Portfolios" (012 P15). */
+const route = useRoute()
+const portfoliosOnly = computed(() => route.path.startsWith('/investments'))
 const visibleAccounts = computed(() =>
-  (accounts.value ?? []).filter((account) => !account.isHidden),
+  (accounts.value ?? []).filter(
+    (account) => !account.isHidden && (!portfoliosOnly.value || account.type === 'depot'),
+  ),
+)
+const shownSelection = computed(() =>
+  selected.value.filter((id) => visibleAccounts.value.some((account) => account.id === id)),
 )
 
 const label = computed(() => {
-  if (isAll.value) return t('filter.allAccounts')
-  if (selected.value.length === 1) {
+  if (isAll.value || shownSelection.value.length === 0)
+    return portfoliosOnly.value ? t('filter.allPortfolios') : t('filter.allAccounts')
+  if (shownSelection.value.length === 1) {
     return (
-      visibleAccounts.value.find((account) => account.id === selected.value[0])?.name ??
+      visibleAccounts.value.find((account) => account.id === shownSelection.value[0])?.name ??
       t('filter.oneAccount')
     )
   }
-  return t('filter.nAccounts', { n: selected.value.length })
+  return portfoliosOnly.value
+    ? t('filter.nPortfolios', { n: shownSelection.value.length })
+    : t('filter.nAccounts', { n: shownSelection.value.length })
 })
 </script>
 
@@ -45,7 +56,7 @@ const label = computed(() => {
             color="neutral"
             class="justify-start"
             :icon="isAll ? 'i-lucide-check' : undefined"
-            :label="t('filter.allAccounts')"
+            :label="portfoliosOnly ? t('filter.allPortfolios') : t('filter.allAccounts')"
             @click="reset"
           />
           <USeparator class="my-1" />
