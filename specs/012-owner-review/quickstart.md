@@ -12,3 +12,7 @@ Local only (web 3100, API 3101). Gates: `pnpm lint`, `pnpm format:check`, `pnpm 
 | Q6 | P11, P12 | Budget › Sankey and Analyse | No upward flows, "Nicht kategorisiert" at the bottom; donut fills its card |
 | Q7 | P10, P13, P14 | Watchlist, Budgets (empty), Versicherung | Reference-like watchlist tabs and empty state; one budget card; insurance suggestions |
 | Q8 | all | Layout guard, hydration, Sankey hover e2e | Green at 375/768/1440 |
+
+## Status after T017 (2026-11-27)
+
+Layout guard (375 / 768 / 1440 px), hydration check, Sankey hover, Übersicht navigation and donut size e2e green. Layout guard found the provider table scrolling without a fixed first column on phones; fixed (provider column sticky).
