@@ -21,12 +21,7 @@ const busy = ref(false)
 const error = ref<string | null>(null)
 
 const pendingDate = computed(() =>
-  data.value?.pending
-    ? new Date(data.value.pending.createdAt).toLocaleString('de-DE', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      })
-    : '',
+  data.value?.pending ? formatDateTime(data.value.pending.createdAt) : '',
 )
 
 function choose(event: Event): void {

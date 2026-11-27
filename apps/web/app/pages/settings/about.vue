@@ -13,10 +13,7 @@ const size = computed(() => {
     ? `${mb.toLocaleString('de-DE', { maximumFractionDigits: 1 })} MB`
     : `${Math.round(bytes / 1024).toLocaleString('de-DE')} KB`
 })
-const when = (iso: string | null) =>
-  iso
-    ? new Date(iso).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' })
-    : t('settings.aboutPage.never')
+const when = (iso: string | null) => (iso ? formatDateTime(iso) : t('settings.aboutPage.never'))
 </script>
 
 <template>

@@ -62,8 +62,7 @@ const logoutChoices = computed(() =>
   })),
 )
 
-const when = (iso: string) =>
-  new Date(iso).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' })
+const when = (iso: string) => formatDateTime(iso)
 
 /** Short device hint from the browser's user agent. */
 function device(agent: string | null): string {
