@@ -41,7 +41,7 @@
 ## Phase 7: Polish
 
 - [X] T015 Layout guard (settings pages added to `e2e/pages.ts`), hydration, dark/light; owner check Q1–Q7; status in `quickstart.md`.
-- [ ] T016 Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`), reading the e2e log; mark spec Status "Implemented".
+- [X] T016 Full gates (`pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`), reading the e2e log; mark spec Status "Implemented".
 
 ## Dependencies
 

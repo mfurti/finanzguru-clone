@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-27
 
-**Status**: Draft
+**Status**: Implemented (gates 2026-11-27: lint, format, typecheck, unit 772, e2e 158 passed)
 
 **Input**: Owner review on 2026-11-27: "Wir müssen die Einstellungen noch etwas ausarbeiten" – all proposed settings accepted ("Alle deine Vorschläge sind gut").
 
