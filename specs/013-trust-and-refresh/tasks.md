@@ -24,7 +24,7 @@
 
 **Goal**: R3, R4. **Independent test**: quickstart Q4.
 
-- [ ] T007 [US2] `POST /api/sources/refresh-all` and `GET /api/sources/state` in `apps/api/src/modules/sources/` (sequential, result per source, oldest success, outdated after 24 h); API e2e with mocked connections.
+- [X] T007 [US2] `POST /api/sources/refresh-all` and `GET /api/sources/state` in `apps/api/src/modules/sources/` (sequential, result per source, oldest success, outdated after 24 h); API e2e with mocked connections.
 - [ ] T008 [US2] Übersicht frame (`apps/web/app/layouts/overview.vue`): "Aktualisieren" left of "Anpassen" (spinner, toast per source, refresh data), "Stand: TT.MM.JJJJ, HH:MM" with per-source tooltip and outdated highlight; disabled with hint when no source; component test + Playwright.
 
 ## Phase 4: User Story 3 – Charts (P3)
