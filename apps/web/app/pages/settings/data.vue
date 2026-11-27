@@ -8,6 +8,7 @@ useHead({ title: t('settings.data') })
   <section class="space-y-4">
     <h1 class="text-xl font-semibold">{{ t('settings.data') }}</h1>
     <BackupCard />
+    <RestoreCard />
     <DemoDataCard />
   </section>
 </template>

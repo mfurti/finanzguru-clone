@@ -90,7 +90,17 @@
       "backupTitle": "Sicherung",
       "backupHint": "Lädt alle Daten der App als ZIP-Datei herunter: Datenbank, eigene Logos und eine Beschreibung der Version. Bewahre die Datei sicher auf – sie enthält deine Finanzdaten.",
       "backupDownload": "Sicherung herunterladen",
-      "csvExport": "Alle Buchungen als CSV"
+      "csvExport": "Alle Buchungen als CSV",
+      "restoreTitle": "Wiederherstellen",
+      "restoreHint": "Spielt eine Sicherung dieser App zurück. Alle aktuellen Daten werden beim nächsten Start der App ersetzt.",
+      "restoreChoose": "Sicherung auswählen …",
+      "restoreConfirmTitle": "Sicherung wiederherstellen?",
+      "restoreConfirmText": "Alle aktuellen Daten (Konten, Buchungen, Einstellungen, Logos) werden durch die Sicherung ersetzt. Die bisherige Datenbank bleibt als Kopie im Datenordner erhalten.",
+      "restoreConfirm": "Wiederherstellen",
+      "restoreFailed": "Die Sicherung konnte nicht geprüft werden.",
+      "restorePending": "Wiederherstellung bereit – Neustart nötig",
+      "restorePendingText": "Die Sicherung vom {date} wird beim nächsten Start der App eingespielt. Starte die App jetzt neu.",
+      "restoreCancel": "Abbrechen"
     }
   },
   "overview": {
