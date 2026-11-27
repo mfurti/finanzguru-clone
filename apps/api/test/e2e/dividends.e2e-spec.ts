@@ -4,7 +4,7 @@ import { and, eq } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { DB } from '../../src/database/database.constants'
 import type { AppDatabase } from '../../src/database/drizzle.module'
-import { instrument, transaction } from '../../src/database/schema'
+import { account, institution, instrument, transaction } from '../../src/database/schema'
 import { addDays, addMonths, todayIso } from '../../src/domain/period'
 import { createDemoApp } from '../helpers/demo-app'
 
@@ -34,6 +34,22 @@ describe('Dividenden (US2)', () => {
     })
   const send = (method: 'POST' | 'PATCH' | 'DELETE', url: string, payload?: object) =>
     app.inject({ method, url, headers: { cookie }, payload })
+
+  it('counts only the selected depots (012 T008: the owner gap came from demo accounts)', async () => {
+    const inst = db.insert(institution).values({ name: 'Zweitbroker' }).returning().get()
+    const other = db
+      .insert(account)
+      .values({ institutionId: inst.id, name: 'Leeres Depot', type: 'depot' })
+      .returning()
+      .get()
+    const own = await get<DividendSummary>(`/api/dividends/summary?accounts=${other.id}`)
+    expect(own.years).toEqual([])
+    expect(own.bySecurity).toEqual([])
+    const demo = await get<DividendSummary>(`/api/dividends/summary?accounts=${depotId}`)
+    expect(demo.years.length).toBeGreaterThan(0)
+    const all = await get<DividendSummary>('/api/dividends/summary')
+    expect(all.years).toEqual(demo.years)
+  })
 
   it('sums the last 12 months to the cent (SC-003)', async () => {
     const today = todayIso()
