@@ -13,11 +13,13 @@ test.describe('002 US3 Buchungen', () => {
     await page.getByRole('option', { name: 'Kauf', exact: true }).click()
     await page.getByTestId('tx-filter-security').click()
     await page.getByRole('option', { name: 'iShares Core MSCI World UCITS ETF (Acc)' }).click()
-    await page.keyboard.press('Escape')
-    if (await page.getByTestId('tx-filters').isVisible()) {
-      await page.getByTestId('tx-filter-button').click()
-    }
-    await expect(page.getByTestId('tx-filters')).toBeHidden()
+    // Escape closes the open option list first, then the panel. Clicking the toggle while the
+    // panel still fades out reopened it on slow runners (013 CI), so only press Escape.
+    const filters = page.getByTestId('tx-filters')
+    await expect(async () => {
+      if (await filters.isVisible()) await page.keyboard.press('Escape')
+      await expect(filters).toBeHidden({ timeout: 500 })
+    }).toPass({ timeout: 5000 })
     await expect(table.locator('tbody tr').first()).toContainText('Kauf')
 
     const api = await (
