@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { type CashflowSummary, formatEur, formatEurCompact } from '@finance/shared'
+import type { CashflowSummary } from '@finance/shared'
+import { formatEur, formatEurCompact } from '~/utils/privacy'
 import { GroupedBar } from '@unovis/ts'
 import {
   VisAxis,

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { formatPctSigned, type ReturnsResponse } from '@finance/shared'
+import type { ReturnsResponse } from '@finance/shared'
+import { formatPctSigned } from '~/utils/privacy'
 
 /** Monthly TWROR as a months × years grid with a diverging color scale (US1). */
 const props = defineProps<{

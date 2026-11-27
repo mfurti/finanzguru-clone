@@ -1,11 +1,6 @@
 <script setup lang="ts">
-import {
-  formatDate,
-  formatEur,
-  type GainSplit,
-  type Period,
-  type PositionDto,
-} from '@finance/shared'
+import { formatDate, type GainSplit, type Period, type PositionDto } from '@finance/shared'
+import { formatEur } from '~/utils/privacy'
 import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
 
 const { t } = useI18n()

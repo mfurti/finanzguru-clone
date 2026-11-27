@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { type DividendSummary, formatEur, formatEurCompact } from '@finance/shared'
+import type { DividendSummary } from '@finance/shared'
+import { formatEur, formatEurCompact } from '~/utils/privacy'
 import { VisAxis, VisCrosshair, VisGroupedBar, VisTooltip, VisXYContainer } from '@unovis/vue'
 
 /** Dividend income per year: bar chart and table with change to the previous year (US2). */

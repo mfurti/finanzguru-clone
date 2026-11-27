@@ -25,7 +25,7 @@
 ## Phase 4: User Story 2 – Display (P2)
 
 - [X] T008 [US2] Anzeige page: start page (redirect from `/` when not dashboard), default chart period (PeriodTabs initial value), colour mode (server value applied on load), density (root class, compact table padding); Playwright for start page and density.
-- [ ] T009 [US2] Privacy mode: `Money`/`Percent` and chart axes masked, header eye toggle, setting persisted; component test + Playwright (no amount visible on dashboard when on).
+- [X] T009 [US2] Privacy mode: `Money`/`Percent` and chart axes masked, header eye toggle, setting persisted; component test + Playwright (no amount visible on dashboard when on).
 
 ## Phase 5: User Story 3 – Finances and taxes (P2)
 

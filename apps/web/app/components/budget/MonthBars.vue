@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatEur, formatEurCompact } from '@finance/shared'
+import { formatEur, formatEurCompact } from '~/utils/privacy'
 
 /**
  * Monthly bars for one or two series (category history, budget vs. spending;

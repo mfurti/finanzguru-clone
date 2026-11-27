@@ -13,7 +13,9 @@
   "header": {
     "search": "Suche",
     "settings": "Einstellungen",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "privacyOn": "Beträge verbergen",
+    "privacyOff": "Beträge anzeigen"
   },
   "filter": {
     "allAccounts": "Alle Konten",
@@ -130,7 +132,9 @@
       "density": {
         "normal": "Normal",
         "compact": "Kompakt"
-      }
+      },
+      "privacy": "Privatsphäre-Modus",
+      "privacyHint": "Verbirgt alle Beträge und Prozente, z. B. wenn jemand mitschaut. Auch über das Auge oben rechts."
     }
   },
   "overview": {

@@ -73,6 +73,14 @@ function set<K extends keyof OwnerSettings>(key: K, value: OwnerSettings[K]): vo
           />
         </UFormField>
       </div>
+      <USwitch
+        class="mt-4"
+        :model-value="settings.privacyMode"
+        :label="t('settings.displayPage.privacy')"
+        :description="t('settings.displayPage.privacyHint')"
+        data-testid="setting-privacy"
+        @update:model-value="set('privacyMode', $event)"
+      />
     </UCard>
   </section>
 </template>

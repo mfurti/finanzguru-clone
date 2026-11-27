@@ -1,11 +1,6 @@
 <script setup lang="ts">
-import {
-  type AccountDto,
-  type CompareResponse,
-  formatDate,
-  formatPctSigned,
-  type Period,
-} from '@finance/shared'
+import { type AccountDto, type CompareResponse, formatDate, type Period } from '@finance/shared'
+import { formatPctSigned } from '~/utils/privacy'
 import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
 
 /** Portfoliovergleich: TWROR of several depots from a common start (US1). */

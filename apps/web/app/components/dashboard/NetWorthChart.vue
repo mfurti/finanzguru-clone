@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import {
   formatDate,
-  formatEur,
-  formatPctSigned,
   type NetWorthPoint,
   type NetWorthResponse,
   type ChartSettings,
   type Period,
 } from '@finance/shared'
+import { formatEur, formatPctSigned } from '~/utils/privacy'
 import { VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
 
 /**

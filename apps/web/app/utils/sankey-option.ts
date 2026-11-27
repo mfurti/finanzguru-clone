@@ -1,4 +1,4 @@
-import { formatEur, formatPct } from '@finance/shared'
+import { formatEur, formatPct } from '~/utils/privacy'
 import { sankeyOrder, type SankeyLinkIn, type SankeyNodeIn } from './sankey-order'
 
 /** App colours the chart text and tooltip use (read from CSS tokens at runtime). */

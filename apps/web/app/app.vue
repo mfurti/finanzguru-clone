@@ -21,6 +21,15 @@ useHead({
  */
 const scrollBody = { padding: 0, margin: 0 }
 
+// Privacy mode (014): every formatted amount and percentage is masked while on.
+watch(
+  () => settings.value.privacyMode,
+  (on) => {
+    privacyOn.value = on
+  },
+  { immediate: true },
+)
+
 // Colour mode stored with the owner settings (014) wins over the browser's last choice.
 watch(
   () => (loaded.value ? settings.value.colorMode : null),
