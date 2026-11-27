@@ -78,6 +78,8 @@ const statusColor = (status: DataSourceDto['status']) =>
       </div>
     </div>
 
+    <DemoDataCard />
+
     <UCard id="csv" class="scroll-mt-20">
       <template #header>
         <h2 class="font-semibold">{{ t('import.title') }}</h2>

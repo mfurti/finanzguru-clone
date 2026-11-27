@@ -15,7 +15,7 @@
 **Goal**: R5. **Independent test**: quickstart Q1–Q3.
 
 - [X] T002 [US1] Demo removal: domain selection + `DELETE /api/demo` (one transaction, dependency order, shared instruments kept) in `apps/api/src/modules/demo/`; API e2e `demo-removal.e2e-spec.ts` (demo gone, an own account with bookings untouched, sums = own data only).
-- [ ] T003 [US1] Confirmed "Demo-Daten entfernen" button on `apps/web/app/pages/settings/sources.vue` (shown only while demo data exists), refreshes all data afterwards; component test.
+- [X] T003 [US1] Confirmed "Demo-Daten entfernen" button on `apps/web/app/pages/settings/sources.vue` (shown only while demo data exists), refreshes all data afterwards; component test.
 - [ ] T004 [US1] Consistency e2e `apps/api/test/e2e/consistency.e2e-spec.ts`: net worth = allocation = Σ accounts overview; Sankey income/expenses = cash-flow summary; Σ categories = Ausgaben gesamt; for 3 periods × (all, one depot, one giro) selections; fix any mismatch found.
 - [ ] T005 [US1] Balance check: bank and broker sync store source balance + date; `GET /api/accounts` returns `balanceCheck`; warning in account rows/detail (`apps/web/app/components/accounts/*`); unit test for the comparison, API e2e, component test.
 - [ ] T006 [US1] Owner re-audit after demo removal (local, git-ignored `apps/api/data/audit-013-local.md`): A2/A4, A5, A18; fix derivable rules with fixture tests, otherwise ⓘ texts in `apps/web/i18n/locales/de.json` stating the definition; status (no amounts) in `quickstart.md`.

@@ -43,6 +43,15 @@
     "title": "Diese Ansicht folgt",
     "description": "Die Daten dafür sind vorbereitet; die Oberfläche kommt in einem der nächsten Schritte."
   },
+  "demoData": {
+    "title": "Demo-Daten",
+    "hint": "Die Beispieldaten (Demo-Bank, Demo-Depot, Demo-Buchungen) fließen in alle Summen ein. Entferne sie, damit nur deine eigenen Konten zählen.",
+    "remove": "Demo-Daten entfernen",
+    "confirmTitle": "Demo-Daten endgültig entfernen?",
+    "confirmText": "Entfernt werden die Demo-Banken mit ihren Konten und Buchungen, Wertpapiere, die nur die Demo nutzt, die Watchlist „Beobachten“ und die Demo-Gruppierung. Deine eigenen Konten und Buchungen bleiben unverändert. Das lässt sich nicht rückgängig machen.",
+    "removed": "Demo-Daten entfernt: {accounts} Konten, {bookings} Buchungen",
+    "failed": "Demo-Daten konnten nicht entfernt werden"
+  },
   "settings": {
     "sources": "Datenquellen",
     "categories": "Kategorien & Regeln",
