@@ -29,7 +29,7 @@
 
 ## Phase 5: User Story 3 – Finances and taxes (P2)
 
-- [ ] T010 [US3] Finanzen & Steuern page and domain: assessment default for new tax years, church tax (8 % BY/BW, 9 % else) in tax estimates, `purchasesCountAsSaved` in cash flow, display rounding; unit tests per rule, API e2e.
+- [X] T010 [US3] Finanzen & Steuern page and domain: assessment default for new tax years, church tax (8 % BY/BW, 9 % else) as estimated tax on the Vorabpauschale, `purchasesCountAsSaved` in cash flow, display rounding; unit tests per rule, API e2e.
 - [ ] T011 [US3] Budget month start (1–28): period domain shifts month/quarter/year for cash flow, Sankey and budgets; labels show the range; unit tests (25.10.–24.11.), API e2e, consistency e2e (013) still green.
 
 ## Phase 6: User Story 4 – Security and about (P3)

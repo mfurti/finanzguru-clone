@@ -135,6 +135,34 @@
       },
       "privacy": "Privatsphäre-Modus",
       "privacyHint": "Verbirgt alle Beträge und Prozente, z. B. wenn jemand mitschaut. Auch über das Auge oben rechts."
+    },
+    "finance": "Finanzen & Steuern",
+    "financePage": {
+      "taxes": "Steuern",
+      "assessmentLabel": "Veranlagung für neue Steuerjahre",
+      "assessmentHelp": "Bestimmt den Sparerpauschbetrag (1.000 € / 2.000 €), solange ein Jahr nicht eigens eingestellt ist.",
+      "assessment": {
+        "single": "Einzelveranlagung",
+        "joint": "Zusammenveranlagung"
+      },
+      "churchLabel": "Kirchensteuer",
+      "churchHelp": "Fließt in die geschätzte Steuer ein: 8 % in Bayern und Baden-Württemberg, sonst 9 %.",
+      "church": {
+        "none": "Keine",
+        "BY": "Bayern (8 %)",
+        "BW": "Baden-Württemberg (8 %)",
+        "other": "Anderes Bundesland (9 %)"
+      },
+      "budget": "Budget & Anzeige",
+      "monthStart": "Budgetmonat beginnt am",
+      "monthStartHelp": "Zum Beispiel der Tag, an dem das Gehalt kommt.",
+      "roundingLabel": "Beträge anzeigen",
+      "rounding": {
+        "cents": "Mit Cent",
+        "euros": "Auf volle Euro gerundet"
+      },
+      "purchases": "Wertpapierkäufe zählen als gespart",
+      "purchasesHelp": "Käufe vom Verrechnungskonto erscheinen unter „Sparen und Anlegen“ und in „Gespart“. Aus: Käufe bleiben ganz aus dem Budget."
     }
   },
   "overview": {
@@ -685,7 +713,9 @@
     "taxable": "Steuerpflichtig",
     "fundType": "Fondsart",
     "noFunds": "Keine Fonds im Bestand",
-    "deleteOrder": "Freistellungsauftrag löschen?"
+    "deleteOrder": "Freistellungsauftrag löschen?",
+    "estimatedTax": "Geschätzte Steuer (25 % + Soli)",
+    "estimatedTaxChurch": "Geschätzte Steuer (25 % + Soli + {rate} % Kirchensteuer)"
   },
   "benchmark": {
     "compare": "Vergleichen mit",

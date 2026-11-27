@@ -3,11 +3,20 @@ import { afterEach, describe, expect, it } from 'vitest'
 import Money from '~/components/common/Money.vue'
 import Percent from '~/components/common/Percent.vue'
 import { compactEur } from '~/utils/compact-eur'
-import { formatEur, privacyOn } from '~/utils/privacy'
+import { formatEur, formatEurSigned, privacyOn, wholeEuros } from '~/utils/privacy'
 
 describe('privacy mode (014 T009)', () => {
   afterEach(() => {
     privacyOn.value = false
+    wholeEuros.value = false
+  })
+
+  it('rounds to whole euros for display only (014 T010)', () => {
+    wholeEuros.value = true
+    expect(formatEur(123456)).toBe('1.235 €')
+    expect(formatEurSigned(-4949)).toBe('-49 €')
+    wholeEuros.value = false
+    expect(formatEur(123456)).toBe('1.234,56 €')
   })
 
   it('masks amounts, percentages and chart labels while on', async () => {

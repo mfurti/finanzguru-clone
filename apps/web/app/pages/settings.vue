@@ -6,7 +6,15 @@ const { t } = useI18n()
 const route = useRoute()
 
 /** Order of the groups; each later 014 task adds its page here. */
-const GROUPS = ['accounts', 'data', 'display', 'sources', 'categories', 'inflation'] as const
+const GROUPS = [
+  'accounts',
+  'data',
+  'display',
+  'finance',
+  'sources',
+  'categories',
+  'inflation',
+] as const
 
 const items = computed<SectionNavItem[]>(() =>
   GROUPS.map((key) => ({

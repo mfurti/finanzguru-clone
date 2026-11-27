@@ -21,12 +21,14 @@ import {
 } from '../../domain/cashflow'
 import { lastPeriods, periodBounds, todayIso } from '../../domain/period'
 import { OverviewService } from '../overview/overview.service'
+import { SettingsService } from '../settings/settings.service'
 
 @Injectable()
 export class CashflowService {
   constructor(
     @Inject(DB) private readonly db: AppDatabase,
     private readonly overview: OverviewService,
+    private readonly settings: SettingsService,
   ) {}
 
   categories(): Map<string, CategoryInfo> {
@@ -75,7 +77,9 @@ export class CashflowService {
       .all()
       .map((row) => row.id)
       .filter((id): id is string => !!id)
-    const savingsId = depots.length > 0 ? this.savingsCategoryId() : null
+    // Owner setting (014): purchases can also stay out of the budget entirely.
+    const counted = depots.length > 0 && this.settings.get().purchasesCountAsSaved
+    const savingsId = counted ? this.savingsCategoryId() : null
     return savingsId ? [...own, ...purchasesAsSavings(select(depots), savingsId)] : own
   }
 

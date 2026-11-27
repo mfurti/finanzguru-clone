@@ -29,6 +29,13 @@ watch(
   },
   { immediate: true },
 )
+watch(
+  () => settings.value.rounding,
+  (rounding) => {
+    wholeEuros.value = rounding === 'euros'
+  },
+  { immediate: true },
+)
 
 // Colour mode stored with the owner settings (014) wins over the browser's last choice.
 watch(
