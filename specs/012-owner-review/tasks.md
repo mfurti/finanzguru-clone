@@ -17,7 +17,7 @@
 - [X] T002 [US1] Übersicht frame: parent route with `SectionNav` once and `<NuxtPage>` for Dashboard, Portfolios & Konten, Transaktionen (URLs unchanged) in `apps/web/app/pages/`; Playwright test that the nav element stays mounted when switching (`e2e/overview-nav.spec.ts`).
 - [X] T003 [P] [US1] Labels "Buchungen" (Investments nav, page title) and "Watchlist" in `apps/web/i18n/locales/de.json` and the investments nav; update affected tests.
 - [X] T004 [US1] Booking columns (R2): chooser Datum, Kategorie, Tags, Eigenschaften (icons), Betrag, Steuern; stored-choice migration in `apps/web/app/utils/booking-columns.ts`; `BookingsTable.vue` columns; unit test for the migration, component test for the chooser.
-- [ ] T005 [US1] `ColumnsPanel.vue` slideover (select all, checkbox rows, drag + move buttons, Speichern) and Positionen columns incl. Realisiert € and Transaktionen, stored order/visibility (`vk.positions.columns`) in `apps/web/app/components/investments/PositionsTable.vue`; component test.
+- [X] T005 [US1] `ColumnsPanel.vue` slideover (select all, checkbox rows, drag + move buttons, Speichern) and Positionen columns incl. Realisiert € and Transaktionen, stored order/visibility (`vk.positions.columns`) in `apps/web/app/components/investments/PositionsTable.vue`; component test.
 - [ ] T006 [P] [US1] `ArtBadge.vue` (Kauf green, Verkauf blue, others neutral) above the date in `apps/web/app/components/investments/TransactionsTable.vue` (table and phone cards); component test.
 - [ ] T007 [P] [US1] Account filter in Investments lists only depot accounts (`apps/web/app/components/common/AccountFilter.vue` by route section); component test.
 

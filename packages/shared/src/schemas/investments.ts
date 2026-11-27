@@ -78,8 +78,10 @@ export const positionDto = z.object({
   gainPct: nullableRate,
   allocationPct: nullableRate,
   dividendsCents: cents,
-  /** Sold positions only: realized result (gross). */
+  /** Realized result (gross) of sells so far; for open positions from partial sells (012 P2). */
   realizedCents: cents.optional(),
+  /** Number of buys and sells of the position (012 P2, Transaktionen column). */
+  transactionCount: z.number().int().min(0).optional(),
 })
 export type PositionDto = z.infer<typeof positionDto>
 

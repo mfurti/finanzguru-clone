@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ColumnChoice } from '~/components/common/ColumnsPanel.vue'
 import { h, resolveComponent } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import {
@@ -50,13 +51,24 @@ const assetClassItems = computed(() => {
   ]
 })
 
-type SortId = 'name' | 'price' | 'value' | 'entryValue' | 'gain' | 'allocation' | 'dividends'
+type SortId =
+  | 'name'
+  | 'price'
+  | 'value'
+  | 'entryValue'
+  | 'gain'
+  | 'realized'
+  | 'transactions'
+  | 'allocation'
+  | 'dividends'
 const sortValue: Record<SortId, (row: PositionDto) => string | number> = {
   name: (row) => row.name.toLowerCase(),
   price: (row) => row.priceCents ?? 0,
   value: (row) => row.valueCents,
   entryValue: (row) => row.entryValueCents,
   gain: (row) => row.gainCents,
+  realized: (row) => row.realizedCents ?? 0,
+  transactions: (row) => row.transactionCount ?? 0,
   allocation: (row) => Number(row.allocationPct ?? 0),
   dividends: (row) => row.dividendsCents ?? 0,
 }
@@ -87,6 +99,8 @@ const LABELS = computed<Record<SortId, string>>(() => ({
   value: t('investments.columns.value'),
   entryValue: t('investments.columns.entryValue'),
   gain: t('investments.columns.gain'),
+  realized: t('investments.columns.realized'),
+  transactions: t('investments.columns.transactions'),
   allocation: t('investments.columns.allocation'),
   dividends: t('investments.columns.dividends'),
 }))
@@ -193,6 +207,24 @@ const columns = computed<TableColumn<PositionDto>[]>(() => [
       ]),
   },
   {
+    id: 'realized',
+    meta: { class: { th: 'text-right' } },
+    header: header('realized'),
+    cell: ({ row }) =>
+      h(
+        'div',
+        { class: 'text-right' },
+        row.original.realizedCents ? [money(row.original.realizedCents, true)] : '–',
+      ),
+  },
+  {
+    id: 'transactions',
+    meta: { class: { th: 'text-right' } },
+    header: header('transactions'),
+    cell: ({ row }) =>
+      h('div', { class: 'text-right tabular-nums' }, String(row.original.transactionCount ?? 0)),
+  },
+  {
     id: 'allocation',
     meta: { class: { th: 'text-right' } },
     header: header('allocation'),
@@ -222,22 +254,58 @@ const EXPORT: Record<string, PositionColumn[]> = {
   allocation: ['allocation'],
   dividends: ['dividends'],
 }
-const columnVisibility = ref<Record<string, boolean>>({})
-const visibleIds = computed(() =>
-  columns.value.map((column) => column.id!).filter((id) => columnVisibility.value[id] !== false),
-)
-const visibilityItems = computed(() =>
+/**
+ * Column choice and order (012 P2), kept per browser like the reference's "Spalten" panel.
+ * Realisiert € and Transaktionen are off by default, the other columns on.
+ */
+const COLUMN_KEY = 'vk.positions.columns'
+const HIDEABLE = computed(() =>
   columns.value
     .filter((column) => column.id !== 'name')
-    .map((column) => ({
-      type: 'checkbox' as const,
-      label: LABELS.value[column.id as SortId],
-      checked: columnVisibility.value[column.id!] !== false,
-      onUpdateChecked: (checked: boolean) => {
-        columnVisibility.value = { ...columnVisibility.value, [column.id!]: checked }
-      },
-      onSelect: (event: Event) => event.preventDefault(),
-    })),
+    .map((column) => ({ id: column.id!, label: LABELS.value[column.id as SortId] })),
+)
+const DEFAULT_HIDDEN = ['realized', 'transactions']
+const choice = ref<ColumnChoice>({
+  order: [],
+  visible: Object.fromEntries(DEFAULT_HIDDEN.map((id) => [id, false])),
+})
+onMounted(() => {
+  try {
+    const stored = JSON.parse(localStorage.getItem(COLUMN_KEY) ?? 'null') as ColumnChoice | null
+    if (
+      stored &&
+      Array.isArray(stored.order) &&
+      stored.visible &&
+      typeof stored.visible === 'object'
+    )
+      choice.value = {
+        order: stored.order,
+        visible: { ...choice.value.visible, ...stored.visible },
+      }
+  } catch {
+    // Broken or blocked storage: defaults.
+  }
+})
+function saveColumns(next: ColumnChoice): void {
+  choice.value = next
+  try {
+    localStorage.setItem(COLUMN_KEY, JSON.stringify(next))
+  } catch {
+    // Storage unavailable: choice lasts for this visit.
+  }
+}
+const columnsOpen = ref(false)
+const columnVisibility = computed(() => choice.value.visible)
+const columnOrder = computed(() => {
+  const known = HIDEABLE.value.map((column) => column.id)
+  return [
+    'name',
+    ...choice.value.order.filter((id) => known.includes(id)),
+    ...known.filter((id) => !choice.value.order.includes(id)),
+  ]
+})
+const visibleIds = computed(() =>
+  columnOrder.value.filter((id) => columnVisibility.value[id] !== false),
 )
 const exportUrl = computed(() => {
   const params = new URLSearchParams()
@@ -332,15 +400,20 @@ const soldOpen = ref(false)
             download
             data-testid="positions-export"
           />
-          <UDropdownMenu :items="visibilityItems" :content="{ align: 'end' }">
-            <UButton
-              icon="i-lucide-columns-3"
-              variant="soft"
-              color="neutral"
-              :label="t('investments.columnsButton')"
-              data-testid="columns-menu"
-            />
-          </UDropdownMenu>
+          <UButton
+            icon="i-lucide-columns-3"
+            variant="soft"
+            color="neutral"
+            :label="t('investments.columnsButton')"
+            data-testid="columns-menu"
+            @click="columnsOpen = true"
+          />
+          <ColumnsPanel
+            v-model:open="columnsOpen"
+            :columns="HIDEABLE"
+            :choice="choice"
+            @save="saveColumns"
+          />
         </div>
       </div>
 
@@ -351,7 +424,8 @@ const soldOpen = ref(false)
       />
       <UTable
         v-else
-        v-model:column-visibility="columnVisibility"
+        :column-visibility="columnVisibility"
+        :column-order="columnOrder"
         :data="sortedPositions"
         :columns="columns"
         class="w-full"

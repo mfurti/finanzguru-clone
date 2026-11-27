@@ -42,6 +42,11 @@ describe('investments API', () => {
     expect(world.gainCents).toBe(world.valueCents - world.entryValueCents)
     const dist = positions.find((row) => row.isin === 'IE00B3RBWM25')!
     expect(dist.dividendsCents).toBeGreaterThan(0)
+    // 012 P2: Realisiert € and Transaktionen columns.
+    for (const row of positions) {
+      expect(row.transactionCount).toBeGreaterThan(0)
+      expect(Number.isInteger(row.realizedCents)).toBe(true)
+    }
   })
 
   it('filters by asset class', async () => {
@@ -54,6 +59,7 @@ describe('investments API', () => {
     expect(sold).toHaveLength(1)
     expect(sold[0]).toMatchObject({ name: 'SAP SE', valueCents: 0 })
     expect(sold[0]?.realizedCents).not.toBe(0)
+    expect(sold[0]?.transactionCount).toBeGreaterThanOrEqual(2)
   })
 
   it('groups by asset class', async () => {

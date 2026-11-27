@@ -284,6 +284,13 @@
     "deposit": "Einzahlung",
     "withdrawal": "Auszahlung"
   },
+  "columnsPanel": {
+    "title": "Spalten",
+    "selectAll": "Alle auswählen",
+    "save": "Speichern",
+    "up": "{name} nach oben",
+    "down": "{name} nach unten"
+  },
   "investments": {
     "value": "Wert",
     "invested": "Investiertes Kapital",
@@ -310,6 +317,8 @@
       "price": "Aktueller Kurs",
       "value": "Aktueller Wert",
       "entryValue": "Einstiegswert",
+      "realized": "Realisiert €",
+      "transactions": "Transaktionen",
       "gain": "Kursgewinn",
       "allocation": "Allokation",
       "dividends": "Dividende"
