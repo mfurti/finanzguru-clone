@@ -15,6 +15,7 @@ const GROUPS = [
   'sources',
   'categories',
   'inflation',
+  'about',
 ] as const
 
 const items = computed<SectionNavItem[]>(() =>

@@ -19,3 +19,12 @@ test.describe('014 US4 security settings', () => {
     await expect(page.getByTestId('setting-auto-logout')).toHaveText(/Nach 15 Minuten/)
   })
 })
+
+test.describe('014 US4 about', () => {
+  test('shows version and database size', async ({ page }) => {
+    await page.goto('/')
+    await openSettingsGroup(page, 'about', 'Über die App')
+    await expect(page.getByTestId('about-version')).toHaveText(/\d+\.\d+\.\d+/)
+    await expect(page.getByTestId('about-size')).toHaveText(/\d.*(KB|MB)/)
+  })
+})

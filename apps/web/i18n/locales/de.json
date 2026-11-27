@@ -185,6 +185,16 @@
       "autoLogoutHelp": "Nach dieser Zeit ohne Aktivität ist eine neue Anmeldung nötig.",
       "never": "Nie",
       "afterMinutes": "Nach {n} Minuten"
+    },
+    "about": "Über die App",
+    "aboutPage": {
+      "version": "Version",
+      "schema": "Datenbankstand",
+      "database": "Größe der Datenbank",
+      "sources": "Datenquellen",
+      "noSources": "Keine Quelle verbunden.",
+      "lastFetch": "Zuletzt abgerufen: {date}",
+      "never": "noch nie"
     }
   },
   "overview": {

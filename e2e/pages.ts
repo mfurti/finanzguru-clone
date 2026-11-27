@@ -16,4 +16,10 @@ export const PAGES = [
   '/settings/sources',
   '/settings/categories',
   '/settings/inflation',
+  '/settings/accounts',
+  '/settings/data',
+  '/settings/display',
+  '/settings/finance',
+  '/settings/security',
+  '/settings/about',
 ]

@@ -31,6 +31,7 @@ import { SearchModule } from './modules/search/search.module'
 import { SyncModule } from './modules/sources/sync.module'
 import { SettingsModule } from './modules/settings/settings.module'
 import { BackupModule } from './modules/backup/backup.module'
+import { AboutModule } from './modules/about/about.module'
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { BackupModule } from './modules/backup/backup.module'
     LogosModule,
     DemoModule,
     BackupModule,
+    AboutModule,
     RefreshModule,
     SearchModule,
     SyncModule,

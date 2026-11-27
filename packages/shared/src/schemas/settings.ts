@@ -84,3 +84,20 @@ export const passwordChangeInput = z.object({
   next: z.string().min(12, 'Mindestens 12 Zeichen').max(200),
 })
 export type PasswordChangeInput = z.infer<typeof passwordChangeInput>
+
+/** `GET /api/about` (014 US4). */
+export const aboutDto = z.object({
+  version: z.string(),
+  /** Newest database migration of this build. */
+  migration: z.string(),
+  databaseBytes: z.number().int().nonnegative(),
+  sources: z.array(
+    z.object({
+      source: z.string(),
+      name: z.string(),
+      lastSuccessAt: z.string().nullable(),
+      lastError: z.string().nullable(),
+    }),
+  ),
+})
+export type AboutDto = z.infer<typeof aboutDto>

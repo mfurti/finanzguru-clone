@@ -9,5 +9,6 @@ import { RefreshService } from './refresh.service'
   imports: [SyncModule, MarketDataModule],
   controllers: [RefreshController],
   providers: [RefreshService, RefreshScheduler],
+  exports: [RefreshService],
 })
 export class RefreshModule {}
